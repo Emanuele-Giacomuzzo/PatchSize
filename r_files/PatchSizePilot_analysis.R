@@ -69,4 +69,4 @@ anova(mixed.model.null, mixed.model) #Why are df = 0 ????
 
 mixed.model = lmer(evaporation  ~ patch_size + disturbance  + patch_size*disturbance + (1|id), data=df, REML=FALSE)
 mixed.model.null = lmer(evaporation  ~ patch_size  + disturbance + (1|id), data=df, REML=FALSE)
-anova(mixed.model.null, mixed.model)
+anova(mixed.model.null, mixed.model) 
