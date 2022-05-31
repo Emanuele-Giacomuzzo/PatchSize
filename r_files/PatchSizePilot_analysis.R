@@ -147,12 +147,44 @@ mixed.model = lmer(evaporation  ~ exchange + patch_size + disturbance  + exchang
 #mixed.model = lmer(evaporation  ~ patch_size + disturbance  + patch_size*disturbance + (1 + patch_size|id) + (1 + disturbance|id) + (1 + patch_size*disturbance|id), data=df, REML=FALSE)
 #Is it possible that the problem was that in the previous code I didn't include "REML = FALSE"? No, it gives me exactly the same error.
 #Let's then try to model without the slopes. Would that be possible?
+mixed.model = lmer(evaporation  ~ exchange + patch_size + disturbance  + exchange*patch_size + exchange*disturbance + patch_size*disturbance + exchange*patch_size*disturbance + (1|id), data=df)
+summary(mixed.model)
+#It now worked. But that's still bad because if I want to know the effect of treatments, I need to include all the slopes. I think. But I'm actually not sure.
+#Maybe disturbance and patch size are chategorical instead of numeric.
+typeof(df$patch_size) 
+typeof(df$disturbance) 
+#No, they are numeric. Maybe then I shoudl start writing the exchange as numeric. Let's then now make the variable "exchange" numeric. 
+df[df == "ex1"] = "1"
+df[df == "ex2"] = "2"
+df[df == "ex3"] = "3"
+df[df == "ex4"] = "4"
+df[df == "ex5"] = "5"
+df[df == "ex6"] = "6"
+df$exchange = as.numeric(df$exchange)
+typeof(df$exchange)
+#Let's now retry with the model of before. 
 mixed.model = lmer(evaporation  ~ exchange + patch_size + disturbance  + exchange*patch_size + exchange*disturbance + patch_size*disturbance + exchange*patch_size*disturbance + 
                      (1 + exchange|id) + (1 + patch_size|id) + (1 + disturbance|id) + (1 + exchange*patch_size|id) + (1 + exchange*disturbance|id) + (1 + patch_size*disturbance|id) + 
                      (1 + exchange*patch_size*disturbance|id), data=df)
+#The number of random effects actually even increased. 
+#Error: number of observations (=658) <= number of random effects (=880) for term (1 + exchange * patch_size * disturbance | id); 
+#the random-effects parameters and the residual variance (or scale parameter) are probably unidentifiable
+#Maybe a way of constructing the model would be to test one random effect at the time. Let's try googling whether someone else had my same problem: "mixed model with too many random effects"
+#What if I don't include the interaction between patch size and disturbance as random effect?
+mixed.model = lmer(evaporation  ~ exchange + patch_size + disturbance  + exchange*patch_size + exchange*disturbance + patch_size*disturbance + exchange*patch_size*disturbance + 
+                     (1 + exchange|id) + (1 + patch_size|id) + (1 + disturbance|id), data=df)
+#It worked.
+#How you would read those parentheses would be:
+#(1|id) = different tubes (ids) have different starting value of evaporation at 7.5 ml (intercept) 
+#(1 + exchange | id) = different tubes have different starting value of evaporation at 7.5 ml (intercepts) and evaporation changes between tubes differently for different exchange times
+#So my next question is: 
+#Should I include the random slopes of interacting treatments? Probably yes, I've seen people doing it also here (https://ademos.people.uic.edu/Chapter17.html). This mean that it can be done.
+#However, the model still is too large. I guess that there are two ways to go then: (1) reduce the model through variable selection/something else, (2) find another way to go about instead of the
+#approach I am using right now. I will then stick to googlign my error. The error I write in google is as follows:
+#error: number of observations <= number of random effects for term; the random-effects parameters and the residual variance (or scale parameter) are probably unidentifiable
 
 
-
+#OLD CODE
 # mixed.model = lmer(evaporation  ~ exchange + patch_size + disturbance  + exchange*patch_size + exchange*disturbance + patch_size*disturbance + exchange*patch_size*disturbance + 
 #                      (1 + exchange|id) + (1 + patch_size|id) + (1 + disturbance|id) + (1 + exchange*patch_size|id) + (1 + exchange*disturbance|id) + (1 + patch_size*disturbance|id) + 
 #                      (1 + exchange*patch_size*disturbance|id), data=df)
