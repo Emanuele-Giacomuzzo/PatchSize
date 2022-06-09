@@ -25,6 +25,13 @@ df$water_add_after_t4 = NULL
 df$water_add_after_t5 = NULL
 df$water_add_after_t6 = NULL
 df = gather(df, exchange, evaporation, ex1:ex6)
+df[df == "ex1"] = "1"
+df[df == "ex2"] = "2"
+df[df == "ex3"] = "3"
+df[df == "ex4"] = "4"
+df[df == "ex5"] = "5"
+df[df == "ex6"] = "6"
+df$exchange = as.numeric(df$exchange)
 
 # --- PLOTS --- #
 
@@ -43,6 +50,7 @@ df %>%
               y = evaporation)) + 
   geom_boxplot() + 
   geom_jitter()
+df$patch_size = as.numeric(df$patch_size)
 
 #Evaporation ~ disturbance
 df$disturbance = as.character(df$disturbance)
@@ -70,154 +78,11 @@ df %>%
               fill = patch_size)) + 
   geom_boxplot() + 
   geom_jitter()
-
-# --- LINEAR REGRESSIONS --- #
-
-#Evaporation ~ patch_size + disturbance + patch_size*disturbance
-mr.model = lm(evaporation  ~ patch_size + disturbance  + patch_size*disturbance, data=df)
-summary(mr.model)
-dev.off(dev.list()["RStudioGD"])
-par(mfrow = c(2,3))
-plot(mr.model, which = 1:5)
-
-#Evaporation ~ patch_size
 df$patch_size = as.numeric(df$patch_size)
-plot(x = df$patch_size, y = df$evaporation)
-patch.size.model = lm(evaporation ~ patch_size, data=df)
-summary(patch.size.model)
-coef(patch.size.model)
-abline(patch.size.model)
-dev.off(dev.list()["RStudioGD"])
-par(mfrow = c(2,3))
-plot(patch.size.model, which = 1:5)
-
-#Evaporation ~ disturbance
 df$disturbance = as.numeric(df$disturbance)
-dev.off(dev.list()["RStudioGD"])
-plot(x = df$disturbance, y = df$evaporation)
-disturbance.model = lm(evaporation ~ disturbance, data = df)
-summary(disturbance.model)
-coef(disturbance.model)
-abline(disturbance.model)
-dev.off(dev.list()["RStudioGD"])
-par(mfrow = c(2,3))
-plot(disturbance.model, which = 1:5)
-
-#Evaporation ~ disturbance*patch_size
-dev.off(dev.list()["RStudioGD"])
-plot(x = df$disturbance * df$patch_size, y = df$evaporation)
-interaction.model = lm(evaporation ~ disturbance*patch_size, data = df)
-summary(interaction.model)
-coef(interaction.model)
-abline(interaction.model) #Doesn't work 
-dev.off(dev.list()["RStudioGD"])
-par(mfrow = c(2,3))
-plot(interaction.model, which = 1:5)
-#The normal Q-Q plot doesn't look great. Let's try to transform.
-
-#Evaporation ~ log(disturbance)*patch_size
-df$disturbance = as.numeric(df$disturbance)
-interaction.model = lm(evaporation ~ disturbance*patch_size, data = df)
-summary(interaction.model)
-coef(interaction.model)
-dev.off(dev.list()["RStudioGD"])
-par(mfrow = c(2,3))
-plot(interaction.model, which = 1:5)
-#Can't transform the variables. Every time I try to transform data, it gives me the same exact result. Is it
-#because when we have interacting variables it doens't make sense to transform them, as they become categorical?
-
 
 
 #----MIXED EFFECT MODEL (CHECK WHETHER TREATMENTS INFLUENCED WATER EVAPORATION, BY INCLUDING THE RANDOM EFFECTS OF TUBE ID)----#
-#As we want to check whether treatments affected the evaporation rate of the tubes, we are going to using a mulitple regression model. Because there might an effect of the tube identity
-#I'm going to run a mixed effect model. The identity of the tube will be the random effect. We want to quantify how much the treatments  
-#affected the evaporation rate. Treatments: time (here referred to as exchange), patch size, and disturbance. 
-#1: construct model
 mixed.model = lmer(evaporation  ~ exchange + patch_size + disturbance  + exchange*patch_size + exchange*disturbance + patch_size*disturbance + exchange*patch_size*disturbance + 
                      (1 + exchange|id) + (1 + patch_size|id) + (1 + disturbance|id) + (1 + exchange*patch_size|id) + (1 + exchange*disturbance|id) + (1 + patch_size*disturbance|id) + 
                      (1 + exchange*patch_size*disturbance|id), data=df)
-#It tells me that the number of observations is less than the number of random effects.
-#The error is as follows:
-#
-#Error: number of observations (=658) <= number of random effects (=660) for term (1 + exchange | id); 
-#the random-effects parameters and the residual variance (or scale parameter) are probably unidentifiable
-#
-#I don't understand why this error pops up now but it didn't in the previous model. The previous model
-#was as follows:
-#mixed.model = lmer(evaporation  ~ patch_size + disturbance  + patch_size*disturbance + (1 + patch_size|id) + (1 + disturbance|id) + (1 + patch_size*disturbance|id), data=df, REML=FALSE)
-#Is it possible that the problem was that in the previous code I didn't include "REML = FALSE"? No, it gives me exactly the same error.
-#Let's then try to model without the slopes. Would that be possible?
-mixed.model = lmer(evaporation  ~ exchange + patch_size + disturbance  + exchange*patch_size + exchange*disturbance + patch_size*disturbance + exchange*patch_size*disturbance + (1|id), data=df)
-summary(mixed.model)
-#It now worked. But that's still bad because if I want to know the effect of treatments, I need to include all the slopes. I think. But I'm actually not sure.
-#Maybe disturbance and patch size are chategorical instead of numeric.
-typeof(df$patch_size) 
-typeof(df$disturbance) 
-#No, they are numeric. Maybe then I shoudl start writing the exchange as numeric. Let's then now make the variable "exchange" numeric. 
-df[df == "ex1"] = "1"
-df[df == "ex2"] = "2"
-df[df == "ex3"] = "3"
-df[df == "ex4"] = "4"
-df[df == "ex5"] = "5"
-df[df == "ex6"] = "6"
-df$exchange = as.numeric(df$exchange)
-typeof(df$exchange)
-#Let's now retry with the model of before. 
-mixed.model = lmer(evaporation  ~ exchange + patch_size + disturbance  + exchange*patch_size + exchange*disturbance + patch_size*disturbance + exchange*patch_size*disturbance + 
-                     (1 + exchange|id) + (1 + patch_size|id) + (1 + disturbance|id) + (1 + exchange*patch_size|id) + (1 + exchange*disturbance|id) + (1 + patch_size*disturbance|id) + 
-                     (1 + exchange*patch_size*disturbance|id), data=df)
-#The number of random effects actually even increased. 
-#Error: number of observations (=658) <= number of random effects (=880) for term (1 + exchange * patch_size * disturbance | id); 
-#the random-effects parameters and the residual variance (or scale parameter) are probably unidentifiable
-#Maybe a way of constructing the model would be to test one random effect at the time. Let's try googling whether someone else had my same problem: "mixed model with too many random effects"
-#What if I don't include the interaction between patch size and disturbance as random effect?
-mixed.model = lmer(evaporation  ~ exchange + patch_size + disturbance  + exchange*patch_size + exchange*disturbance + patch_size*disturbance + exchange*patch_size*disturbance + 
-                     (1 + exchange|id) + (1 + patch_size|id) + (1 + disturbance|id), data=df)
-#It worked.
-#How you would read those parentheses would be:
-#(1|id) = different tubes (ids) have different starting value of evaporation at 7.5 ml (intercept) 
-#(1 + exchange | id) = different tubes have different starting value of evaporation at 7.5 ml (intercepts) and evaporation changes between tubes differently for different exchange times
-#So my next question is: 
-#Should I include the random slopes of interacting treatments? Probably yes, I've seen people doing it also here (https://ademos.people.uic.edu/Chapter17.html). This mean that it can be done.
-#However, the model still is too large. I guess that there are two ways to go then: (1) reduce the model through variable selection/something else, (2) find another way to go about instead of the
-#approach I am using right now. I will then stick to googlign my error. The error I write in google is as follows:
-#error: number of observations <= number of random effects for term; the random-effects parameters and the residual variance (or scale parameter) are probably unidentifiable
-
-
-#OLD CODE
-# mixed.model = lmer(evaporation  ~ exchange + patch_size + disturbance  + exchange*patch_size + exchange*disturbance + patch_size*disturbance + exchange*patch_size*disturbance + 
-#                      (1 + exchange|id) + (1 + patch_size|id) + (1 + disturbance|id) + (1 + exchange*patch_size|id) + (1 + exchange*disturbance|id) + (1 + patch_size*disturbance|id) + 
-#                      (1 + exchange*patch_size*disturbance|id), data=df)
-# # summary(mixed.model)
-# #What are scaled residuals? (maybe not that important) The max scaled residual is 4.2, which seems quite high to me as the largest evaporation rate was 3. The residuals in the model
-# #are then not displayed but only their standard deviation. The variance associated with the id of the tubes is 0. Does this mean that I should keep the mixed effect model, or should I
-# #take off the random part and just go for the multiple regression? I guess yes, but only after I have found the model to be significant and respect my assumptions.  
-# 
-# #2: find p-values for intercepts (likelihood ratio test)
-# 
-# #p-value: patch size
-# mixed.model = lmer(evaporation  ~ patch_size + disturbance  + patch_size*disturbance + (1 + patch_size|id) + (1 + disturbance|id) + (1 + patch_size*disturbance|id), data=df, REML=FALSE)
-# mixed.model.null = lmer(evaporation  ~ disturbance  + patch_size*disturbance + (1 + patch_size|id) + (1 + disturbance|id) + (1 + patch_size*disturbance|id), data=df, REML=FALSE)
-# anova(mixed.model.null, mixed.model)
-# #Same BIC
-# #Why are df = 0 ???
-# 
-# #p-value: disturbance
-# mixed.model = lmer(evaporation  ~ patch_size + disturbance  + patch_size*disturbance + (1 + patch_size|id) + (1 + disturbance|id) + (1 + patch_size*disturbance|id), data=df, REML=FALSE)
-# mixed.model.null = lmer(evaporation  ~ patch_size  + patch_size*disturbance + (1 + patch_size|id) + (1 + disturbance|id) + (1 + patch_size*disturbance|id), data=df, REML=FALSE)
-# anova(mixed.model.null, mixed.model)
-# #Same BIC
-# #Why are df = 0 ????
-# 
-# #p-value: patch size * disturbance
-# mixed.model = lmer(evaporation  ~ patch_size + disturbance  + patch_size*disturbance + (1 + patch_size|id) + (1 + disturbance|id) + (1 + patch_size*disturbance|id), data=df, REML=FALSE)
-# mixed.model.null = lmer(evaporation  ~ patch_size  + (1 + patch_size|id) + (1 + disturbance|id) + (1 + patch_size*disturbance|id), data=df, REML=FALSE)
-# anova(mixed.model.null, mixed.model)
-# #Significant!
-# 
-# #3: diagnostics
-# mixed.model = lmer(evaporation  ~ patch_size + disturbance  + patch_size*disturbance + (1 + patch_size|id) + (1 + disturbance|id) + (1 + patch_size*disturbance|id), data=df, REML=FALSE)
-# summary(mixed.model)
-# dev.off(dev.list()["RStudioGD"])
-# plot(mixed.model, which = 1)
-# qqnorm(residuals(mixed.model))
