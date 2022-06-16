@@ -28,11 +28,12 @@ rm(pop_output)
 
 ### --- MODIFY DATASET --- ###
 
-#Modify: info
-info$culture_ID = info$id
-info$id = NULL
+#Modify datsets of time points
+t0$time = "to find out"
+t1$time = "to find out"
 
-#Modify: t0-t7
+
+#Modify info dataset
 elongating_t0 = NULL
 for (video in 1:nrow(t0)){
   for (ID in 1:nrow(info)) {
@@ -40,12 +41,12 @@ for (video in 1:nrow(t0)){
   }
 }
 
+info$culture_ID = info$id
+info$id = NULL
 culture_IDs = rep(1:nrow(info), times = nrow(t0))
 elongating_t0$culture_ID = culture_IDs
 
-t0$time = "to find out"
-t1$time = "to find out"
-
+#Change the column from replicate to replicate video so that it can be distinguished from treatment replicate
 t6$replicate_video = t6$replicate
 t6$replicate = NULL
 t7$replicate_video = t7$replicate
@@ -61,7 +62,7 @@ t5 = merge(info,t5,by="culture_ID")
 t6 = merge(info,t6,by="culture_ID")
 t7 = merge(info,t7,by="culture_ID")
 
-#Give the replicate video
+#Give the replicate video 
 t0$replicate_video = 1:12
 t1$replicate_video = 1
 t2$replicate_video = 1
@@ -123,9 +124,11 @@ ds$ecosystem = factor(ds$ecosystem,
 #Transform individuals/microlitres to individuals/millilitres
 ds$indiv_ml = ds$indiv_per_volume*1000
 
-#Select the columns that are useful, then change their names and reorder them
+#Get rid of useless columns, change the name of the columns that are left
 ds = ds %>% select(culture_ID, patch_size, disturbance, metaeco, bioarea_per_volume, replicate_video, day, system, system_nr, ecosystem, indiv_ml)
 
+
+#Change name of columns
 ds$treatment_replicate = ds$replicate
 ds$replicate = NULL
 ds$metaeco_type = ds$metaeco
@@ -135,6 +138,7 @@ ds$ecosystem = NULL
 ds$eco_metaeco_type = ds$ecosystem_type
 ds$ecosystem_type = NULL
 
+#Change order of columns 
 col_order <- c("culture_ID", "disturbance", "day", "metaecosystem", "metaeco_type", "system_nr", "replicate_video", "patch_size", "eco_metaeco_type","bioarea_per_volume","indiv_ml")
 ds = ds[, col_order]
 
