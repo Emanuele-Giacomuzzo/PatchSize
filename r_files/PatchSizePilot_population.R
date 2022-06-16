@@ -125,7 +125,7 @@ ds$ecosystem = factor(ds$ecosystem,
 ds$indiv_ml = ds$indiv_per_volume*1000
 
 #Get rid of useless columns, change the name of the columns that are left
-ds = ds %>% select(culture_ID, patch_size, disturbance, metaeco, bioarea_per_volume, replicate_video, day, system, system_nr, ecosystem, indiv_ml)
+ds = ds %>% select(culture_ID, patch_size, disturbance, metaeco, bioarea_per_volume, replicate_video, day, metaecosystem, system_nr, ecosystem, indiv_ml)
 
 
 #Change name of columns
