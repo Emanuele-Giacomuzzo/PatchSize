@@ -60,9 +60,6 @@ t5$replicate_video = 1
 ds = rbind(t0, t1, t2, t3, t4, t5, t6, t7)
 rm(elongating_t0, t0, t1, t2, t3, t4, t5, t6, t7)
 
-#Change column names
-ds$treatment_replicate = ds$replicate; ds$replicate = NULL
-
 ds$system_nr = ds$metaecosystem
 ds$metaecosystem = NULL
 
@@ -114,11 +111,13 @@ ds$ecosystem = factor(ds$ecosystem,
 ds$indiv_ml = ds$indiv_per_volume*1000
 
 #Select columns, then change their names and orer 
+ds = ds %>% select(culture_ID, patch_size, disturbance, metaeco, bioarea_per_volume, replicate_video, day, metaecosystem, system_nr, ecosystem, indiv_ml)
+
+ds$treatment_replicate = ds$replicate; ds$replicate = NULL
 ds$metaeco_type = ds$metaeco; ds$metaeco = NULL
 ds$ecosystem_type = ds$ecosystem; ds$ecosystem = NULL
 ds$eco_metaeco_type = ds$ecosystem_type; ds$ecosystem_type = NULL
 
-ds = ds %>% select(culture_ID, patch_size, disturbance, metaeco_type, bioarea_per_volume, replicate_video, day, metaecosystem, system_nr, eco_metaeco_type, indiv_ml)
 col_order <- c("culture_ID", "disturbance", "day", "metaecosystem", "metaeco_type", "system_nr", "replicate_video", "patch_size", "eco_metaeco_type","bioarea_per_volume","indiv_ml")
 ds = ds[, col_order]
 
