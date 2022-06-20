@@ -95,7 +95,7 @@ col_order <- c("culture_ID", "system_nr", "disturbance", "day", "patch_size", "m
 ds = ds[, col_order]
 
 
-# ----- PLOTS ------- #
+# ----- PLOTS: BIOMASS & COMMUNITY ABUNDANCE ------- #
 
 low.biomass.reg.raw = ds %>%
   filter ( disturbance == "low") %>%
@@ -469,19 +469,54 @@ grid.arrange(high.abundance.reg.raw, high.abundance.local.raw, high.abundance.cl
              ncol=3, nrow=2,
              top = textGrob("Abundance, disturbance = high",gp=gpar(fontsize=20,font=3)))
 
-# biomass_difference = NULL
-# ds_temp_2 = NULL
-# for (DAY in 1:max(ds$day)) {
-#   for (SYSTEM_NR in 1:max(ds$system_nr)){
-#     ds_temp = ds%>%
-#       filter(metaecosystem == "yes") %>%
-#       filter(day == DAY, system_nr == SYSTEM_NR)
-#     max = max(ds_temp$bioarea_per_volume)
-#     min = min(ds_temp$bioarea_per_volume)
-#     ds_temp_2$day = DAY
-#     ds_temp_2$system_nr = SYSTEM_NR
-#     ds_temp_2$metaecosystem_type = ds_temp[1,]$metaecosystem_type
-#     ds_temp_2$biomass_difference = (max-min)/min
-#     biomass_difference = rbind(biomass_difference, ds_temp_2)
-#   }
-# }
+## --- PLOTS: BIOMASS DIFFERENCE BETWEEN ECOSYSTEMS --- ##
+
+biomass_difference = data.frame(matrix(ncol = 4, nrow = 0))
+colnames(biomass_difference) = c('day', 'system_nr', 'metaecosystem_type', "biomass_difference")
+ds_temp_2 = biomass_difference
+
+for (DAY in 1:max(ds$day)) {
+  if (any(ds$day==DAY) == TRUE) {
+    for (SYSTEM_NR in 1:max(ds$system_nr)){
+    ds_temp = ds%>%
+      filter(metaecosystem == "yes") %>%
+      filter(day == DAY, system_nr == SYSTEM_NR)
+    if (dim(ds_temp)[1] != 0) {
+      max = max(ds_temp$bioarea_per_volume)
+      min = min(ds_temp$bioarea_per_volume)
+      ds_temp_2[1,]$day = DAY
+      ds_temp_2[1,]$system_nr = SYSTEM_NR
+      ds_temp_2[1,]$metaecosystem_type = ds_temp[1,]$metaecosystem_type
+      ds_temp_2[1,]$biomass_difference = ((max-min)/min)
+      biomass_difference = rbind(biomass_difference, ds_temp_2)
+      } 
+    }
+  }
+}
+
+bio_diff.raw = biomass_difference %>%
+  filter(metaecosystem_type != "S_L") %>%
+  filter(biomass_difference != Inf) %>%
+  ggplot (aes(x= reorder(day, sort(as.numeric(day))),
+              y = biomass_difference,
+              fill = metaecosystem_type,
+              color = metaecosystem_type)) +
+  geom_boxplot() +
+  xlab("Day") +
+  ylab("Biomass ratio between ecosystems (bioarea/volume)")
+
+bio_diff.average = biomass_difference %>%
+  filter(metaecosystem_type != "S_L") %>%
+  filter(biomass_difference != Inf) %>%
+  ggplot (aes(x= reorder(day, sort(as.numeric(day))),
+              y = biomass_difference,
+              fill = metaecosystem_type,
+              color = metaecosystem_type)) +
+  geom_point(stat = "summary", fun = "mean") +
+  geom_line(stat = "summary", fun = "mean") +
+  xlab("Day") +
+  ylab("Biomass ratio between ecosystems (bioarea/volume)")
+
+grid.arrange(bio_diff.raw, bio_diff.average,
+             ncol=1, nrow=2,
+             top = textGrob("Biomass ratio between ecosystems", gp=gpar(fontsize=20,font=3)))
