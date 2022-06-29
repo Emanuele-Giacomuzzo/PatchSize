@@ -4,6 +4,10 @@ library("tidyverse")
 library("grid")
 library("gridExtra") 
 
+
+############################ --- LOAD THE DATA --- ######################################################
+
+
 culture_info = read.csv("/Users/ema/github/PatchSizePilot/data/PatchSizePilot_dataset.csv", header = TRUE)
 load("~/github/PatchSizePilot/data/morphology/t0.RData");t0 = morph_mvt
 load("~/github/PatchSizePilot/data/morphology/t1.RData");t1 = morph_mvt
@@ -14,6 +18,23 @@ load("~/github/PatchSizePilot/data/morphology/t5.RData");t5 = morph_mvt
 load("~/github/PatchSizePilot/data/morphology/t6.RData");t6 = morph_mvt
 load("~/github/PatchSizePilot/data/morphology/t7.RData");t7 = morph_mvt
 rm(morph_mvt)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+########################## --- MODIFY COLUMN NAME AND CONTENT --- #######################################
+
 
 t0$time = "to find out"
 t1$time = "to find out"
@@ -86,130 +107,1322 @@ ds$metaecosystem_type[ds$metaecosystem_type=="M"] = NA
 ds$metaecosystem_type[ds$metaecosystem_type=="L"] = NA
 
 ds$eco_metaeco_type = paste0(ds$patch_size, " (", ds$metaecosystem_type, ")")
-ds$eco_metaeco_type = factor(ds$eco_metaeco_type, levels=c('S (S)', 'M (M)', 'L (L)', 'S (S_S)', 'S (S_L)', 'M (M_M)', 'L (L_L)', 'L (S_L)'))
+ds$eco_metaeco_type[ds$eco_metaeco_type == "S (NA)"] = "S"
+ds$eco_metaeco_type[ds$eco_metaeco_type == "M (NA)"] = "M"
+ds$eco_metaeco_type[ds$eco_metaeco_type == "L (NA)"] = "L"
+ds$eco_metaeco_type = factor(ds$eco_metaeco_type, levels=c('S', 'S (S_S)', 'S (S_L)', 'M', 'M (M_M)', 'L', 'L (L_L)', 'L (S_L)'))
 
 ds = ds %>% select(culture_ID, patch_size, disturbance, metaecosystem_type, mean_area, replicate_video, day, metaecosystem, system_nr, eco_metaeco_type)
 col_order <- c("culture_ID", "system_nr", "disturbance", "day", "patch_size", "metaecosystem", "metaecosystem_type", "eco_metaeco_type", "replicate_video","mean_area")
 ds = ds[, col_order]
 
-### --- PLOTS --- ###
-low.day.4 = ds %>%
-  filter (disturbance == "low") %>%
-  filter (day == 4, !is.na(eco_metaeco_type)) %>%
-  ggplot(aes(x = log(mean_area), fill = eco_metaeco_type)) +
-  geom_density(alpha=.3)  +
-  labs(title = "Day 4")
-
-low.day.8 = ds %>%
-  filter (disturbance == "low") %>%
-  filter (day == 8, !is.na(eco_metaeco_type)) %>%
-  ggplot(aes(x = log(mean_area), fill = eco_metaeco_type)) +
-  geom_density(alpha=.3) +
-  labs(title = "Day 8")
-
-low.day.12 = ds %>%
-  filter (disturbance == "low") %>%
-  filter (day == 12, !is.na(eco_metaeco_type)) %>%
-  ggplot(aes(x = log(mean_area), fill = eco_metaeco_type)) +
-  geom_density(alpha=.3) + 
-  labs(title = "Day 12")
-
-low.day.16 = ds %>%
-  filter (disturbance == "low") %>%
-  filter (day == 16, !is.na(eco_metaeco_type)) %>%
-  ggplot(aes(x = log(mean_area), fill = eco_metaeco_type)) +
-  geom_density(alpha=.3) + 
-  labs(title = "Day 16")
-
-low.day.20 = ds %>%
-  filter (disturbance == "low") %>%
-  filter (day == 20, !is.na(eco_metaeco_type)) %>%
-  ggplot(aes(x = log(mean_area), fill = eco_metaeco_type)) +
-  geom_density(alpha=.3) +
-  labs(title = "Day 20")
-
-low.day.24 = ds %>%
-  filter (disturbance == "low") %>%
-  filter (day == 24, !is.na(eco_metaeco_type)) %>%
-  ggplot(aes(x = log(mean_area), fill = eco_metaeco_type)) +
-  geom_density(alpha=.3) + 
-  labs(title = "Day 24")
-
-low.day.28 = ds %>%
-  filter (disturbance == "low") %>%
-  filter (day == 28, !is.na(eco_metaeco_type)) %>%
-  ggplot(aes(x = log(mean_area), fill = eco_metaeco_type)) +
-  geom_density(alpha=.3) +
-  labs(title = "Day 28")
 
 
-grid.arrange(low.day.4, low.day.8, low.day.12, low.day.16, low.day.20, low.day.24, low.day.28,
+
+
+
+
+
+
+
+
+
+
+
+
+################################# --- PLOT DENSITY DISTRIBUTIONS --- #########################################
+# 
+# 
+# low.day.4 = ds %>%
+#   filter (disturbance == "low") %>%
+#   filter (day == 4, !is.na(eco_metaeco_type)) %>%
+#   ggplot(aes(x = log(mean_area), fill = eco_metaeco_type)) +
+#   geom_density(alpha=.3)  +
+#   labs(title = "Day 4")
+# 
+# low.day.8 = ds %>%
+#   filter (disturbance == "low") %>%
+#   filter (day == 8, !is.na(eco_metaeco_type)) %>%
+#   ggplot(aes(x = log(mean_area), fill = eco_metaeco_type)) +
+#   geom_density(alpha=.3) +
+#   labs(title = "Day 8")
+# 
+# low.day.12 = ds %>%
+#   filter (disturbance == "low") %>%
+#   filter (day == 12, !is.na(eco_metaeco_type)) %>%
+#   ggplot(aes(x = log(mean_area), fill = eco_metaeco_type)) +
+#   geom_density(alpha=.3) + 
+#   labs(title = "Day 12")
+# 
+# low.day.16 = ds %>%
+#   filter (disturbance == "low") %>%
+#   filter (day == 16, !is.na(eco_metaeco_type)) %>%
+#   ggplot(aes(x = log(mean_area), fill = eco_metaeco_type)) +
+#   geom_density(alpha=.3) + 
+#   labs(title = "Day 16")
+# 
+# low.day.20 = ds %>%
+#   filter (disturbance == "low") %>%
+#   filter (day == 20, !is.na(eco_metaeco_type)) %>%
+#   ggplot(aes(x = log(mean_area), fill = eco_metaeco_type)) +
+#   geom_density(alpha=.3) +
+#   labs(title = "Day 20")
+# 
+# low.day.24 = ds %>%
+#   filter (disturbance == "low") %>%
+#   filter (day == 24, !is.na(eco_metaeco_type)) %>%
+#   ggplot(aes(x = log(mean_area), fill = eco_metaeco_type)) +
+#   geom_density(alpha=.3) + 
+#   labs(title = "Day 24")
+# 
+# low.day.28 = ds %>%
+#   filter (disturbance == "low") %>%
+#   filter (day == 28, !is.na(eco_metaeco_type)) %>%
+#   ggplot(aes(x = log(mean_area), fill = eco_metaeco_type)) +
+#   geom_density(alpha=.3) +
+#   labs(title = "Day 28")
+# 
+# high.day.4 = ds %>%
+#   filter (disturbance == "high") %>%
+#   filter (day == 4, !is.na(eco_metaeco_type)) %>%
+#   ggplot(aes(x = log(mean_area), fill = eco_metaeco_type)) +
+#   geom_density(alpha=.3)  +
+#   labs(title = "Day 4")
+# 
+# high.day.8 = ds %>%
+#   filter (disturbance == "high") %>%
+#   filter (day == 8, !is.na(eco_metaeco_type)) %>%
+#   ggplot(aes(x = log(mean_area), fill = eco_metaeco_type)) +
+#   geom_density(alpha=.3) +
+#   labs(title = "Day 8")
+# 
+# high.day.12 = ds %>%
+#   filter (disturbance == "high") %>%
+#   filter (day == 12, !is.na(eco_metaeco_type)) %>%
+#   ggplot(aes(x = log(mean_area), fill = eco_metaeco_type)) +
+#   geom_density(alpha=.3) + 
+#   labs(title = "Day 12")
+# 
+# high.day.16 = ds %>%
+#   filter (disturbance == "high") %>%
+#   filter (day == 16, !is.na(eco_metaeco_type)) %>%
+#   ggplot(aes(x = log(mean_area), fill = eco_metaeco_type)) +
+#   geom_density(alpha=.3) + 
+#   labs(title = "Day 16")
+# 
+# high.day.20 = ds %>%
+#   filter (disturbance == "high") %>%
+#   filter (day == 20, !is.na(eco_metaeco_type)) %>%
+#   ggplot(aes(x = log(mean_area), fill = eco_metaeco_type)) +
+#   geom_density(alpha=.3) +
+#   labs(title = "Day 20")
+# 
+# high.day.24 = ds %>%
+#   filter (disturbance == "high") %>%
+#   filter (day == 24, !is.na(eco_metaeco_type)) %>%
+#   ggplot(aes(x = log(mean_area), fill = eco_metaeco_type)) +
+#   geom_density(alpha=.3) + 
+#   labs(title = "Day 24")
+# 
+# high.day.28 = ds %>%
+#   filter (disturbance == "high") %>%
+#   filter (day == 28, !is.na(eco_metaeco_type)) %>%
+#   ggplot(aes(x = log(mean_area), fill = eco_metaeco_type)) +
+#   geom_density(alpha=.3) +
+#   labs(title = "Day 28")
+# 
+# 
+# grid.arrange(high.day.4, high.day.8, high.day.12, high.day.16, high.day.20, high.day.24, high.day.28,
+#              ncol=3, nrow=3,
+#              top = textGrob("Body size distribution (high disturbance)", gp=gpar(fontsize=20,font=3)))
+# 
+# grid.arrange(low.day.4, low.day.8, low.day.12, low.day.16, low.day.20, low.day.24, low.day.28,
+#              ncol=3, nrow=3,
+#              top = textGrob("Body size distribution (low disturbance)", gp=gpar(fontsize=20,font=3)))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+##################################### --- CREATE SIZE CLASSES DATASET --- ##########################
+
+
+size_classes = seq(0, max(ds$mean_area), by = max(ds$mean_area)/11) #As in "How pulse disturbances shape size-abundance pyramids"
+list = list()
+elongating_size_classes = NULL
+
+for (n in 1:length(size_classes)){
+  bin_lower_limit = size_classes[n]
+  bin_upper_limit = size_classes[n+1]
+  size_class = ds%>%
+    filter(bin_lower_limit<=mean_area, mean_area <= bin_upper_limit) %>%
+    group_by(culture_ID, system_nr, disturbance, day, patch_size, metaecosystem, metaecosystem_type, eco_metaeco_type, replicate_video) %>% #Group by video
+    summarise(n=n()) %>%
+    group_by(culture_ID, system_nr, disturbance, day, patch_size, metaecosystem, metaecosystem_type, eco_metaeco_type) %>% #Group by ID
+    summarise(n=mean(n))
+  size_class$size_class = n
+  elongating_size_classes = rbind(elongating_size_classes, size_class)
+}
+
+ds_size = elongating_size_classes
+ds_size$log_n = log(ds_size$n + 1)
+
+for (i in 1:length(size_classes)){
+  ds_size$size_class[ds_size$size_class==i] = mean(c(size_classes[i] + size_classes[i+1]))
+  }
+ds_size$log_size_class = log(ds_size$size_class)
+ds_size$log_size_class = round(ds_size$log_size_class, digits = 1)
+
+
+
+
+
+
+
+
+
+
+
+
+
+########################## --- PLOT SIZE CLASSES - LOW DISTURBANCE - ALL PATCHES --- #######################################
+
+
+low.4.raw = 
+  ds_size %>%
+  filter(day == 4, disturbance == "low") %>%
+  ggplot(aes(x = log_size_class,
+             y = log_n,
+             group = interaction(log_size_class, eco_metaeco_type),
+             fill = eco_metaeco_type,
+             color = eco_metaeco_type)) +
+  geom_boxplot() +
+  labs(title = "Day = 4, Disturbance = low", x = "log(body-size)", y = "Mean abundance + 1 (log)") +
+  scale_y_continuous(limits = c(0,5)) +
+  scale_x_continuous(limits = c(7,10.5))
+
+#Working on it 
+low.4.mean = 
+  ds_size %>%
+  filter(day == 4, disturbance == "low") %>%
+  ggplot(aes(x = log_size_class,
+             y = log_n,
+             group = interaction(eco_metaeco_type, log_size_class),
+             fill = eco_metaeco_type,
+             color = eco_metaeco_type)) +
+  geom_point(stat = "summary", fun = "mean") +
+  geom_line (stat = "summary", fun = "mean") +
+  labs(title = "Day = 4, Disturbance = low", x = "log(body-size)", y = "Mean abundance + 1 (log)") +
+  scale_y_continuous(limits = c(0,5))
+
+low.8.raw = 
+  ds_size %>%
+    filter(day == 8, disturbance == "low") %>%
+    ggplot(aes(x = reorder(log_size_class, sort(as.numeric(log_size_class))),
+               y = log_n,
+               fill = eco_metaeco_type,
+               color = eco_metaeco_type)) +
+    geom_boxplot() +
+    labs(title = "Day = 8, Disturbance = low", x = "log(body-size)", y = "Mean abundance + 1 (log)") +
+    scale_y_continuous(limits = c(0,5))
+  
+low.8.mean = 
+  ds_size %>%
+    filter(day == 8, disturbance == "low") %>%
+    ggplot(aes(x = reorder(log_size_class, sort(as.numeric(log_size_class))),
+               y = log_n,
+               group = eco_metaeco_type,
+               color = eco_metaeco_type)) +
+    geom_point(stat = "summary", fun = "mean") +
+    geom_line (stat = "summary", fun = "mean") +
+    labs(title = "Day = 8, Disturbance = low", x = "log(body-size)", y = "Mean abundance + 1 (log)") +
+    scale_y_continuous(limits = c(0,5))
+  
+low.12.raw = 
+  ds_size %>%
+    filter(day == 12, disturbance == "low") %>%
+    ggplot(aes(x = reorder(log_size_class, sort(as.numeric(log_size_class))),
+               y = log_n,
+               fill = eco_metaeco_type,
+               color = eco_metaeco_type)) +
+    geom_boxplot() +
+    labs(title = "Day = 12, Disturbance = low", x = "log(body-size)", y = "Mean abundance + 1 (log)") +
+    scale_y_continuous(limits = c(0,5))
+  
+low.12.mean = 
+  ds_size %>%
+    filter(day == 12, disturbance == "low") %>%
+    ggplot(aes(x = reorder(log_size_class, sort(as.numeric(log_size_class))),
+               y = log_n,
+               group = eco_metaeco_type,
+               color = eco_metaeco_type)) +
+    geom_point(stat = "summary", fun = "mean") +
+    geom_line (stat = "summary", fun = "mean") +
+    labs(title = "Day = 12, Disturbance = low", x = "log(body-size)", y = "Mean abundance + 1 (log)") +
+    scale_y_continuous(limits = c(0,5))
+  
+low.16.raw = 
+  ds_size %>%
+    filter(day == 16, disturbance == "low") %>%
+    ggplot(aes(x = reorder(log_size_class, sort(as.numeric(log_size_class))),
+               y = log_n,
+               fill = eco_metaeco_type,
+               color = eco_metaeco_type)) +
+    geom_boxplot() +
+    labs(title = "Day = 16, Disturbance = low", x = "log(body-size)", y = "Mean abundance + 1 (log)") +
+    scale_y_continuous(limits = c(0,5))
+
+low.16.mean = 
+  ds_size %>%
+    filter(day == 16, disturbance == "low") %>%
+    ggplot(aes(x = reorder(log_size_class, sort(as.numeric(log_size_class))),
+               y = log_n,
+               group = eco_metaeco_type,
+               color = eco_metaeco_type)) +
+    geom_point(stat = "summary", fun = "mean") +
+    geom_line (stat = "summary", fun = "mean") +
+    labs(title = "Day = 16, Disturbance = low", x = "log(body-size)", y = "Mean abundance + 1 (log)") +
+    scale_y_continuous(limits = c(0,5))
+
+low.20.raw = 
+  ds_size %>%
+    filter(day == 20, disturbance == "low") %>%
+    ggplot(aes(x = reorder(log_size_class, sort(as.numeric(log_size_class))),
+               y = log_n,
+               fill = eco_metaeco_type,
+               color = eco_metaeco_type)) +
+    geom_boxplot() +
+    labs(title = "Day = 20, Disturbance = low", x = "log(body-size)", y = "Mean abundance + 1 (log)") +
+    scale_y_continuous(limits = c(0,5))
+  
+low.20.mean = 
+  ds_size %>%
+    filter(day == 20, disturbance == "low") %>%
+    ggplot(aes(x = reorder(log_size_class, sort(as.numeric(log_size_class))),
+               y = log_n,
+               group = eco_metaeco_type,
+               color = eco_metaeco_type)) +
+    geom_point(stat = "summary", fun = "mean") +
+    geom_line (stat = "summary", fun = "mean") +
+    labs(title = "Day = 20, Disturbance = low", x = "log(body-size)", y = "Mean abundance + 1 (log)") +
+    scale_y_continuous(limits = c(0,5))
+
+low.24.raw = 
+  ds_size %>%
+    filter(day == 24, disturbance == "low") %>%
+    ggplot(aes(x = reorder(log_size_class, sort(as.numeric(log_size_class))),
+               y = log_n,
+               fill = eco_metaeco_type,
+               color = eco_metaeco_type)) +
+    geom_boxplot() +
+    labs(title = "Day = 24, Disturbance = low", x = "log(body-size)", y = "Mean abundance + 1 (log)") +
+    scale_y_continuous(limits = c(0,5))
+  
+low.24.mean = 
+  ds_size %>%
+    filter(day == 24, disturbance == "low") %>%
+    ggplot(aes(x = reorder(log_size_class, sort(as.numeric(log_size_class))),
+               y = log_n,
+               group = eco_metaeco_type,
+               color = eco_metaeco_type)) +
+    geom_point(stat = "summary", fun = "mean") +
+    geom_line (stat = "summary", fun = "mean") +
+    labs(title = "Day = 24, Disturbance = low", x = "log(body-size)", y = "Mean abundance + 1 (log)") +
+    scale_y_continuous(limits = c(0,5))
+  
+low.28.raw = 
+  ds_size %>%
+    filter(day == 28, disturbance == "low") %>%
+    ggplot(aes(x = reorder(log_size_class, sort(as.numeric(log_size_class))),
+               y = log_n,
+               fill = eco_metaeco_type,
+               color = eco_metaeco_type)) +
+    geom_boxplot() +
+    labs(title = "Day = 28, Disturbance = low", x = "log(body-size)", y = "Mean abundance + 1 (log)") +
+    scale_y_continuous(limits = c(0,5))
+  
+low.28.mean = 
+  ds_size %>%
+    filter(day == 28, disturbance == "low") %>%
+    ggplot(aes(x = reorder(log_size_class, sort(as.numeric(log_size_class))),
+               y = log_n,
+               group = eco_metaeco_type,
+               color = eco_metaeco_type)) +
+    geom_point(stat = "summary", fun = "mean") +
+    geom_line (stat = "summary", fun = "mean") +
+    labs(title = "Day = 28, Disturbance = low", x = "log(body-size)", y = "Mean abundance + 1 (log)") +
+    scale_y_continuous(limits = c(0,5))
+
+
+grid = grid.arrange(low.4.raw, low.8.raw, low.12.raw, low.16.raw, low.20.raw, low.24.raw, low.28.raw,
              ncol=3, nrow=3,
              top = textGrob("Body size distribution (low disturbance)", gp=gpar(fontsize=20,font=3)))
+ggsave("/Users/ema/github/PatchSizePilot/results/body_size/l_all_raw.jpg", grid, width = 22, height = 13)
+
+
+grid = grid.arrange(low.4.mean, low.8.mean, low.12.mean, low.16.mean, low.20.mean, low.24.mean, low.28.mean,
+             ncol=3, nrow=3,
+             top = textGrob("Body size distribution (low disturbance)", gp=gpar(fontsize=20,font=3)))
+ggsave("/Users/ema/github/PatchSizePilot/results/body_size/l_all_mean.jpg", grid, width = 22, height = 13)
 
 
 
-high.day.4 = ds %>%
-  filter (disturbance == "high") %>%
-  filter (day == 4, !is.na(eco_metaeco_type)) %>%
-  ggplot(aes(x = log(mean_area), fill = eco_metaeco_type)) +
-  geom_density(alpha=.3)  +
-  labs(title = "Day 4")
-
-high.day.8 = ds %>%
-  filter (disturbance == "high") %>%
-  filter (day == 8, !is.na(eco_metaeco_type)) %>%
-  ggplot(aes(x = log(mean_area), fill = eco_metaeco_type)) +
-  geom_density(alpha=.3) +
-  labs(title = "Day 8")
-
-high.day.12 = ds %>%
-  filter (disturbance == "high") %>%
-  filter (day == 12, !is.na(eco_metaeco_type)) %>%
-  ggplot(aes(x = log(mean_area), fill = eco_metaeco_type)) +
-  geom_density(alpha=.3) + 
-  labs(title = "Day 12")
-
-high.day.16 = ds %>%
-  filter (disturbance == "high") %>%
-  filter (day == 16, !is.na(eco_metaeco_type)) %>%
-  ggplot(aes(x = log(mean_area), fill = eco_metaeco_type)) +
-  geom_density(alpha=.3) + 
-  labs(title = "Day 16")
-
-high.day.20 = ds %>%
-  filter (disturbance == "high") %>%
-  filter (day == 20, !is.na(eco_metaeco_type)) %>%
-  ggplot(aes(x = log(mean_area), fill = eco_metaeco_type)) +
-  geom_density(alpha=.3) +
-  labs(title = "Day 20")
-
-high.day.24 = ds %>%
-  filter (disturbance == "high") %>%
-  filter (day == 24, !is.na(eco_metaeco_type)) %>%
-  ggplot(aes(x = log(mean_area), fill = eco_metaeco_type)) +
-  geom_density(alpha=.3) + 
-  labs(title = "Day 24")
-
-high.day.28 = ds %>%
-  filter (disturbance == "high") %>%
-  filter (day == 28, !is.na(eco_metaeco_type)) %>%
-  ggplot(aes(x = log(mean_area), fill = eco_metaeco_type)) +
-  geom_density(alpha=.3) +
-  labs(title = "Day 28")
 
 
-grid.arrange(high.day.4, high.day.8, high.day.12, high.day.16, high.day.20, high.day.24, high.day.28,
+
+
+
+
+
+
+
+
+
+
+
+########################## --- PLOT SIZE CLASSES - LOW DISTURBANCE - SMALL PATCHES --- #######################################
+
+
+low.4.raw = 
+  ds_size %>%
+  filter(day == 4, disturbance == "low", patch_size == "S") %>%
+  ggplot(aes(x = reorder(log_size_class, sort(as.numeric(log_size_class))),
+             y = log_n,
+             fill = eco_metaeco_type,
+             color = eco_metaeco_type)) +
+  geom_boxplot() +
+  labs(title = "Day = 4, Disturbance = low", x = "log(body-size)", y = "Mean abundance + 1 (log)") +
+  scale_y_continuous(limits = c(0,5))
+
+low.4.mean = 
+  ds_size %>%
+  filter(day == 4, disturbance == "low", patch_size == "S") %>%
+  ggplot(aes(x = reorder(log_size_class, sort(as.numeric(log_size_class))),
+             y = log_n,
+             group = eco_metaeco_type,
+             color = eco_metaeco_type)) +
+  geom_point(stat = "summary", fun = "mean") +
+  geom_line (stat = "summary", fun = "mean") +
+  labs(title = "Day = 4, Disturbance = low", x = "log(body-size)", y = "Mean abundance + 1 (log)") +
+  scale_y_continuous(limits = c(0,5))
+
+low.8.raw = 
+  ds_size %>%
+filter(day == 8, disturbance == "low", patch_size == "S") %>%
+  ggplot(aes(x = reorder(log_size_class, sort(as.numeric(log_size_class))),
+             y = log_n,
+             fill = eco_metaeco_type,
+             color = eco_metaeco_type)) +
+  geom_boxplot() +
+  labs(title = "Day = 8, Disturbance = low", x = "log(body-size)", y = "Mean abundance + 1 (log)") +
+  scale_y_continuous(limits = c(0,5))
+
+low.8.mean = 
+  ds_size %>%
+filter(day == 8, disturbance == "low", patch_size == "S") %>%
+  ggplot(aes(x = reorder(log_size_class, sort(as.numeric(log_size_class))),
+             y = log_n,
+             group = eco_metaeco_type,
+             color = eco_metaeco_type)) +
+  geom_point(stat = "summary", fun = "mean") +
+  geom_line (stat = "summary", fun = "mean") +
+  labs(title = "Day = 8, Disturbance = low", x = "log(body-size)", y = "Mean abundance + 1 (log)") +
+  scale_y_continuous(limits = c(0,5))
+
+low.12.raw = 
+  ds_size %>%
+filter(day == 12, disturbance == "low", patch_size == "S") %>%
+  ggplot(aes(x = reorder(log_size_class, sort(as.numeric(log_size_class))),
+             y = log_n,
+             fill = eco_metaeco_type,
+             color = eco_metaeco_type)) +
+  geom_boxplot() +
+  labs(title = "Day = 12, Disturbance = low", x = "log(body-size)", y = "Mean abundance + 1 (log)") +
+  scale_y_continuous(limits = c(0,5))
+
+low.12.mean = 
+  ds_size %>%
+filter(day == 12, disturbance == "low", patch_size == "S") %>%
+  ggplot(aes(x = reorder(log_size_class, sort(as.numeric(log_size_class))),
+             y = log_n,
+             group = eco_metaeco_type,
+             color = eco_metaeco_type)) +
+  geom_point(stat = "summary", fun = "mean") +
+  geom_line (stat = "summary", fun = "mean") +
+  labs(title = "Day = 12, Disturbance = low", x = "log(body-size)", y = "Mean abundance + 1 (log)") +
+  scale_y_continuous(limits = c(0,5))
+
+low.16.raw = 
+  ds_size %>%
+filter(day == 16, disturbance == "low", patch_size == "S") %>%
+  ggplot(aes(x = reorder(log_size_class, sort(as.numeric(log_size_class))),
+             y = log_n,
+             fill = eco_metaeco_type,
+             color = eco_metaeco_type)) +
+  geom_boxplot() +
+  labs(title = "Day = 16, Disturbance = low", x = "log(body-size)", y = "Mean abundance + 1 (log)") +
+  scale_y_continuous(limits = c(0,5))
+
+low.16.mean = 
+  ds_size %>%
+filter(day == 16, disturbance == "low", patch_size == "S") %>%
+  ggplot(aes(x = reorder(log_size_class, sort(as.numeric(log_size_class))),
+             y = log_n,
+             group = eco_metaeco_type,
+             color = eco_metaeco_type)) +
+  geom_point(stat = "summary", fun = "mean") +
+  geom_line (stat = "summary", fun = "mean") +
+  labs(title = "Day = 16, Disturbance = low", x = "log(body-size)", y = "Mean abundance + 1 (log)") +
+  scale_y_continuous(limits = c(0,5))
+
+low.20.raw = 
+  ds_size %>%
+filter(day == 20, disturbance == "low", patch_size == "S") %>%
+  ggplot(aes(x = reorder(log_size_class, sort(as.numeric(log_size_class))),
+             y = log_n,
+             fill = eco_metaeco_type,
+             color = eco_metaeco_type)) +
+  geom_boxplot() +
+  labs(title = "Day = 20, Disturbance = low", x = "log(body-size)", y = "Mean abundance + 1 (log)") +
+  scale_y_continuous(limits = c(0,5))
+
+low.20.mean = 
+  ds_size %>%
+filter(day == 20, disturbance == "low", patch_size == "S") %>%
+  ggplot(aes(x = reorder(log_size_class, sort(as.numeric(log_size_class))),
+             y = log_n,
+             group = eco_metaeco_type,
+             color = eco_metaeco_type)) +
+  geom_point(stat = "summary", fun = "mean") +
+  geom_line (stat = "summary", fun = "mean") +
+  labs(title = "Day = 20, Disturbance = low", x = "log(body-size)", y = "Mean abundance + 1 (log)") +
+  scale_y_continuous(limits = c(0,5))
+
+low.24.raw = 
+  ds_size %>%
+filter(day == 24, disturbance == "low", patch_size == "S") %>%
+  ggplot(aes(x = reorder(log_size_class, sort(as.numeric(log_size_class))),
+             y = log_n,
+             fill = eco_metaeco_type,
+             color = eco_metaeco_type)) +
+  geom_boxplot() +
+  labs(title = "Day = 24, Disturbance = low", x = "log(body-size)", y = "Mean abundance + 1 (log)") +
+  scale_y_continuous(limits = c(0,5))
+
+low.24.mean = 
+  ds_size %>%
+filter(day == 24, disturbance == "low", patch_size == "S") %>%
+  ggplot(aes(x = reorder(log_size_class, sort(as.numeric(log_size_class))),
+             y = log_n,
+             group = eco_metaeco_type,
+             color = eco_metaeco_type)) +
+  geom_point(stat = "summary", fun = "mean") +
+  geom_line (stat = "summary", fun = "mean") +
+  labs(title = "Day = 24, Disturbance = low", x = "log(body-size)", y = "Mean abundance + 1 (log)") +
+  scale_y_continuous(limits = c(0,5))
+
+low.28.raw = 
+  ds_size %>%
+filter(day == 28, disturbance == "low", patch_size == "S") %>%
+  ggplot(aes(x = reorder(log_size_class, sort(as.numeric(log_size_class))),
+             y = log_n,
+             fill = eco_metaeco_type,
+             color = eco_metaeco_type)) +
+  geom_boxplot() +
+  labs(title = "Day = 28, Disturbance = low", x = "log(body-size)", y = "Mean abundance + 1 (log)") +
+  scale_y_continuous(limits = c(0,5))
+
+low.28.mean = 
+  ds_size %>%
+filter(day == 28, disturbance == "low", patch_size == "S") %>%
+  ggplot(aes(x = reorder(log_size_class, sort(as.numeric(log_size_class))),
+             y = log_n,
+             group = eco_metaeco_type,
+             color = eco_metaeco_type)) +
+  geom_point(stat = "summary", fun = "mean") +
+  geom_line (stat = "summary", fun = "mean") +
+  labs(title = "Day = 28, Disturbance = low", x = "log(body-size)", y = "Mean abundance + 1 (log)") +
+  scale_y_continuous(limits = c(0,5))
+
+
+grid = grid.arrange(low.4.raw, low.8.raw, low.12.raw, low.16.raw, low.20.raw, low.24.raw, low.28.raw,
+             ncol=3, nrow=3,
+             top = textGrob("Body size distribution (low disturbance)", gp=gpar(fontsize=20,font=3)))
+ggsave("/Users/ema/github/PatchSizePilot/results/body_size/l_small_raw.jpg", grid, width = 22, height = 13)
+
+
+
+grid.arrange(low.4.mean, low.8.mean, low.12.mean, low.16.mean, low.20.mean, low.24.mean, low.28.mean,
+             ncol=3, nrow=3,
+             top = textGrob("Body size distribution (low disturbance)", gp=gpar(fontsize=20,font=3)))
+ggsave("/Users/ema/github/PatchSizePilot/results/body_size/l_small_mean.jpg", grid, width = 22, height = 13)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+########################## --- PLOT SIZE CLASSES - LOW DISTURBANCE - CLOSED ECOSYSTEMS --- #######################################
+
+
+low.4.raw = 
+  ds_size %>%
+  filter(day == 4, disturbance == "low", metaecosystem == "no") %>%
+  ggplot(aes(x = reorder(log_size_class, sort(as.numeric(log_size_class))),
+             y = log_n,
+             fill = eco_metaeco_type,
+             color = eco_metaeco_type)) +
+  geom_boxplot() +
+  labs(title = "Day = 4, Disturbance = low", x = "log(body-size)", y = "Mean abundance + 1 (log)") +
+  scale_y_continuous(limits = c(0,5))
+
+low.4.mean = 
+  ds_size %>%
+  filter(day == 4, disturbance == "low", metaecosystem == "no") %>%
+  ggplot(aes(x = reorder(log_size_class, sort(as.numeric(log_size_class))),
+             y = log_n,
+             group = eco_metaeco_type,
+             color = eco_metaeco_type)) +
+  geom_point(stat = "summary", fun = "mean") +
+  geom_line (stat = "summary", fun = "mean") +
+  labs(title = "Day = 4, Disturbance = low", x = "log(body-size)", y = "Mean abundance + 1 (log)") +
+  scale_y_continuous(limits = c(0,5))
+
+low.8.raw = 
+  ds_size %>%
+  filter(day == 8, disturbance == "low", metaecosystem == "no") %>%
+  ggplot(aes(x = reorder(log_size_class, sort(as.numeric(log_size_class))),
+             y = log_n,
+             fill = eco_metaeco_type,
+             color = eco_metaeco_type)) +
+  geom_boxplot() +
+  labs(title = "Day = 8, Disturbance = low", x = "log(body-size)", y = "Mean abundance + 1 (log)") +
+  scale_y_continuous(limits = c(0,5))
+
+low.8.mean = 
+  ds_size %>%
+  filter(day == 8, disturbance == "low", metaecosystem == "no") %>%
+  ggplot(aes(x = reorder(log_size_class, sort(as.numeric(log_size_class))),
+             y = log_n,
+             group = eco_metaeco_type,
+             color = eco_metaeco_type)) +
+  geom_point(stat = "summary", fun = "mean") +
+  geom_line (stat = "summary", fun = "mean") +
+  labs(title = "Day = 8, Disturbance = low", x = "log(body-size)", y = "Mean abundance + 1 (log)") +
+  scale_y_continuous(limits = c(0,5))
+
+low.12.raw = 
+  ds_size %>%
+  filter(day == 12, disturbance == "low", metaecosystem == "no") %>%
+  ggplot(aes(x = reorder(log_size_class, sort(as.numeric(log_size_class))),
+             y = log_n,
+             fill = eco_metaeco_type,
+             color = eco_metaeco_type)) +
+  geom_boxplot() +
+  labs(title = "Day = 12, Disturbance = low", x = "log(body-size)", y = "Mean abundance + 1 (log)") +
+  scale_y_continuous(limits = c(0,5))
+
+low.12.mean = 
+  ds_size %>%
+  filter(day == 12, disturbance == "low", metaecosystem == "no") %>%
+  ggplot(aes(x = reorder(log_size_class, sort(as.numeric(log_size_class))),
+             y = log_n,
+             group = eco_metaeco_type,
+             color = eco_metaeco_type)) +
+  geom_point(stat = "summary", fun = "mean") +
+  geom_line (stat = "summary", fun = "mean") +
+  labs(title = "Day = 12, Disturbance = low", x = "log(body-size)", y = "Mean abundance + 1 (log)") +
+  scale_y_continuous(limits = c(0,5))
+
+low.16.raw = 
+  ds_size %>%
+  filter(day == 16, disturbance == "low", metaecosystem == "no") %>%
+  ggplot(aes(x = reorder(log_size_class, sort(as.numeric(log_size_class))),
+             y = log_n,
+             fill = eco_metaeco_type,
+             color = eco_metaeco_type)) +
+  geom_boxplot() +
+  labs(title = "Day = 16, Disturbance = low", x = "log(body-size)", y = "Mean abundance + 1 (log)") +
+  scale_y_continuous(limits = c(0,5))
+
+low.16.mean = 
+  ds_size %>%
+  filter(day == 16, disturbance == "low", metaecosystem == "no") %>%
+  ggplot(aes(x = reorder(log_size_class, sort(as.numeric(log_size_class))),
+             y = log_n,
+             group = eco_metaeco_type,
+             color = eco_metaeco_type)) +
+  geom_point(stat = "summary", fun = "mean") +
+  geom_line (stat = "summary", fun = "mean") +
+  labs(title = "Day = 16, Disturbance = low", x = "log(body-size)", y = "Mean abundance + 1 (log)") +
+  scale_y_continuous(limits = c(0,5))
+
+low.20.raw = 
+  ds_size %>%
+  filter(day == 20, disturbance == "low", metaecosystem == "no") %>%
+  ggplot(aes(x = reorder(log_size_class, sort(as.numeric(log_size_class))),
+             y = log_n,
+             fill = eco_metaeco_type,
+             color = eco_metaeco_type)) +
+  geom_boxplot() +
+  labs(title = "Day = 20, Disturbance = low", x = "log(body-size)", y = "Mean abundance + 1 (log)") +
+  scale_y_continuous(limits = c(0,5))
+
+low.20.mean = 
+  ds_size %>%
+  filter(day == 20, disturbance == "low", metaecosystem == "no") %>%
+  ggplot(aes(x = reorder(log_size_class, sort(as.numeric(log_size_class))),
+             y = log_n,
+             group = eco_metaeco_type,
+             color = eco_metaeco_type)) +
+  geom_point(stat = "summary", fun = "mean") +
+  geom_line (stat = "summary", fun = "mean") +
+  labs(title = "Day = 20, Disturbance = low", x = "log(body-size)", y = "Mean abundance + 1 (log)") +
+  scale_y_continuous(limits = c(0,5))
+
+low.24.raw = 
+  ds_size %>%
+  filter(day == 24, disturbance == "low", metaecosystem == "no") %>%
+  ggplot(aes(x = reorder(log_size_class, sort(as.numeric(log_size_class))),
+             y = log_n,
+             fill = eco_metaeco_type,
+             color = eco_metaeco_type)) +
+  geom_boxplot() +
+  labs(title = "Day = 24, Disturbance = low", x = "log(body-size)", y = "Mean abundance + 1 (log)") +
+  scale_y_continuous(limits = c(0,5))
+
+low.24.mean = 
+  ds_size %>%
+  filter(day == 24, disturbance == "low", metaecosystem == "no") %>%
+  ggplot(aes(x = reorder(log_size_class, sort(as.numeric(log_size_class))),
+             y = log_n,
+             group = eco_metaeco_type,
+             color = eco_metaeco_type)) +
+  geom_point(stat = "summary", fun = "mean") +
+  geom_line (stat = "summary", fun = "mean") +
+  labs(title = "Day = 24, Disturbance = low", x = "log(body-size)", y = "Mean abundance + 1 (log)") +
+  scale_y_continuous(limits = c(0,5))
+
+low.28.raw = 
+  ds_size %>%
+  filter(day == 28, disturbance == "low", metaecosystem == "no") %>%
+  ggplot(aes(x = reorder(log_size_class, sort(as.numeric(log_size_class))),
+             y = log_n,
+             fill = eco_metaeco_type,
+             color = eco_metaeco_type)) +
+  geom_boxplot() +
+  labs(title = "Day = 28, Disturbance = low", x = "log(body-size)", y = "Mean abundance + 1 (log)") +
+  scale_y_continuous(limits = c(0,5))
+
+low.28.mean = 
+  ds_size %>%
+  filter(day == 28, disturbance == "low", metaecosystem == "no") %>%
+  ggplot(aes(x = reorder(log_size_class, sort(as.numeric(log_size_class))),
+             y = log_n,
+             group = eco_metaeco_type,
+             color = eco_metaeco_type)) +
+  geom_point(stat = "summary", fun = "mean") +
+  geom_line (stat = "summary", fun = "mean") +
+  labs(title = "Day = 28, Disturbance = low", x = "log(body-size)", y = "Mean abundance + 1 (log)") +
+  scale_y_continuous(limits = c(0,5))
+
+
+grid = grid.arrange(low.4.raw, low.8.raw, low.12.raw, low.16.raw, low.20.raw, low.24.raw, low.28.raw,
+             ncol=3, nrow=3,
+             top = textGrob("Body size distribution (low disturbance)", gp=gpar(fontsize=20,font=3)))
+ggsave("/Users/ema/github/PatchSizePilot/results/body_size/l_closed_raw.jpg", grid, width = 22, height = 13)
+
+
+grid = grid.arrange(low.4.mean, low.8.mean, low.12.mean, low.16.mean, low.20.mean, low.24.mean, low.28.mean,
+             ncol=3, nrow=3,
+             top = textGrob("Body size distribution (low disturbance)", gp=gpar(fontsize=20,font=3)))
+ggsave("/Users/ema/github/PatchSizePilot/results/body_size/l_closed_mean.jpg", grid, width = 22, height = 13)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+########################## --- PLOT SIZE CLASSES - HIGH DISTURBANCE - ALL PATCHES --- #######################################
+
+
+high.4.raw = 
+  ds_size %>%
+  filter(day == 4, disturbance == "high") %>%
+  ggplot(aes(x = reorder(log_size_class, sort(as.numeric(log_size_class))),
+             y = log_n,
+             fill = eco_metaeco_type,
+             color = eco_metaeco_type)) +
+  geom_boxplot() +
+  labs(title = "Day = 4, Disturbance = high", x = "log(body-size)", y = "Mean abundance + 1 (log)") +
+  scale_y_continuous(limits = c(0,5))
+
+high.4.mean = 
+  ds_size %>%
+  filter(day == 4, disturbance == "high") %>%
+  ggplot(aes(x = reorder(log_size_class, sort(as.numeric(log_size_class))),
+             y = log_n,
+             group = eco_metaeco_type,
+             color = eco_metaeco_type)) +
+  geom_point(stat = "summary", fun = "mean") +
+  geom_line (stat = "summary", fun = "mean") +
+  labs(title = "Day = 4, Disturbance = high", x = "log(body-size)", y = "Mean abundance + 1 (log)") +
+  scale_y_continuous(limits = c(0,5))
+
+high.8.raw = 
+  ds_size %>%
+  filter(day == 8, disturbance == "high") %>%
+  ggplot(aes(x = reorder(log_size_class, sort(as.numeric(log_size_class))),
+             y = log_n,
+             fill = eco_metaeco_type,
+             color = eco_metaeco_type)) +
+  geom_boxplot() +
+  labs(title = "Day = 8, Disturbance = high", x = "log(body-size)", y = "Mean abundance + 1 (log)") +
+  scale_y_continuous(limits = c(0,5))
+
+high.8.mean = 
+  ds_size %>%
+  filter(day == 8, disturbance == "high") %>%
+  ggplot(aes(x = reorder(log_size_class, sort(as.numeric(log_size_class))),
+             y = log_n,
+             group = eco_metaeco_type,
+             color = eco_metaeco_type)) +
+  geom_point(stat = "summary", fun = "mean") +
+  geom_line (stat = "summary", fun = "mean") +
+  labs(title = "Day = 8, Disturbance = high", x = "log(body-size)", y = "Mean abundance + 1 (log)") +
+  scale_y_continuous(limits = c(0,5))
+
+high.12.raw = 
+  ds_size %>%
+  filter(day == 12, disturbance == "high") %>%
+  ggplot(aes(x = reorder(log_size_class, sort(as.numeric(log_size_class))),
+             y = log_n,
+             fill = eco_metaeco_type,
+             color = eco_metaeco_type)) +
+  geom_boxplot() +
+  labs(title = "Day = 12, Disturbance = high", x = "log(body-size)", y = "Mean abundance + 1 (log)") +
+  scale_y_continuous(limits = c(0,5))
+
+high.12.mean = 
+  ds_size %>%
+  filter(day == 12, disturbance == "high") %>%
+  ggplot(aes(x = reorder(log_size_class, sort(as.numeric(log_size_class))),
+             y = log_n,
+             group = eco_metaeco_type,
+             color = eco_metaeco_type)) +
+  geom_point(stat = "summary", fun = "mean") +
+  geom_line (stat = "summary", fun = "mean") +
+  labs(title = "Day = 12, Disturbance = high", x = "log(body-size)", y = "Mean abundance + 1 (log)") +
+  scale_y_continuous(limits = c(0,5))
+
+high.16.raw = 
+  ds_size %>%
+  filter(day == 16, disturbance == "high") %>%
+  ggplot(aes(x = reorder(log_size_class, sort(as.numeric(log_size_class))),
+             y = log_n,
+             fill = eco_metaeco_type,
+             color = eco_metaeco_type)) +
+  geom_boxplot() +
+  labs(title = "Day = 16, Disturbance = high", x = "log(body-size)", y = "Mean abundance + 1 (log)") +
+  scale_y_continuous(limits = c(0,5))
+
+high.16.mean = 
+  ds_size %>%
+  filter(day == 16, disturbance == "high") %>%
+  ggplot(aes(x = reorder(log_size_class, sort(as.numeric(log_size_class))),
+             y = log_n,
+             group = eco_metaeco_type,
+             color = eco_metaeco_type)) +
+  geom_point(stat = "summary", fun = "mean") +
+  geom_line (stat = "summary", fun = "mean") +
+  labs(title = "Day = 16, Disturbance = high", x = "log(body-size)", y = "Mean abundance + 1 (log)") +
+  scale_y_continuous(limits = c(0,5))
+
+high.20.raw = 
+  ds_size %>%
+  filter(day == 20, disturbance == "high") %>%
+  ggplot(aes(x = reorder(log_size_class, sort(as.numeric(log_size_class))),
+             y = log_n,
+             fill = eco_metaeco_type,
+             color = eco_metaeco_type)) +
+  geom_boxplot() +
+  labs(title = "Day = 20, Disturbance = high", x = "log(body-size)", y = "Mean abundance + 1 (log)") +
+  scale_y_continuous(limits = c(0,5))
+
+high.20.mean = 
+  ds_size %>%
+  filter(day == 20, disturbance == "high") %>%
+  ggplot(aes(x = reorder(log_size_class, sort(as.numeric(log_size_class))),
+             y = log_n,
+             group = eco_metaeco_type,
+             color = eco_metaeco_type)) +
+  geom_point(stat = "summary", fun = "mean") +
+  geom_line (stat = "summary", fun = "mean") +
+  labs(title = "Day = 20, Disturbance = high", x = "log(body-size)", y = "Mean abundance + 1 (log)") +
+  scale_y_continuous(limits = c(0,5))
+
+high.24.raw = 
+  ds_size %>%
+  filter(day == 24, disturbance == "high") %>%
+  ggplot(aes(x = reorder(log_size_class, sort(as.numeric(log_size_class))),
+             y = log_n,
+             fill = eco_metaeco_type,
+             color = eco_metaeco_type)) +
+  geom_boxplot() +
+  labs(title = "Day = 24, Disturbance = high", x = "log(body-size)", y = "Mean abundance + 1 (log)") +
+  scale_y_continuous(limits = c(0,5))
+
+high.24.mean = 
+  ds_size %>%
+  filter(day == 24, disturbance == "high") %>%
+  ggplot(aes(x = reorder(log_size_class, sort(as.numeric(log_size_class))),
+             y = log_n,
+             group = eco_metaeco_type,
+             color = eco_metaeco_type)) +
+  geom_point(stat = "summary", fun = "mean") +
+  geom_line (stat = "summary", fun = "mean") +
+  labs(title = "Day = 24, Disturbance = high", x = "log(body-size)", y = "Mean abundance + 1 (log)") +
+  scale_y_continuous(limits = c(0,5))
+
+high.28.raw = 
+  ds_size %>%
+  filter(day == 28, disturbance == "high") %>%
+  ggplot(aes(x = reorder(log_size_class, sort(as.numeric(log_size_class))),
+             y = log_n,
+             fill = eco_metaeco_type,
+             color = eco_metaeco_type)) +
+  geom_boxplot() +
+  labs(title = "Day = 28, Disturbance = high", x = "log(body-size)", y = "Mean abundance + 1 (log)") +
+  scale_y_continuous(limits = c(0,5))
+
+high.28.mean = 
+  ds_size %>%
+  filter(day == 28, disturbance == "high") %>%
+  ggplot(aes(x = reorder(log_size_class, sort(as.numeric(log_size_class))),
+             y = log_n,
+             group = eco_metaeco_type,
+             color = eco_metaeco_type)) +
+  geom_point(stat = "summary", fun = "mean") +
+  geom_line (stat = "summary", fun = "mean") +
+  labs(title = "Day = 28, Disturbance = high", x = "log(body-size)", y = "Mean abundance + 1 (log)") +
+  scale_y_continuous(limits = c(0,5))
+
+
+grid = grid.arrange(high.4.raw, high.8.raw, high.12.raw, high.16.raw, high.20.raw, high.24.raw, high.28.raw,
              ncol=3, nrow=3,
              top = textGrob("Body size distribution (high disturbance)", gp=gpar(fontsize=20,font=3)))
+ggsave("/Users/ema/github/PatchSizePilot/results/body_size/h_all_raw.jpg", grid, width = 22, height = 13)
 
-### --- BINNING --- ###
-size_classes = seq(0, max(ds$mean_area), by = max(ds$mean_area)/12) #As in "How pulse disturbances shape size-abundance pyramids"
 
-bin_lower_limit = size_classes[1]
-bin_upper_limit = size_classes[2]
+grid = grid.arrange(high.4.mean, high.8.mean, high.12.mean, high.16.mean, high.20.mean, high.24.mean, high.28.mean,
+             ncol=3, nrow=3,
+             top = textGrob("Body size distribution (high disturbance)", gp=gpar(fontsize=20,font=3)))
+ggsave("/Users/ema/github/PatchSizePilot/results/body_size/h_all_mean.jpg", grid, width = 22, height = 13)
 
-a = ds%>%
-  filter(bin_lower_limit<=mean_area, mean_area <= bin_upper_limit) %>%
-  group_by(culture_ID, system_nr, disturbance, day, patch_size, metaecosystem, metaecosystem_type, eco_metaeco_type, replicate_video) %>% #Group first by replicate video
-  summarise(n=n())
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+########################## --- PLOT SIZE CLASSES - HIGH DISTURBANCE - SMALL PATCHES --- #######################################
+
+
+high.4.raw = 
+  ds_size %>%
+  filter(day == 4, disturbance == "high", patch_size == "S") %>%
+  ggplot(aes(x = reorder(log_size_class, sort(as.numeric(log_size_class))),
+             y = log_n,
+             fill = eco_metaeco_type,
+             color = eco_metaeco_type)) +
+  geom_boxplot() +
+  labs(title = "Day = 4, Disturbance = high", x = "log(body-size)", y = "Mean abundance + 1 (log)") +
+  scale_y_continuous(limits = c(0,5))
+
+high.4.mean = 
+  ds_size %>%
+  filter(day == 4, disturbance == "high", patch_size == "S") %>%
+  ggplot(aes(x = reorder(log_size_class, sort(as.numeric(log_size_class))),
+             y = log_n,
+             group = eco_metaeco_type,
+             color = eco_metaeco_type)) +
+  geom_point(stat = "summary", fun = "mean") +
+  geom_line (stat = "summary", fun = "mean") +
+  labs(title = "Day = 4, Disturbance = high", x = "log(body-size)", y = "Mean abundance + 1 (log)") +
+  scale_y_continuous(limits = c(0,5))
+
+high.8.raw = 
+  ds_size %>%
+  filter(day == 8, disturbance == "high", patch_size == "S") %>%
+  ggplot(aes(x = reorder(log_size_class, sort(as.numeric(log_size_class))),
+             y = log_n,
+             fill = eco_metaeco_type,
+             color = eco_metaeco_type)) +
+  geom_boxplot() +
+  labs(title = "Day = 8, Disturbance = high", x = "log(body-size)", y = "Mean abundance + 1 (log)") +
+  scale_y_continuous(limits = c(0,5))
+
+high.8.mean = 
+  ds_size %>%
+  filter(day == 8, disturbance == "high", patch_size == "S") %>%
+  ggplot(aes(x = reorder(log_size_class, sort(as.numeric(log_size_class))),
+             y = log_n,
+             group = eco_metaeco_type,
+             color = eco_metaeco_type)) +
+  geom_point(stat = "summary", fun = "mean") +
+  geom_line (stat = "summary", fun = "mean") +
+  labs(title = "Day = 8, Disturbance = high", x = "log(body-size)", y = "Mean abundance + 1 (log)") +
+  scale_y_continuous(limits = c(0,5))
+
+high.12.raw = 
+  ds_size %>%
+  filter(day == 12, disturbance == "high", patch_size == "S") %>%
+  ggplot(aes(x = reorder(log_size_class, sort(as.numeric(log_size_class))),
+             y = log_n,
+             fill = eco_metaeco_type,
+             color = eco_metaeco_type)) +
+  geom_boxplot() +
+  labs(title = "Day = 12, Disturbance = high", x = "log(body-size)", y = "Mean abundance + 1 (log)") +
+  scale_y_continuous(limits = c(0,5))
+
+high.12.mean = 
+  ds_size %>%
+  filter(day == 12, disturbance == "high", patch_size == "S") %>%
+  ggplot(aes(x = reorder(log_size_class, sort(as.numeric(log_size_class))),
+             y = log_n,
+             group = eco_metaeco_type,
+             color = eco_metaeco_type)) +
+  geom_point(stat = "summary", fun = "mean") +
+  geom_line (stat = "summary", fun = "mean") +
+  labs(title = "Day = 12, Disturbance = high", x = "log(body-size)", y = "Mean abundance + 1 (log)") +
+  scale_y_continuous(limits = c(0,5))
+
+high.16.raw = 
+  ds_size %>%
+  filter(day == 16, disturbance == "high", patch_size == "S") %>%
+  ggplot(aes(x = reorder(log_size_class, sort(as.numeric(log_size_class))),
+             y = log_n,
+             fill = eco_metaeco_type,
+             color = eco_metaeco_type)) +
+  geom_boxplot() +
+  labs(title = "Day = 16, Disturbance = high", x = "log(body-size)", y = "Mean abundance + 1 (log)") +
+  scale_y_continuous(limits = c(0,5))
+
+high.16.mean = 
+  ds_size %>%
+  filter(day == 16, disturbance == "high", patch_size == "S") %>%
+  ggplot(aes(x = reorder(log_size_class, sort(as.numeric(log_size_class))),
+             y = log_n,
+             group = eco_metaeco_type,
+             color = eco_metaeco_type)) +
+  geom_point(stat = "summary", fun = "mean") +
+  geom_line (stat = "summary", fun = "mean") +
+  labs(title = "Day = 16, Disturbance = high", x = "log(body-size)", y = "Mean abundance + 1 (log)") +
+  scale_y_continuous(limits = c(0,5))
+
+high.20.raw = 
+  ds_size %>%
+  filter(day == 20, disturbance == "high", patch_size == "S") %>%
+  ggplot(aes(x = reorder(log_size_class, sort(as.numeric(log_size_class))),
+             y = log_n,
+             fill = eco_metaeco_type,
+             color = eco_metaeco_type)) +
+  geom_boxplot() +
+  labs(title = "Day = 20, Disturbance = high", x = "log(body-size)", y = "Mean abundance + 1 (log)") +
+  scale_y_continuous(limits = c(0,5))
+
+high.20.mean = 
+  ds_size %>%
+  filter(day == 20, disturbance == "high", patch_size == "S") %>%
+  ggplot(aes(x = reorder(log_size_class, sort(as.numeric(log_size_class))),
+             y = log_n,
+             group = eco_metaeco_type,
+             color = eco_metaeco_type)) +
+  geom_point(stat = "summary", fun = "mean") +
+  geom_line (stat = "summary", fun = "mean") +
+  labs(title = "Day = 20, Disturbance = high", x = "log(body-size)", y = "Mean abundance + 1 (log)") +
+  scale_y_continuous(limits = c(0,5))
+
+high.24.raw = 
+  ds_size %>%
+  filter(day == 24, disturbance == "high", patch_size == "S") %>%
+  ggplot(aes(x = reorder(log_size_class, sort(as.numeric(log_size_class))),
+             y = log_n,
+             fill = eco_metaeco_type,
+             color = eco_metaeco_type)) +
+  geom_boxplot() +
+  labs(title = "Day = 24, Disturbance = high", x = "log(body-size)", y = "Mean abundance + 1 (log)") +
+  scale_y_continuous(limits = c(0,5))
+
+high.24.mean = 
+  ds_size %>%
+  filter(day == 24, disturbance == "high", patch_size == "S") %>%
+  ggplot(aes(x = reorder(log_size_class, sort(as.numeric(log_size_class))),
+             y = log_n,
+             group = eco_metaeco_type,
+             color = eco_metaeco_type)) +
+  geom_point(stat = "summary", fun = "mean") +
+  geom_line (stat = "summary", fun = "mean") +
+  labs(title = "Day = 24, Disturbance = high", x = "log(body-size)", y = "Mean abundance + 1 (log)") +
+  scale_y_continuous(limits = c(0,5))
+
+high.28.raw = 
+  ds_size %>%
+  filter(day == 28, disturbance == "high", patch_size == "S") %>%
+  ggplot(aes(x = reorder(log_size_class, sort(as.numeric(log_size_class))),
+             y = log_n,
+             fill = eco_metaeco_type,
+             color = eco_metaeco_type)) +
+  geom_boxplot() +
+  labs(title = "Day = 28, Disturbance = high", x = "log(body-size)", y = "Mean abundance + 1 (log)") +
+  scale_y_continuous(limits = c(0,5))
+
+high.28.mean = 
+  ds_size %>%
+  filter(day == 28, disturbance == "high", patch_size == "S") %>%
+  ggplot(aes(x = reorder(log_size_class, sort(as.numeric(log_size_class))),
+             y = log_n,
+             group = eco_metaeco_type,
+             color = eco_metaeco_type)) +
+  geom_point(stat = "summary", fun = "mean") +
+  geom_line (stat = "summary", fun = "mean") +
+  labs(title = "Day = 28, Disturbance = high", x = "log(body-size)", y = "Mean abundance + 1 (log)") +
+  scale_y_continuous(limits = c(0,5))
+
+
+grid = grid.arrange(high.4.raw, high.8.raw, high.12.raw, high.16.raw, high.20.raw, high.24.raw, high.28.raw,
+             ncol=3, nrow=3,
+             top = textGrob("Body size distribution (high disturbance)", gp=gpar(fontsize=20,font=3)))
+ggsave("/Users/ema/github/PatchSizePilot/results/body_size/h_small_raw.jpg", grid, width = 22, height = 13)
+
+
+
+grid = grid.arrange(high.4.mean, high.8.mean, high.12.mean, high.16.mean, high.20.mean, high.24.mean, high.28.mean,
+             ncol=3, nrow=3,
+             top = textGrob("Body size distribution (high disturbance)", gp=gpar(fontsize=20,font=3)))
+ggsave("/Users/ema/github/PatchSizePilot/results/body_size/h_small_mean.jpg", grid, width = 22, height = 13)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+########################## --- PLOT SIZE CLASSES - HIGH DISTURBANCE - CLOSED ECOSYSTEMS --- #######################################
+
+
+high.4.raw = 
+  ds_size %>%
+  filter(day == 4, disturbance == "high", metaecosystem == "no") %>%
+  ggplot(aes(x = reorder(log_size_class, sort(as.numeric(log_size_class))),
+             y = log_n,
+             fill = eco_metaeco_type,
+             color = eco_metaeco_type)) +
+  geom_boxplot() +
+  labs(title = "Day = 4, Disturbance = high", x = "log(body-size)", y = "Mean abundance + 1 (log)") +
+  scale_y_continuous(limits = c(0,5))
+
+high.4.mean = 
+  ds_size %>%
+  filter(day == 4, disturbance == "high", metaecosystem == "no") %>%
+  ggplot(aes(x = reorder(log_size_class, sort(as.numeric(log_size_class))),
+             y = log_n,
+             group = eco_metaeco_type,
+             color = eco_metaeco_type)) +
+  geom_point(stat = "summary", fun = "mean") +
+  geom_line (stat = "summary", fun = "mean") +
+  labs(title = "Day = 4, Disturbance = high", x = "log(body-size)", y = "Mean abundance + 1 (log)") +
+  scale_y_continuous(limits = c(0,5))
+
+high.8.raw = 
+  ds_size %>%
+  filter(day == 8, disturbance == "high", metaecosystem == "no") %>%
+  ggplot(aes(x = reorder(log_size_class, sort(as.numeric(log_size_class))),
+             y = log_n,
+             fill = eco_metaeco_type,
+             color = eco_metaeco_type)) +
+  geom_boxplot() +
+  labs(title = "Day = 8, Disturbance = high", x = "log(body-size)", y = "Mean abundance + 1 (log)") +
+  scale_y_continuous(limits = c(0,5))
+
+high.8.mean = 
+  ds_size %>%
+  filter(day == 8, disturbance == "high", metaecosystem == "no") %>%
+  ggplot(aes(x = reorder(log_size_class, sort(as.numeric(log_size_class))),
+             y = log_n,
+             group = eco_metaeco_type,
+             color = eco_metaeco_type)) +
+  geom_point(stat = "summary", fun = "mean") +
+  geom_line (stat = "summary", fun = "mean") +
+  labs(title = "Day = 8, Disturbance = high", x = "log(body-size)", y = "Mean abundance + 1 (log)") +
+  scale_y_continuous(limits = c(0,5))
+
+high.12.raw = 
+  ds_size %>%
+  filter(day == 12, disturbance == "high", metaecosystem == "no") %>%
+  ggplot(aes(x = reorder(log_size_class, sort(as.numeric(log_size_class))),
+             y = log_n,
+             fill = eco_metaeco_type,
+             color = eco_metaeco_type)) +
+  geom_boxplot() +
+  labs(title = "Day = 12, Disturbance = high", x = "log(body-size)", y = "Mean abundance + 1 (log)") +
+  scale_y_continuous(limits = c(0,5))
+
+high.12.mean = 
+  ds_size %>%
+  filter(day == 12, disturbance == "high", metaecosystem == "no") %>%
+  ggplot(aes(x = reorder(log_size_class, sort(as.numeric(log_size_class))),
+             y = log_n,
+             group = eco_metaeco_type,
+             color = eco_metaeco_type)) +
+  geom_point(stat = "summary", fun = "mean") +
+  geom_line (stat = "summary", fun = "mean") +
+  labs(title = "Day = 12, Disturbance = high", x = "log(body-size)", y = "Mean abundance + 1 (log)") +
+  scale_y_continuous(limits = c(0,5))
+
+high.16.raw = 
+  ds_size %>%
+  filter(day == 16, disturbance == "high", metaecosystem == "no") %>%
+  ggplot(aes(x = reorder(log_size_class, sort(as.numeric(log_size_class))),
+             y = log_n,
+             fill = eco_metaeco_type,
+             color = eco_metaeco_type)) +
+  geom_boxplot() +
+  labs(title = "Day = 16, Disturbance = high", x = "log(body-size)", y = "Mean abundance + 1 (log)") +
+  scale_y_continuous(limits = c(0,5))
+
+high.16.mean = 
+  ds_size %>%
+  filter(day == 16, disturbance == "high", metaecosystem == "no") %>%
+  ggplot(aes(x = reorder(log_size_class, sort(as.numeric(log_size_class))),
+             y = log_n,
+             group = eco_metaeco_type,
+             color = eco_metaeco_type)) +
+  geom_point(stat = "summary", fun = "mean") +
+  geom_line (stat = "summary", fun = "mean") +
+  labs(title = "Day = 16, Disturbance = high", x = "log(body-size)", y = "Mean abundance + 1 (log)") +
+  scale_y_continuous(limits = c(0,5))
+
+high.20.raw = 
+  ds_size %>%
+  filter(day == 20, disturbance == "high", metaecosystem == "no") %>%
+  ggplot(aes(x = reorder(log_size_class, sort(as.numeric(log_size_class))),
+             y = log_n,
+             fill = eco_metaeco_type,
+             color = eco_metaeco_type)) +
+  geom_boxplot() +
+  labs(title = "Day = 20, Disturbance = high", x = "log(body-size)", y = "Mean abundance + 1 (log)") +
+  scale_y_continuous(limits = c(0,5))
+
+high.20.mean = 
+  ds_size %>%
+  filter(day == 20, disturbance == "high", metaecosystem == "no") %>%
+  ggplot(aes(x = reorder(log_size_class, sort(as.numeric(log_size_class))),
+             y = log_n,
+             group = eco_metaeco_type,
+             color = eco_metaeco_type)) +
+  geom_point(stat = "summary", fun = "mean") +
+  geom_line (stat = "summary", fun = "mean") +
+  labs(title = "Day = 20, Disturbance = high", x = "log(body-size)", y = "Mean abundance + 1 (log)") +
+  scale_y_continuous(limits = c(0,5))
+
+high.24.raw = 
+  ds_size %>%
+  filter(day == 24, disturbance == "high", metaecosystem == "no") %>%
+  ggplot(aes(x = reorder(log_size_class, sort(as.numeric(log_size_class))),
+             y = log_n,
+             fill = eco_metaeco_type,
+             color = eco_metaeco_type)) +
+  geom_boxplot() +
+  labs(title = "Day = 24, Disturbance = high", x = "log(body-size)", y = "Mean abundance + 1 (log)") +
+  scale_y_continuous(limits = c(0,5))
+
+high.24.mean = 
+  ds_size %>%
+  filter(day == 24, disturbance == "high", metaecosystem == "no") %>%
+  ggplot(aes(x = reorder(log_size_class, sort(as.numeric(log_size_class))),
+             y = log_n,
+             group = eco_metaeco_type,
+             color = eco_metaeco_type)) +
+  geom_point(stat = "summary", fun = "mean") +
+  geom_line (stat = "summary", fun = "mean") +
+  labs(title = "Day = 24, Disturbance = high", x = "log(body-size)", y = "Mean abundance + 1 (log)") +
+  scale_y_continuous(limits = c(0,5))
+
+high.28.raw = 
+  ds_size %>%
+  filter(day == 28, disturbance == "high", metaecosystem == "no") %>%
+  ggplot(aes(x = reorder(log_size_class, sort(as.numeric(log_size_class))),
+             y = log_n,
+             fill = eco_metaeco_type,
+             color = eco_metaeco_type)) +
+  geom_boxplot() +
+  labs(title = "Day = 28, Disturbance = high", x = "log(body-size)", y = "Mean abundance + 1 (log)") +
+  scale_y_continuous(limits = c(0,5))
+
+high.28.mean = 
+  ds_size %>%
+  filter(day == 28, disturbance == "high", metaecosystem == "no") %>%
+  ggplot(aes(x = reorder(log_size_class, sort(as.numeric(log_size_class))),
+             y = log_n,
+             group = eco_metaeco_type,
+             color = eco_metaeco_type)) +
+  geom_point(stat = "summary", fun = "mean") +
+  geom_line (stat = "summary", fun = "mean") +
+  labs(title = "Day = 28, Disturbance = high", x = "log(body-size)", y = "Mean abundance + 1 (log)") +
+  scale_y_continuous(limits = c(0,5))
+
+
+grid = grid.arrange(high.4.raw, high.8.raw, high.12.raw, high.16.raw, high.20.raw, high.24.raw, high.28.raw,
+             ncol=3, nrow=3,
+             top = textGrob("Body size distribution (high disturbance)", gp=gpar(fontsize=20,font=3)))
+ggsave("/Users/ema/github/PatchSizePilot/results/body_size/h_closed_raw.jpg", grid, width = 22, height = 13)
+
+grid = grid.arrange(high.4.mean, high.8.mean, high.12.mean, high.16.mean, high.20.mean, high.24.mean, high.28.mean,
+             ncol=3, nrow=3,
+             top = textGrob("Body size distribution (high disturbance)", gp=gpar(fontsize=20,font=3)))
+ggsave("/Users/ema/github/PatchSizePilot/results/body_size/h_closed_mean.jpg", grid, width = 22, height = 13)

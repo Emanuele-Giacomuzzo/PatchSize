@@ -4,7 +4,7 @@ library("tidyverse")
 library("grid")
 library("gridExtra") 
 
-### --- IMPORT DATASET --- ###
+############################ --- LOAD THE DATA --- ######################################################
 culture_info = read.csv("/Users/ema/github/PatchSizePilot/data/PatchSizePilot_dataset.csv", header = TRUE)
 load("~/github/PatchSizePilot/data/population/t0.RData");t0 = pop_output
 load("~/github/PatchSizePilot/data/population/t1.RData"); t1 = pop_output
@@ -16,7 +16,22 @@ load("~/github/PatchSizePilot/data/population/t6.RData"); t6 = pop_output
 load("~/github/PatchSizePilot/data/population/t7.RData"); t7 = pop_output
 rm(pop_output)
 
-### --- MODIFY DATASET --- ###
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+########################## --- MODIFY COLUMN NAME AND CONTENT --- #######################################
+
 
 #Fill columns in t0 - t7
 t0$time = "to find out"
@@ -97,7 +112,21 @@ ds = ds[, col_order]
 
 
 
-## --- PLOTS: BIOMASS & ABUNDANCE --- ##
+
+
+
+
+
+
+
+
+
+
+
+
+####################### --- PLOTS: BIOMASS --- ##################################
+
+
 low.biomass.reg.raw = ds %>%
   filter ( disturbance == "low") %>%
   filter (metaecosystem == "yes") %>%
@@ -217,6 +246,31 @@ high.biomass.local.mean = ds %>%
   xlab("Day") +
   ylab("Local biomass (bioarea/µl)") +
   scale_y_continuous(limits=c(0,5500))
+
+grid.arrange(low.biomass.reg.raw, low.biomass.local.raw, low.biomass.reg.mean, low.biomass.local.mean,
+             ncol=2, nrow=2,
+             top = textGrob("Biomass, disturbance = low",gp=gpar(fontsize=20,font=3)))
+
+grid.arrange(high.biomass.reg.raw, high.biomass.local.raw, high.biomass.reg.mean, high.biomass.local.mean,
+             ncol=2, nrow=2,
+             top = textGrob("Biomass, disturbance = high",gp=gpar(fontsize=20,font=3)))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+####################### --- PLOTS: COMMUNITY ABUNDANCE --- ##################################
+
 
 low.abundance.reg.raw = ds %>%
   filter ( disturbance == "low") %>%
@@ -338,15 +392,6 @@ high.abundance.local.mean = ds %>%
   ylab("Community abundance (indiv/ml)") +
   scale_y_continuous(limits=c(0,2250))
 
-
-grid.arrange(low.biomass.reg.raw, low.biomass.local.raw, low.biomass.reg.mean, low.biomass.local.mean,
-             ncol=2, nrow=2,
-             top = textGrob("Biomass, disturbance = low",gp=gpar(fontsize=20,font=3)))
-
-grid.arrange(high.biomass.reg.raw, high.biomass.local.raw, high.biomass.reg.mean, high.biomass.local.mean,
-             ncol=2, nrow=2,
-             top = textGrob("Biomass, disturbance = high",gp=gpar(fontsize=20,font=3)))
-
 grid.arrange(low.abundance.reg.raw, low.abundance.local.raw, low.abundance.reg.mean, low.abundance.local.mean,
              ncol=2, nrow=2,
              top = textGrob("Abundance, disturbance = low",gp=gpar(fontsize=20,font=3)))
@@ -359,7 +404,18 @@ grid.arrange(high.abundance.reg.raw, high.abundance.local.raw, high.abundance.re
 
 
 
-## --- PLOTS: BIOMASS DIFFERENCE BETWEEN ECOSYSTEMS --- ##
+
+
+
+
+
+
+
+
+
+
+######################### --- PLOTS: BIOMASS DIFFERENCE BETWEEN ECOSYSTEMS --- ###############################
+
 
 biomass_difference = data.frame(matrix(ncol = 4, nrow = 0))
 colnames(biomass_difference) = c('day', 'system_nr', 'metaecosystem_type', "biomass_difference")
