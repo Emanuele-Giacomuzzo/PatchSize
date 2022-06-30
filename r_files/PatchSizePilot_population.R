@@ -179,6 +179,8 @@ p1 = ds %>%
   geom_boxplot() +
   xlab("Day") +
   ylab("Regional biomass (average bioarea between 2 patches/µl)") +
+  labs(color='Meta-ecosystem type')  +
+  labs(fill='Meta-ecosystem type') +
   scale_y_continuous(limits = c(0, 6250)) +
   scale_x_continuous(limits = c(-2, 30))
 p1
@@ -198,6 +200,8 @@ p2 = ds %>%
   geom_line (stat = "summary", fun = "mean") +
   xlab("Day") +
   ylab("Regional biomass (average bioarea between 2 patches/µl)") +
+  labs(color='Meta-ecosystem type')  +
+  labs(fill='Meta-ecosystem type') +
   scale_y_continuous(limits = c(0, 6250)) +
   scale_x_continuous(limits = c(-2, 30))
 p2
@@ -212,6 +216,8 @@ p3 = ds %>%
   geom_boxplot() +
   xlab("Day") +
   ylab("Local biomass (bioarea/µl)") +
+  labs(color='Patch type')  +
+  labs(fill='Patch type') +
   scale_y_continuous(limits=c(0, 6250)) +
   scale_x_continuous(limits = c(-2, 30))
 p3
@@ -227,6 +233,8 @@ p4 = ds %>%
   geom_line(stat = "summary", fun = "mean") +
   xlab("Day") +
   ylab("Local biomass (bioarea/µl)") +
+  labs(color='Patch type')  +
+  labs(fill='Patch type') +
   scale_y_continuous(limits=c(0, 6250)) +
   scale_x_continuous(limits = c(-2, 30))
 p4
@@ -269,6 +277,8 @@ high.biomass.reg.raw = ds %>%
   geom_boxplot() +
   xlab("Day") +
   ylab("Regional biomass (average bioarea between 2 patches/µl)") +
+  labs(color='Meta-ecosystem type')  +
+  labs(fill='Meta-ecosystem type') +
   scale_y_continuous(limits = c(0,6250)) +
   scale_x_continuous(limits = c(-2, 30))
 
@@ -288,6 +298,8 @@ high.biomass.reg.mean = ds %>%
   geom_line (stat = "summary", fun = "mean") +
   xlab("Day") +
   ylab("Regional biomass (average bioarea between 2 patches/µl)") +
+  labs(color='Meta-ecosystem type')  +
+  labs(fill='Meta-ecosystem type') +
   scale_y_continuous(limits = c(0,6250)) +
   scale_x_continuous(limits = c(-2, 30))
 
@@ -301,6 +313,8 @@ high.biomass.local.raw = ds %>%
   geom_boxplot() +
   xlab("Day") +
   ylab("Local biomass (bioarea/µl)") +
+  labs(color='Patch type')  +
+  labs(fill='Patch type') +
   scale_y_continuous(limits=c(0, 6250)) +
   scale_x_continuous(limits = c(-2, 30))
 
@@ -315,6 +329,8 @@ high.biomass.local.mean = ds %>%
   geom_line(stat = "summary", fun = "mean") +
   xlab("Day") +
   ylab("Local biomass (bioarea/µl)") +
+  labs(color='Patch type')  +
+  labs(fill='Patch type') +
   scale_y_continuous(limits=c(0,6250)) +
   scale_x_continuous(limits = c(-2, 30))
 
@@ -356,6 +372,8 @@ p1 = ds %>%
   geom_boxplot() +
   xlab("Day") +
   ylab("Regional biomass (average bioarea between 2 patches/µl)") +
+  labs(color='Meta-ecosystem type')  +
+  labs(fill='Meta-ecosystem type') +
   scale_y_continuous(limits = c(0, 6250)) +
   scale_x_continuous(limits = c(-2, 30))
 p1
@@ -375,6 +393,8 @@ p2 = ds %>%
   geom_line (stat = "summary", fun = "mean") +
   xlab("Day") +
   ylab("Regional biomass (average bioarea between 2 patches/µl)") +
+  labs(color='Meta-ecosystem type')  +
+  labs(fill='Meta-ecosystem type') +
   scale_y_continuous(limits = c(0, 6250)) +
   scale_x_continuous(limits = c(-2, 30))
 p2
@@ -390,6 +410,8 @@ p3 = ds %>%
   geom_boxplot() +
   xlab("Day") +
   ylab("Local biomass (bioarea/µl)") +
+  labs(color='Patch type')  +
+  labs(fill='Patch type') +
   scale_y_continuous(limits=c(0, 6250)) +
   scale_x_continuous(limits = c(-2, 30))
 p3
@@ -406,6 +428,8 @@ p4 = ds %>%
   geom_line(stat = "summary", fun = "mean") +
   xlab("Day") +
   ylab("Local biomass (bioarea/µl)") +
+  labs(color='Patch type')  +
+  labs(fill='Patch type') +
   scale_y_continuous(limits=c(0, 6250)) +
   scale_x_continuous(limits = c(-2, 30))
 p4
@@ -421,6 +445,8 @@ p5 = ds %>%
   geom_boxplot() +
   xlab("Day") +
   ylab("Local biomass (bioarea/µl)") +
+  labs(color='Patch type')  +
+  labs(fill='Patch type') +
   scale_y_continuous(limits=c(0, 6250)) +
   scale_x_continuous(limits = c(-2, 30))
 p5
@@ -437,6 +463,8 @@ p6 = ds %>%
   geom_line(stat = "summary", fun = "mean") +
   xlab("Day") +
   ylab("Local biomass (bioarea/µl)") +
+  labs(color='Patch type')  +
+  labs(fill='Patch type') +
   scale_y_continuous(limits=c(0, 6250)) +
   scale_x_continuous(limits = c(-2, 30))
 p6
@@ -479,6 +507,8 @@ p1 = ds %>%
   geom_boxplot() +
   xlab("Day") +
   ylab("Regional biomass (average bioarea between 2 patches/µl)") +
+  labs(color='Meta-ecosystem type')  +
+  labs(fill='Meta-ecosystem type') +
   scale_y_continuous(limits = c(0, 6250)) +
   scale_x_continuous(limits = c(-2, 30))
 p1
@@ -498,6 +528,8 @@ p2 = ds %>%
   geom_line (stat = "summary", fun = "mean") +
   xlab("Day") +
   ylab("Regional biomass (average bioarea between 2 patches/µl)") +
+  labs(color='Meta-ecosystem type')  +
+  labs(fill='Meta-ecosystem type') +
   scale_y_continuous(limits = c(0, 6250)) +
   scale_x_continuous(limits = c(-2, 30))
 p2
@@ -513,6 +545,8 @@ p3 = ds %>%
   geom_boxplot() +
   xlab("Day") +
   ylab("Local biomass (bioarea/µl)") +
+  labs(color='Patch type')  +
+  labs(fill='Patch type') +
   scale_y_continuous(limits=c(0, 6250)) +
   scale_x_continuous(limits = c(-2, 30))
 p3
@@ -529,6 +563,8 @@ p4 = ds %>%
   geom_line(stat = "summary", fun = "mean") +
   xlab("Day") +
   ylab("Local biomass (bioarea/µl)") +
+  labs(color='Patch type')  +
+  labs(fill='Patch type') +
   scale_y_continuous(limits=c(0, 6250)) +
   scale_x_continuous(limits = c(-2, 30))
 p4
@@ -544,6 +580,8 @@ p5 = ds %>%
   geom_boxplot() +
   xlab("Day") +
   ylab("Local biomass (bioarea/µl)") +
+  labs(color='Patch type')  +
+  labs(fill='Patch type') +
   scale_y_continuous(limits=c(0, 6250)) +
   scale_x_continuous(limits = c(-2, 30))
 p5
@@ -560,6 +598,8 @@ p6 = ds %>%
   geom_line(stat = "summary", fun = "mean") +
   xlab("Day") +
   ylab("Local biomass (bioarea/µl)") +
+  labs(color='Patch type')  +
+  labs(fill='Patch type') +
   scale_y_continuous(limits=c(0, 6250)) +
   scale_x_continuous(limits = c(-2, 30))
 p6
@@ -568,7 +608,7 @@ p6
 grid = grid.arrange(p1,p3,p5,p2,p4,p6,
              ncol=3, nrow=2,
              top = textGrob("High disturbance",gp=gpar(fontsize=20,font=3)))
-ggsave("/Users/ema/github/PatchSizePilot/results/biomass/clean_biomass_high.jpg", grid, width = 22, height = 13)
+ggsave("/Users/ema/github/PatchSizePilot/results/biomass/Clean_biomass_high.jpg", grid, width = 22, height = 13)
 
 
 
@@ -621,6 +661,8 @@ bio_diff.raw = biomass_difference %>%
   geom_hline(yintercept=1,linetype=2) +
   xlab("Day") +
   ylab("Biomass ratio between ecosystems (bioarea/volume)") +
+  labs(color='Meta-ecosystem type')  +
+  labs(fill='Meta-ecosystem type') +
   scale_x_continuous(limits = c(0,30)) +
   scale_y_continuous(limits = c(0,16), breaks=c(0,2,4,6,8,10,12,14,16))
   
@@ -637,6 +679,8 @@ bio_diff.average = biomass_difference %>%
   geom_hline(yintercept=1,linetype=2) +
   xlab("Day") +
   ylab("Biomass ratio between ecosystems (bioarea/volume)")+
+  labs(color='Meta-ecosystem type')  +
+  labs(fill='Meta-ecosystem type') +
   scale_x_continuous(limits = c(0,30)) +
   scale_y_continuous(limits = c(0,16), breaks=c(0,2,4,6,8,10,12,14,16))
 
