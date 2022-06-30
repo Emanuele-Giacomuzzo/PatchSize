@@ -161,44 +161,29 @@ ds = ds[, col_order]
 
 
 
-####################### --- PLOTS: BIOMASS --- ##################################
+####################### --- PLOT: BIOMASS LOW DISTURBANCE (complete) --- ##################################
 
 
-low.biomass.reg.raw = ds %>%
+p1 = ds %>%
   filter ( disturbance == "low") %>%
   filter (metaecosystem == "yes") %>%
   group_by(culture_ID, day, metaecosystem_type, system_nr, patch_size) %>%
   summarise(bioarea_per_volume = mean(bioarea_per_volume)) %>%
   group_by(day,metaecosystem_type, system_nr) %>%
   summarise(bioarea_per_volume = mean(bioarea_per_volume)) %>%
-  ggplot (aes(x = reorder(day, sort(as.numeric(day))),
+  ggplot (aes(x = day,
               y = bioarea_per_volume,
+              group = interaction (day, metaecosystem_type),
               fill = metaecosystem_type,
               color = metaecosystem_type)) +
   geom_boxplot() +
-  # labs(title = "Disturbance = low (raw data)") +
   xlab("Day") +
   ylab("Regional biomass (average bioarea between 2 patches/µl)") +
-  scale_y_continuous(limits = c(0, 5250))
+  scale_y_continuous(limits = c(0, 6250)) +
+  scale_x_continuous(limits = c(-2, 30))
+p1
 
-high.biomass.reg.raw = ds %>%
-  filter ( disturbance == "high") %>%
-  filter (metaecosystem == "yes") %>%
-  group_by(culture_ID, day, metaecosystem_type, system_nr, patch_size) %>%
-  summarise(bioarea_per_volume = mean(bioarea_per_volume)) %>%
-  group_by(day,metaecosystem_type, system_nr) %>%
-  summarise(bioarea_per_volume = mean(bioarea_per_volume)) %>%
-  ggplot (aes(x = reorder(day, sort(as.numeric(day))),
-              y = bioarea_per_volume,
-              fill = metaecosystem_type,
-              color = metaecosystem_type)) +
-  geom_boxplot() +
-  # labs(title = "Disturbance = high (raw data)") +
-  xlab("Day") +
-  ylab("Regional biomass (average bioarea between 2 patches/µl)") +
-  scale_y_continuous(limits = c(0,5250))
-
-low.biomass.reg.mean = ds %>%
+p2 = ds %>%
   filter ( disturbance == "low") %>%
   filter (metaecosystem == "yes") %>%
   group_by(culture_ID, day, metaecosystem_type, system_nr, patch_size) %>%
@@ -211,10 +196,82 @@ low.biomass.reg.mean = ds %>%
               color = metaecosystem_type)) +
   geom_point(stat = "summary", fun = "mean") +
   geom_line (stat = "summary", fun = "mean") +
-  # labs(title = "Disturbance = low (averaged data)") +
   xlab("Day") +
   ylab("Regional biomass (average bioarea between 2 patches/µl)") +
-  scale_y_continuous(limits = c(0, 5250))
+  scale_y_continuous(limits = c(0, 6250)) +
+  scale_x_continuous(limits = c(-2, 30))
+p2
+
+p3 = ds %>%
+  filter(disturbance == "low")%>%
+  ggplot(aes(x = day,
+             y = bioarea_per_volume,
+             group = interaction(day, eco_metaeco_type),
+             fill = eco_metaeco_type,
+             color = eco_metaeco_type)) +
+  geom_boxplot() +
+  xlab("Day") +
+  ylab("Local biomass (bioarea/µl)") +
+  scale_y_continuous(limits=c(0, 6250)) +
+  scale_x_continuous(limits = c(-2, 30))
+p3
+
+
+p4 = ds %>%
+  filter(disturbance == "low")%>%
+  ggplot(aes(x = day,
+             y = bioarea_per_volume,
+             fill = eco_metaeco_type,
+             color = eco_metaeco_type)) +
+  geom_point(stat = "summary", fun = "mean") +
+  geom_line(stat = "summary", fun = "mean") +
+  xlab("Day") +
+  ylab("Local biomass (bioarea/µl)") +
+  scale_y_continuous(limits=c(0, 6250)) +
+  scale_x_continuous(limits = c(-2, 30))
+p4
+
+grid = grid.arrange(p1,p3,p2,p4,
+             ncol=2, nrow=2,
+             top = textGrob("Low disturbance",gp=gpar(fontsize=20,font=3)))
+ggsave("/Users/ema/github/PatchSizePilot/results/biomass/All_biomass_low.jpg", grid, width = 22, height = 13)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+####################### --- PLOT: BIOMASS HIGH DISTURBANCE (complete) --- ##################################
+
+
+high.biomass.reg.raw = ds %>%
+  filter ( disturbance == "high") %>%
+  filter (metaecosystem == "yes") %>%
+  group_by(culture_ID, day, metaecosystem_type, system_nr, patch_size) %>%
+  summarise(bioarea_per_volume = mean(bioarea_per_volume)) %>%
+  group_by(day,metaecosystem_type, system_nr) %>%
+  summarise(bioarea_per_volume = mean(bioarea_per_volume)) %>%
+  ggplot (aes(x = day,
+              y = bioarea_per_volume,
+              group = interaction(day, metaecosystem_type),
+              fill = metaecosystem_type,
+              color = metaecosystem_type)) +
+  geom_boxplot() +
+  xlab("Day") +
+  ylab("Regional biomass (average bioarea between 2 patches/µl)") +
+  scale_y_continuous(limits = c(0,6250)) +
+  scale_x_continuous(limits = c(-2, 30))
+
 
 high.biomass.reg.mean = ds %>%
   filter ( disturbance == "high") %>%
@@ -229,47 +286,24 @@ high.biomass.reg.mean = ds %>%
               color = metaecosystem_type)) +
   geom_point(stat = "summary", fun = "mean") +
   geom_line (stat = "summary", fun = "mean") +
-  # labs(title = "Disturbance = high (averaged data)") +
   xlab("Day") +
   ylab("Regional biomass (average bioarea between 2 patches/µl)") +
-  scale_y_continuous(limits = c(0,5250))
-
-low.biomass.local.raw = ds %>%
-  filter(disturbance == "low")%>%
-  ggplot(aes(x = reorder(day, sort(as.numeric(day))),
-             y = bioarea_per_volume,
-             fill = eco_metaeco_type,
-             color = eco_metaeco_type)) +
-  geom_boxplot() +
-  # labs(title = "Disturbance = low (raw data)") +
-  xlab("Day") +
-  ylab("Local biomass (bioarea/µl)") +
-  scale_y_continuous(limits=c(0, 5500))
+  scale_y_continuous(limits = c(0,6250)) +
+  scale_x_continuous(limits = c(-2, 30))
 
 high.biomass.local.raw = ds %>%
   filter(disturbance == "high")%>%
-  ggplot(aes(x = reorder(day, sort(as.numeric(day))),
+  ggplot(aes(x = day,
              y = bioarea_per_volume,
+             group = interaction(day, eco_metaeco_type),
              fill = eco_metaeco_type,
              color = eco_metaeco_type)) +
   geom_boxplot() +
-  # labs(title = "Disturbance = high (raw data)") +
   xlab("Day") +
   ylab("Local biomass (bioarea/µl)") +
-  scale_y_continuous(limits=c(0, 5500))
+  scale_y_continuous(limits=c(0, 6250)) +
+  scale_x_continuous(limits = c(-2, 30))
 
-low.biomass.local.mean = ds %>%
-  filter(disturbance == "low")%>%
-  ggplot(aes(x = day,
-             y = bioarea_per_volume,
-             fill = eco_metaeco_type,
-             color = eco_metaeco_type)) +
-  geom_point(stat = "summary", fun = "mean") +
-  geom_line(stat = "summary", fun = "mean") +
-  # labs(title = "Disturbance = low (averaged data)") +
-  xlab("Day") +
-  ylab("Local biomass (bioarea/µl)") +
-  scale_y_continuous(limits=c(0, 5500))
 
 high.biomass.local.mean = ds %>%
   filter(disturbance == "high")%>%
@@ -279,18 +313,16 @@ high.biomass.local.mean = ds %>%
              color = eco_metaeco_type)) +
   geom_point(stat = "summary", fun = "mean") +
   geom_line(stat = "summary", fun = "mean") +
-  # labs(title = "Disturbance = high (averaged data)") +
   xlab("Day") +
   ylab("Local biomass (bioarea/µl)") +
-  scale_y_continuous(limits=c(0,5500))
+  scale_y_continuous(limits=c(0,6250)) +
+  scale_x_continuous(limits = c(-2, 30))
 
-grid.arrange(low.biomass.reg.raw, low.biomass.local.raw, low.biomass.reg.mean, low.biomass.local.mean,
+
+grid = grid.arrange(high.biomass.reg.raw, high.biomass.local.raw, high.biomass.reg.mean, high.biomass.local.mean,
              ncol=2, nrow=2,
-             top = textGrob("Biomass, disturbance = low",gp=gpar(fontsize=20,font=3)))
-
-grid.arrange(high.biomass.reg.raw, high.biomass.local.raw, high.biomass.reg.mean, high.biomass.local.mean,
-             ncol=2, nrow=2,
-             top = textGrob("Biomass, disturbance = high",gp=gpar(fontsize=20,font=3)))
+             top = textGrob("High disturbance",gp=gpar(fontsize=20,font=3)))
+ggsave("/Users/ema/github/PatchSizePilot/results/biomass/All_biomass_high.jpg", grid, width = 22, height = 13)
 
 
 
@@ -306,138 +338,237 @@ grid.arrange(high.biomass.reg.raw, high.biomass.local.raw, high.biomass.reg.mean
 
 
 
-####################### --- PLOTS: COMMUNITY ABUNDANCE --- ##################################
+####################### --- PLOT: BIOMASS LOW DISTURBANCE (cleaned) --- ##################################
 
 
-low.abundance.reg.raw = ds %>%
+p1 = ds %>%
   filter ( disturbance == "low") %>%
-  filter (metaecosystem == "yes") %>%
+  filter (metaecosystem_type == "S_L" | metaecosystem_type == "M_M") %>%
   group_by(culture_ID, day, metaecosystem_type, system_nr, patch_size) %>%
-  summarise(indiv_ml = mean(indiv_ml)) %>%
+  summarise(bioarea_per_volume = mean(bioarea_per_volume)) %>%
   group_by(day,metaecosystem_type, system_nr) %>%
-  summarise(indiv_ml = mean(indiv_ml)) %>%
-  ggplot (aes(x = reorder(day, sort(as.numeric(day))),
-              y = indiv_ml,
-              fill = metaecosystem_type,
-              color = metaecosystem_type)) +
-  geom_boxplot() +
-  # labs(title = "Disturbance = low (raw data)") +
-  xlab("Day") +
-  ylab("Regional abundance (average individuals between 2 patches/µl)") +
-  scale_y_continuous(limits = c(0,1750))
-
-high.abundance.reg.raw = ds %>%
-  filter ( disturbance == "high") %>%
-  filter (metaecosystem == "yes") %>%
-  group_by(culture_ID, day, metaecosystem_type, system_nr, patch_size) %>%
-  summarise(indiv_ml = mean(indiv_ml)) %>%
-  group_by(day,metaecosystem_type, system_nr) %>%
-  summarise(indiv_ml = mean(indiv_ml)) %>%
-  ggplot (aes(x = reorder(day, sort(as.numeric(day))),
-              y = indiv_ml,
-              fill = metaecosystem_type,
-              color = metaecosystem_type)) +
-  geom_boxplot() +
-  # labs(title = "Disturbance = high (raw data)") +
-  xlab("Day") +
-  ylab("Regional abundance (average individuals between 2 patches/µl)") +
-  scale_y_continuous(limits = c(0,1750))
-
-low.abundance.reg.mean = ds %>%
-  filter ( disturbance == "low") %>%
-  filter (metaecosystem == "yes") %>%
-  group_by(culture_ID, day, metaecosystem_type, system_nr, patch_size) %>%
-  summarise(indiv_ml = mean(indiv_ml)) %>%
-  group_by(day,metaecosystem_type, system_nr) %>%
-  summarise(indiv_ml = mean(indiv_ml)) %>%
+  summarise(bioarea_per_volume = mean(bioarea_per_volume)) %>%
   ggplot (aes(x = day,
-              y = indiv_ml,
+              y = bioarea_per_volume,
+              group = interaction(day, metaecosystem_type),
+              fill = metaecosystem_type,
+              color = metaecosystem_type)) +
+  geom_boxplot() +
+  xlab("Day") +
+  ylab("Regional biomass (average bioarea between 2 patches/µl)") +
+  scale_y_continuous(limits = c(0, 6250)) +
+  scale_x_continuous(limits = c(-2, 30))
+p1
+
+p2 = ds %>%
+  filter ( disturbance == "low") %>%
+  filter (metaecosystem_type == "S_L" | metaecosystem_type == "M_M") %>%
+  group_by(culture_ID, day, metaecosystem_type, system_nr, patch_size) %>%
+  summarise(bioarea_per_volume = mean(bioarea_per_volume)) %>%
+  group_by(day,metaecosystem_type, system_nr) %>%
+  summarise(bioarea_per_volume = mean(bioarea_per_volume)) %>%
+  ggplot (aes(x = day,
+              y = bioarea_per_volume,
               fill = metaecosystem_type,
               color = metaecosystem_type)) +
   geom_point(stat = "summary", fun = "mean") +
   geom_line (stat = "summary", fun = "mean") +
-  # labs(title = "Disturbance = low (averaged data)") +
   xlab("Day") +
-  ylab("Regional abundance (average individuals between 2 patches/µl)") +
-  scale_y_continuous(limits = c(0,1750))
+  ylab("Regional biomass (average bioarea between 2 patches/µl)") +
+  scale_y_continuous(limits = c(0, 6250)) +
+  scale_x_continuous(limits = c(-2, 30))
+p2
 
-high.abundance.reg.mean = ds %>%
+p3 = ds %>%
+  filter(disturbance == "low")%>%
+  filter(metaecosystem == "no") %>%
+  ggplot(aes(x = day,
+             y = bioarea_per_volume,
+             group = interaction(day, eco_metaeco_type),
+             fill = eco_metaeco_type,
+             color = eco_metaeco_type)) +
+  geom_boxplot() +
+  xlab("Day") +
+  ylab("Local biomass (bioarea/µl)") +
+  scale_y_continuous(limits=c(0, 6250)) +
+  scale_x_continuous(limits = c(-2, 30))
+p3
+
+
+p4 = ds %>%
+  filter(disturbance == "low")%>%
+  filter(metaecosystem == "no") %>%
+  ggplot(aes(x = day,
+             y = bioarea_per_volume,
+             fill = eco_metaeco_type,
+             color = eco_metaeco_type)) +
+  geom_point(stat = "summary", fun = "mean") +
+  geom_line(stat = "summary", fun = "mean") +
+  xlab("Day") +
+  ylab("Local biomass (bioarea/µl)") +
+  scale_y_continuous(limits=c(0, 6250)) +
+  scale_x_continuous(limits = c(-2, 30))
+p4
+
+p5 = ds %>%
+  filter(disturbance == "low")%>%
+  filter (eco_metaeco_type == "S" | eco_metaeco_type == "S (S_S)" | eco_metaeco_type == "S (S_L)") %>%
+  ggplot(aes(x = day,
+             y = bioarea_per_volume,
+             group = interaction(day, eco_metaeco_type),
+             fill = eco_metaeco_type,
+             color = eco_metaeco_type)) +
+  geom_boxplot() +
+  xlab("Day") +
+  ylab("Local biomass (bioarea/µl)") +
+  scale_y_continuous(limits=c(0, 6250)) +
+  scale_x_continuous(limits = c(-2, 30))
+p5
+
+
+p6 = ds %>%
+  filter(disturbance == "low")%>%
+  filter (eco_metaeco_type == "S" | eco_metaeco_type == "S (S_S)" | eco_metaeco_type == "S (S_L)") %>%
+  ggplot(aes(x = day,
+             y = bioarea_per_volume,
+             fill = eco_metaeco_type,
+             color = eco_metaeco_type)) +
+  geom_point(stat = "summary", fun = "mean") +
+  geom_line(stat = "summary", fun = "mean") +
+  xlab("Day") +
+  ylab("Local biomass (bioarea/µl)") +
+  scale_y_continuous(limits=c(0, 6250)) +
+  scale_x_continuous(limits = c(-2, 30))
+p6
+
+
+grid = grid.arrange(p1,p3,p5,p2,p4,p6,
+             ncol=3, nrow=2,
+             top = textGrob("Low disturbance",gp=gpar(fontsize=20,font=3)))
+ggsave("/Users/ema/github/PatchSizePilot/results/biomass/Clean_biomass_low.jpg", grid, width = 22, height = 13)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+####################### --- PLOT: BIOMASS HIGH DISTURBANCE (cleaned) --- ##################################
+
+
+p1 = ds %>%
   filter ( disturbance == "high") %>%
-  filter (metaecosystem == "yes") %>%
+  filter (metaecosystem_type == "S_L" | metaecosystem_type == "M_M") %>%
   group_by(culture_ID, day, metaecosystem_type, system_nr, patch_size) %>%
-  summarise(indiv_ml = mean(indiv_ml)) %>%
+  summarise(bioarea_per_volume = mean(bioarea_per_volume)) %>%
   group_by(day,metaecosystem_type, system_nr) %>%
-  summarise(indiv_ml = mean(indiv_ml)) %>%
+  summarise(bioarea_per_volume = mean(bioarea_per_volume)) %>%
   ggplot (aes(x = day,
-              y = indiv_ml,
+              y = bioarea_per_volume,
+              group = interaction(day, metaecosystem_type),
+              fill = metaecosystem_type,
+              color = metaecosystem_type)) +
+  geom_boxplot() +
+  xlab("Day") +
+  ylab("Regional biomass (average bioarea between 2 patches/µl)") +
+  scale_y_continuous(limits = c(0, 6250)) +
+  scale_x_continuous(limits = c(-2, 30))
+p1
+
+p2 = ds %>%
+  filter ( disturbance == "high") %>%
+  filter (metaecosystem_type == "S_L" | metaecosystem_type == "M_M") %>%
+  group_by(culture_ID, day, metaecosystem_type, system_nr, patch_size) %>%
+  summarise(bioarea_per_volume = mean(bioarea_per_volume)) %>%
+  group_by(day,metaecosystem_type, system_nr) %>%
+  summarise(bioarea_per_volume = mean(bioarea_per_volume)) %>%
+  ggplot (aes(x = day,
+              y = bioarea_per_volume,
               fill = metaecosystem_type,
               color = metaecosystem_type)) +
   geom_point(stat = "summary", fun = "mean") +
   geom_line (stat = "summary", fun = "mean") +
-  # labs(title = "Disturbance = high (averaged data)") +
   xlab("Day") +
-  ylab("Regional abundance (average individuals between 2 patches/µl)") +
-  scale_y_continuous(limits = c(0,1750))
+  ylab("Regional biomass (average bioarea between 2 patches/µl)") +
+  scale_y_continuous(limits = c(0, 6250)) +
+  scale_x_continuous(limits = c(-2, 30))
+p2
 
-low.abundance.local.raw = ds %>%
-  filter(disturbance == "low")%>%
-  ggplot(aes(x = reorder(day, sort(as.numeric(day))),
-             y = indiv_ml,
-             fill = eco_metaeco_type,
-             color = eco_metaeco_type)) +
-  geom_boxplot() +
-  # labs(title = "Disturbance = low (raw data)") +
-  xlab("Day") +
-  ylab("Community abundance (indiv/ml)") +
-  scale_y_continuous(limits=c(0, 2250))
-
-high.abundance.local.raw = ds %>%
+p3 = ds %>%
   filter(disturbance == "high")%>%
-  ggplot(aes(x = reorder(day, sort(as.numeric(day))),
-             y = indiv_ml,
+  filter(metaecosystem == "no") %>%
+  ggplot(aes(x = day,
+             y = bioarea_per_volume,
+             group = interaction(day, eco_metaeco_type),
              fill = eco_metaeco_type,
              color = eco_metaeco_type)) +
   geom_boxplot() +
-  # labs(title = "Disturbance = high (raw data)") +
   xlab("Day") +
-  ylab("Community abundance (indiv/ml)") +
-  scale_y_continuous(limits=c(0,2250))
+  ylab("Local biomass (bioarea/µl)") +
+  scale_y_continuous(limits=c(0, 6250)) +
+  scale_x_continuous(limits = c(-2, 30))
+p3
 
-low.abundance.local.mean = ds %>%
-  filter(disturbance == "low")%>%
+
+p4 = ds %>%
+  filter(disturbance == "high")%>%
+  filter(metaecosystem == "no") %>%
   ggplot(aes(x = day,
-             y = indiv_ml,
+             y = bioarea_per_volume,
              fill = eco_metaeco_type,
              color = eco_metaeco_type)) +
   geom_point(stat = "summary", fun = "mean") +
   geom_line(stat = "summary", fun = "mean") +
-  # labs(title = "Disturbance = low (averaged data)") +
   xlab("Day") +
-  ylab("Community abundance (indiv/ml)") +
-  scale_y_continuous(limits=c(0, 2250))
+  ylab("Local biomass (bioarea/µl)") +
+  scale_y_continuous(limits=c(0, 6250)) +
+  scale_x_continuous(limits = c(-2, 30))
+p4
 
-high.abundance.local.mean = ds %>%
+p5 = ds %>%
   filter(disturbance == "high")%>%
+  filter (eco_metaeco_type == "S" | eco_metaeco_type == "S (S_S)" | eco_metaeco_type == "S (S_L)") %>%
   ggplot(aes(x = day,
-             y = indiv_ml,
+             y = bioarea_per_volume,
+             group = interaction(day, eco_metaeco_type),
+             fill = eco_metaeco_type,
+             color = eco_metaeco_type)) +
+  geom_boxplot() +
+  xlab("Day") +
+  ylab("Local biomass (bioarea/µl)") +
+  scale_y_continuous(limits=c(0, 6250)) +
+  scale_x_continuous(limits = c(-2, 30))
+p5
+
+
+p6 = ds %>%
+  filter(disturbance == "high")%>%
+  filter (eco_metaeco_type == "S" | eco_metaeco_type == "S (S_S)" | eco_metaeco_type == "S (S_L)") %>%
+  ggplot(aes(x = day,
+             y = bioarea_per_volume,
              fill = eco_metaeco_type,
              color = eco_metaeco_type)) +
   geom_point(stat = "summary", fun = "mean") +
   geom_line(stat = "summary", fun = "mean") +
-  # labs(title = "Disturbance = high (averaged data)") +
   xlab("Day") +
-  ylab("Community abundance (indiv/ml)") +
-  scale_y_continuous(limits=c(0,2250))
-
-grid.arrange(low.abundance.reg.raw, low.abundance.local.raw, low.abundance.reg.mean, low.abundance.local.mean,
-             ncol=2, nrow=2,
-             top = textGrob("Abundance, disturbance = low",gp=gpar(fontsize=20,font=3)))
-
-grid.arrange(high.abundance.reg.raw, high.abundance.local.raw, high.abundance.reg.mean, high.abundance.local.mean,
-             ncol=2, nrow=2,
-             top = textGrob("Abundance, disturbance = high",gp=gpar(fontsize=20,font=3)))
+  ylab("Local biomass (bioarea/µl)") +
+  scale_y_continuous(limits=c(0, 6250)) +
+  scale_x_continuous(limits = c(-2, 30))
+p6
 
 
+grid = grid.arrange(p1,p3,p5,p2,p4,p6,
+             ncol=3, nrow=2,
+             top = textGrob("High disturbance",gp=gpar(fontsize=20,font=3)))
+ggsave("/Users/ema/github/PatchSizePilot/results/biomass/clean_biomass_high.jpg", grid, width = 22, height = 13)
 
 
 
@@ -451,7 +582,8 @@ grid.arrange(high.abundance.reg.raw, high.abundance.local.raw, high.abundance.re
 
 
 
-######################### --- PLOTS: BIOMASS DIFFERENCE BETWEEN ECOSYSTEMS --- ###############################
+
+######################### --- PLOT: BIOMASS DIFFERENCE BETWEEN ECOSYSTEMS --- ###############################
 
 
 biomass_difference = data.frame(matrix(ncol = 4, nrow = 0))
@@ -480,13 +612,18 @@ for (DAY in 1:max(ds$day)) {
 bio_diff.raw = biomass_difference %>%
   filter(metaecosystem_type != "S_L") %>%
   filter(biomass_difference != Inf) %>%
-  ggplot (aes(x= reorder(day, sort(as.numeric(day))),
+  ggplot (aes(x= day,
               y = biomass_difference,
+              group = interaction(day, metaecosystem_type),
               fill = metaecosystem_type,
               color = metaecosystem_type)) +
   geom_boxplot() +
+  geom_hline(yintercept=1,linetype=2) +
   xlab("Day") +
-  ylab("Biomass ratio between ecosystems (bioarea/volume)")
+  ylab("Biomass ratio between ecosystems (bioarea/volume)") +
+  scale_x_continuous(limits = c(0,30)) +
+  scale_y_continuous(limits = c(0,16), breaks=c(0,2,4,6,8,10,12,14,16))
+  
 
 bio_diff.average = biomass_difference %>%
   filter(metaecosystem_type != "S_L") %>%
@@ -497,9 +634,174 @@ bio_diff.average = biomass_difference %>%
               color = metaecosystem_type)) +
   geom_point(stat = "summary", fun = "mean") +
   geom_line(stat = "summary", fun = "mean") +
+  geom_hline(yintercept=1,linetype=2) +
   xlab("Day") +
-  ylab("Biomass ratio between ecosystems (bioarea/volume)")
+  ylab("Biomass ratio between ecosystems (bioarea/volume)")+
+  scale_x_continuous(limits = c(0,30)) +
+  scale_y_continuous(limits = c(0,16), breaks=c(0,2,4,6,8,10,12,14,16))
 
-grid.arrange(bio_diff.raw, bio_diff.average,
+
+grid = grid.arrange(bio_diff.raw, bio_diff.average,
              ncol=1, nrow=2,
              top = textGrob("Biomass ratio between ecosystems", gp=gpar(fontsize=20,font=3)))
+ggsave("/Users/ema/github/PatchSizePilot/results/biomass/Biomass_differences.jpg", grid, width = 22, height = 13)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# ####################### --- PLOT: COMMUNITY ABUNDANCE --- ##################################
+# 
+# 
+# low.abundance.reg.raw = ds %>%
+#   filter ( disturbance == "low") %>%
+#   filter (metaecosystem == "yes") %>%
+#   group_by(culture_ID, day, metaecosystem_type, system_nr, patch_size) %>%
+#   summarise(indiv_ml = mean(indiv_ml)) %>%
+#   group_by(day,metaecosystem_type, system_nr) %>%
+#   summarise(indiv_ml = mean(indiv_ml)) %>%
+#   ggplot (aes(x = reorder(day, sort(as.numeric(day))),
+#               y = indiv_ml,
+#               fill = metaecosystem_type,
+#               color = metaecosystem_type)) +
+#   geom_boxplot() +
+#   # labs(title = "Disturbance = low (raw data)") +
+#   xlab("Day") +
+#   ylab("Regional abundance (average individuals between 2 patches/µl)") +
+#   scale_y_continuous(limits = c(0,1750))
+# 
+# high.abundance.reg.raw = ds %>%
+#   filter ( disturbance == "high") %>%
+#   filter (metaecosystem == "yes") %>%
+#   group_by(culture_ID, day, metaecosystem_type, system_nr, patch_size) %>%
+#   summarise(indiv_ml = mean(indiv_ml)) %>%
+#   group_by(day,metaecosystem_type, system_nr) %>%
+#   summarise(indiv_ml = mean(indiv_ml)) %>%
+#   ggplot (aes(x = reorder(day, sort(as.numeric(day))),
+#               y = indiv_ml,
+#               fill = metaecosystem_type,
+#               color = metaecosystem_type)) +
+#   geom_boxplot() +
+#   # labs(title = "Disturbance = high (raw data)") +
+#   xlab("Day") +
+#   ylab("Regional abundance (average individuals between 2 patches/µl)") +
+#   scale_y_continuous(limits = c(0,1750))
+# 
+# low.abundance.reg.mean = ds %>%
+#   filter ( disturbance == "low") %>%
+#   filter (metaecosystem == "yes") %>%
+#   group_by(culture_ID, day, metaecosystem_type, system_nr, patch_size) %>%
+#   summarise(indiv_ml = mean(indiv_ml)) %>%
+#   group_by(day,metaecosystem_type, system_nr) %>%
+#   summarise(indiv_ml = mean(indiv_ml)) %>%
+#   ggplot (aes(x = day,
+#               y = indiv_ml,
+#               fill = metaecosystem_type,
+#               color = metaecosystem_type)) +
+#   geom_point(stat = "summary", fun = "mean") +
+#   geom_line (stat = "summary", fun = "mean") +
+#   # labs(title = "Disturbance = low (averaged data)") +
+#   xlab("Day") +
+#   ylab("Regional abundance (average individuals between 2 patches/µl)") +
+#   scale_y_continuous(limits = c(0,1750))
+# 
+# high.abundance.reg.mean = ds %>%
+#   filter ( disturbance == "high") %>%
+#   filter (metaecosystem == "yes") %>%
+#   group_by(culture_ID, day, metaecosystem_type, system_nr, patch_size) %>%
+#   summarise(indiv_ml = mean(indiv_ml)) %>%
+#   group_by(day,metaecosystem_type, system_nr) %>%
+#   summarise(indiv_ml = mean(indiv_ml)) %>%
+#   ggplot (aes(x = day,
+#               y = indiv_ml,
+#               fill = metaecosystem_type,
+#               color = metaecosystem_type)) +
+#   geom_point(stat = "summary", fun = "mean") +
+#   geom_line (stat = "summary", fun = "mean") +
+#   # labs(title = "Disturbance = high (averaged data)") +
+#   xlab("Day") +
+#   ylab("Regional abundance (average individuals between 2 patches/µl)") +
+#   scale_y_continuous(limits = c(0,1750))
+# 
+# low.abundance.local.raw = ds %>%
+#   filter(disturbance == "low")%>%
+#   ggplot(aes(x = reorder(day, sort(as.numeric(day))),
+#              y = indiv_ml,
+#              fill = eco_metaeco_type,
+#              color = eco_metaeco_type)) +
+#   geom_boxplot() +
+#   # labs(title = "Disturbance = low (raw data)") +
+#   xlab("Day") +
+#   ylab("Community abundance (indiv/ml)") +
+#   scale_y_continuous(limits=c(0, 2250))
+# 
+# high.abundance.local.raw = ds %>%
+#   filter(disturbance == "high")%>%
+#   ggplot(aes(x = reorder(day, sort(as.numeric(day))),
+#              y = indiv_ml,
+#              fill = eco_metaeco_type,
+#              color = eco_metaeco_type)) +
+#   geom_boxplot() +
+#   # labs(title = "Disturbance = high (raw data)") +
+#   xlab("Day") +
+#   ylab("Community abundance (indiv/ml)") +
+#   scale_y_continuous(limits=c(0,2250))
+# 
+# low.abundance.local.mean = ds %>%
+#   filter(disturbance == "low")%>%
+#   ggplot(aes(x = day,
+#              y = indiv_ml,
+#              fill = eco_metaeco_type,
+#              color = eco_metaeco_type)) +
+#   geom_point(stat = "summary", fun = "mean") +
+#   geom_line(stat = "summary", fun = "mean") +
+#   # labs(title = "Disturbance = low (averaged data)") +
+#   xlab("Day") +
+#   ylab("Community abundance (indiv/ml)") +
+#   scale_y_continuous(limits=c(0, 2250))
+# 
+# high.abundance.local.mean = ds %>%
+#   filter(disturbance == "high")%>%
+#   ggplot(aes(x = day,
+#              y = indiv_ml,
+#              fill = eco_metaeco_type,
+#              color = eco_metaeco_type)) +
+#   geom_point(stat = "summary", fun = "mean") +
+#   geom_line(stat = "summary", fun = "mean") +
+#   # labs(title = "Disturbance = high (averaged data)") +
+#   xlab("Day") +
+#   ylab("Community abundance (indiv/ml)") +
+#   scale_y_continuous(limits=c(0,2250))
+# 
+# grid.arrange(low.abundance.reg.raw, low.abundance.local.raw, low.abundance.reg.mean, low.abundance.local.mean,
+#              ncol=2, nrow=2,
+#              top = textGrob("Abundance, disturbance = low",gp=gpar(fontsize=20,font=3)))
+# 
+# grid.arrange(high.abundance.reg.raw, high.abundance.local.raw, high.abundance.reg.mean, high.abundance.local.mean,
+#              ncol=2, nrow=2,
+#              top = textGrob("Abundance, disturbance = high",gp=gpar(fontsize=20,font=3)))
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
