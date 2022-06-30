@@ -5,6 +5,8 @@ library("grid")
 library("gridExtra") 
 
 ############################ --- LOAD THE DATA --- ######################################################
+
+
 culture_info = read.csv("/Users/ema/github/PatchSizePilot/data/PatchSizePilot_dataset.csv", header = TRUE)
 load("~/github/PatchSizePilot/data/population/t0.RData");t0 = pop_output
 load("~/github/PatchSizePilot/data/population/t1.RData"); t1 = pop_output
@@ -30,10 +32,9 @@ rm(pop_output)
 
 
 
-########################## --- MODIFY COLUMN NAME AND CONTENT --- #######################################
+########################## --- MODIFY COLUMN NAME AND CONTENT (t0-t7) --- #######################################
 
 
-#Fill columns in t0 - t7
 t0$time = "to find out"
 t1$time = "to find out"
 t6$replicate_video = t6$replicate; t6$replicate = NULL
@@ -44,6 +45,24 @@ t2$replicate_video = 1
 t3$replicate_video = 1
 t4$replicate_video = 1
 t5$replicate_video = 1
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+########################## --- MERGE DATASETS --- #######################################
+
+
 culture_info$culture_ID = culture_info$id; culture_info$id = NULL
 
 elongating_t0 = NULL
@@ -52,7 +71,9 @@ for (video in 1:nrow(t0)){
     elongating_t0 = rbind(elongating_t0, t0[video,])
   }
 }
-elongating_t0$culture_ID = rep(1:nrow(culture_info), times = nrow(t0))
+
+ID_vector = rep(1:nrow(culture_info), times = nrow(t0))
+elongating_t0$culture_ID = ID_vector
 
 t0 = merge(culture_info,elongating_t0, by="culture_ID")
 t1 = merge(culture_info,t1,by="culture_ID")
@@ -63,6 +84,22 @@ t5 = merge(culture_info,t5,by="culture_ID")
 t6 = merge(culture_info,t6,by="culture_ID")
 t7 = merge(culture_info,t7,by="culture_ID")
 ds = rbind(t0, t1, t2, t3, t4, t5, t6, t7); rm(elongating_t0, t0, t1, t2, t3, t4, t5, t6, t7)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+########################## --- MODIFY COLUMN NAME AND CONTENT (ds) --- #######################################
+
 
 ds$time_points = NULL
 ds$indiv_ml = ds$indiv_per_volume*1000
