@@ -8,7 +8,7 @@ library("gridExtra")
 ############################ --- LOAD THE DATA --- ######################################################
 
 
-culture_info = read.csv("/Users/ema/github/PatchSizePilot/data/PatchSizePilot_dataset.csv", header = TRUE)
+culture_info = read.csv("/Users/ema/github/PatchSizePilot/data/PatchSizePilot_culture_info.csv", header = TRUE)
 load("~/github/PatchSizePilot/data/morphology/t0.RData");t0 = morph_mvt
 load("~/github/PatchSizePilot/data/morphology/t1.RData");t1 = morph_mvt
 load("~/github/PatchSizePilot/data/morphology/t2.RData");t2 = morph_mvt
@@ -35,8 +35,6 @@ rm(morph_mvt)
 
 ########################## --- MODIFY COLUMN NAME AND CONTENT (t0-t7, culture_info) --- #######################################
 
-
-culture_info$culture_ID = culture_info$id; culture_info$id = NULL
 
 t0$time = "to find out"
 t1$time = "to find out"
@@ -121,15 +119,7 @@ ds = rbind(t0, t1, t2, t3, t4, t5, t6, t7); rm(t0, t1, t2, t3, t4, t5, t6, t7)
 ########################## --- MODIFY COLUMN NAME AND CONTENT (ds) --- #######################################
 
 
-ds$time_points = NULL
-ds$treatment_replicate = ds$replicate; ds$replicate = NULL
-ds$system_nr = ds$metaecosystem; ds$metaecosystem = NULL
 ds$day = ds$time_point; ds$time_point = NULL
-ds$disturbance_ml = ds$disturbance.1; ds$disturbance.1 = NULL
-ds$metaecosystem_type = ds$metaeco; ds$metaeco = NULL
-ds$patch_size_ml = ds$patch_size; ds$patch_size = NULL
-ds$eco_metaeco_type = ds$ecosystem; ds$ecosystem = NULL
-
 ds$day[ds$day=="t0"] = "0"
 ds$day[ds$day=="t1"] = "4"
 ds$day[ds$day=="t2"] = "8"
@@ -140,31 +130,11 @@ ds$day[ds$day=="t6"] = "24"
 ds$day[ds$day=="t7"] = "28"
 ds$day = as.numeric(ds$day)
 
-ds$patch_size[ds$patch_size_ml == 7.5] = "S"
-ds$patch_size[ds$patch_size_ml == 22.5] = "M"
-ds$patch_size[ds$patch_size_ml == 37.5] = "L"
-
-ds$metaecosystem[ds$metaecosystem_type=="L"] = "no"
-ds$metaecosystem[ds$metaecosystem_type=="L_L"] = "yes"
-ds$metaecosystem[ds$metaecosystem_type=="M"] = "no"
-ds$metaecosystem[ds$metaecosystem_type=="M_M"] = "yes"
-ds$metaecosystem[ds$metaecosystem_type=="S"] = "no"
-ds$metaecosystem[ds$metaecosystem_type=="S_L"] = "yes"
-ds$metaecosystem[ds$metaecosystem_type=="S_S"] = "yes"
-
-ds$metaecosystem_type[ds$metaecosystem_type=="S"] = NA
-ds$metaecosystem_type[ds$metaecosystem_type=="M"] = NA
-ds$metaecosystem_type[ds$metaecosystem_type=="L"] = NA
-
-ds$eco_metaeco_type = paste0(ds$patch_size, " (", ds$metaecosystem_type, ")")
-ds$eco_metaeco_type[ds$eco_metaeco_type == "S (NA)"] = "S"
-ds$eco_metaeco_type[ds$eco_metaeco_type == "M (NA)"] = "M"
-ds$eco_metaeco_type[ds$eco_metaeco_type == "L (NA)"] = "L"
 ds$eco_metaeco_type = factor(ds$eco_metaeco_type, levels=c('S', 'S (S_S)', 'S (S_L)', 'M', 'M (M_M)', 'L', 'L (L_L)', 'L (S_L)'))
 
-ds = ds %>% select(culture_ID, patch_size, disturbance, metaecosystem_type, mean_area, replicate_video, day, metaecosystem, system_nr, eco_metaeco_type)
-col_order <- c("culture_ID", "system_nr", "disturbance", "day", "patch_size", "metaecosystem", "metaecosystem_type", "eco_metaeco_type", "replicate_video","mean_area")
-ds = ds[, col_order]
+ds = ds %>% 
+  select(culture_ID, patch_size, disturbance, metaecosystem_type, mean_area, replicate_video, day, metaecosystem, system_nr, eco_metaeco_type)
+ds = ds[, c("culture_ID", "system_nr", "disturbance", "day", "patch_size", "metaecosystem", "metaecosystem_type", "eco_metaeco_type", "replicate_video","mean_area")]
 
 
 

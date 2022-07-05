@@ -1,4 +1,4 @@
-﻿culture_ID,system_nr,replicate,disturbance,disturbance_volume,patch_size,patch_size_volume,metaecosystem,metaecosystem_type,eco_metaeco_type,water_add_after_t2,water_add_after_t3,water_add_after_t4,water_add_after_t5,water_add_after_t6
+culture_ID,system_nr,treatment_replicate,disturbance,disturbance_volume,patch_size,patch_size_volume,metaecosystem,metaecosystem_type,eco_metaeco_type,water_add_after_t2,water_add_after_t3,water_add_after_t4,water_add_after_t5,water_add_after_t6
 1,1,1,low,5.25,S,7.5,no,,S,2.5,2.5,1,1.5,1.5
 2,2,2,low,5.25,S,7.5,no,,S,3,1.5,1,2,1.5
 3,3,3,low,5.25,S,7.5,no,,S,1,2,1.5,1,2
