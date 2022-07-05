@@ -2,7 +2,7 @@
 
 ## Description
 
-This was the first evaporation test I did. However, because I didn't consider the fact that different tubes could have different weight, the methodology was flawed. Look up the evaporation test 2 to see some reliable results.
+This was the first evaporation test I did. However, because I didn't consider the fact that different tubes could have different weight, the methodology was flawed. 
 
 # Evaporation test right
 
@@ -12,7 +12,7 @@ This is the right methodology, as we weighted each tube before adding the water.
 
 ## Legend
 
-water_pipetted_into_tubes: volume of water pipetted into the tube (ml)\
+water_pipetted: volume of water pipetted into the tube (ml)\
 falcon_tube_weight: weight of the falcon tube before pipetting water into it (g)\
 weight_falcon_tube_n\_water: weight of the falcon tube and the water inside it before the microwaving (g)\
 weight_water_before_evaporation: weight of the water before the microwaving (g)\
@@ -28,5 +28,4 @@ all the tubes had water in them.
 
 ## Legend
 
-
-all_tubes_water
+all_tubes_water: whether all the tubes in the rack had water in them. 

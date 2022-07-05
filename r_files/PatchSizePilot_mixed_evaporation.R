@@ -3,27 +3,24 @@ cat( "\014" )
 library("tidyverse")
 library("gridExtra")
 library(lme4)
-setwd('/Volumes/GoogleDrive/My\ Drive/study_n_work/7_PhD/projects/PatchSizePilot')
 
 # --- IMPORT & TRANSFORM DATA --- #
 
-df = read.csv( file = "data/PatchSizePilot_dataset.csv", header = TRUE )
+df = read.csv( file = "/Users/ema/github/PatchSizePilot/data/PatchSizePilot_dataset.csv", header = TRUE )
 
-#Transform data from wide to long & change name of the columns
-df$id = as.character(df$id)
-df$ex1 = df$water_add_before_t3/2
-df$ex2 = df$ex1
-df$ex3 = df$water_add_after_t3
-df$ex4 = df$water_add_after_t4
-df$ex5 = df$water_add_after_t5
-df$ex6 = df$water_add_after_t6
-df$disturbance = df$disturbance.1
+############# --- TRANSFORM COLUMNS ---- ###########
 df$disturbance.1 = NULL
-df$water_add_before_t3 = NULL
-df$water_add_after_t3 = NULL
-df$water_add_after_t4 = NULL
-df$water_add_after_t5 = NULL
-df$water_add_after_t6 = NULL
+df$id = as.character(df$id)
+
+df$ex1 = df$water_add_before_t3/2; df$water_add_before_t3 = NULL
+df$ex2 = df$ex1
+df$ex3 = df$water_add_after_t3; df$water_add_after_t3 = NULL
+df$ex4 = df$water_add_after_t4; df$water_add_after_t4 = NULL
+df$ex5 = df$water_add_after_t5; df$water_add_after_t5 = NULL
+df$ex6 = df$water_add_after_t6; df$water_add_after_t6 = NULL
+df$disturbance = df$disturbance.1
+
+############ --- DATA FROM WIDE TO LONG --- ###########
 df = gather(df, exchange, evaporation, ex1:ex6)
 df[df == "ex1"] = "1"
 df[df == "ex2"] = "2"
@@ -32,6 +29,11 @@ df[df == "ex4"] = "4"
 df[df == "ex5"] = "5"
 df[df == "ex6"] = "6"
 df$exchange = as.numeric(df$exchange)
+
+df %>%
+  select(id, patch_size,)
+
+
 
 # --- PLOTS --- #
 
