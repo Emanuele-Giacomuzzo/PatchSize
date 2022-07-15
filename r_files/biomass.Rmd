@@ -145,7 +145,7 @@ ggsave(here("results", "biomass", "Clean_biomass_low.jpg"), grid, width = 22, he
 
 Let's now try to add some error bars.
 
-```{r error bars}
+```{r error bars, eval=FALSE}
 
 ds_sd = ds %>%
     filter ( disturbance == "low") %>%

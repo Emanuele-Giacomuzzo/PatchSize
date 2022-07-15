@@ -2,15 +2,11 @@ biomass_plots = function(disturbance_input){
   
   p = NULL
   
-  p[[1]] <<- ds %>%
-    filter ( disturbance == disturbance_input) %>%
+  p[[1]] <<- ds_regional %>%
+    filter (disturbance == disturbance_input) %>%
     filter (metaecosystem_type == "S_L" | metaecosystem_type == "M_M") %>%
-    group_by(culture_ID, day, metaecosystem_type, system_nr, patch_size) %>%
-    summarise(patch_mean_bioarea_across_videos = mean(bioarea_per_volume)) %>%
-    group_by(day,metaecosystem_type, system_nr) %>%
-    summarise(bioarea_per_volume = mean(patch_mean_bioarea_across_videos)) %>%
     ggplot (aes(x = day,
-                y = bioarea_per_volume,
+                y = regional_mean_bioarea,
                 group = interaction(day, metaecosystem_type),
                 fill = metaecosystem_type,
                 color = metaecosystem_type)) +
@@ -23,15 +19,11 @@ biomass_plots = function(disturbance_input){
     theme_bw() +
     theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())
   
-  p[[2]] <<- ds %>%
+  p[[2]] <<- ds_regional %>%
     filter ( disturbance == disturbance_input) %>%
     filter (metaecosystem_type == "S_L" | metaecosystem_type == "M_M") %>%
-    group_by(culture_ID, day, metaecosystem_type, system_nr, patch_size) %>%
-    summarise(patch_mean_bioarea_across_videos = mean(bioarea_per_volume)) %>%
-    group_by(day,metaecosystem_type, system_nr) %>%
-    summarise(bioarea_per_volume = mean(patch_mean_bioarea_across_videos)) %>%
     ggplot (aes(x = day,
-                y = bioarea_per_volume,
+                y = regional_mean_bioarea,
                 fill = metaecosystem_type,
                 color = metaecosystem_type)) +
     geom_point(stat = "summary", fun = "mean") +
