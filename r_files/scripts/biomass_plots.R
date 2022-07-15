@@ -53,11 +53,11 @@ biomass_plots = function(disturbance_input){
                fill = eco_metaeco_type,
                color = eco_metaeco_type)) +
     geom_boxplot() +
-    labs(x = "Day", y = "Local biomass (bioarea/µl)", color='Patch type', fill='Patch type') +
+    labs(x = "Day", y = "Local biomass (bioarea/µl)", color='Closed ecosystem size', fill='Closed ecosystem size') +
     scale_y_continuous(limits=c(0, 6250)) +
     scale_x_continuous(limits = c(-2, 30)) +
-    scale_fill_discrete(labels = c("Small (closed ecosystem)", "Medium (closed ecosystem)", "Large (closed ecosystem)")) +
-    scale_color_discrete(labels = c("Small (closed ecosystem)", "Medium (closed ecosystem)", "Large (closed ecosystem)")) +
+    scale_fill_discrete(labels = c("Small", "Medium", "Large")) +
+    scale_color_discrete(labels = c("Small", "Medium", "Large")) +
     theme_bw() +
     theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())
   
@@ -70,11 +70,11 @@ biomass_plots = function(disturbance_input){
                color = eco_metaeco_type)) +
     geom_point(stat = "summary", fun = "mean") +
     geom_line(stat = "summary", fun = "mean") +
-    labs(x = "Day", y = "Local biomass (bioarea/µl)", color='Patch type', fill='Patch type') +
+    labs(x = "Day", y = "Local biomass (bioarea/µl)", color='Closed ecosystem size', fill='Closed ecosystem size') +
     scale_y_continuous(limits=c(0, 6250)) +
     scale_x_continuous(limits = c(-2, 30)) +
-    scale_fill_discrete(labels = c("Small (closed ecosystem)", "Medium (closed ecosystem)", "Large (closed ecosystem)")) +
-    scale_color_discrete(labels = c("Small (closed ecosystem)", "Medium (closed ecosystem)", "Large (closed ecosystem)")) +
+    scale_fill_discrete(labels = c("Small", "Medium", "Large")) +
+    scale_color_discrete(labels = c("Small", "Medium", "Large")) +
     theme_bw() +
     theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())
   

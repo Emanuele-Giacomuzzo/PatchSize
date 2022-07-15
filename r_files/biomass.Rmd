@@ -5,13 +5,14 @@ date: '2022-07-07'
 output: html_document
 editor_options: 
   chunk_output_type: console
+bibliography: /Applications/Mendeley/library.bib
 ---
 
-Here I study how **biomass density** changes across treatments in the PatchSizePilot. In particular, I'm studying how:
+Here I study how **biomass density** changes across treatments in the PatchSizePilot. In particular, I'm studying how biomass density changes across:
 
--   Biomass density changes across ecosystems of different size (this is the case in nature, but we need to make sure that it's the case also in our experiment)\
--   Biomass density changes across ecosystems that are connected (throug the flow of nutrients) to an ecosystem of the same size or to an ecosystem that is larger\
--   Biomass density changes across meta-ecosystems in which patch size is the same or in which one patch has most of the area (we keep the total area of the meta-ecosystem constant)
+-   ecosystems of different size (this is the case in nature, but we need to make sure that it's the case also in our experiment)\
+-   ecosystems that are connected (through the flow of nutrients) to an ecosystem of the same size or to an ecosystem that is larger\
+-   meta-ecosystems in which patch size is the same or in which one patch has most of the area (we keep the total area of the meta-ecosystem constant)
 
 ```{r set up environment, message = FALSE, echo = FALSE}
 
@@ -23,6 +24,7 @@ library("gridExtra")
 library("lme4")
 library("here")
 library("MuMIn")
+library("equatiomatic")
 
 source(here("r_files", "scripts", "biomass_plots.R"))
 
@@ -49,7 +51,7 @@ rm(pop_output)
 
 # Tidy
 
-```{r tidy up, echo = TRUE}
+```{r tidy up, echo=}
 
 t0$time = NA
 t1$time = NA
@@ -104,6 +106,16 @@ ds$eco_metaeco_type = factor(ds$eco_metaeco_type, levels=c('S', 'S (S_S)', 'S (S
 
 ```
 
+```{r create regional biomass dataset}
+
+ds_regional = ds %>%
+    group_by(culture_ID, system_nr, disturbance, day, patch_size, metaecosystem_type) %>%
+    summarise(patch_mean_bioarea_across_videos = mean(bioarea_per_volume)) %>%
+    group_by(system_nr, disturbance, day,metaecosystem_type) %>%
+    summarise(regional_mean_bioarea = mean(patch_mean_bioarea_across_videos))
+
+```
+
 # Plot
 
 ## Biomass \@ low disturbance
@@ -128,6 +140,37 @@ grid = grid.arrange(p[[1]],p[[3]],p[[5]],p[[2]],p[[4]],p[[6]],
                     ncol=3, nrow=2,
                     top = textGrob("Low disturbance",gp=gpar(fontsize=20,font=3)))
 ggsave(here("results", "biomass", "Clean_biomass_low.jpg"), grid, width = 22, height = 13)
+
+```
+
+Let's now try to add some error bars.
+
+```{r error bars}
+
+ds_sd = ds %>%
+    filter ( disturbance == "low") %>%
+    filter (metaecosystem_type == "S_L" | metaecosystem_type == "M_M") %>%
+    group_by(culture_ID, day, metaecosystem_type, system_nr, patch_size) %>%
+    summarise(patch_mean_bioarea_across_videos = mean(bioarea_per_volume)) %>%
+    group_by(day,metaecosystem_type, system_nr) %>%
+    summarise(regional_mean_bioarea_per_volume = mean(patch_mean_bioarea_across_videos), sd_bioarea_per_volume = sd(patch_mean_bioarea_across_videos)) 
+
+ds_sd %>%
+    ggplot (aes(x = day,
+                y = regional_mean_bioarea_per_volume,
+                fill = metaecosystem_type,
+                color = metaecosystem_type)) +
+    geom_point(stat = "summary", fun = "mean") +
+    geom_line (stat = "summary", fun = "mean") +
+    labs(x = "Day", y = "Regional biomass (average bioarea between 2 patches/µl)", color='Meta-ecosystem type', fill='Meta-ecosystem type') +
+    scale_fill_discrete(labels = c("Patches of same size", "Patches of different size")) +
+    scale_color_discrete(labels = c("Patches of same size", "Patches of different size")) +
+    theme_bw() +
+    theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) +
+    geom_errorbar(aes(ymin = regional_mean_bioarea_per_volume - sd_regional_mean_bioarea_per_volume, ymax = regional_mean_bioarea_per_volume + sd_regional_mean_bioarea_per_volume),
+                  width=.2,
+                  position=position_dodge(.3))
+
 
 ```
 
@@ -161,17 +204,9 @@ ggsave(here("results", "biomass", "Clean_biomass_high.jpg"), grid, width = 22, h
 
 ## Regional biomass
 
-We want to understand if the regional biomass produced by an ecosystem with a small and a large patch (metaecosystem_type = S_L) is lower than the regional biomass produced by an ecosystem with two medium patches (metaecosystem_type = M_M). To model the regional biomass, let's start from the largest mixed effect model makes sense to construct. This will include:
+First of all, let's produce a dataset including the regional biomass of all our meta ecosystems for all the datapoints but the first one. We took off the first data point because we don't want to consider it in the analysis, as the fact that all the meta-ecosystems had the same regional biomass was a construct of our experimental design.
 
-- As fixed effect: disturbance, metaecosystem type, and the interaction betweeen disturbance and metaecosystem type. 
-- As random effect: day. The metaecosystem ID will not be considered as a random effect because it already includes the fixed effects (disturbance and metaecosystem type). 
-
-In equation form, therefore, the full mixed effect model will take the following form:
-
-$$biomass = (β_0 * + λ1_t) +  (β_1 * λ2_t)* metaecosystem \: type +(β_2 * λ3_t)* disturbance +  (β_3*λ4_t)*metaecosystem \: type * disturbance + ε $$
-After having produced the full model, we will modify the model and see if we can improve it. To build the mixed effect models we will use the R package lme4. See page 6 of [this PDF](https://cran.r-project.org/web/packages/lme4/vignettes/lmer.pdf) to know more about the syntaxis of this package. 
-
-```{r mixed effect model, message=FALSE}
+```{r produce regional biomass dataset}
 
 ds_regional = ds %>%
     filter (metaecosystem_type == "M_M" | metaecosystem_type == "S_L", day != 0) %>%
@@ -180,6 +215,23 @@ ds_regional = ds %>%
     group_by(system_nr, disturbance, day,metaecosystem_type) %>%
     summarise(regional_mean_bioarea = mean(patch_mean_bioarea_across_videos)) %>%
     filter()
+
+```
+
+We want to understand if the regional biomass produced by an ecosystem with a small and a large patch (metaecosystem_type = S_L) is lower than the regional biomass produced by an ecosystem with two medium patches (metaecosystem_type = M_M). To model the regional biomass, let's start from the largest mixed effect model makes sense to construct.
+
+### First analysis
+
+This will include:
+
+-   As fixed effect: disturbance, metaecosystem type, and the interaction betweeen disturbance and metaecosystem type.
+-   As random effect: day. The metaecosystem ID will not be considered as a random effect because it already includes the fixed effects (disturbance and metaecosystem type).
+
+In equation form, therefore, the full mixed effect model will take the following form:
+
+$$biomass = (β_0 * + λ1_t) +  (β_1 * λ2_t)* metaecosystem \: type +(β_2 * λ3_t)* disturbance +  (β_3*λ4_t)*metaecosystem \: type * disturbance + ε $$ After having produced the full model, we will modify the model and see if we can improve it. To build the mixed effect models we will use the R package lme4. See page 6 of [this PDF](https://cran.r-project.org/web/packages/lme4/vignettes/lmer.pdf) to know more about the syntaxis of this package.
+
+```{r mixed effect model, message=FALSE}
 
 #Uncorrelated intercepts and slopes
 full_model = lmer(regional_mean_bioarea ~ metaecosystem_type  + disturbance + metaecosystem_type * disturbance + (metaecosystem_type || day) + (disturbance || day) + (metaecosystem_type*disturbance  || day), data = ds_regional, REML = FALSE)
@@ -203,21 +255,21 @@ anova(full_model, full_model_correlated, no_interaction_model, no_interaction_no
 
 ```
 
-First of all, it seems like there is no correlation between intercepts and slopes. Which is exactly what we would expect. In other words, there is no reason why we would expect that if the biomass production by the M_M meta-ecosystem is higher (higher intercept), then the difference between the production of M_M and S_L  is higher/lower (higher/lower slope). 
+First of all, it seems like there is no correlation between intercepts and slopes. Which is exactly what we would expect. In other words, there is no reason why we would expect that if the biomass production by the M_M meta-ecosystem is higher (higher intercept), then the difference between the production of M_M and S_L is higher/lower (higher/lower slope).
 
-Second, the best model (no_interaction_no_slopes_model) seems to be the one where there is 
+Second, the best model (no_interaction_no_slopes_model) seems to be the one where there is
 
-- no interaction between disturbance and meta-ecosystem type on regional biomass production
-- no random slopes (at different days, it seems like the difference between the production of different meta-ecosystem types stays the same across time)
+-   no interaction between disturbance and meta-ecosystem type on regional biomass production
+-   no random slopes (at different days, it seems like the difference between the production of different meta-ecosystem types stays the same across time)
 
 In equation form is as follows:
 
 $$biomass = (β_0 + intercept_{t}) + β_1 metaecosystem \: type * β_2 disturbance + ε $$
 
-Before accepting this model, however, we need to do some model diagnostics. To assess how well the model fits the data, I'm going to look at the following two plotso (as suggested by Zuur2009, page 487):
+Before accepting this model, however, we need to do some model diagnostics. To assess how well the model fits the data, I'm going to look at the following two plotso (as suggested by @Zuur2009, page 487):
 
-- Quantile-quantile plots
-- Partial residual plots
+-   Quantile-quantile plots
+-   Partial residual plots
 
 ```{r model diagnostics best model}
 
@@ -228,7 +280,7 @@ qqnorm(resid(no_interaction_no_slopes_model))
 
 That's our lucky day. The two plots look fabulous.
 
-Will this model be stastically significant? Let's take a look. 
+Will this model be stastically significant? Let's take a look.
 
 ```{r}
 
@@ -247,7 +299,7 @@ This difference is significant as it has a p-value of `r p`. Great!
 
 The marginal R squared (variance explained by the fixed effects) is `r round(r2 [1], digits = 1)` and the conditional R squared (variance explained by the entire model) is `r round(r2 [2], digits = 1)`. Fopr the coding and interpretation of these r squared check the [documentation for the r.squaredGLMM function](https://rdrr.io/cran/MuMIn/man/r.squaredGLMM.html). This is great!
 
-Let's now take a look at what happens if we take off the metaecosystem type.
+Let's now take a look at what happens if we take off the meta-ecosystem type.
 
 ```{r coefficient of determination}
 
@@ -259,7 +311,7 @@ p = anova$`Pr(>Chisq)`[2]
 
 It's significant (p-value = `r p`), which means that including metaecosystem_effect increases the goodness of the model.
 
-Let's make sure, however, that this null model is legit. 
+Let's make sure, however, that this null model is legit.
 
 ```{r model diagnostics null model}
 
@@ -268,9 +320,9 @@ qqnorm(resid(no_interaction_no_slopes_model_null))
 
 ```
 
-Okay that's good. At this point we want to know the r squared for the 
+Okay that's good. At this point we want to know the r squared for the
 
-```{r}
+```{r, eval = FALSE}
 
 metaecosystem_type_model = lmer(regional_mean_bioarea ~  metaecosystem_type  + (1 | day), data = ds_regional, REML = FALSE)
 r.squaredGLMM(metaecosystem_type_model)
@@ -280,24 +332,106 @@ r.squaredGLMM(disturbance_type_model)
 
 ```
 
-```{r fitting also a function}
+But wait! Me and Tianna figured out that the effects size of meta-ecosystem type if we include time as random effect and we don't include the meta-ecosystem ID is really small (R2 = 0.06). Also, it seems like meta-ecosystem type is more important than disturbance (R2 = 0.04). We are not sure if this difference is statistically significant, but it would be worth exploring it. Time had the larger effect, of course (R2 = 0.7). Next step now are therefore:
 
-a1 = 0.02
-a2 = 1
-a3 = 2
-a4 = 5
-a5 = 50
-x = seq(0, 500, 0.01)
-y = a4*(x-a5)^a3*exp(a1*(x-a5)^a2)
+-   Fit biomass to the function of Hank
+-   Add meta-ecosystem ID
 
-model = nls(regional_mean_bioarea ~ y, start = list(a=2000,b=5,c=200),trace = T)
+### Second analysis
+
+#### Include meta-ecosystem ID as random effect.
+
+Let's include meta-ecosystem ID as a random effect in the same models as before. Then, let's check how the models compare.
+
+```{r}
+
+#Uncorrelated intercepts and slopes
+system_nr_full_model = lmer(regional_mean_bioarea ~ metaecosystem_type  + disturbance + metaecosystem_type * disturbance + (metaecosystem_type || day) + (disturbance || day) + (metaecosystem_type*disturbance  || day) + (metaecosystem_type || system_nr) + (disturbance || system_nr) + (metaecosystem_type*disturbance  || system_nr), data = ds_regional, REML = FALSE)
+
+#Correlated intercepts and slopes
+system_nr_full_model_correlated = lmer(regional_mean_bioarea ~ metaecosystem_type  + disturbance + metaecosystem_type * disturbance + (metaecosystem_type | day) + (disturbance | day) + (metaecosystem_type*disturbance  | day) + (metaecosystem_type | system_nr) + (disturbance | system_nr) + (metaecosystem_type*disturbance  | system_nr), data = ds_regional, REML = FALSE)
+
+#No random effects
+system_nr_fixed_effects_model = lm(regional_mean_bioarea ~ metaecosystem_type  + disturbance, data = ds_regional)
+
+#No interaction between metaecosystem and disturbance (not working)
+# no_interaction_model = lmer(regional_mean_bioarea ~ metaecosystem_type + disturbance  + (metaecosystem_type || day) + (disturbance || day) + (metaecosystem_type || system_nr) + (disturbance || system_nr), data = ds_regional, REML = FALSE)
+
+#No interaction between metaecosystem and disturbance, no random slopes
+system_nr_no_interaction_no_slopes_model = lmer(regional_mean_bioarea ~ metaecosystem_type + disturbance  + (1 | day) + (1|system_nr), data = ds_regional, REML = FALSE)
+
+#No random slopes
+system_nr_no_slopes_model = lmer(regional_mean_bioarea ~ metaecosystem_type  + disturbance + metaecosystem_type * disturbance + (1| day) + (1|system_nr),data = ds_regional, REML = FALSE)
+
+anova(system_nr_full_model, system_nr_full_model_correlated, system_nr_no_interaction_no_slopes_model, system_nr_no_slopes_model)
 
 ```
 
+Also in this case the model the best model is the one (i) without the interaction of disturbance and biomass and (ii) without random slopes.
 
+Let's now compare the previous best mixed effect model that had only time as random effect with the one that now includes also system_nr as random effect.
 
+```{r}
 
+anova = anova(no_interaction_no_slopes_model, system_nr_no_interaction_no_slopes_model)
+
+p = anova$`Pr(>Chisq)`[2]
+p = round(p, digits = 2)
+
+```
+
+It seems like it doesn't really matter, as p-value \> 0.05 (p = `r p`).
+
+Just to make sure, let's run a model diagnostic for also this latest model with random effects of system_nr.
+
+```{r diagnostics model system_nr}
+
+plot(system_nr_no_interaction_no_slopes_model, col = 1)
+qqnorm(resid(system_nr_no_interaction_no_slopes_model))
+
+```
+
+Looks good.
+
+#### Fit function to time dynamics
+
+Let's start by producing a function and parameters that resemble the biomass dynamics of our system. The formula looks as follows:
+
+$$y = a_4 * (x-a_5)^{a_3} * e^{a_1(x-a_5)^{a_2}}$$
+
+```{r time function Hank}
+
+a1 = -0.02
+a2 = 1
+a3 = 2
+a4 = 5
+a5 = -25
+x = seq(0, 500, 0.01)
+y = a4*(x-a5)^a3*exp(a1*(x-a5)^a2) #Latex form: y = a4*(x-a5)^{a3} * e^{a1*(x-a5)^{a2}}
+plot(y ~ x)
+
+```
+
+The curve resembles the temporal dynamics of regional biomass within a meta-ecosystem (thanks Hank!). I Now, let's see if this curve with these parameters fits our data.
+
+```{r, eval=FALSE}
+
+model = nls(regional_mean_bioarea ~ a4*(day-a5)^a3*exp(a1*(day-a5)^a2), 
+            start = list(a1 = -0.02, a2 = 1, a3 = 2, a4 = 5, a5 = -25),
+            trace = T,
+            data = ds_regional)
+
+```
+
+It seems like the nls function (which fits non-linear functions to data) can't work, as the parameters I set at the beginning are not good enough. The error is as follows:
+
+-   **Error in nlsModel(formula, mf, start, wts, scaleOffset = scOff, nDcentral = nDcntr) : singular gradient matrix at initial parameter estimates)**
+
+We now have two possibilities:
+
+-   Find parameters by hand
+-   Find parameters automatically
+
+Let's try by hand. The problem here is that I need to make it go to 0 around 30, but now it goes to 0 at 500. And it also overshoots over 10.000.
 
 # Bibliography
-
-Zuur, A. F., Ieno, E. N., Walker, N. J., Saveliev, A. A., & Smith, G. M. (2009). Mixed effects models and extensions in ecology with R (Vol. 574). New York: Springer.
