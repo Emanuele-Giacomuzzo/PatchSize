@@ -393,5 +393,46 @@ qqnorm(resid(system_nr_no_interaction_no_slopes_model))
 
 Looks good.
 
+#### Fit function to time dynamics
+
+Let's start by producing a function and parameters that resemble the biomass dynamics of our system. The formula looks as follows:
+
+$$y = a_4 * (x-a_5)^{a_3} * e^{a_1(x-a_5)^{a_2}}$$
+
+```{r time function Hank}
+
+a1 = -0.02
+a2 = 1
+a3 = 2
+a4 = 5
+a5 = -25
+x = seq(0, 500, 0.01)
+y = a4*(x-a5)^a3*exp(a1*(x-a5)^a2) #Latex form: y = a4*(x-a5)^{a3} * e^{a1*(x-a5)^{a2}}
+plot(y ~ x)
+
+```
+
+The curve resembles the temporal dynamics of regional biomass within a meta-ecosystem (thanks Hank!). I Now, let's see if this curve with these parameters fits our data.
+
+```{r, eval=FALSE}
+
+model = nls(regional_mean_bioarea ~ a4*(day-a5)^a3*exp(a1*(day-a5)^a2), 
+            start = list(a1 = -0.02, a2 = 1, a3 = 2, a4 = 5, a5 = -25),
+            trace = T,
+            data = ds_regional)
+
+```
+
+It seems like the nls function (which fits non-linear functions to data) can't work, as the parameters I set at the beginning are not good enough. The error is as follows:
+
+-   **Error in nlsModel(formula, mf, start, wts, scaleOffset = scOff, nDcentral = nDcntr) : singular gradient matrix at initial parameter estimates)**
+
+We now have two possibilities:
+
+-   Find parameters by hand
+-   Find parameters automatically
+
+Let's try by hand. The problem here is that I need to make it go to 0 around 30, but now it goes to 0 at 500. And it also overshoots over 10.000.
+
 
 # Bibliography
