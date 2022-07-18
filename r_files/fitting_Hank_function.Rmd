@@ -114,9 +114,9 @@ Now the problem is: how do you create a function in r ?
 
 Okay, this is too confusing.
 
-Let's switch to [this following](https://khufkens.com/2016/10/02/paramater-estimation-in-r-a-simple-stomatal-conductance-model-example/).
+Let's switch to [this other tutorial](https://khufkens.com/2016/10/02/paramater-estimation-in-r-a-simple-stomatal-conductance-model-example/).
 
-```{r Hufkens tutorial}
+```{r Hufkens tutorial, eval = FALSE}
 
 gs.model = function(par = par, data = data) {
 
@@ -145,7 +145,7 @@ gs.model = function(par = par, data = data) {
 cost.function <- function(data, par) {
  obs <- as.vector(data$COND)
  pred <- as.vector(gs.model(par = par, data = data))
- s < (obs - pred)^2
+ s <- (obs - pred)^2
  RMSE <- sqrt(mean(s, na.rm = TRUE))
  return(RMSE)
 }
@@ -175,13 +175,13 @@ From this, I adapt it to my own model.
 
 ```{r adapted from Hufkens}
 
-a1 = -0.02
-a2 = 1
-a3 = 2
-a4 = 5
-a5 = -25
+ds_regional %>%
+  ggplot(aes(x = day,
+             y = regional_mean_bioarea,
+             group = day)) + 
+  geom_boxplot()
 
-par = c(a1,a2,a3,a4,a5)
+par = c(-0.07,1.01,2,5,-20)
 
 biomass_model = function(par = par, ds_regional = ds_regional) {
 
@@ -199,13 +199,12 @@ biomass_model = function(par = par, ds_regional = ds_regional) {
  
 }
 
-#Cost function is here defined as the root mean squared error (RMSE) between the observed and the predicted values
 cost.function <- function(ds_regional, par) {
 
    obs = as.vector(ds_regional$regional_mean_bioarea)
    pred = as.vector(biomass_model(par = par, ds_regional = ds_regional))
-   s < (obs - pred)^2
-   RMSE <- sqrt(mean(s, na.rm = TRUE))
+   s = (obs - pred)^2
+   RMSE = sqrt(mean(s, na.rm = TRUE))
    
    return(RMSE)
 
@@ -224,13 +223,115 @@ optim.par = GenSA(
   ds_regional = ds_regional,
   lower = lower,
   upper = upper,
-  control=list(temperature = 4000)
+  control = list(temperature = 4000)
 
   )
+
+par = optim.par$par
+
+a1 = par[1]
+a2 = par[2]
+a3 = par[3]
+a4 = par[4]
+a5 = par[5]
+
+x = seq(0, 30, 0.01)
+y = a4*(x-a5)^a3*exp(a1*(x-a5)^a2) #Latex form: y = a4*(x-a5)^{a3} * e^{a1*(x-a5)^{a2}}
+plot(y ~ x)
 
 
 ```
 
-It gives me the following error:
+It doesn't seem to work. I need to do one of the following things:
 
-- Error in fn(par, ...) : object 's' not found
+- change function 
+- change initial parameters 
+
+Let's now try to fit using a single metaecosystem.
+
+
+```{r adapted from Hufkens single ecosystem}
+
+ds_regional_24 = ds_regional %>%
+  filter(system_nr == 24) 
+
+ds_regional_24%>%
+  ggplot(aes(x = day,
+             y = regional_mean_bioarea,
+             group = day)) + 
+  geom_boxplot()
+
+par = c(-0.07,1.01,2,5,-20)
+
+biomass_model = function(par = par, ds_regional_24 = ds_regional_24) {
+
+ regional_mean_bioarea = ds_regional_24$regional_mean_bioarea
+ day = ds_regional_24$day
+ a1 = par[1]
+ a2 = par[2]
+ a3 = par[3]
+ a4 = par[4]
+ a5 = par[5]
+
+ biomass = a4 * (x-a5)^a3 * exp(a1*(x-a5)^a2)
+
+ return(biomass)
+ 
+}
+
+cost.function <- function(ds_regional_24, par) {
+
+   obs = as.vector(ds_regional_24$regional_mean_bioarea)
+   pred = as.vector(biomass_model(par = par, ds_regional_24 = ds_regional_24))
+   s = (obs - pred)^2
+   RMSE = sqrt(mean(s, na.rm = TRUE))
+   
+   return(RMSE)
+
+   }
+
+
+# limits to the parameter space
+lower <- c(-10,-10,-10,-10,-10)
+upper <- c(100,100,100,100,100)
+
+# optimize the model parameters
+optim.par = GenSA(
+  
+  par = par,
+  fn = cost.function,
+  ds_regional_24 = ds_regional_24,
+  lower = lower,
+  upper = upper,
+  control = list(temperature = 4000)
+
+  )
+
+par = optim.par$par
+
+a1 = par[1]
+a2 = par[2]
+a3 = par[3]
+a4 = par[4]
+a5 = par[5]
+
+x = seq(0, 30, 0.01)
+y = a4*(x-a5)^a3*exp(a1*(x-a5)^a2) #Latex form: y = a4*(x-a5)^{a3} * e^{a1*(x-a5)^{a2}}
+plot(y ~ x)
+
+
+```
+
+It might take a while to do either things. So, because I have the meta-ecosystem meeting soon, i will try to plot using the logarithm of the biomass.
+
+```{r plot biomass logarithm}
+
+ds_regional %>%
+  ggplot(aes(x = day,
+             y = log(regional_mean_bioarea),
+             group = day)) + 
+  geom_boxplot()
+
+
+```
+
