@@ -3,6 +3,8 @@ title: "fitting_Hank_function"
 author: "Emanuele Giacomuzzo"
 date: '2022-07-18'
 output: html_document
+editor_options: 
+  chunk_output_type: console
 ---
 
 Let's start by producing a function and parameters that resemble the biomass dynamics of our system. The formula looks as follows:
@@ -43,3 +45,192 @@ We now have two possibilities:
 -   Find parameters automatically
 
 Let's try by hand. The problem here is that I need to make it go to 0 around 30, but now it goes to 0 at 500. And it also overshoots over 10.000.
+
+Speaking with Killian, he told me that the nls function is not that powerful. He suggests:
+
+-   Using a generalised simulated annealing (using the GenSA package)
+-   Transforming biomass into its logarithm
+
+I'll start from the [GenSA package](https://cran.r-project.org/web/packages/GenSA/GenSA.pdf).
+
+```{r fit using GenSA}
+
+library(GenSA)
+
+Hank_function = function(x) {
+  
+  a4*(x-a5)^a3*exp(a1*(x-a5)^a2)  
+  
+  }
+
+
+set.seed(1234) # The user can use any seed.
+dimension = 30
+global.min = 0
+tol = 1e-13
+lower = rep(-5.12, dimension)
+upper = rep(5.12, dimension)
+
+out = GenSA(lower = lower, 
+            upper = upper, 
+            fn = Hank_function,
+            control = list(threshold.stop=global.min+tol,verbose=TRUE))
+
+out[c("value","par","counts")]
+
+
+```
+
+It seems like to give it the data and the function to which we want to fit them, we should take the approach of [this link](https://jarrettmeyer.com/2020/03/21/simulated-annealing-for-parameter-estimation). It works as follows in the following example:
+
+```{r}
+
+df <- data.frame(quantile = c(0.05, 0.10, 0.25, 0.50, 0.75, 0.90, 0.95),
+                 value = c(4.7, 4.8, 5.1, 5.4, 5.7, 6.1, 6.8))
+
+fun <- function (x) {
+    shape <- x[1]
+    scale <- x[2]
+    df$est <- qgamma(df$quantile, shape, scale)
+    df$sq_err <- (df$est - df$value) ^ 2
+    error <- sum(df$sq_err)
+    error
+}
+
+
+lower_bound <- 1e-6
+upper_bound <- 100
+
+fit <- GenSA(par = c(1, 1), 
+             fn = fun, 
+             lower = c(lower_bound, lower_bound), 
+             upper = c(upper_bound, upper_bound))
+
+```
+
+The `fit$par` is the sum of squared estimate of errors (SSE) and the `fit$par` are the distribution parameters.
+
+Now the problem is: how do you create a function in r ?
+
+Okay, this is too confusing.
+
+Let's switch to [this following](https://khufkens.com/2016/10/02/paramater-estimation-in-r-a-simple-stomatal-conductance-model-example/).
+
+```{r Hufkens tutorial}
+
+gs.model = function(par = par, data = data) {
+
+ # put variables in readable format
+ vpd <- data$vpd
+ co2 <- data$co2
+ par_val <- data$par
+ gmax <- data$gmax
+
+ # unfold parameters
+ # for clarity
+ c1 <- par[1]
+ c2 <- par[2]
+ v2 <- par[3]
+ p1 <- par[4]
+
+ # model formulation
+ gs <- gmax * c1 * exp(c2 * co2) * exp(v2 * vpd) * (( 2000 * par_val) / (p1 + par_val))
+
+ # return stomatal conductance
+ return(gs)
+}
+
+# run model and compare to true values
+# returns the RMSE
+cost.function <- function(data, par) {
+ obs <- as.vector(data$COND)
+ pred <- as.vector(gs.model(par = par, data = data))
+ s < (obs - pred)^2
+ RMSE <- sqrt(mean(s, na.rm = TRUE))
+ return(RMSE)
+}
+
+# starting model parameters
+par = c(0.65, -0.002, -0.689, 0.05)
+
+# limits to the parameter space
+lower <- c(0,-10,-100,0)
+upper <- c(100,0,0,100)
+
+# optimize the model parameters
+optim.par = GenSA(
+ par = par,
+ fn = cost.function,
+ data = data,
+ lower = lower,
+ upper = upper,
+ control=list(temperature = 4000)
+)
+
+
+
+```
+
+From this, I adapt it to my own model.
+
+```{r adapted from Hufkens}
+
+a1 = -0.02
+a2 = 1
+a3 = 2
+a4 = 5
+a5 = -25
+
+par = c(a1,a2,a3,a4,a5)
+
+biomass_model = function(par = par, ds_regional = ds_regional) {
+
+ regional_mean_bioarea = ds_regional$regional_mean_bioarea
+ day = ds_regional$day
+ a1 = par[1]
+ a2 = par[2]
+ a3 = par[3]
+ a4 = par[4]
+ a5 = par[5]
+
+ biomass = a4 * (x-a5)^a3 * exp(a1*(x-a5)^a2)
+
+ return(biomass)
+ 
+}
+
+#Cost function is here defined as the root mean squared error (RMSE) between the observed and the predicted values
+cost.function <- function(ds_regional, par) {
+
+   obs = as.vector(ds_regional$regional_mean_bioarea)
+   pred = as.vector(biomass_model(par = par, ds_regional = ds_regional))
+   s < (obs - pred)^2
+   RMSE <- sqrt(mean(s, na.rm = TRUE))
+   
+   return(RMSE)
+
+   }
+
+
+# limits to the parameter space
+lower <- c(-10,-10,-10,-10,-10)
+upper <- c(100,100,100,100,100)
+
+# optimize the model parameters
+optim.par = GenSA(
+  
+  par = par,
+  fn = cost.function,
+  ds_regional = ds_regional,
+  lower = lower,
+  upper = upper,
+  control=list(temperature = 4000)
+
+  )
+
+
+```
+
+It gives me the following error:
+
+- Error in fn(par, ...) : object 's' not found
