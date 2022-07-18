@@ -143,37 +143,6 @@ ggsave(here("results", "biomass", "Clean_biomass_low.jpg"), grid, width = 22, he
 
 ```
 
-Let's now try to add some error bars.
-
-```{r error bars, eval=FALSE}
-
-ds_sd = ds %>%
-    filter ( disturbance == "low") %>%
-    filter (metaecosystem_type == "S_L" | metaecosystem_type == "M_M") %>%
-    group_by(culture_ID, day, metaecosystem_type, system_nr, patch_size) %>%
-    summarise(patch_mean_bioarea_across_videos = mean(bioarea_per_volume)) %>%
-    group_by(day,metaecosystem_type, system_nr) %>%
-    summarise(regional_mean_bioarea_per_volume = mean(patch_mean_bioarea_across_videos), sd_bioarea_per_volume = sd(patch_mean_bioarea_across_videos)) 
-
-ds_sd %>%
-    ggplot (aes(x = day,
-                y = regional_mean_bioarea_per_volume,
-                fill = metaecosystem_type,
-                color = metaecosystem_type)) +
-    geom_point(stat = "summary", fun = "mean") +
-    geom_line (stat = "summary", fun = "mean") +
-    labs(x = "Day", y = "Regional biomass (average bioarea between 2 patches/µl)", color='Meta-ecosystem type', fill='Meta-ecosystem type') +
-    scale_fill_discrete(labels = c("Patches of same size", "Patches of different size")) +
-    scale_color_discrete(labels = c("Patches of same size", "Patches of different size")) +
-    theme_bw() +
-    theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) +
-    geom_errorbar(aes(ymin = regional_mean_bioarea_per_volume - sd_regional_mean_bioarea_per_volume, ymax = regional_mean_bioarea_per_volume + sd_regional_mean_bioarea_per_volume),
-                  width=.2,
-                  position=position_dodge(.3))
-
-
-```
-
 ## Biomass \@ high disturbance
 
 ```{r high disturbance single plots, eval = TRUE, echo = FALSE, message = FALSE}
