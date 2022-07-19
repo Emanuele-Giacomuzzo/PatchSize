@@ -7,9 +7,28 @@ editor_options:
   chunk_output_type: console
 ---
 
-Let's start by producing a function and parameters that resemble the biomass dynamics of our system. The formula looks as follows:
+#### Hank function
+
+Here we want to fit how biomass changes across time to a function. The biomass of our meta-ecosystems looks like this.
+
+```{r regional biomass plot}
+
+ds_regional%>%
+  ggplot(aes(x = day,
+             y = regional_mean_bioarea,
+             group = day)) + 
+  geom_boxplot() +
+  labs(x = "day", y = "regional bioarea")
+
+```
+
+To fit these data, we need to produce (and parameterise) a function that resemble how the biomass first increases and then decreases.
+
+Hank produced the following function:
 
 $$y = a_4 * (x-a_5)^{a_3} * e^{a_1(x-a_5)^{a_2}}$$
+
+If we parameterise the function and then plot, it looks as follows.
 
 ```{r time function Hank}
 
@@ -18,13 +37,17 @@ a2 = 1
 a3 = 2
 a4 = 5
 a5 = -25
-x = seq(0, 500, 0.01)
-y = a4*(x-a5)^a3*exp(a1*(x-a5)^a2) #Latex form: y = a4*(x-a5)^{a3} * e^{a1*(x-a5)^{a2}}
-plot(y ~ x)
 
+x = seq(0, 500, 0.01)
+
+y = a4*(x-a5)^a3*exp(a1*(x-a5)^a2) #Latex form: y = a4*(x-a5)^{a3} * e^{a1*(x-a5)^{a2}}
+
+plot(y ~ x)
 ```
 
-The curve resembles the temporal dynamics of regional biomass within a meta-ecosystem (thanks Hank!). I Now, let's see if this curve with these parameters fits our data.
+##### nls
+
+Now, let's see if this curve with these parameters fits our data. The easiest way of fitting the function is using the `nls` function from the basic r package.
 
 ```{r, eval=FALSE}
 
@@ -35,153 +58,26 @@ model = nls(regional_mean_bioarea ~ a4*(day-a5)^a3*exp(a1*(day-a5)^a2),
 
 ```
 
-It seems like the nls function (which fits non-linear functions to data) can't work, as the parameters I set at the beginning are not good enough. The error is as follows:
+However, it seems like the nls function (which fits non-linear functions to data) is not powerful enough. The error is as follows:
 
--   **Error in nlsModel(formula, mf, start, wts, scaleOffset = scOff, nDcentral = nDcntr) : singular gradient matrix at initial parameter estimates)**
+-   [***Error in nlsModel(formula, mf, start, wts, scaleOffset = scOff, nDcentral = nDcntr) : singular gradient matrix at initial parameter estimates)***]{.underline}
 
-We now have two possibilities:
+It seems also like the manual parameterisation of the starting parameters doesn't work. Also, the x axis is not a problem because if we try to transform the days so that they go from 0 to 500, we get the same error. (Both not shown here).
 
--   Find parameters by hand
--   Find parameters automatically
+##### Generalised simulated annealing
 
-Let's try by hand. The problem here is that I need to make it go to 0 around 30, but now it goes to 0 at 500. And it also overshoots over 10.000.
+Therefore, I assume that the nls function has not enough power to optimise the cost function that finds the parameters of Hank's function. Instead of using the `nls` function, I'll then use generalised simulated annealing to optimise the cost function of the root-mean-square-deviation of the observed data points. I'll be using the `GenSa` function from the [GenSA package](https://cran.r-project.org/web/packages/GenSA/GenSA.pdf) to run generalised simulated annealing.
 
-Speaking with Killian, he told me that the nls function is not that powerful. He suggests:
+A lovely tutorial from whose code I adapted is the following one: [Parameter estimation in R: a simple stomatal conductance model example](https://khufkens.com/2016/10/02/paramater-estimation-in-r-a-simple-stomatal-conductance-model-example/).
 
--   Using a generalised simulated annealing (using the GenSA package)
--   Transforming biomass into its logarithm
-
-I'll start from the [GenSA package](https://cran.r-project.org/web/packages/GenSA/GenSA.pdf).
-
-```{r fit using GenSA}
-
-library(GenSA)
-
-Hank_function = function(x) {
-  
-  a4*(x-a5)^a3*exp(a1*(x-a5)^a2)  
-  
-  }
-
-
-set.seed(1234) # The user can use any seed.
-dimension = 30
-global.min = 0
-tol = 1e-13
-lower = rep(-5.12, dimension)
-upper = rep(5.12, dimension)
-
-out = GenSA(lower = lower, 
-            upper = upper, 
-            fn = Hank_function,
-            control = list(threshold.stop=global.min+tol,verbose=TRUE))
-
-out[c("value","par","counts")]
-
-
-```
-
-It seems like to give it the data and the function to which we want to fit them, we should take the approach of [this link](https://jarrettmeyer.com/2020/03/21/simulated-annealing-for-parameter-estimation). It works as follows in the following example:
-
-```{r}
-
-df <- data.frame(quantile = c(0.05, 0.10, 0.25, 0.50, 0.75, 0.90, 0.95),
-                 value = c(4.7, 4.8, 5.1, 5.4, 5.7, 6.1, 6.8))
-
-fun <- function (x) {
-    shape <- x[1]
-    scale <- x[2]
-    df$est <- qgamma(df$quantile, shape, scale)
-    df$sq_err <- (df$est - df$value) ^ 2
-    error <- sum(df$sq_err)
-    error
-}
-
-
-lower_bound <- 1e-6
-upper_bound <- 100
-
-fit <- GenSA(par = c(1, 1), 
-             fn = fun, 
-             lower = c(lower_bound, lower_bound), 
-             upper = c(upper_bound, upper_bound))
-
-```
-
-The `fit$par` is the sum of squared estimate of errors (SSE) and the `fit$par` are the distribution parameters.
-
-Now the problem is: how do you create a function in r ?
-
-Okay, this is too confusing.
-
-Let's switch to [this other tutorial](https://khufkens.com/2016/10/02/paramater-estimation-in-r-a-simple-stomatal-conductance-model-example/).
-
-```{r Hufkens tutorial, eval = FALSE}
-
-gs.model = function(par = par, data = data) {
-
- # put variables in readable format
- vpd <- data$vpd
- co2 <- data$co2
- par_val <- data$par
- gmax <- data$gmax
-
- # unfold parameters
- # for clarity
- c1 <- par[1]
- c2 <- par[2]
- v2 <- par[3]
- p1 <- par[4]
-
- # model formulation
- gs <- gmax * c1 * exp(c2 * co2) * exp(v2 * vpd) * (( 2000 * par_val) / (p1 + par_val))
-
- # return stomatal conductance
- return(gs)
-}
-
-# run model and compare to true values
-# returns the RMSE
-cost.function <- function(data, par) {
- obs <- as.vector(data$COND)
- pred <- as.vector(gs.model(par = par, data = data))
- s <- (obs - pred)^2
- RMSE <- sqrt(mean(s, na.rm = TRUE))
- return(RMSE)
-}
-
-# starting model parameters
-par = c(0.65, -0.002, -0.689, 0.05)
-
-# limits to the parameter space
-lower <- c(0,-10,-100,0)
-upper <- c(100,0,0,100)
-
-# optimize the model parameters
-optim.par = GenSA(
- par = par,
- fn = cost.function,
- data = data,
- lower = lower,
- upper = upper,
- control=list(temperature = 4000)
-)
-
-
-
-```
-
-From this, I adapt it to my own model.
+Let's then try to find the parameters of Hank's function using the GenSA function.
 
 ```{r adapted from Hufkens}
 
-ds_regional %>%
-  ggplot(aes(x = day,
-             y = regional_mean_bioarea,
-             group = day)) + 
-  geom_boxplot()
+ds_regional = ds_regional %>%
+  filter(day >0)
 
-par = c(-0.07,1.01,2,5,-20)
+par = c(951.82665,-41.45987,-2.43646,960.10914,26.77695)
 
 biomass_model = function(par = par, ds_regional = ds_regional) {
 
@@ -193,7 +89,7 @@ biomass_model = function(par = par, ds_regional = ds_regional) {
  a4 = par[4]
  a5 = par[5]
 
- biomass = a4 * (x-a5)^a3 * exp(a1*(x-a5)^a2)
+ biomass = a4 * (day-a5)^a3 * exp(a1*(day-a5)^a2)
 
  return(biomass)
  
@@ -212,8 +108,8 @@ cost.function <- function(ds_regional, par) {
 
 
 # limits to the parameter space
-lower <- c(-10,-10,-10,-10,-10)
-upper <- c(100,100,100,100,100)
+lower <- c(-1000,-1000,-1000,-1000,-1000)
+upper <- c(1000,1000,1000,1000,1000)
 
 # optimize the model parameters
 optim.par = GenSA(
@@ -223,7 +119,7 @@ optim.par = GenSA(
   ds_regional = ds_regional,
   lower = lower,
   upper = upper,
-  control = list(temperature = 4000)
+  control = list(temperature = 5000)
 
   )
 
@@ -235,20 +131,22 @@ a3 = par[3]
 a4 = par[4]
 a5 = par[5]
 
-x = seq(0, 30, 0.01)
+x = seq(0, 550, 0.01)
 y = a4*(x-a5)^a3*exp(a1*(x-a5)^a2) #Latex form: y = a4*(x-a5)^{a3} * e^{a1*(x-a5)^{a2}}
 plot(y ~ x)
-
-
 ```
 
-It doesn't seem to work. I need to do one of the following things:
+It doesn't seem to work. GenSA might not find the right parameters because:
 
-- change function 
-- change initial parameters 
+-   There are too many parameters
 
-Let's now try to fit using a single metaecosystem.
+-   We need to give it better initial parameters
 
+-   We need to give it better upper and lower limits
+
+-   We need to fit a single meta--ecosystem
+
+**Fit a single meta-ecosystem**
 
 ```{r adapted from Hufkens single ecosystem}
 
@@ -318,20 +216,84 @@ a5 = par[5]
 x = seq(0, 30, 0.01)
 y = a4*(x-a5)^a3*exp(a1*(x-a5)^a2) #Latex form: y = a4*(x-a5)^{a3} * e^{a1*(x-a5)^{a2}}
 plot(y ~ x)
+```
+
+**New function (by Tianna)**
+
+```{r Tianna 2}
+
+a= 35
+b = 10
+x = seq(0, 50, 0.1)
+ 
+y = a*x^2*exp(-(x/b)^2)
+plot(y ~ x)
+
+model = nls(regional_mean_bioarea ~ a*day^2*exp(-(day/b)^2), 
+            start = list(a = 35, b = 10),
+            trace = T,
+            data = ds_regional) #Doesn't work
+
+par = c(35,10)
+
+biomass_model = function(par = par, ds_regional = ds_regional) {
+
+ regional_mean_bioarea = ds_regional$regional_mean_bioarea
+ day = ds_regional$day
+ a = par[1]
+ b = par[2]
+ 
+ biomass = a*day^2*exp(-(day/b)^2)
+
+ return(biomass)
+ 
+}
+
+cost.function <- function(ds_regional, par) {
+
+   obs = as.vector(ds_regional$regional_mean_bioarea)
+   pred = as.vector(biomass_model(par = par, ds_regional = ds_regional))
+   s = (obs - pred)^2
+   RMSE = sqrt(mean(s, na.rm = TRUE))
+   
+   return(RMSE)
+
+   }
+
+
+# limits to the parameter space
+lower <- c(-100,-100)
+upper <- c(100,100)
+
+# optimize the model parameters
+optim.par = GenSA(
+  
+  par = par,
+  fn = cost.function,
+  ds_regional = ds_regional,
+  lower = lower,
+  upper = upper,
+  control = list(temperature = 4000)
+
+  )
+
+par = optim.par$par
+
+a = par[1]
+b = par[2]
+
+x = seq(0, 35, 0.01)
+y = a*x^2*exp(-(x/b)^2)
+plot(y ~ x)
 
 
 ```
 
-It might take a while to do either things. So, because I have the meta-ecosystem meeting soon, i will try to plot using the logarithm of the biomass.
+Quadratic equation is good! But it's still not similar to the biomass dynamics.
 
-```{r plot biomass logarithm}
+Maybe the problem is the nls and the GenSA functions. I should look into them.
 
-ds_regional %>%
-  ggplot(aes(x = day,
-             y = log(regional_mean_bioarea),
-             group = day)) + 
-  geom_boxplot()
+Possible other functions to fit (by Alice):
 
-
-```
-
+-   Kernel density estimation
+-   Weibull distribution
