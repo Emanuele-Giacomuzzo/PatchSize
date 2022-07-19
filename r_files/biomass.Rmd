@@ -455,7 +455,7 @@ summary(model)
 
 Adjusted R-squared: 0.74.
 
-Okay, this was one way of doing it. Next way of doing this is to have two disturbance levels and construct two models and see there the effect size of meta-ecosystem type.
+Okay, this was one way of doing it. Next way of doing this is to have two disturbance levels and construct two models and see there the effect size of meta-ecosystem type. And if that doesn't work either I should just look at different parts of the time series or look at a single time point.
 
 ### Appendix: Log transformation of regional biomass
 
