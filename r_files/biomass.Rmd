@@ -196,7 +196,8 @@ First of all, let's produce a data set including the regional biomass of all our
 ```{r regional-biomass-modified}
 
 ds_regional_shrunk_type_n_day = ds_regional %>%
-    filter (metaecosystem_type == "M_M" | metaecosystem_type == "S_L", day != 0)
+    filter (metaecosystem_type == "M_M" | metaecosystem_type == "S_L", 
+            day != 0)
 ```
 
 ### Model selection
@@ -211,10 +212,31 @@ We are actually going to construct two full models. One with the correlated and 
 ```{r full-models}
 
 #Uncorrelated intercepts and slopes
-full_model = lmer(regional_mean_bioarea ~ metaecosystem_type  + disturbance + metaecosystem_type * disturbance + (metaecosystem_type || day) + (disturbance || day) + (metaecosystem_type*disturbance  || day) + (metaecosystem_type || system_nr) + (disturbance || system_nr) + (metaecosystem_type*disturbance  || system_nr), data = ds_regional_shrunk_type_n_day, REML = FALSE)
+full_model = lmer(regional_mean_bioarea ~ 
+                    metaecosystem_type  + 
+                    disturbance + 
+                    metaecosystem_type * disturbance + 
+                    (metaecosystem_type || day) + 
+                    (disturbance || day) + 
+                    (metaecosystem_type*disturbance  || day) + 
+                    (metaecosystem_type || system_nr) + 
+                    (disturbance || system_nr) + 
+                    (metaecosystem_type*disturbance  || system_nr), 
+                  data = ds_regional_shrunk_type_n_day, 
+                  REML = FALSE)
 
 #Correlated intercepts and slopes
-full_model_correlated = lmer(regional_mean_bioarea ~ metaecosystem_type  + disturbance + metaecosystem_type * disturbance + (metaecosystem_type | day) + (disturbance | day) + (metaecosystem_type*disturbance  | day) + (metaecosystem_type | system_nr) + (disturbance | system_nr) + (metaecosystem_type*disturbance  | system_nr), data = ds_regional_shrunk_type_n_day, REML = FALSE)
+full_model_correlated = lmer(regional_mean_bioarea ~ 
+                               metaecosystem_type  + 
+                               disturbance + 
+                               metaecosystem_type * disturbance + 
+                               (metaecosystem_type | day) + 
+                               (disturbance | day) + 
+                               (metaecosystem_type*disturbance  | day) + 
+                               (metaecosystem_type | system_nr) + 
+                               (disturbance | system_nr) + 
+                               (metaecosystem_type*disturbance  | system_nr), 
+                             data = ds_regional_shrunk_type_n_day, REML = FALSE)
 
 anova(full_model, full_model_correlated)
 ```
@@ -227,7 +249,15 @@ Should we keep the random effect of the metaecosystem number?
 
 ```{r no_system_nr_model}
 
-no_system_nr_model = lmer(regional_mean_bioarea ~ metaecosystem_type  + disturbance + metaecosystem_type * disturbance + (metaecosystem_type || day) + (disturbance || day) + (metaecosystem_type*disturbance || day), data = ds_regional_shrunk_type_n_day, REML = FALSE)
+no_system_nr_model = lmer(regional_mean_bioarea ~ 
+                            metaecosystem_type  + 
+                            disturbance + 
+                            metaecosystem_type * disturbance + 
+                            (metaecosystem_type || day) + 
+                            (disturbance || day) + 
+                            (metaecosystem_type*disturbance || day), 
+                          data = ds_regional_shrunk_type_n_day, 
+                          REML = FALSE)
 
 anova(full_model, no_system_nr_model)
 ```
@@ -240,7 +270,10 @@ Should we keep the random effects?
 
 ```{r fixed_effects_model}
 
-fixed_effects_model = lm(regional_mean_bioarea ~ metaecosystem_type  + disturbance, data = ds_regional_shrunk_type_n_day)
+fixed_effects_model = lm(regional_mean_bioarea ~ 
+                           metaecosystem_type  + 
+                           disturbance, 
+                         data = ds_regional_shrunk_type_n_day)
 
 anova(no_system_nr_model, fixed_effects_model)
 ```
@@ -253,7 +286,13 @@ Should we keep the interaction between metaecosystem and disturbance?
 
 ```{r no_interaction_model, message=FALSE}
 
-no_interaction_model = lmer(regional_mean_bioarea ~ metaecosystem_type + disturbance  + (metaecosystem_type || day) + (disturbance || day), data = ds_regional_shrunk_type_n_day, REML = FALSE)
+no_interaction_model = lmer(regional_mean_bioarea ~ 
+                              metaecosystem_type + 
+                              disturbance  + 
+                              (metaecosystem_type || day) + 
+                              (disturbance || day), 
+                            data = ds_regional_shrunk_type_n_day, 
+                            REML = FALSE)
 
 anova(no_system_nr_model, no_interaction_model)
 ```
@@ -266,7 +305,11 @@ Should we keep the random slopes?
 
 ```{r no_slopes_model, message=FALSE}
 
-no_slopes_model = lmer(regional_mean_bioarea ~ metaecosystem_type + disturbance  + (1 | day), data = ds_regional_shrunk_type_n_day, REML = FALSE)
+no_slopes_model = lmer(regional_mean_bioarea ~ metaecosystem_type + 
+                         disturbance  + 
+                         (1 | day), 
+                       data = ds_regional_shrunk_type_n_day, 
+                       REML = FALSE)
 
 anova(no_interaction_model, no_slopes_model)
 ```
@@ -319,7 +362,9 @@ if (p_best < 0.00001) {
 ###### Effect size & significance of meta-ecosystem type (in the best model)
 
 ```{r p-r2-meta-ecosystem-type}
-metaecosystem_type_null = lmer(regional_mean_bioarea ~  disturbance  + (disturbance || day),
+metaecosystem_type_null = lmer(regional_mean_bioarea ~  
+                                 disturbance  + 
+                                 (disturbance || day),
                                data = ds_regional_shrunk_type_n_day, 
                                REML = FALSE, 
                                control = lmerControl(optimizer ='optimx', 
@@ -342,7 +387,9 @@ if (p_no_metaecosystem_type < 0.00001) {
 
 ```{r p-r2-disturbance}
 
-disturbance_null = lmer(regional_mean_bioarea ~ metaecosystem_type  + (metaecosystem_type || day), 
+disturbance_null = lmer(regional_mean_bioarea ~ 
+                          metaecosystem_type  + 
+                          (metaecosystem_type || day), 
                         data = ds_regional_shrunk_type_n_day, 
                         REML = FALSE,
                         control = lmerControl(optimizer ='optimx', 
@@ -440,49 +487,237 @@ ds_regional_shrunk_type%>%
   geom_line(data=data_fitted,aes(x = day, y=regional_mean_bioarea),color="red", group = 1)
 ```
 
-Okay great! Next step is to now integrate the predicted temporal dynamics.
+Let's then include our predictions into the data set.
+
+```{r predicted-ds}
+
+ds_regional_predicted_shrunk_type = ds_regional %>%
+  mutate(predicted_from_time = a4*(day-a5)*exp(a1*(day-a5))) %>%
+  filter(metaecosystem_type == "S_L" | metaecosystem_type == "M_M")
+```
+
+Next step is to see when integrating time it makes sense to have meta-ecosystem ID as a random effect.
+
+```{r time-fitted-random-effects}
+
+ds_regional_predicted_shrunk_type_n_day = ds_regional_predicted_shrunk_type %>%
+  filter(day > 0)
+
+fitted_fixed_model = lm(regional_mean_bioarea ~ 
+                          predicted_from_time + 
+                          metaecosystem_type  + 
+                          disturbance,
+                        data = ds_regional_predicted_shrunk_type_n_day)
+
+fitted_mixed_model = lmer(regional_mean_bioarea ~ 
+                            predicted_from_time + 
+                            metaecosystem_type  + 
+                            disturbance + 
+                            (predicted_from_time || system_nr) + 
+                            (metaecosystem_type || system_nr) + 
+                            (disturbance || system_nr),
+                        data = ds_regional_predicted_shrunk_type_n_day,
+                        REML = FALSE)
+
+anova = anova(fitted_mixed_model, fitted_fixed_model)
+anova
+
+p = anova$`Pr(>Chisq)`[2]
+p = round(p, digits = 2)
+```
+
+It seems like there is no significance between the two models (p = `r p`). Let's therefore keep the fixed effects model. Let's now see in such model what the effect of meta-ecosystem size is.
 
 ```{r predicted-biomass-from-time}
 
-ds_regional = ds_regional %>%
-  mutate(predicted_from_time = a4*(day-a5)*exp(a1*(day-a5)))
+fitted_fixed_model_without_type = lm(regional_mean_bioarea ~ 
+                                       predicted_from_time + 
+                                       disturbance, 
+                                     data = ds_regional_predicted_shrunk_type_n_day)
+
+anova = anova(fitted_mixed_model, fitted_fixed_model_without_type)
+anova
+
+p = anova$`Pr(>Chisq)`[2]
+p = round(p, digits = 2)
+
+summary(fitted_mixed_model)
+summary(fitted_fixed_model_without_type)
 ```
 
-Let's now integrate it into the mixed effect model!
-
-```{r model-fitted}
-
-ds_regional_yo = ds_regional %>%
-  filter(metaecosystem_type == "S_L" | metaecosystem_type == "M_M", day > 0)
-
-model = lm(regional_mean_bioarea ~ predicted_from_time + metaecosystem_type  + disturbance, data = ds_regional_yo)
-summary(model)
-```
-
-Adjusted R-squared: 0.80.
-
-```{r model-fitted-without-metaeco}
-
-model = lm(regional_mean_bioarea ~ predicted_from_time + + disturbance, data = ds_regional_yo)
-summary(model)
-```
-
-Adjusted R-squared: 0.74.
+The adjusted R-squared with meta-ecosystem type is 0.80. Without 0.74.The effect size of meta-ecosystem type is only 0.06, as before.
 
 **Therefore, fitting a function to the temporal dynamics did not increase the effect size of meta-ecosystem type.**
 
-Next steps:
+## Regional biomass - dropping first two time points
 
--   Do it for two different disturbance regimes
-
--   Drop time points
-
-## Regional biomass - dropping time points
+I'm here missing the interaction between variables!!
 
 ```{r dropping-time-points}
 
-no_interaction_model = lmer(regional_mean_bioarea ~ metaecosystem_type + disturbance  + (metaecosystem_type || day) + (disturbance || day), data = ds_regional_shrunk_type_n_day, REML = FALSE)
+ds_regional_predicted_shrunk_type_day_8_28 = ds_regional_predicted_shrunk_type %>%
+  filter(day >= 8, day <= 28)
+
+#Fixed effect model with fitted time 
+fixed_fitted = lm(regional_mean_bioarea ~ 
+                          predicted_from_time + 
+                          metaecosystem_type  + 
+                          disturbance +
+                          predicted_from_time * metaecosystem_type +
+                          predicted_from_time * disturbance + 
+                          metaecosystem_type * disturbance,
+                        data = ds_regional_predicted_shrunk_type_day_8_28)
+
+#Random effect model with fitted time: uncorrelated slopes
+mixed_fitted_uncorrelated_slopes = lmer(regional_mean_bioarea ~ 
+                            predicted_from_time + 
+                            metaecosystem_type  + 
+                            disturbance +
+                            predicted_from_time * metaecosystem_type +
+                            predicted_from_time * disturbance + 
+                            metaecosystem_type * disturbance + 
+                            (predicted_from_time || system_nr) + 
+                            (metaecosystem_type || system_nr) + 
+                            (disturbance || system_nr) +
+                            (predicted_from_time * metaecosystem_type || system_nr)+
+                            (predicted_from_time * disturbance || system_nr) + 
+                            (metaecosystem_type * disturbance || system_nr),
+                        data = ds_regional_predicted_shrunk_type_day_8_28,
+                        REML = FALSE)
+
+#Random effect model with fitted time: correlated slopes
+mixed_fitted_correlated_slopes = lmer(regional_mean_bioarea ~ 
+                            predicted_from_time + 
+                            metaecosystem_type  + 
+                            disturbance + 
+                            (predicted_from_time | system_nr) + 
+                            (metaecosystem_type | system_nr) + 
+                            (disturbance | system_nr) +
+                            (predicted_from_time * metaecosystem_type | system_nr) +
+                            (predicted_from_time * disturbance | system_nr) + 
+                            (metaecosystem_type * disturbance | system_nr),
+                        data = ds_regional_predicted_shrunk_type_day_8_28,
+                        REML = FALSE)
+
+#Random effect model with fitted time: no slopes
+mixed_fitted_no_slopes = lmer(regional_mean_bioarea ~ 
+                              predicted_from_time + 
+                              metaecosystem_type  + 
+                              disturbance +
+                              predicted_from_time * metaecosystem_type +
+                              predicted_from_time * disturbance + 
+                              metaecosystem_type * disturbance +
+                              (1 | system_nr),
+                        data = ds_regional_predicted_shrunk_type_day_8_28,
+                        REML = FALSE)
+
+anova(mixed_fitted_uncorrelated_slopes, mixed_fitted_correlated_slopes, mixed_fitted_no_slopes,fixed_fitted)
 ```
+
+The best one is either the fixed_fitted (lower BIC) or mixed_fitted_no_slopes (lower AIC). Because I want to explain and not predict, I will keep the one with lower BIC: fixed_fitted. Let's see now if I should keep some of the interactions.
+
+```{r}
+
+fixed_fitted = lm(regional_mean_bioarea ~ 
+                          predicted_from_time + 
+                          metaecosystem_type  + 
+                          disturbance +
+                          predicted_from_time * metaecosystem_type + #1
+                          predicted_from_time * disturbance +  #2
+                          metaecosystem_type * disturbance, #3
+                        data = ds_regional_predicted_shrunk_type_day_8_28)
+
+fixed_fitted_2 = lm(regional_mean_bioarea ~ 
+                          predicted_from_time + 
+                          metaecosystem_type  + 
+                          disturbance +
+                          predicted_from_time * metaecosystem_type + #1
+                          predicted_from_time * disturbance, #2
+                        data = ds_regional_predicted_shrunk_type_day_8_28)
+
+fixed_fitted_3 = lm(regional_mean_bioarea ~ 
+                          predicted_from_time + 
+                          metaecosystem_type  + 
+                          disturbance +
+                          predicted_from_time * disturbance + #2
+                          metaecosystem_type * disturbance, #3
+                        data = ds_regional_predicted_shrunk_type_day_8_28)
+
+fixed_fitted_4 = lm(regional_mean_bioarea ~ 
+                          predicted_from_time + 
+                          metaecosystem_type  + 
+                          disturbance +
+                          predicted_from_time * metaecosystem_type + #1
+                          metaecosystem_type * disturbance, #3
+                        data = ds_regional_predicted_shrunk_type_day_8_28)
+
+fixed_fitted_5 = lm(regional_mean_bioarea ~ 
+                          predicted_from_time + 
+                          metaecosystem_type  + 
+                          disturbance +
+                          predicted_from_time * metaecosystem_type, #1
+                        data = ds_regional_predicted_shrunk_type_day_8_28)
+
+fixed_fitted_6 = lm(regional_mean_bioarea ~ 
+                          predicted_from_time + 
+                          metaecosystem_type  + 
+                          disturbance +
+                          predicted_from_time * disturbance, #2
+                        data = ds_regional_predicted_shrunk_type_day_8_28)
+
+fixed_fitted_7 = lm(regional_mean_bioarea ~ 
+                          predicted_from_time + 
+                          metaecosystem_type  + 
+                          disturbance +
+                          metaecosystem_type * disturbance, #3
+                        data = ds_regional_predicted_shrunk_type_day_8_28)
+
+fixed_fitted_8 = lm(regional_mean_bioarea ~ 
+                          predicted_from_time + 
+                          metaecosystem_type  + 
+                          disturbance,
+                        data = ds_regional_predicted_shrunk_type_day_8_28)
+
+AIC(fixed_fitted_8, fixed_fitted, fixed_fitted_2, fixed_fitted_3, fixed_fitted_4, fixed_fitted_5, fixed_fitted_6, fixed_fitted_7)
+
+BIC(fixed_fitted_8, fixed_fitted, fixed_fitted_2, fixed_fitted_3, fixed_fitted_4, fixed_fitted_5, fixed_fitted_6, fixed_fitted_7)
+```
+
+It seems like the best one according to both AIC and BIC is fixed_fitted_5. Let's if there is any statistical difference with the initial model.
+
+```{r}
+
+anova(fixed_fitted_5, fixed_fitted)
+```
+
+There's no difference. Therefore, I will keep the fixed_fitted_5 as my best model. This is because it has less variables.
+
+Let's now calculate then the effect size of meta-ecosystem type.
+
+```{r}
+
+fixed_fitted_5 = lm(regional_mean_bioarea ~ 
+                          predicted_from_time + 
+                          metaecosystem_type  + 
+                          disturbance +
+                          predicted_from_time * metaecosystem_type, #1
+                        data = ds_regional_predicted_shrunk_type_day_8_28)
+summary(fixed_fitted_5)
+
+fixed_fitted_5_no_metaecosystem_type = lm(regional_mean_bioarea ~ 
+                          predicted_from_time + 
+                          disturbance,
+                        data = ds_regional_predicted_shrunk_type_day_8_28)
+summary(fixed_fitted_5_no_metaecosystem_type_2)
+```
+
+**R squared (adjusted)**
+
+Fixed_fitted_5: 0.81
+
+fixed_fitted_5\_no_metaecosystem_type: 0.72
+
+So, it seems like it worked to increase the effect size to drop the first two time points.
 
 ```{r child = "biomass_transformation.Rmd", eval = FALSE}
 ```
