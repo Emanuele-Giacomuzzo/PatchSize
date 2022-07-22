@@ -182,7 +182,7 @@ To do model diagnostics, I'm going to look at the following two plots (as sugges
 ```{r child = "model_t3-t7_time_fitted.Rmd", echo = TRUE, eval = TRUE}
 ```
 
-```{r child = "t3_time_fitted.Rmd", echo= TRUE, eval = TRUE}
+```{r child = "moel_t3_time_fitted.Rmd", echo= TRUE, eval = TRUE}
 ```
 
 ```{r child = "log_transformation.Rmd", eval = FALSE}

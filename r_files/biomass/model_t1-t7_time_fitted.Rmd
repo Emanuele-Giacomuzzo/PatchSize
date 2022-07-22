@@ -3,6 +3,8 @@ title: "model_all_points_with_time_fitting"
 author: "Emanuele Giacomuzzo"
 date: '2022-07-22'
 output: html_document
+editor_options: 
+  chunk_output_type: console
 ---
 
 Next step is to see when integrating time it makes sense to have meta-ecosystem ID as a random effect.
@@ -12,13 +14,80 @@ Next step is to see when integrating time it makes sense to have meta-ecosystem 
 ds_regional_predicted_shrunk_type_n_day = ds_regional_predicted_shrunk_type %>%
   filter(day > 0)
 
-fitted_fixed_model = lm(regional_mean_bioarea ~ 
-                          predicted_from_time + 
-                          metaecosystem_type  + 
-                          disturbance,
-                        data = ds_regional_predicted_shrunk_type_n_day)
+model_1 = lmer(regional_mean_bioarea ~ 
+                            predicted_from_time + 
+                            metaecosystem_type  + 
+                            disturbance + 
+                            predicted_from_time * metaecosystem_type +
+                            predicted_from_time * disturbance +
+                            metaecosystem_type * disturbance +
+                            predicted_from_time * metaecosystem_type * disturbance +
+                            (predicted_from_time || system_nr) + 
+                            (metaecosystem_type || system_nr) + 
+                            (disturbance || system_nr) +
+                            (predicted_from_time * metaecosystem_type || system_nr) +
+                            (predicted_from_time * disturbance || system_nr) +
+                            (metaecosystem_type * disturbance || system_nr ) +
+                            (predicted_from_time * metaecosystem_type * disturbance || system_nr),
+                        data = ds_regional_predicted_shrunk_type_n_day,
+                        REML = FALSE)
 
-fitted_mixed_model = lmer(regional_mean_bioarea ~ 
+#Take off predicted from time * metaecosystem type
+model_2 = lmer(regional_mean_bioarea ~ 
+                            predicted_from_time + 
+                            metaecosystem_type  + 
+                            disturbance + 
+                            predicted_from_time * disturbance +
+                            metaecosystem_type * disturbance +
+                            predicted_from_time * metaecosystem_type * disturbance +
+                            (predicted_from_time || system_nr) + 
+                            (metaecosystem_type || system_nr) + 
+                            (disturbance || system_nr) +
+                            (predicted_from_time * disturbance || system_nr) +
+                            (metaecosystem_type * disturbance || system_nr ) +
+                            (predicted_from_time * metaecosystem_type * disturbance || system_nr),
+                        data = ds_regional_predicted_shrunk_type_n_day,
+                        REML = FALSE)
+
+anova(model_1, model_2)
+#They are the same.
+
+#Take off predicted_from_time * disturbance 
+model_3 = lmer(regional_mean_bioarea ~ 
+                            predicted_from_time + 
+                            metaecosystem_type  + 
+                            disturbance + 
+                            metaecosystem_type * disturbance +
+                            predicted_from_time * metaecosystem_type * disturbance +
+                            (predicted_from_time || system_nr) + 
+                            (metaecosystem_type || system_nr) + 
+                            (disturbance || system_nr) +
+                            (metaecosystem_type * disturbance || system_nr ) +
+                            (predicted_from_time * metaecosystem_type * disturbance || system_nr),
+                        data = ds_regional_predicted_shrunk_type_n_day,
+                        REML = FALSE)
+
+anova(model_2, model_3)
+#Model 3 is better.
+
+#Take off metaecosystem type * disturbance
+model_4 = lmer(regional_mean_bioarea ~ 
+                            predicted_from_time + 
+                            metaecosystem_type  + 
+                            disturbance + 
+                            predicted_from_time * metaecosystem_type * disturbance +
+                            (predicted_from_time || system_nr) + 
+                            (metaecosystem_type || system_nr) + 
+                            (disturbance || system_nr) +
+                            (predicted_from_time * metaecosystem_type * disturbance || system_nr),
+                        data = ds_regional_predicted_shrunk_type_n_day,
+                        REML = FALSE)
+
+anova(model_3, model_4)
+#They  are the same
+
+#Take off metaecosystem type * disturbance * time 
+model_5 = lmer(regional_mean_bioarea ~ 
                             predicted_from_time + 
                             metaecosystem_type  + 
                             disturbance + 
@@ -28,32 +97,73 @@ fitted_mixed_model = lmer(regional_mean_bioarea ~
                         data = ds_regional_predicted_shrunk_type_n_day,
                         REML = FALSE)
 
-anova = anova(fitted_mixed_model, fitted_fixed_model)
-anova
+anova(model_4, model_5)
+#They are the same
 
-p = anova$`Pr(>Chisq)`[2]
-p = round(p, digits = 2)
+#Take off time slopes
+model_6 = lmer(regional_mean_bioarea ~ 
+                            predicted_from_time + 
+                            metaecosystem_type  + 
+                            disturbance + 
+                            (metaecosystem_type || system_nr) + 
+                            (disturbance || system_nr),
+                        data = ds_regional_predicted_shrunk_type_n_day,
+                        REML = FALSE)
+
+anova(model_5, model_6)
+#They are the same 
+
+#Take off metaecosystem type slopes
+model_7 = lmer(regional_mean_bioarea ~ 
+                            predicted_from_time + 
+                            metaecosystem_type  + 
+                            disturbance + 
+                            (disturbance || system_nr),
+                        data = ds_regional_predicted_shrunk_type_n_day,
+                        REML = FALSE)
+
+anova(model_6, model_7)
+#they are the same 
+
+#Take off disturbance slopes
+model_8 = lmer(regional_mean_bioarea ~ 
+                            predicted_from_time + 
+                            metaecosystem_type  + 
+                            disturbance + 
+                            (1 | system_nr),
+                        data = ds_regional_predicted_shrunk_type_n_day,
+                        REML = FALSE)
+
+anova(model_7, model_8)
+#They are the same 
+
+#Take off random effects
+model_9 = lm(regional_mean_bioarea ~ 
+                            predicted_from_time + 
+                            metaecosystem_type  + 
+                            disturbance,
+                        data = ds_regional_predicted_shrunk_type_n_day)
+
+anova(model_8, model_9)
+#They are the same
+
+summary(model_9)
+#R squared: 0.80
+
+#Take off metaecosystem type
+model_10 = lm(regional_mean_bioarea ~ 
+                            predicted_from_time + 
+                            disturbance,
+                        data = ds_regional_predicted_shrunk_type_n_day)
+
+anova(model_9, model_10)
+#they are different
+
+summary(model_10)
+#R squared: 0.74
+
+
+#Meta-ecosystem R2 = 0.06
+
 ```
 
-It seems like there is no significance between the two models (p = `r p`). Let's therefore keep the fixed effects model. Let's now see in such model what the effect of meta-ecosystem size is.
-
-```{r predicted-biomass-from-time}
-
-fitted_fixed_model_without_type = lm(regional_mean_bioarea ~ 
-                                       predicted_from_time + 
-                                       disturbance, 
-                                     data = ds_regional_predicted_shrunk_type_n_day)
-
-anova = anova(fitted_mixed_model, fitted_fixed_model_without_type)
-anova
-
-p = anova$`Pr(>Chisq)`[2]
-p = round(p, digits = 2)
-
-summary(fitted_mixed_model)
-summary(fitted_fixed_model_without_type)
-```
-
-The adjusted R-squared with meta-ecosystem type is 0.80. Without 0.74.The effect size of meta-ecosystem type is only 0.06, as before.
-
-**Therefore, fitting a function to the temporal dynamics did not increase the effect size of meta-ecosystem type.**
