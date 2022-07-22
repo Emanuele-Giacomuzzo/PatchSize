@@ -1,0 +1,59 @@
+---
+title: "model_all_points_with_time_fitting"
+author: "Emanuele Giacomuzzo"
+date: '2022-07-22'
+output: html_document
+---
+
+Next step is to see when integrating time it makes sense to have meta-ecosystem ID as a random effect.
+
+```{r time-fitted-random-effects}
+
+ds_regional_predicted_shrunk_type_n_day = ds_regional_predicted_shrunk_type %>%
+  filter(day > 0)
+
+fitted_fixed_model = lm(regional_mean_bioarea ~ 
+                          predicted_from_time + 
+                          metaecosystem_type  + 
+                          disturbance,
+                        data = ds_regional_predicted_shrunk_type_n_day)
+
+fitted_mixed_model = lmer(regional_mean_bioarea ~ 
+                            predicted_from_time + 
+                            metaecosystem_type  + 
+                            disturbance + 
+                            (predicted_from_time || system_nr) + 
+                            (metaecosystem_type || system_nr) + 
+                            (disturbance || system_nr),
+                        data = ds_regional_predicted_shrunk_type_n_day,
+                        REML = FALSE)
+
+anova = anova(fitted_mixed_model, fitted_fixed_model)
+anova
+
+p = anova$`Pr(>Chisq)`[2]
+p = round(p, digits = 2)
+```
+
+It seems like there is no significance between the two models (p = `r p`). Let's therefore keep the fixed effects model. Let's now see in such model what the effect of meta-ecosystem size is.
+
+```{r predicted-biomass-from-time}
+
+fitted_fixed_model_without_type = lm(regional_mean_bioarea ~ 
+                                       predicted_from_time + 
+                                       disturbance, 
+                                     data = ds_regional_predicted_shrunk_type_n_day)
+
+anova = anova(fitted_mixed_model, fitted_fixed_model_without_type)
+anova
+
+p = anova$`Pr(>Chisq)`[2]
+p = round(p, digits = 2)
+
+summary(fitted_mixed_model)
+summary(fitted_fixed_model_without_type)
+```
+
+The adjusted R-squared with meta-ecosystem type is 0.80. Without 0.74.The effect size of meta-ecosystem type is only 0.06, as before.
+
+**Therefore, fitting a function to the temporal dynamics did not increase the effect size of meta-ecosystem type.**

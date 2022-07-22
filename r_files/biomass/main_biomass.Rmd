@@ -16,6 +16,8 @@ Here I study how **biomass density** changes across treatments in the PatchSizeP
 
 ```{r set up environment, echo = FALSE, results = FALSE, message = FALSE}
 
+start_time = Sys.time()
+
 rm( list = ls(  ) )
 cat( "\014" )
 library("tidyverse")
@@ -153,64 +155,10 @@ ds_regional = ds %>%
     summarise(regional_mean_bioarea = mean(patch_mean_bioarea_across_videos))
 ```
 
-# Plot
-
-## Biomass \@ low disturbance
-
-```{r low-disturbance-plots, eval = TRUE, echo = FALSE, message = FALSE}
-
-biomass_plots("low")
-p[[1]]
-p[[2]]
-p[[3]]
-p[[4]]
-p[[5]]
-p[[6]]
+```{r child = "plots.Rmd", eval = TRUE}
 ```
 
-Let's now save all the plots together in a single image. As the single image is too large for R markdown, it cannot be displayed here.
-
-```{r low-disturbance-grid, eval = FALSE}
-
-grid = grid.arrange(p[[1]],p[[3]],p[[5]],p[[2]],p[[4]],p[[6]],
-                    ncol=3, nrow=2,
-                    top = textGrob("Low disturbance",gp=gpar(fontsize=20,font=3)))
-ggsave(here("results", "biomass", "Clean_biomass_low.jpg"), grid, width = 22, height = 13)
-```
-
-## Biomass \@ high disturbance
-
-```{r high-disturbance-plots, eval = TRUE, echo = FALSE, message = FALSE}
-
-biomass_plots("high")
-p[[1]]
-p[[2]]
-p[[3]]
-p[[4]]
-p[[5]]
-p[[6]]
-```
-
-Let's save also here for high disturbance.
-
-```{r high-disturbance-grid, eval = FALSE}
-
-biomass_plots("high")
-
-grid = grid.arrange(p[[1]],p[[3]],p[[5]],p[[2]],p[[4]],p[[6]],
-             ncol=3, 
-             nrow=2,
-             top = textGrob("High disturbance",
-                            gp = gpar(fontsize = 20,
-                                      font = 3)))
-
-ggsave(here("results", "biomass", "Clean_biomass_high.jpg"), 
-       grid, 
-       width = 22, 
-       height = 13)
-```
-
-# Mixed effect models
+# Regional biomass modelling
 
 To build the mixed effect models we will use the R package lme4. See page 6 of [this PDF](https://cran.r-project.org/web/packages/lme4/vignettes/lmer.pdf) to know more about the syntaxis of this package.
 
@@ -219,13 +167,33 @@ To do model diagnostics, I'm going to look at the following two plots (as sugges
 -   Quantile-quantile plots
 -   Partial residual plots
 
-```{r child = "model_regional_biomass.Rmd", eval = TRUE}
+```{r child = "model_t1-t7_without_time_fitting.Rmd", echo = TRUE, eval = TRUE}
 ```
 
-```{r child = "biomass_transformation.Rmd", eval = FALSE}
+```{r child = "time_fitting.Rmd", echo = TRUE, eval = TRUE}
+```
+
+```{r child = "model_t1-t7_time_fitted.Rmd", echo = TRUE, eval = TRUE}
+```
+
+```{r child = "model_t2-t7_time_fitted.Rmd", echo = TRUE, eval = TRUE}
+```
+
+```{r child = "model_t3-t7_time_fitted.Rmd", echo = TRUE, eval = TRUE}
+```
+
+```{r child = "t3_time_fitted.Rmd", echo= TRUE, eval = TRUE}
+```
+
+```{r child = "log_transformation.Rmd", eval = FALSE}
 ```
 
 ```{r child = "model_diagnostics.Rmd", eval = FALSE}
+```
+
+```{r running-time, eval = FALSE}
+end_time = Sys.time()
+print(end_time - start_time) #For some reason it doesn't work 
 ```
 
 # Bibliography

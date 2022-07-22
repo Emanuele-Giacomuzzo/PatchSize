@@ -1,0 +1,63 @@
+---
+title: "biomass_plots"
+author: "Emanuele Giacomuzzo"
+date: '2022-07-22'
+output: html_document
+---
+
+# Plot
+
+## Biomass \@ low disturbance
+
+```{r low-disturbance-plots, eval = TRUE, echo = FALSE, message = FALSE}
+
+biomass_plots("low")
+p[[1]]
+p[[2]]
+p[[3]]
+p[[4]]
+p[[5]]
+p[[6]]
+```
+
+Let's now save all the plots together in a single image. As the single image is too large for R markdown, it cannot be displayed here.
+
+```{r low-disturbance-grid, eval = FALSE}
+
+grid = grid.arrange(p[[1]],p[[3]],p[[5]],p[[2]],p[[4]],p[[6]],
+                    ncol=3, nrow=2,
+                    top = textGrob("Low disturbance",gp=gpar(fontsize=20,font=3)))
+ggsave(here("results", "biomass", "Clean_biomass_low.jpg"), grid, width = 22, height = 13)
+```
+
+## Biomass \@ high disturbance
+
+```{r high-disturbance-plots, eval = TRUE, echo = FALSE, message = FALSE}
+
+biomass_plots("high")
+p[[1]]
+p[[2]]
+p[[3]]
+p[[4]]
+p[[5]]
+p[[6]]
+```
+
+Let's save also here for high disturbance.
+
+```{r high-disturbance-grid, eval = FALSE}
+
+biomass_plots("high")
+
+grid = grid.arrange(p[[1]],p[[3]],p[[5]],p[[2]],p[[4]],p[[6]],
+             ncol=3, 
+             nrow=2,
+             top = textGrob("High disturbance",
+                            gp = gpar(fontsize = 20,
+                                      font = 3)))
+
+ggsave(here("results", "biomass", "Clean_biomass_high.jpg"), 
+       grid, 
+       width = 22, 
+       height = 13)
+```

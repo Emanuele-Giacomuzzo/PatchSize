@@ -1054,6 +1054,251 @@ not increase the effect size of meta-ecosystem type.</strong></p>
 </div>
 </div>
 </div>
+<div id="regional-biomass---dropping-first-two-time-points" class="section level2">
+<h2>Regional biomass - dropping first two time points</h2>
+<pre class="r"><code>ds_regional_predicted_shrunk_type_day_8_28 = ds_regional_predicted_shrunk_type %&gt;%
+  filter(day &gt;= 8, day &lt;= 28)
+
+#Fixed effect model with fitted time 
+fixed_fitted = lm(regional_mean_bioarea ~ 
+                          predicted_from_time + 
+                          metaecosystem_type  + 
+                          disturbance +
+                          predicted_from_time * metaecosystem_type +
+                          predicted_from_time * disturbance + 
+                          metaecosystem_type * disturbance,
+                        data = ds_regional_predicted_shrunk_type_day_8_28)
+
+#Random effect model with fitted time: uncorrelated slopes
+mixed_fitted_uncorrelated_slopes = lmer(regional_mean_bioarea ~ 
+                            predicted_from_time + 
+                            metaecosystem_type  + 
+                            disturbance +
+                            predicted_from_time * metaecosystem_type +
+                            predicted_from_time * disturbance + 
+                            metaecosystem_type * disturbance + 
+                            (predicted_from_time || system_nr) + 
+                            (metaecosystem_type || system_nr) + 
+                            (disturbance || system_nr) +
+                            (predicted_from_time * metaecosystem_type || system_nr)+
+                            (predicted_from_time * disturbance || system_nr) + 
+                            (metaecosystem_type * disturbance || system_nr),
+                        data = ds_regional_predicted_shrunk_type_day_8_28,
+                        REML = FALSE)</code></pre>
+<pre><code>## Warning: Some predictor variables are on very different scales: consider
+## rescaling</code></pre>
+<pre class="r"><code>#Random effect model with fitted time: correlated slopes
+mixed_fitted_correlated_slopes = lmer(regional_mean_bioarea ~ 
+                            predicted_from_time + 
+                            metaecosystem_type  + 
+                            disturbance + 
+                            (predicted_from_time | system_nr) + 
+                            (metaecosystem_type | system_nr) + 
+                            (disturbance | system_nr) +
+                            (predicted_from_time * metaecosystem_type | system_nr) +
+                            (predicted_from_time * disturbance | system_nr) + 
+                            (metaecosystem_type * disturbance | system_nr),
+                        data = ds_regional_predicted_shrunk_type_day_8_28,
+                        REML = FALSE)
+
+#Random effect model with fitted time: no slopes
+mixed_fitted_no_slopes = lmer(regional_mean_bioarea ~ 
+                              predicted_from_time + 
+                              metaecosystem_type  + 
+                              disturbance +
+                              predicted_from_time * metaecosystem_type +
+                              predicted_from_time * disturbance + 
+                              metaecosystem_type * disturbance +
+                              (1 | system_nr),
+                        data = ds_regional_predicted_shrunk_type_day_8_28,
+                        REML = FALSE)</code></pre>
+<pre><code>## Warning: Some predictor variables are on very different scales: consider
+## rescaling</code></pre>
+<pre class="r"><code>anova(mixed_fitted_uncorrelated_slopes, mixed_fitted_correlated_slopes, mixed_fitted_no_slopes,fixed_fitted)</code></pre>
+<pre><code>## Data: ds_regional_predicted_shrunk_type_day_8_28
+## Models:
+## fixed_fitted: regional_mean_bioarea ~ predicted_from_time + metaecosystem_type + disturbance + predicted_from_time * metaecosystem_type + predicted_from_time * disturbance + metaecosystem_type * disturbance
+## mixed_fitted_no_slopes: regional_mean_bioarea ~ predicted_from_time + metaecosystem_type + disturbance + predicted_from_time * metaecosystem_type + predicted_from_time * disturbance + metaecosystem_type * disturbance + (1 | system_nr)
+## mixed_fitted_correlated_slopes: regional_mean_bioarea ~ predicted_from_time + metaecosystem_type + disturbance + (predicted_from_time | system_nr) + (metaecosystem_type | system_nr) + (disturbance | system_nr) + (predicted_from_time * metaecosystem_type | system_nr) + (predicted_from_time * disturbance | system_nr) + (metaecosystem_type * disturbance | system_nr)
+## mixed_fitted_uncorrelated_slopes: regional_mean_bioarea ~ predicted_from_time + metaecosystem_type + disturbance + predicted_from_time * metaecosystem_type + predicted_from_time * disturbance + metaecosystem_type * disturbance + ((1 | system_nr) + (0 + predicted_from_time | system_nr)) + ((1 | system_nr) + (0 + metaecosystem_type | system_nr)) + ((1 | system_nr) + (0 + disturbance | system_nr)) + ((1 | system_nr) + (0 + predicted_from_time | system_nr) + (0 + metaecosystem_type | system_nr) + (0 + predicted_from_time:metaecosystem_type |      system_nr)) + ((1 | system_nr) + (0 + predicted_from_time | system_nr) + (0 + disturbance | system_nr) + (0 + predicted_from_time:disturbance | system_nr)) + ((1 | system_nr) + (0 + metaecosystem_type | system_nr) + (0 + disturbance | system_nr) + (0 + metaecosystem_type:disturbance | system_nr))
+##                                  npar    AIC    BIC  logLik deviance  Chisq Df
+## fixed_fitted                        8 1838.2 1860.5 -911.07   1822.2          
+## mixed_fitted_no_slopes              9 1837.9 1863.0 -909.97   1819.9 2.2159  1
+## mixed_fitted_correlated_slopes     44 1910.4 2033.0 -911.20   1822.4 0.0000 35
+## mixed_fitted_uncorrelated_slopes   51 1922.0 2064.2 -910.00   1820.0 2.4083  7
+##                                  Pr(&gt;Chisq)
+## fixed_fitted                               
+## mixed_fitted_no_slopes               0.1366
+## mixed_fitted_correlated_slopes       1.0000
+## mixed_fitted_uncorrelated_slopes     0.9338</code></pre>
+<p>The best one is either the fixed_fitted (lower BIC) or
+mixed_fitted_no_slopes (lower AIC). Because I want to explain and not
+predict, I will keep the one with lower BIC: fixed_fitted. Let’s see now
+if I should keep some of the interactions.</p>
+<pre class="r"><code>fixed_fitted = lm(regional_mean_bioarea ~ 
+                          predicted_from_time + 
+                          metaecosystem_type  + 
+                          disturbance +
+                          predicted_from_time * metaecosystem_type + #1
+                          predicted_from_time * disturbance +  #2
+                          metaecosystem_type * disturbance, #3
+                        data = ds_regional_predicted_shrunk_type_day_8_28)
+
+fixed_fitted_2 = lm(regional_mean_bioarea ~ 
+                          predicted_from_time + 
+                          metaecosystem_type  + 
+                          disturbance +
+                          predicted_from_time * metaecosystem_type + #1
+                          predicted_from_time * disturbance, #2
+                        data = ds_regional_predicted_shrunk_type_day_8_28)
+
+fixed_fitted_3 = lm(regional_mean_bioarea ~ 
+                          predicted_from_time + 
+                          metaecosystem_type  + 
+                          disturbance +
+                          predicted_from_time * disturbance + #2
+                          metaecosystem_type * disturbance, #3
+                        data = ds_regional_predicted_shrunk_type_day_8_28)
+
+fixed_fitted_4 = lm(regional_mean_bioarea ~ 
+                          predicted_from_time + 
+                          metaecosystem_type  + 
+                          disturbance +
+                          predicted_from_time * metaecosystem_type + #1
+                          metaecosystem_type * disturbance, #3
+                        data = ds_regional_predicted_shrunk_type_day_8_28)
+
+fixed_fitted_5 = lm(regional_mean_bioarea ~ 
+                          predicted_from_time + 
+                          metaecosystem_type  + 
+                          disturbance +
+                          predicted_from_time * metaecosystem_type, #1
+                        data = ds_regional_predicted_shrunk_type_day_8_28)
+
+fixed_fitted_6 = lm(regional_mean_bioarea ~ 
+                          predicted_from_time + 
+                          metaecosystem_type  + 
+                          disturbance +
+                          predicted_from_time * disturbance, #2
+                        data = ds_regional_predicted_shrunk_type_day_8_28)
+
+fixed_fitted_7 = lm(regional_mean_bioarea ~ 
+                          predicted_from_time + 
+                          metaecosystem_type  + 
+                          disturbance +
+                          metaecosystem_type * disturbance, #3
+                        data = ds_regional_predicted_shrunk_type_day_8_28)
+
+fixed_fitted_8 = lm(regional_mean_bioarea ~ 
+                          predicted_from_time + 
+                          metaecosystem_type  + 
+                          disturbance,
+                        data = ds_regional_predicted_shrunk_type_day_8_28)
+
+AIC(fixed_fitted_8, fixed_fitted, fixed_fitted_2, fixed_fitted_3, fixed_fitted_4, fixed_fitted_5, fixed_fitted_6, fixed_fitted_7)</code></pre>
+<pre><code>##                df      AIC
+## fixed_fitted_8  5 1841.673
+## fixed_fitted    8 1838.149
+## fixed_fitted_2  7 1836.254
+## fixed_fitted_3  7 1845.504
+## fixed_fitted_4  7 1836.227
+## fixed_fitted_5  6 1834.332
+## fixed_fitted_6  6 1843.601
+## fixed_fitted_7  6 1843.576</code></pre>
+<pre class="r"><code>BIC(fixed_fitted_8, fixed_fitted, fixed_fitted_2, fixed_fitted_3, fixed_fitted_4, fixed_fitted_5, fixed_fitted_6, fixed_fitted_7)</code></pre>
+<pre><code>##                df      BIC
+## fixed_fitted_8  5 1855.611
+## fixed_fitted    8 1860.449
+## fixed_fitted_2  7 1855.766
+## fixed_fitted_3  7 1865.017
+## fixed_fitted_4  7 1855.739
+## fixed_fitted_5  6 1851.057
+## fixed_fitted_6  6 1860.326
+## fixed_fitted_7  6 1860.301</code></pre>
+<p>It seems like the best one according to both AIC and BIC is
+fixed_fitted_5. Let’s if there is any statistical difference with the
+initial model.</p>
+<pre class="r"><code>anova(fixed_fitted_5, fixed_fitted)</code></pre>
+<pre><code>## Analysis of Variance Table
+## 
+## Model 1: regional_mean_bioarea ~ predicted_from_time + metaecosystem_type + 
+##     disturbance + predicted_from_time * metaecosystem_type
+## Model 2: regional_mean_bioarea ~ predicted_from_time + metaecosystem_type + 
+##     disturbance + predicted_from_time * metaecosystem_type + 
+##     predicted_from_time * disturbance + metaecosystem_type * 
+##     disturbance
+##   Res.Df      RSS Df Sum of Sq      F Pr(&gt;F)
+## 1    115 27665928                           
+## 2    113 27623822  2     42106 0.0861 0.9175</code></pre>
+<p>There’s no difference. Therefore, I will keep the fixed_fitted_5 as
+my best model. This is because it has less variables.</p>
+<p>Let’s now calculate then the effect size of meta-ecosystem type.</p>
+<pre class="r"><code>fixed_fitted_5 = lm(regional_mean_bioarea ~ 
+                          predicted_from_time + 
+                          metaecosystem_type  + 
+                          disturbance +
+                          predicted_from_time * metaecosystem_type, #1
+                        data = ds_regional_predicted_shrunk_type_day_8_28)
+summary(fixed_fitted_5)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = regional_mean_bioarea ~ predicted_from_time + metaecosystem_type + 
+##     disturbance + predicted_from_time * metaecosystem_type, data = ds_regional_predicted_shrunk_type_day_8_28)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -1693.00  -272.97   -17.86   257.86  1488.16 
+## 
+## Coefficients:
+##                                             Estimate Std. Error t value
+## (Intercept)                               -261.15648  151.93750  -1.719
+## predicted_from_time                          1.16242    0.07045  16.500
+## metaecosystem_typeS_L                      -54.29816  205.33010  -0.264
+## disturbancelow                             547.74890   89.54948   6.117
+## predicted_from_time:metaecosystem_typeS_L   -0.30400    0.09963  -3.051
+##                                           Pr(&gt;|t|)    
+## (Intercept)                                0.08833 .  
+## predicted_from_time                        &lt; 2e-16 ***
+## metaecosystem_typeS_L                      0.79191    
+## disturbancelow                            1.35e-08 ***
+## predicted_from_time:metaecosystem_typeS_L  0.00283 ** 
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 490.5 on 115 degrees of freedom
+## Multiple R-squared:  0.8147, Adjusted R-squared:  0.8083 
+## F-statistic: 126.4 on 4 and 115 DF,  p-value: &lt; 2.2e-16</code></pre>
+<pre class="r"><code>fixed_fitted_5_no_metaecosystem_type = lm(regional_mean_bioarea ~ 
+                          predicted_from_time + 
+                          disturbance,
+                        data = ds_regional_predicted_shrunk_type_day_8_28)
+summary(fixed_fitted_5_no_metaecosystem_type)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = regional_mean_bioarea ~ predicted_from_time + disturbance, 
+##     data = ds_regional_predicted_shrunk_type_day_8_28)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -1413.78  -279.67   -18.03   254.71  2007.26 
+## 
+## Coefficients:
+##                       Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)         -288.30556  135.78186  -2.123   0.0358 *  
+## predicted_from_time    1.01042    0.06039  16.731  &lt; 2e-16 ***
+## disturbancelow       547.74890  108.56039   5.046 1.67e-06 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 594.6 on 117 degrees of freedom
+## Multiple R-squared:  0.723,  Adjusted R-squared:  0.7183 
+## F-statistic: 152.7 on 2 and 117 DF,  p-value: &lt; 2.2e-16</code></pre>
+<p><strong>R squared (adjusted)</strong></p>
+<p>Fixed_fitted_5: 0.81</p>
+<p>fixed_fitted_5_no_metaecosystem_type: 0.72</p>
+<p>So, it seems like it worked to increase the effect size to drop the
+first two time points.</p>
+</div>
 <div id="regional-biomass---dropping-first-three-time-points" class="section level2">
 <h2>Regional biomass - dropping first three time points</h2>
 <pre class="r"><code>ds_regional_predicted_shrunk_type_day_12_28 = ds_regional_predicted_shrunk_type %&gt;%
