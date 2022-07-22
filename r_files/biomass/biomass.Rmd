@@ -1,0 +1,231 @@
+---
+title: "Biomass analysis (PatchSizePilot)"
+author: "Emanuele Giacomuzzo"
+date: '2022-07-07'
+output: html_document
+editor_options: 
+  chunk_output_type: console
+bibliography: /Applications/Mendeley/library.bib
+---
+
+Here I study how **biomass density** changes across treatments in the PatchSizePilot. In particular, I'm studying how biomass density changes across:
+
+-   ecosystems of different size (this is the case in nature, but we need to make sure that it's the case also in our experiment)\
+-   ecosystems that are connected (through the flow of nutrients) to an ecosystem of the same size or to an ecosystem that is larger\
+-   meta-ecosystems in which patch size is the same or in which one patch has most of the area (we keep the total area of the meta-ecosystem constant)
+
+```{r set up environment, echo = FALSE, results = FALSE, message = FALSE}
+
+rm( list = ls(  ) )
+cat( "\014" )
+library("tidyverse")
+library("grid")
+library("gridExtra") 
+library("lme4")
+library("here")
+library("MuMIn")
+library("equatiomatic")
+library("knitr")
+library("optimx")
+library("GenSA")
+
+knitr::opts_chunk$set(message = FALSE)
+
+source(here("r_files", "biomass", "functions", "biomass_plots.R"))
+
+p = NULL #To run the plotting function
+```
+
+# Import
+
+```{r import, message = FALSE, echo = TRUE}
+
+culture_info = read.csv(here("data", "PatchSizePilot_culture_info.csv"), header = TRUE)
+load(here("data", "population", "t0.RData")); t0 = pop_output
+load(here("data", "population", "t1.RData")); t1 = pop_output
+load(here("data", "population", "t2.RData")); t2 = pop_output
+load(here("data", "population", "t3.RData")); t3 = pop_output
+load(here("data", "population", "t4.RData")); t4 = pop_output
+load(here("data", "population", "t5.RData")); t5 = pop_output
+load(here("data", "population", "t6.RData")); t6 = pop_output
+load(here("data", "population", "t7.RData")); t7 = pop_output
+rm(pop_output)
+
+```
+
+# Tidy
+
+```{r tidy-up}
+
+t0$time = NA
+t1$time = NA
+
+t0$replicate_video = 1:12 #In t1 I took 12 videos of a single 
+t1$replicate_video = 1 #In t1 I took only 1 video/culture
+t2$replicate_video = 1 #In t2 I took only 1 video/culture
+t3$replicate_video = 1 #In t3 I took only 1 video/culture
+t4$replicate_video = 1 #In t4 I took only 1 video/culture
+t5$replicate_video = 1 #In t5 I took only 1 video/culture
+
+t6 = t6 %>%
+  rename(replicate_video = replicate)
+t7 = t7 %>%
+  rename(replicate_video = replicate)
+
+#Create an elongated version of t0 so that each of the 110 cultures can have 12 video replicates at t0.
+elongating_t0 = NULL
+for (video in 1:nrow(t0)){
+  for (ID in 1:nrow(culture_info)) {
+    elongating_t0 = rbind(elongating_t0, t0[video,])
+  }
+}
+
+ID_vector = rep(1:nrow(culture_info), 
+                times = nrow(t0))
+
+elongating_t0$culture_ID = ID_vector
+
+t0 = merge(culture_info,elongating_t0, by="culture_ID")
+t1 = merge(culture_info,t1, by = "culture_ID")
+t2 = merge(culture_info,t2, by = "culture_ID")
+t3 = merge(culture_info,t3, by = "culture_ID")
+t4 = merge(culture_info,t4, by = "culture_ID")
+t5 = merge(culture_info,t5, by = "culture_ID")
+t6 = merge(culture_info,t6, by = "culture_ID")
+t7 = merge(culture_info,t7, by = "culture_ID")
+ds = rbind(t0, t1, t2, t3, t4, t5, t6, t7)
+rm(elongating_t0, t0, t1, t2, t3, t4, t5, t6, t7)
+
+# Switch from data point to day
+ds = ds %>%
+  rename(day = time_point)
+
+ds$day[ds$day=="t0"] = "0"
+ds$day[ds$day=="t1"] = "4"
+ds$day[ds$day=="t2"] = "8"
+ds$day[ds$day=="t3"] = "12"
+ds$day[ds$day=="t4"] = "16"
+ds$day[ds$day=="t5"] = "20"
+ds$day[ds$day=="t6"] = "24"
+ds$day[ds$day=="t7"] = "28"
+ds$day = as.numeric(ds$day)
+
+ds = ds %>% 
+  select(culture_ID, 
+         patch_size, 
+         disturbance, 
+         metaecosystem_type, 
+         bioarea_per_volume, 
+         replicate_video, 
+         day, 
+         metaecosystem, 
+         system_nr, 
+         eco_metaeco_type)
+
+ds = ds[, c("culture_ID", 
+            "system_nr", 
+            "disturbance", 
+            "day", 
+            "patch_size", 
+            "metaecosystem", 
+            "metaecosystem_type", 
+            "eco_metaeco_type", 
+            "replicate_video",
+            "bioarea_per_volume")]
+
+ds$eco_metaeco_type = factor(ds$eco_metaeco_type, 
+                             levels=c('S', 
+                                      'S (S_S)', 
+                                      'S (S_L)', 
+                                      'M', 
+                                      'M (M_M)', 
+                                      'L', 
+                                      'L (L_L)', 
+                                      'L (S_L)'))
+```
+
+```{r regional-biomass}
+
+ds_regional = ds %>%
+    group_by(culture_ID, system_nr, disturbance, day, patch_size, metaecosystem_type) %>%
+    summarise(patch_mean_bioarea_across_videos = mean(bioarea_per_volume)) %>%
+    group_by(system_nr, disturbance, day,metaecosystem_type) %>%
+    summarise(regional_mean_bioarea = mean(patch_mean_bioarea_across_videos))
+```
+
+# Plot
+
+## Biomass \@ low disturbance
+
+```{r low-disturbance-plots, eval = TRUE, echo = FALSE, message = FALSE}
+
+biomass_plots("low")
+p[[1]]
+p[[2]]
+p[[3]]
+p[[4]]
+p[[5]]
+p[[6]]
+```
+
+Let's now save all the plots together in a single image. As the single image is too large for R markdown, it cannot be displayed here.
+
+```{r low-disturbance-grid, eval = FALSE}
+
+grid = grid.arrange(p[[1]],p[[3]],p[[5]],p[[2]],p[[4]],p[[6]],
+                    ncol=3, nrow=2,
+                    top = textGrob("Low disturbance",gp=gpar(fontsize=20,font=3)))
+ggsave(here("results", "biomass", "Clean_biomass_low.jpg"), grid, width = 22, height = 13)
+```
+
+## Biomass \@ high disturbance
+
+```{r high-disturbance-plots, eval = TRUE, echo = FALSE, message = FALSE}
+
+biomass_plots("high")
+p[[1]]
+p[[2]]
+p[[3]]
+p[[4]]
+p[[5]]
+p[[6]]
+```
+
+Let's save also here for high disturbance.
+
+```{r high-disturbance-grid, eval = FALSE}
+
+biomass_plots("high")
+
+grid = grid.arrange(p[[1]],p[[3]],p[[5]],p[[2]],p[[4]],p[[6]],
+             ncol=3, 
+             nrow=2,
+             top = textGrob("High disturbance",
+                            gp = gpar(fontsize = 20,
+                                      font = 3)))
+
+ggsave(here("results", "biomass", "Clean_biomass_high.jpg"), 
+       grid, 
+       width = 22, 
+       height = 13)
+```
+
+# Mixed effect models
+
+To build the mixed effect models we will use the R package lme4. See page 6 of [this PDF](https://cran.r-project.org/web/packages/lme4/vignettes/lmer.pdf) to know more about the syntaxis of this package.
+
+To do model diagnostics, I'm going to look at the following two plots (as suggested by @Zuur2009, page 487):
+
+-   Quantile-quantile plots
+-   Partial residual plots
+
+```{r child = "model_regional_biomass.Rmd", eval = TRUE}
+```
+
+```{r child = "biomass_transformation.Rmd", eval = FALSE}
+```
+
+```{r child = "model_diagnostics.Rmd", eval = FALSE}
+```
+
+# Bibliography
