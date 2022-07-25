@@ -7,12 +7,10 @@ editor_options:
   chunk_output_type: console
 ---
 
-Next step is to see when integrating time it makes sense to have meta-ecosystem ID as a random effect.
-
 ```{r time-fitted-random-effects}
 
 ds_regional_predicted_shrunk_type_n_day = ds_regional_predicted_shrunk_type %>%
-  filter(day > 0)
+  filter(time_point >= 2)
 
 model_1 = lmer(regional_mean_bioarea ~ 
                             predicted_from_time + 
@@ -68,7 +66,7 @@ model_3 = lmer(regional_mean_bioarea ~
                         REML = FALSE)
 
 anova(model_2, model_3)
-#Model 3 is better.
+#They are the same
 
 #Take off metaecosystem type * disturbance
 model_4 = lmer(regional_mean_bioarea ~ 
@@ -148,7 +146,7 @@ anova(model_8, model_9)
 #They are the same
 
 summary(model_9)
-#R squared: 0.80
+#R squared: 0.795
 
 #Take off metaecosystem type
 model_10 = lm(regional_mean_bioarea ~ 
@@ -160,10 +158,11 @@ anova(model_9, model_10)
 #they are different
 
 summary(model_10)
-#R squared: 0.74
+#R squared: 0.718
 
-
-#Meta-ecosystem R2 = 0.06
+R2_metaecosystem = summary(model_9)$adj.r.squared - summary(model_10)$adj.r.squared
+R2_metaecosystem = round(R2_metaecosystem, digits = 3)
 
 ```
 
+Therefore, keeping t2 to t7 we get that the effect size of meta-ecosystem type is `r R2_metaecosystem`. 

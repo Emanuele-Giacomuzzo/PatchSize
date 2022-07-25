@@ -10,7 +10,7 @@ output: html_document
 ```{r}
 
 ds_regional_predicted_shrunk_type_day_12_28 = ds_regional_predicted_shrunk_type %>%
-  filter(day >= 12, day <= 28)
+  filter(time_point >= 3)
 
 #Fixed effect model with fitted time 
 fixed_fitted = lm(regional_mean_bioarea ~ 

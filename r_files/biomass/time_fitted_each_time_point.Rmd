@@ -1,0 +1,157 @@
+---
+title: "model_linear_all_time_combinations"
+author: "Emanuele Giacomuzzo"
+date: '2022-07-22'
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+I'm skipping day 4 because it was before the first exchange.
+
+```{r day-8}
+
+day_input = 8
+
+filtered_dataset = ds_regional_predicted_shrunk_type %>%
+  filter(day == day_input)
+
+model_1 = lm(regional_mean_bioarea ~ 
+                            disturbance +
+                            metaecosystem_type,
+                        data = filtered_dataset)
+
+model_2 = lm(regional_mean_bioarea ~ 
+                            disturbance,
+                        data = filtered_dataset)
+
+anova(model_1, model_2)
+
+summary(model_1)
+summary(model_2)
+R2_day_8 = summary(model_1)$adj.r.squared - summary(model_2)$adj.r.squared
+R2_day_8 = round(R2_day_8, digits = 3)
+
+
+day_input = 12
+
+filtered_dataset = ds_regional_predicted_shrunk_type %>%
+  filter(day == day_input)
+
+model_1 = lm(regional_mean_bioarea ~ 
+                            disturbance +
+                            metaecosystem_type,
+                        data = filtered_dataset)
+
+model_2 = lm(regional_mean_bioarea ~ 
+                            disturbance,
+                        data = filtered_dataset)
+
+anova(model_1, model_2)
+
+summary(model_1)
+summary(model_2)
+R2_day_12 = summary(model_1)$adj.r.squared - summary(model_2)$adj.r.squared
+R2_day_12 = round(R2_day_12, digits = 3)
+
+
+day_input = 16
+
+filtered_dataset = ds_regional_predicted_shrunk_type %>%
+  filter(day == day_input)
+
+model_1 = lm(regional_mean_bioarea ~ 
+                            disturbance +
+                            metaecosystem_type,
+                        data = filtered_dataset)
+
+model_2 = lm(regional_mean_bioarea ~ 
+                            disturbance,
+                        data = filtered_dataset)
+
+anova(model_1, model_2)
+
+summary(model_1)
+summary(model_2)
+R2_day_16 = summary(model_1)$adj.r.squared - summary(model_2)$adj.r.squared
+R2_day_16 = round(R2_day_16, digits = 3)
+
+
+
+
+day_input = 20
+
+filtered_dataset = ds_regional_predicted_shrunk_type %>%
+  filter(day == day_input)
+
+model_1 = lm(regional_mean_bioarea ~ 
+                            disturbance +
+                            metaecosystem_type,
+                        data = filtered_dataset)
+
+model_2 = lm(regional_mean_bioarea ~ 
+                            disturbance,
+                        data = filtered_dataset)
+
+anova(model_1, model_2)
+
+summary(model_1)
+summary(model_2)
+R2_day_20 = summary(model_1)$adj.r.squared - summary(model_2)$adj.r.squared
+R2_day_20 = round(R2_day_20, digits = 3)
+
+
+
+day_input = 24
+
+filtered_dataset = ds_regional_predicted_shrunk_type %>%
+  filter(day == day_input)
+
+model_1 = lm(regional_mean_bioarea ~ 
+                            disturbance +
+                            metaecosystem_type,
+                        data = filtered_dataset)
+
+model_2 = lm(regional_mean_bioarea ~ 
+                            disturbance,
+                        data = filtered_dataset)
+
+anova(model_1, model_2)
+
+summary(model_1)
+summary(model_2)
+R2_day_24 = summary(model_1)$adj.r.squared - summary(model_2)$adj.r.squared
+R2_day_24 = round(R2_day_24, digits = 3)
+
+
+
+day_input = 28
+
+filtered_dataset = ds_regional_predicted_shrunk_type %>%
+  filter(day == day_input)
+
+model_1 = lm(regional_mean_bioarea ~ 
+                            disturbance +
+                            metaecosystem_type,
+                        data = filtered_dataset)
+
+model_2 = lm(regional_mean_bioarea ~ 
+                            disturbance,
+                        data = filtered_dataset)
+
+anova(model_1, model_2)
+
+summary(model_1)
+summary(model_2)
+R2_day_28 = summary(model_1)$adj.r.squared - summary(model_2)$adj.r.squared
+R2_day_28 = round(R2_day_28, digits = 3)
+```
+
+| Day | R squared     |
+|-----|---------------|
+| 8   | `r R2_day_8`  |
+| 12  | `r R2_day_12` |
+| 16  | `r R2_day_16` |
+| 20  | `r R2_day_20` |
+| 24  | `r R2_day_24` |
+| 28  | `r R2_day_28` |

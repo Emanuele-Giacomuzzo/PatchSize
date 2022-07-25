@@ -99,18 +99,28 @@ ds = rbind(t0, t1, t2, t3, t4, t5, t6, t7)
 rm(elongating_t0, t0, t1, t2, t3, t4, t5, t6, t7)
 
 # Switch from data point to day
-ds = ds %>%
-  rename(day = time_point)
+# ds = ds %>%
+#   rename(day = time_point)
 
-ds$day[ds$day=="t0"] = "0"
-ds$day[ds$day=="t1"] = "4"
-ds$day[ds$day=="t2"] = "8"
-ds$day[ds$day=="t3"] = "12"
-ds$day[ds$day=="t4"] = "16"
-ds$day[ds$day=="t5"] = "20"
-ds$day[ds$day=="t6"] = "24"
-ds$day[ds$day=="t7"] = "28"
-ds$day = as.numeric(ds$day)
+ds$time_point[ds$time_point=="t0"] = 0
+ds$time_point[ds$time_point=="t1"] = 1
+ds$time_point[ds$time_point=="t2"] = 2
+ds$time_point[ds$time_point=="t3"] = 3
+ds$time_point[ds$time_point=="t4"] = 4
+ds$time_point[ds$time_point=="t5"] = 5
+ds$time_point[ds$time_point=="t6"] = 6
+ds$time_point[ds$time_point=="t7"] = 7
+ds$time_point = as.character(ds$time_point)
+
+ds$day = NA
+ds$day[ds$time_point== 0] = 0
+ds$day[ds$time_point== 1] = 4
+ds$day[ds$time_point== 2] = 8
+ds$day[ds$time_point== 3] = 12
+ds$day[ds$time_point== 4] = 16
+ds$day[ds$time_point== 5] = 20
+ds$day[ds$time_point== 6] = 24
+ds$day[ds$time_point== 7] = 28
 
 ds = ds %>% 
   select(culture_ID, 
@@ -119,7 +129,8 @@ ds = ds %>%
          metaecosystem_type, 
          bioarea_per_volume, 
          replicate_video, 
-         day, 
+         time_point,
+         day,
          metaecosystem, 
          system_nr, 
          eco_metaeco_type)
@@ -127,6 +138,7 @@ ds = ds %>%
 ds = ds[, c("culture_ID", 
             "system_nr", 
             "disturbance", 
+            "time_point",
             "day", 
             "patch_size", 
             "metaecosystem", 
@@ -149,13 +161,13 @@ ds$eco_metaeco_type = factor(ds$eco_metaeco_type,
 ```{r regional-biomass}
 
 ds_regional = ds %>%
-    group_by(culture_ID, system_nr, disturbance, day, patch_size, metaecosystem_type) %>%
+    group_by(culture_ID, system_nr, disturbance, day, time_point, patch_size, metaecosystem_type) %>%
     summarise(patch_mean_bioarea_across_videos = mean(bioarea_per_volume)) %>%
-    group_by(system_nr, disturbance, day,metaecosystem_type) %>%
+    group_by(system_nr, disturbance, day, time_point, metaecosystem_type) %>%
     summarise(regional_mean_bioarea = mean(patch_mean_bioarea_across_videos))
 ```
 
-```{r child = "plots.Rmd", eval = TRUE}
+```{r child = "plots.Rmd", eval = FALSE}
 ```
 
 # Regional biomass modelling
@@ -167,31 +179,21 @@ To do model diagnostics, I'm going to look at the following two plots (as sugges
 -   Quantile-quantile plots
 -   Partial residual plots
 
-```{r child = "model_t1-t7_without_time_fitting.Rmd", echo = TRUE, eval = TRUE}
+Also, I am going to select the best model acccording to BIC instead of AIC. This is because BIC is better for understanding and AIC for predicting. 
+
+```{r child = "no_time_fitting_t2-t7.Rmd", echo = TRUE, eval = TRUE}
 ```
 
-```{r child = "time_fitting.Rmd", echo = TRUE, eval = TRUE}
+```{r child = "time_fitting.Rmd", echo = TRUE, eval = FALSE}
 ```
 
-```{r child = "model_t1-t7_time_fitted.Rmd", echo = TRUE, eval = TRUE}
+```{r child = "time_fitted_t2-t7.Rmd", echo = TRUE, eval = FALSE}
 ```
 
-```{r child = "model_t2-t7_time_fitted.Rmd", echo = TRUE, eval = TRUE}
+```{r child = "time_fitted_each_time_point.Rmd", echo = TRUE, eval = FALSE}
 ```
 
-```{r child = "model_t3-t7_time_fitted.Rmd", echo = TRUE, eval = TRUE}
-```
-
-```{r child = "moel_t3_time_fitted.Rmd", echo= TRUE, eval = TRUE}
-```
-
-```{r child = "log_transformation.Rmd", eval = FALSE}
-```
-
-```{r child = "model_diagnostics.Rmd", eval = FALSE}
-```
-
-```{r running-time, eval = FALSE}
+```{r running-time, echo = FALSE, eval = FALSE}
 end_time = Sys.time()
 print(end_time - start_time) #For some reason it doesn't work 
 ```
