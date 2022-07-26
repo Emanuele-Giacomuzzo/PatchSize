@@ -143,7 +143,7 @@ ds = ds[, c("culture_ID",
             "bioarea_per_volume")]
 
 ds$eco_metaeco_type = factor(ds$eco_metaeco_type, 
-                             levels=c('S', 
+                             levels = c('S', 
                                       'S (S_S)', 
                                       'S (S_L)', 
                                       'M', 
@@ -151,6 +151,12 @@ ds$eco_metaeco_type = factor(ds$eco_metaeco_type,
                                       'L', 
                                       'L (L_L)', 
                                       'L (S_L)'))
+
+ ds$patch_size = factor(ds$patch_size,
+                        levels = c ('S', 'M', 'L'))
+
+#ds$metaecosystem_type = factor(ds$metaecosystem_type,
+#                       levels = c ('S_S', 'M_M', 'L_L'))
 
 ecosystems_to_take_off = 60 #Culture number 60 because it was spilled
 ds = ds %>%
@@ -256,6 +262,9 @@ ds_regional %>%
 ```{r child = "no_time_fitting_t2-t7.Rmd", echo = TRUE, eval = TRUE}
 ```
 
+```{r child = "no_time_fitted_different_time_periods.Rmd", echo = TRUE, eval = TRUE}
+```
+
 ```{r child = "time_fitting.Rmd", echo = TRUE, eval = TRUE}
 ```
 
@@ -268,24 +277,15 @@ ds_regional %>%
 ```{r child = "time_fitted_different_time_periods.Rmd", echo = TRUE, eval = TRUE}
 ```
 
-# Local biomass modelling
-
-## Tidy
-
-```{r}
-
-ds_local_S = ds %>%
-  filter (eco_metaeco_type == "S" | eco_metaeco_type == "S (S_S)" | eco_metaeco_type == "S (S_L)") %>%
-  filter(time_point >= 2) #Let's take off the first two time points which are before the first disturbance event.
-```
+# Local biomass modelling 
 
 ## Plot
 
 ```{r}
 
 ds %>%
-    filter eco_metaeco_type == "S" | 
-              eco_metaeco_type == "S (S_S)" | 
+    filter (  eco_metaeco_type == "S" | 
+              eco_metaeco_type == "S (S_S)" |
               eco_metaeco_type == "S (S_L)") %>%
     ggplot(aes(x = day,
                y = bioarea_per_volume,
@@ -309,88 +309,140 @@ ds %>%
 
 *Figure 3. Local biomass production in patches that are either isolated (red, small isolated patches), connected to patches of the same size (green, patches of small-small meta-ecosystems), or connected to patches five times larger (blue, small patches of small-large meta-ecosystems).*
 
-## Model selection
+## Local biomass modelling - S_S and S_L
+
+### Tidy
 
 ```{r}
+ds_local_S_t2_t7 = ds %>%
+  filter (eco_metaeco_type == "S (S_S)" | 
+          eco_metaeco_type == "S (S_L)") %>%
+  filter(time_point >= 2) #Let's take off the first two time points which are before the first disturbance event.
+```
 
-full_model_uncorrelated = lmer(bioarea_per_volume ~ 
+### Plot
+
+```{r}
+ds_local_S_t2_t7 %>%
+    ggplot(aes(x = day,
+               y = bioarea_per_volume,
+               fill = eco_metaeco_type,
+               color = eco_metaeco_type)) +
+    geom_point(stat = "summary", fun = "mean") +
+    geom_line(stat = "summary", fun = "mean") +
+    labs(x = "Day", 
+         y = "Local biomass (bioarea/µl)", 
+         color = '', 
+         fill = '') +
+    scale_fill_discrete(labels = c("Patch connected to patch of the same size", 
+                                   "Patch connected to larger patch")) +
+    scale_color_discrete(labels = c("Patch connected to patch of the same size", 
+                                    "Patch connected to larger patch")) +
+    theme_bw() +
+    theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())
+```
+
+### Model selection
+
+Let's start from building the full model.
+
+```{r}
+full_model = lmer(bioarea_per_volume ~ 
                     metaecosystem_type  + 
                     disturbance + 
                     metaecosystem_type * disturbance + 
                     (metaecosystem_type || day) + 
                     (disturbance || day) + 
-                    (metaecosystem_type*disturbance  || day) + 
-                    (metaecosystem_type || system_nr) + 
-                    (disturbance || system_nr) + 
-                    (metaecosystem_type*disturbance  || system_nr), 
-                  data = ds_local_S, 
+                    (metaecosystem_type*disturbance  || day),
+                  data = ds_local_S_t2_t7, 
                   REML = FALSE)
+```
 
-full_model_correlated = lmer(bioarea_per_volume ~ 
-                               metaecosystem_type  + 
-                               disturbance + 
-                               metaecosystem_type * disturbance + 
-                               (metaecosystem_type | day) + 
-                               (disturbance | day) + 
-                               (metaecosystem_type*disturbance  | day) + 
-                               (metaecosystem_type | system_nr) + 
-                               (disturbance | system_nr) + 
-                               (metaecosystem_type*disturbance  | system_nr), 
-                             data = ds_local_S, 
-                             REML = FALSE)
+**Does time have a random effect?**
 
-anova(full_model_uncorrelated, full_model_correlated)
-
-no_system_nr_model = lmer(bioarea_per_volume ~ 
-                            metaecosystem_type  + 
-                            disturbance + 
-                            metaecosystem_type * disturbance + 
-                            (metaecosystem_type || day) + 
-                            (disturbance || day) + 
-                            (metaecosystem_type*disturbance || day), 
-                          data = ds_local_S, 
-                          REML = FALSE)
-
-anova(full_model_uncorrelated, no_system_nr_model)
-
+```{r}
 fixed_effects_model = lm(bioarea_per_volume ~ 
                            metaecosystem_type  + 
                            disturbance +
                            metaecosystem_type * disturbance, 
-                         data = ds_local_S)
+                         data = ds_local_S_t2_t7)
 
-anova(no_system_nr_model, fixed_effects_model)
+anova(full_model, fixed_effects_model)
+```
 
+Yes. Let's then keep the random effect of time.
+
+```{r}
+best_model = full_model
+```
+
+**Do meta-ecosystem type and disturbance interact?**
+
+```{r}
 no_interaction_model = lmer(bioarea_per_volume ~ 
                               metaecosystem_type + 
                               disturbance  + 
                               (metaecosystem_type || day) + 
                               (disturbance || day), 
-                            data = ds_local_S, 
+                            data = ds_local_S_t2_t7, 
                             REML = FALSE)
 
-anova(no_system_nr_model, no_interaction_model)
+anova(best_model, no_interaction_model)
+```
 
-no_slopes_model = lmer(bioarea_per_volume ~ 
+Yes. Let's keep the model without the interaction between meta-ecosystem type and disturbance, as it has lower BIC.
+
+```{r}
+best_model = no_interaction_model
+```
+
+**Does time have an effect on the slope of metaecosystem_type?**
+
+```{r}
+no_metaeco_slopes_model = lmer(bioarea_per_volume ~ 
+                         metaecosystem_type + 
+                         disturbance  + 
+                         (disturbance || day), 
+                       data = ds_local_S_t2_t7, 
+                       REML = FALSE,
+                       control = lmerControl (optimizer = "Nelder_Mead")
+                       )
+
+anova(best_model, no_metaeco_slopes_model)
+```
+
+No. Let's then keep the model without the random effect of time on meta-ecosystem type slopes.
+
+**Does time have an effect on the slope of disturbance?**
+
+```{r}
+no_disturbance_slopes_model = lmer(bioarea_per_volume ~ 
                          metaecosystem_type + 
                          disturbance  + 
                          (1 | day), 
-                       data = ds_local_S, 
-                       REML = FALSE)
+                       data = ds_local_S_t2_t7, 
+                       REML = FALSE,
+                       control = lmerControl (optimizer = "Nelder_Mead")
+                       )
 
-anova(no_interaction_model, no_slopes_model)
-#the two models are highly different. AIC suggests using no_interaction_model. BIC suggests using no_slopes_model. I'll then keep the no_slopes_model.
+anova(best_model, no_disturbance_slopes_model)
+```
 
-best_model = no_slopes_model
+Yes. Let's keep the model without slopes from disturbance, as it has lower BIC.
+
+```{r}
+best_model = no_disturbance_slopes_model
+summary(best_model)
 ```
 
 ## Analysis of the best model
 
-```{r}
+#### Effect size and significance of full model 
 
+```{r}
 model.null = lm(bioarea_per_volume ~ 
                   1, 
-                  data = ds_local_S)
+                  data = ds_local_S_t2_t7)
 
 r2_best = r.squaredGLMM(best_model)
 r2_best = round(r2_best, digits = 3)
@@ -403,6 +455,535 @@ if (p_best < 0.00001) {
   p_best = "< 0.00001"
 }
 ```
+
+#### Effect size and significance of meta-ecosystem type
+
+```{r}
+metaecosystem_type_null = lmer(bioarea_per_volume ~  
+                                 disturbance  + 
+                                 (1 | day),
+                               data = ds_local_S_t2_t7, 
+                               REML = FALSE, 
+                               control = lmerControl(optimizer ="Nelder_Mead"))
+
+r2_no_metaecosystem_type = r.squaredGLMM(metaecosystem_type_null)
+r2_no_metaecosystem_type = round(r2_no_metaecosystem_type, digits = 3)
+
+anova = anova(best_model, metaecosystem_type_null)
+p_no_metaecosystem_type = anova$`Pr(>Chisq)`[2]
+p_no_metaecosystem_type = round(p_no_metaecosystem_type, digits = 5)
+
+if (p_no_metaecosystem_type < 0.00001) {
+  p_no_metaecosystem_type = "< 0.00001"
+}
+```
+
+#### Effect size and significance of disturbance
+
+```{r}
+disturbance_null = lmer(bioarea_per_volume ~ 
+                          metaecosystem_type  + 
+                          (1 | day), 
+                        data = ds_local_S_t2_t7, 
+                        REML = FALSE,
+                        control = lmerControl(optimizer ='optimx', 
+                                                     optCtrl=list(method='L-BFGS-B')))
+
+r2_no_disturbance = r.squaredGLMM(disturbance_null)
+r2_no_disturbance = round(r2_no_disturbance, digits = 3)
+
+anova = anova(best_model, disturbance_null)
+p_no_disturbance = anova$`Pr(>Chisq)`[2]
+p_no_disturbance = round(p_no_disturbance, digits = 5)
+
+if (p_no_disturbance < 0.00001) {
+  p_no_disturbance = "< 0.00001"
+}
+```
+
+The effect size and significance of our results can be found in the following table.
+
+| Model                                  |           Marginal R2           |   Marginal R2 of the best model explained    |         Conditional R2          |  Conditional R2 of the best model explained  |           P-value           |
+|:-----------|:----------:|:----------:|:----------:|:----------:|:----------:|
+| Best model                             |         `r r2_best[1]`          |                      /                       |         `r r2_best[2]`          |                      /                       |         `r p_best`          |
+| Best model without meta-ecosystem type | `r r2_no_metaecosystem_type[1]` | `r r2_best[1] - r2_no_metaecosystem_type[1]` | `r r2_no_metaecosystem_type[2]` | `r r2_best[2] - r2_no_metaecosystem_type[2]` | `r p_no_metaecosystem_type` |
+| Best model without disturbance         |    `r r2_no_disturbance[1]`     |    `r r2_best[1] - r2_no_disturbance[1]`     |    `r r2_no_disturbance[2]`     |    `r r2_best[2] - r2_no_disturbance[2]`     |    `r p_no_disturbance`     |
+
+## t2-3, t2-t4, t2-t5, t2-t6, t2-t7 
+
+Let's now try to see how meta-ecosystem effect changes across different time periods.
+
+```{r}
+R2 = NULL
+for (last_point in 3:7) {
+  
+  filtered_dataset = ds_local_S_t2_t7 %>%
+  filter(time_point <= last_point)
+  
+  full_model = lmer(bioarea_per_volume ~ 
+                      disturbance +
+                      metaecosystem_type + 
+                      (1 | day),
+                    data = filtered_dataset,
+                    REML = FALSE)
+  
+  no_metaeco_type_model = lmer(bioarea_per_volume ~ 
+                               disturbance +
+                               (1 | day),
+                             data = filtered_dataset,
+                             REML = FALSE)
+  
+  anova(full_model, no_metaeco_type_model)
+  
+  R2_full = r.squaredGLMM(full_model)[1,1]
+  R2_null = r.squaredGLMM(no_metaeco_type_model)[1,1]
+  
+  R2[[last_point]] =  R2_full - R2_null
+  R2[[last_point]] = round(R2[[last_point]], digits = 3)
+  
+}
+```
+
+| Time points | Marginal R squared of meta-ecosystem type |
+|:-----------:|:-----------------------------------------:|
+|   t2 - t3   |                `r R2[[3]]`                |
+|   t2 -t4    |                `r R2[[4]]`                |
+|   t2 - t5   |                `r R2[[5]]`                |
+|   t2 - t6   |                `r R2[[6]]`                |
+|   t2 - t7   |                `r R2[[7]]`                |
+
+## Local biomass modelling - S and S_L
+
+### Tidy
+
+```{r}
+ds_local_S_t2_t7 = ds %>%
+  filter (eco_metaeco_type == "S" | 
+          eco_metaeco_type == "S (S_L)") %>%
+  filter(time_point >= 2) #Let's take off the first two time points which are before the first disturbance event.
+```
+
+### Plot
+
+```{r}
+ds_local_S_t2_t7 %>%
+    ggplot(aes(x = day,
+               y = bioarea_per_volume,
+               fill = eco_metaeco_type,
+               color = eco_metaeco_type)) +
+    geom_point(stat = "summary", fun = "mean") +
+    geom_line(stat = "summary", fun = "mean") +
+    labs(x = "Day", 
+         y = "Local biomass (bioarea/µl)", 
+         color = '', 
+         fill = '') +
+    scale_fill_discrete(labels = c("Isolated patch", 
+                                   "Patch connected to larger patch")) +
+    scale_color_discrete(labels = c("Isolated patch", 
+                                    "Patch connected to larger patch")) +
+    theme_bw() +
+    theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())
+```
+
+### Model selection
+
+Let's start from building the full model.
+
+```{r}
+full_model = lmer(bioarea_per_volume ~ 
+                    metaecosystem_type  + 
+                    disturbance + 
+                    metaecosystem_type * disturbance + 
+                    (metaecosystem_type || day) + 
+                    (disturbance || day) + 
+                    (metaecosystem_type*disturbance  || day),
+                  data = ds_local_S_t2_t7, 
+                  REML = FALSE)
+```
+
+**Does time have a random effect?**
+
+```{r}
+fixed_effects_model = lm(bioarea_per_volume ~ 
+                           metaecosystem_type  + 
+                           disturbance +
+                           metaecosystem_type * disturbance, 
+                         data = ds_local_S_t2_t7)
+
+anova(full_model, fixed_effects_model)
+```
+
+Yes. Let's then keep the random effect of time.
+
+```{r}
+best_model = full_model
+```
+
+**Do meta-ecosystem type and disturbance interact?**
+
+```{r}
+no_interaction_model = lmer(bioarea_per_volume ~ 
+                              metaecosystem_type + 
+                              disturbance  + 
+                              (metaecosystem_type || day) + 
+                              (disturbance || day), 
+                            data = ds_local_S_t2_t7, 
+                            REML = FALSE)
+
+anova(best_model, no_interaction_model)
+```
+
+No. Let's keep the model without the interaction between meta-ecosystem type and disturbance.
+
+```{r}
+best_model = no_interaction_model
+```
+
+**Does time have an effect on the slope of metaecosystem_type?**
+
+```{r}
+no_metaeco_slopes_model = lmer(bioarea_per_volume ~ 
+                         metaecosystem_type + 
+                         disturbance  + 
+                         (disturbance || day), 
+                       data = ds_local_S_t2_t7, 
+                       REML = FALSE,
+                       control = lmerControl (optimizer = "Nelder_Mead")
+                       )
+
+anova(best_model, no_metaeco_slopes_model)
+```
+
+No. Let's then keep the model without the random effect of time on meta-ecosystem type slopes.
+
+**Does time have an effect on the slope of disturbance?**
+
+```{r}
+no_disturbance_slopes_model = lmer(bioarea_per_volume ~ 
+                         metaecosystem_type + 
+                         disturbance  + 
+                         (1 | day), 
+                       data = ds_local_S_t2_t7, 
+                       REML = FALSE,
+                       control = lmerControl (optimizer = "Nelder_Mead")
+                       )
+
+anova(best_model, no_disturbance_slopes_model)
+```
+
+No. Let's keep the model without slopes from disturbance.
+
+```{r}
+best_model = no_disturbance_slopes_model
+summary(best_model)
+```
+
+## Analysis of the best model
+
+#### Effect size and significance of full model 
+
+```{r}
+model.null = lm(bioarea_per_volume ~ 
+                  1, 
+                  data = ds_local_S_t2_t7)
+
+r2_best = r.squaredGLMM(best_model)
+r2_best = round(r2_best, digits = 3)
+
+anova = anova(best_model, model.null)
+p_best = anova$`Pr(>Chisq)`[2]
+p_best = round(p_best, digits = 5)
+
+if (p_best < 0.00001) {
+  p_best = "< 0.00001"
+}
+```
+
+#### Effect size and significance of meta-ecosystem type
+
+```{r}
+metaecosystem_type_null = lmer(bioarea_per_volume ~  
+                                 disturbance  + 
+                                 (1 | day),
+                               data = ds_local_S_t2_t7, 
+                               REML = FALSE, 
+                               control = lmerControl(optimizer ="Nelder_Mead"))
+
+r2_no_metaecosystem_type = r.squaredGLMM(metaecosystem_type_null)
+r2_no_metaecosystem_type = round(r2_no_metaecosystem_type, digits = 3)
+
+anova = anova(best_model, metaecosystem_type_null)
+p_no_metaecosystem_type = anova$`Pr(>Chisq)`[2]
+p_no_metaecosystem_type = round(p_no_metaecosystem_type, digits = 5)
+
+if (p_no_metaecosystem_type < 0.00001) {
+  p_no_metaecosystem_type = "< 0.00001"
+}
+```
+
+#### Effect size and significance of disturbance
+
+```{r}
+disturbance_null = lmer(bioarea_per_volume ~ 
+                          metaecosystem_type  + 
+                          (1 | day), 
+                        data = ds_local_S_t2_t7, 
+                        REML = FALSE,
+                        control = lmerControl(optimizer ='optimx', 
+                                                     optCtrl=list(method='L-BFGS-B')))
+
+r2_no_disturbance = r.squaredGLMM(disturbance_null)
+r2_no_disturbance = round(r2_no_disturbance, digits = 3)
+
+anova = anova(best_model, disturbance_null)
+p_no_disturbance = anova$`Pr(>Chisq)`[2]
+p_no_disturbance = round(p_no_disturbance, digits = 5)
+
+if (p_no_disturbance < 0.00001) {
+  p_no_disturbance = "< 0.00001"
+}
+```
+
+The effect size and significance of our results can be found in the following table.
+
+| Model                                  |           Marginal R2           |   Marginal R2 of the best model explained    |         Conditional R2          |  Conditional R2 of the best model explained  |           P-value           |
+|:-----------|:----------:|:----------:|:----------:|:----------:|:----------:|
+| Best model                             |         `r r2_best[1]`          |                      /                       |         `r r2_best[2]`          |                      /                       |         `r p_best`          |
+| Best model without meta-ecosystem type | `r r2_no_metaecosystem_type[1]` | `r r2_best[1] - r2_no_metaecosystem_type[1]` | `r r2_no_metaecosystem_type[2]` | `r r2_best[2] - r2_no_metaecosystem_type[2]` | `r p_no_metaecosystem_type` |
+| Best model without disturbance         |    `r r2_no_disturbance[1]`     |    `r r2_best[1] - r2_no_disturbance[1]`     |    `r r2_no_disturbance[2]`     |    `r r2_best[2] - r2_no_disturbance[2]`     |    `r p_no_disturbance`     |
+
+## t2-3, t2-t4, t2-t5, t2-t6, t2-t7 
+
+Let's now try to see how meta-ecosystem effect changes across different time periods.
+
+```{r}
+R2 = NULL
+for (last_point in 3:7) {
+  
+  filtered_dataset = ds_local_S_t2_t7 %>%
+  filter(time_point <= last_point)
+  
+  full_model = lmer(bioarea_per_volume ~ 
+                      disturbance +
+                      metaecosystem_type + 
+                      (1 | day),
+                    data = filtered_dataset,
+                    REML = FALSE)
+  
+  no_metaeco_type_model = lmer(bioarea_per_volume ~ 
+                               disturbance +
+                               (1 | day),
+                             data = filtered_dataset,
+                             REML = FALSE)
+  
+  anova(full_model, no_metaeco_type_model)
+  
+  R2_full = r.squaredGLMM(full_model)[1,1]
+  R2_null = r.squaredGLMM(no_metaeco_type_model)[1,1]
+  
+  R2[[last_point]] =  R2_full - R2_null
+  R2[[last_point]] = round(R2[[last_point]], digits = 3)
+  
+}
+```
+
+| Time points | Marginal R squared of meta-ecosystem type |
+|:-----------:|:-----------------------------------------:|
+|   t2 - t3   |                `r R2[[3]]`                |
+|   t2 -t4    |                `r R2[[4]]`                |
+|   t2 - t5   |                `r R2[[5]]`                |
+|   t2 - t6   |                `r R2[[6]]`                |
+|   t2 - t7   |                `r R2[[7]]`                |
+
+## Local biomass modelling - S and S (S_S)
+
+### Tidy
+
+```{r}
+ds_local_S_t2_t7 = ds %>%
+  filter (eco_metaeco_type == "S" | 
+          eco_metaeco_type == "S (S_S)") %>%
+  filter(time_point >= 2) #Let's take off the first two time points which are before the first disturbance event.
+```
+
+### Plot
+
+```{r}
+ds_local_S_t2_t7 %>%
+    ggplot(aes(x = day,
+               y = bioarea_per_volume,
+               fill = eco_metaeco_type,
+               color = eco_metaeco_type)) +
+    geom_point(stat = "summary", fun = "mean") +
+    geom_line(stat = "summary", fun = "mean") +
+    labs(x = "Day", 
+         y = "Local biomass (bioarea/µl)", 
+         color = '', 
+         fill = '') +
+    scale_fill_discrete(labels = c("Isolated patch", 
+                                   "Patch connected to patch of the same size")) +
+    scale_color_discrete(labels = c("Isolated patch", 
+                                    "Patch connected to patch of the same size")) +
+    theme_bw() +
+    theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())
+```
+
+### Model selection
+
+Let's start from building the full model.
+
+```{r}
+full_model = lmer(bioarea_per_volume ~ 
+                    metaecosystem_type  + 
+                    disturbance + 
+                    metaecosystem_type * disturbance + 
+                    (metaecosystem_type || day) + 
+                    (disturbance || day) + 
+                    (metaecosystem_type*disturbance  || day),
+                  data = ds_local_S_t2_t7, 
+                  REML = FALSE)
+```
+
+**Does meta-ecosystem type have an effect?**
+
+```{r}
+
+no_metaeco_type_model = lmer(bioarea_per_volume ~ 
+                    disturbance + 
+                    (disturbance || day),
+                  data = ds_local_S_t2_t7, 
+                  REML = FALSE)
+
+anova(full_model, no_metaeco_type_model)
+```
+
+**No. Meta-ecosystem type has no effect.**
+
+## Local biomass modelling - L and L (L_L)
+
+### Tidy
+
+```{r}
+ds_local_S_t2_t7 = ds %>%
+  filter (eco_metaeco_type == "L" | 
+          eco_metaeco_type == "L (L_L)") %>%
+  filter(time_point >= 2) #Let's take off the first two time points which are before the first disturbance event.
+```
+
+### Plot
+
+```{r}
+ds_local_S_t2_t7 %>%
+    ggplot(aes(x = day,
+               y = bioarea_per_volume,
+               group= interaction(day, eco_metaeco_type),
+               fill = eco_metaeco_type,
+               color = eco_metaeco_type)) +
+  geom_boxplot() + 
+  labs(x = "Day", 
+       y = "Local biomass (bioarea/µl)", 
+       color = '', 
+       fill = '') +
+  scale_fill_discrete(labels = c("Isolated patch (large)", 
+                                 "Patch connected to patch of the same size (large)")) +
+  scale_color_discrete(labels = c("Isolated patch (large)", 
+                                  "Patch connected to patch of the same size (large)")) +
+  theme_bw() +
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())
+```
+
+### Model selection
+
+Let's start from building the full model.
+
+```{r}
+full_model = lmer(bioarea_per_volume ~ 
+                    metaecosystem_type  + 
+                    disturbance + 
+                    metaecosystem_type * disturbance + 
+                    (metaecosystem_type || day) + 
+                    (disturbance || day) + 
+                    (metaecosystem_type*disturbance  || day),
+                  data = ds_local_S_t2_t7, 
+                  REML = FALSE)
+```
+
+**Does meta-ecosystem type have an effect?**
+
+```{r}
+no_metaeco_type_model = lmer(bioarea_per_volume ~ 
+                    disturbance + 
+                    (disturbance || day),
+                  data = ds_local_S_t2_t7, 
+                  REML = FALSE)
+
+anova(full_model, no_metaeco_type_model)
+```
+
+**No. Meta-ecosystem type has no effect.**
+
+## Local biomass modelling - L and L (S_L)
+
+### Tidy
+
+```{r}
+ds_local_S_t2_t7 = ds %>%
+  filter (eco_metaeco_type == "L" | 
+          eco_metaeco_type == "L (S_L)") %>%
+  filter(time_point >= 2) #Let's take off the first two time points which are before the first disturbance event.
+```
+
+### Plot
+
+```{r}
+ds_local_S_t2_t7 %>%
+    ggplot(aes(x = day,
+               y = bioarea_per_volume,
+               group= interaction(day, eco_metaeco_type),
+               fill = eco_metaeco_type,
+               color = eco_metaeco_type)) +
+  geom_boxplot() + 
+  labs(x = "Day", 
+       y = "Local biomass (bioarea/µl)", 
+       color = '', 
+       fill = '') +
+  scale_fill_discrete(labels = c("Isolated patch", 
+                                 "Patch connected to smaller patch")) +
+  scale_color_discrete(labels = c("Isolated patch", 
+                                  "Patch connected to smaller patch")) +
+  theme_bw() +
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())
+```
+
+### Model selection
+
+Let's start from building the full model.
+
+```{r}
+full_model = lmer(bioarea_per_volume ~ 
+                    metaecosystem_type  + 
+                    disturbance + 
+                    metaecosystem_type * disturbance + 
+                    (metaecosystem_type || day) + 
+                    (disturbance || day) + 
+                    (metaecosystem_type*disturbance  || day),
+                  data = ds_local_S_t2_t7, 
+                  REML = FALSE)
+```
+
+**Does meta-ecosystem type have an effect?**
+
+```{r}
+no_metaeco_type_model = lmer(bioarea_per_volume ~ 
+                    disturbance + 
+                    (disturbance || day),
+                  data = ds_local_S_t2_t7, 
+                  REML = FALSE)
+
+anova(full_model, no_metaeco_type_model)
+```
+
+**No. Meta-ecosystem type has no effect.**
 
 # Running time
 

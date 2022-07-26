@@ -26,10 +26,7 @@ full_model = lmer(regional_mean_bioarea ~
                     metaecosystem_type * disturbance + 
                     (metaecosystem_type || day) + 
                     (disturbance || day) + 
-                    (metaecosystem_type*disturbance  || day) + 
-                    (metaecosystem_type || system_nr) + 
-                    (disturbance || system_nr) + 
-                    (metaecosystem_type*disturbance  || system_nr), 
+                    (metaecosystem_type*disturbance  || day),
                   data = ds_regional_shrunk_type_n_day, 
                   REML = FALSE)
 
@@ -40,34 +37,18 @@ full_model_correlated = lmer(regional_mean_bioarea ~
                                metaecosystem_type * disturbance + 
                                (metaecosystem_type | day) + 
                                (disturbance | day) + 
-                               (metaecosystem_type*disturbance  | day) + 
-                               (metaecosystem_type | system_nr) + 
-                               (disturbance | system_nr) + 
-                               (metaecosystem_type*disturbance  | system_nr), 
-                             data = ds_regional_shrunk_type_n_day, REML = FALSE)
+                               (metaecosystem_type*disturbance  | day), 
+                             data = ds_regional_shrunk_type_n_day, 
+                             REML = FALSE)
 
 anova(full_model, full_model_correlated)
 ```
 
 It seems like there is not correlation between intercept and slopes of the random effects. Let's then keep the model without their correlation (`full_model`).
 
-#### Does meta-ecosystem number have a random effect?
-
-```{r no_system_nr_model}
-no_system_nr_model = lmer(regional_mean_bioarea ~ 
-                            metaecosystem_type  + 
-                            disturbance + 
-                            metaecosystem_type * disturbance + 
-                            (metaecosystem_type || day) + 
-                            (disturbance || day) + 
-                            (metaecosystem_type*disturbance || day), 
-                          data = ds_regional_shrunk_type_n_day, 
-                          REML = FALSE)
-
-anova(full_model, no_system_nr_model)
+```{r}
+best_model = full_model
 ```
-
-No. Let's then keep the model without the random effects of system number (`no_system_nr_model`).
 
 #### Does time have a random effect?
 
@@ -78,7 +59,7 @@ fixed_effects_model = lm(regional_mean_bioarea ~
                            metaecosystem_type * disturbance, 
                          data = ds_regional_shrunk_type_n_day)
 
-anova(no_system_nr_model, fixed_effects_model)
+anova(best_model, fixed_effects_model)
 ```
 
 Of course. Let's then keep the model with time as random effect (`no_system_nr_model`).
@@ -94,10 +75,14 @@ no_interaction_model = lmer(regional_mean_bioarea ~
                             data = ds_regional_shrunk_type_n_day, 
                             REML = FALSE)
 
-anova(no_system_nr_model, no_interaction_model)
+anova(best_model, no_interaction_model)
 ```
 
-No. Let's keep the model without such interaction (`no_interaction_model`)
+No. Let's keep the model without such interaction (`no_interaction_model`).
+
+```{r}
+best_model = no_interaction_model
+```
 
 #### *Do different time points have different random slopes?*
 
@@ -109,20 +94,18 @@ no_slopes_model = lmer(regional_mean_bioarea ~
                        data = ds_regional_shrunk_type_n_day, 
                        REML = FALSE)
 
-anova(no_interaction_model, no_slopes_model)
+anova(best_model, no_slopes_model)
 ```
 
 No. Let's then keep the model without slopes (`no_slopes_model`).
 
-Therefore, the best model is the following one:
-
-`regional_mean_bioarea ~ metaecosystem_type + disturbance + (1 | day)`
-
-Let's call it then `best_model` to don't get confused.
-
 ```{r best-model}
 best_model = no_slopes_model
 ```
+
+Therefore, the best model is the following one:
+
+`regional_mean_bioarea ~ metaecosystem_type + disturbance + (1 | day)`
 
 ### Effect size of meta-ecosystem type in the best model
 
@@ -148,7 +131,7 @@ if (p_best < 0.00001) {
 
 #### Effect size and significance of meta-ecosystem type
 
-```{r p-r2-meta-ecosystem-type}
+```{r}
 metaecosystem_type_null = lmer(regional_mean_bioarea ~  
                                  disturbance  + 
                                  (1 | day),
@@ -197,7 +180,7 @@ if (p_no_disturbance < 0.00001) {
 The effect size and significance of our results can be found in the following table.
 
 | Model                                  |           Marginal R2           |   Marginal R2 of the best model explained    |         Conditional R2          |  Conditional R2 of the best model explained  |           P-value           |
-|:---------------------------------------|:-------------------------------:|:--------------------------------------------:|:-------------------------------:|:--------------------------------------------:|:---------------------------:|
+|:-----------|:----------:|:----------:|:----------:|:----------:|:----------:|
 | Best model                             |         `r r2_best[1]`          |                      /                       |         `r r2_best[2]`          |                      /                       |         `r p_best`          |
 | Best model without meta-ecosystem type | `r r2_no_metaecosystem_type[1]` | `r r2_best[1] - r2_no_metaecosystem_type[1]` | `r r2_no_metaecosystem_type[2]` | `r r2_best[2] - r2_no_metaecosystem_type[2]` | `r p_no_metaecosystem_type` |
 | Best model without disturbance         |    `r r2_no_disturbance[1]`     |    `r r2_best[1] - r2_no_disturbance[1]`     |    `r r2_no_disturbance[2]`     |    `r r2_best[2] - r2_no_disturbance[2]`     |    `r p_no_disturbance`     |
