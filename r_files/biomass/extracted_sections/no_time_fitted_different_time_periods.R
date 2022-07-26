@@ -1,15 +1,4 @@
----
-title: "no_time_fitted_different_time_periods"
-author: "Emanuele Giacomuzzo"
-date: '2022-07-26'
-output: html_document
----
-
-## t2-3, t2-t4, t2-t5, t2-t6, t2-t7 without time fitting
-
-Let's now try to see how meta-ecosystem effect changes across different time periods.
-
-```{r}
+## ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 R2 = NULL
 
@@ -38,12 +27,4 @@ for (last_point in 3:7) {
   R2[[last_point]] = round(R2[[last_point]], digits = 3)
   
 }
-```
 
-| Time points | R squared of meta-ecosystem type (marginal) |
-|:-----------:|:-------------------------------------------:|
-|   t2 - t3   |                 `r R2[[3]]`                 |
-|   t2 -t4    |                 `r R2[[4]]`                 |
-|   t2 - t5   |                 `r R2[[5]]`                 |
-|   t2 - t6   |                 `r R2[[6]]`                 |
-|   t2 - t7   |                 `r R2[[7]]`                 |
