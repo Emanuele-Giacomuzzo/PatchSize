@@ -191,7 +191,7 @@ Before start modelling, just a few considerations on mixed effect models and mod
 
 -   The effect size of the explaining variables is calculated in the mixed effect models as marginal and conditional r squared. The marginal r squared is how much variance is explained by the fixed effects. The conditional r squared is how much variance is explained by the fixed and the random effects. The marginal and conditional r squared are calculated using the package `MuMIn`. The computation is based on the methods of @Nakagawa2017. For the coding and interpretation of these r squared check the [documentation for the r.squaredGLMM function](https://rdrr.io/cran/MuMIn/man/r.squaredGLMM.html)
 
-## Model selection 
+## Model selection
 
 -   I am starting from the largest model and then simplifying because ... (see statistical modelling course at ETH).
 
@@ -217,25 +217,41 @@ ds_regional_shrunk_type_n_day = ds_regional %>%
 
 ## Plot
 
+Notice: I'm only going to plot the low disturbance.
+
 ```{r}
+
+#calculate the standard deviation
 ds_regional %>%
-    filter (metaecosystem_type == "S_L" | metaecosystem_type == "M_M") %>%
-    ggplot (aes(x = day,
-                y = regional_mean_bioarea,
+  group_by(metaecosystem_type, disturbance, day) %>%
+  summarise(mean_bioarea = mean(regional_mean_bioarea), 
+            sd_bioarea = sd(regional_mean_bioarea)) %>%
+  filter(disturbance == "low") %>%
+  filter (metaecosystem_type == "S_L" | metaecosystem_type == "M_M") %>%
+  ggplot (aes(x = day,
+                y = mean_bioarea,
                 fill = metaecosystem_type,
                 color = metaecosystem_type)) +
-    geom_point(stat = "summary", fun = "mean") +
-    geom_line (stat = "summary", fun = "mean") +
-    labs(x = "Day", 
-         y = "Regional biomass (average bioarea between 2 patches/µl)", 
-         color='Meta-ecosystem type', 
-         fill='Meta-ecosystem type') +
-    scale_fill_discrete(labels = c("Patches of same size", "Patches of different size")) +
-    scale_color_discrete(labels = c("Patches of same size", "Patches of different size")) +
-    theme_bw() +
-    theme(panel.grid.major = element_blank(), 
-          panel.grid.minor = element_blank())
+  #geom_point(stat = "summary", fun = "mean") +
+  geom_line (stat = "summary", 
+             fun = "mean", 
+             position=position_dodge(width=0.5)) +
+  geom_pointrange(
+    aes(ymin = mean_bioarea - sd_bioarea, 
+        ymax = mean_bioarea + sd_bioarea),
+    position=position_dodge(width=0.5)) +
+  labs(x = "Day", 
+       y = "Regional biomass (average bioarea between 2 patches/µl)", 
+       color='', 
+       fill='') +
+  scale_fill_discrete(labels = c("Meta-ecosystem with patches of same size", "Meta-ecosystem with patches of different size")) +
+  scale_color_discrete(labels = c("Meta-ecosystem with patches of same size", "Meta-ecosystem with patches of different size")) +
+  theme_bw() +
+  theme(panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank())
 ```
+
+*Figure 2. Regional biomass production in meta-ecosystems of the same total area, but whose two patches are either identical (red, medium-medium meta-ecosystem) or one is five times larger (blue, small-large meta-ecosystem).*
 
 ```{r child = "no_time_fitting_t2-t7.Rmd", echo = TRUE, eval = TRUE}
 ```
@@ -267,20 +283,31 @@ ds_local_S = ds %>%
 
 ```{r}
 
-ds_local_S %>%
-    filter (eco_metaeco_type == "S" | eco_metaeco_type == "S (S_S)" | eco_metaeco_type == "S (S_L)") %>%
+ds %>%
+    filter eco_metaeco_type == "S" | 
+              eco_metaeco_type == "S (S_S)" | 
+              eco_metaeco_type == "S (S_L)") %>%
     ggplot(aes(x = day,
                y = bioarea_per_volume,
                fill = eco_metaeco_type,
                color = eco_metaeco_type)) +
     geom_point(stat = "summary", fun = "mean") +
     geom_line(stat = "summary", fun = "mean") +
-    labs(x = "Day", y = "Local biomass (bioarea/µl)", color='Patch type', fill='Patch type') +
-    #scale_fill_discrete(labels = c("Connected to same sized patch", "Connected to larger patch")) +
-    #scale_color_discrete(labels = c("Connected to same sized patch", "Connected to larger patch")) +
+    labs(x = "Day", 
+         y = "Local biomass (bioarea/µl)", 
+         color = '', 
+         fill = '') +
+    scale_fill_discrete(labels = c("Isolated patch", 
+                                   "Patch connected to patch of the same size", 
+                                   "Patch connected to larger patch")) +
+    scale_color_discrete(labels = c("Isolated patch", 
+                                    "Patch connected to patch of the same size", 
+                                    "Patch connected to larger patch")) +
     theme_bw() +
     theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())
 ```
+
+*Figure 3. Local biomass production in patches that are either isolated (red, small isolated patches), connected to patches of the same size (green, patches of small-small meta-ecosystems), or connected to patches five times larger (blue, small patches of small-large meta-ecosystems).*
 
 ## Model selection
 
