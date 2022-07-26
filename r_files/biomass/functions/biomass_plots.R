@@ -73,7 +73,6 @@ biomass_plots = function(disturbance_input){
   p[[5]] <<- ds %>%
     filter(disturbance == disturbance_input)%>%
     filter (eco_metaeco_type == "S" | eco_metaeco_type == "S (S_S)" | eco_metaeco_type == "S (S_L)") %>%
-    filter (eco_metaeco_type != "S") %>% #If I want to add the S ecosystem patch I can just commment this out
     ggplot(aes(x = day,
                y = bioarea_per_volume,
                group = interaction(day, eco_metaeco_type),
@@ -91,7 +90,6 @@ biomass_plots = function(disturbance_input){
   p[[6]] <<- ds %>%
     filter(disturbance == disturbance_input)%>%
     filter (eco_metaeco_type == "S" | eco_metaeco_type == "S (S_S)" | eco_metaeco_type == "S (S_L)") %>%
-    filter (eco_metaeco_type != "S") %>% #If I want to add the S ecosystem patch I can just commment this out
     ggplot(aes(x = day,
                y = bioarea_per_volume,
                fill = eco_metaeco_type,

@@ -1,0 +1,48 @@
+---
+title: "time_fitted_different_time_periods"
+author: "Emanuele Giacomuzzo"
+date: '2022-07-25'
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+## t2-3, t2-t4, t2-t5, t2-t6, t2-t7 with time fitting
+
+Let's now try to see how meta-ecosystem effect changes across different time periods.
+
+```{r}
+
+R2 = NULL
+
+for (last_point in 3:7) {
+  
+  filtered_dataset = ds_regional_predicted_shrunk_type %>%
+  filter(time_point <= last_point)
+  
+  full_model = lm(regional_mean_bioarea ~ 
+                            disturbance +
+                            metaecosystem_type,
+                        data = filtered_dataset)
+  
+  no_metaeco_type_model = lm(regional_mean_bioarea ~ 
+                            disturbance,
+                        data = filtered_dataset)
+  
+  anova(full_model, no_metaeco_type_model)
+  
+  summary(full_model)
+  summary(no_metaeco_type_model)
+  R2[[last_point]] = summary(full_model)$adj.r.squared - summary(no_metaeco_type_model)$adj.r.squared
+  R2[[last_point]] = round(R2[[last_point]], digits = 3)
+  
+}
+```
+
+| Time points |  R squared  |
+|:-----------:|:-----------:|
+|   t2 - t3   | `r R2[[3]]` |
+|   t2 -t4    | `r R2[[4]]` |
+|   t2 - t5   | `r R2[[5]]` |
+|   t2 - t6   | `r R2[[6]]` |
+|   t2 - t7   | `r R2[[7]]` |

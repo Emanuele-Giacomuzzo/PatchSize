@@ -7,14 +7,20 @@ editor_options:
   chunk_output_type: console
 ---
 
-I'm skipping day 4 because it was before the first exchange.
+## t2, t3, t4, t5, t6,t7 with time fitting
+
+Let's see how meta-ecosystem type influenced regional biomass at each time point. I'm skipping
+
+-   t0 because all the meta-ecosystems were the same as they had no time to differ
+
+-   t1 because it was before the first exchange
 
 ```{r day-8}
 
-day_input = 8
+time_point_input = 2
 
 filtered_dataset = ds_regional_predicted_shrunk_type %>%
-  filter(day == day_input)
+  filter(time_point == time_point_input)
 
 model_1 = lm(regional_mean_bioarea ~ 
                             disturbance +
@@ -33,10 +39,10 @@ R2_day_8 = summary(model_1)$adj.r.squared - summary(model_2)$adj.r.squared
 R2_day_8 = round(R2_day_8, digits = 3)
 
 
-day_input = 12
+time_point_input = 3
 
 filtered_dataset = ds_regional_predicted_shrunk_type %>%
-  filter(day == day_input)
+  filter(time_point == time_point_input)
 
 model_1 = lm(regional_mean_bioarea ~ 
                             disturbance +
@@ -55,10 +61,10 @@ R2_day_12 = summary(model_1)$adj.r.squared - summary(model_2)$adj.r.squared
 R2_day_12 = round(R2_day_12, digits = 3)
 
 
-day_input = 16
+time_point_input = 4
 
 filtered_dataset = ds_regional_predicted_shrunk_type %>%
-  filter(day == day_input)
+  filter(time_point == time_point_input)
 
 model_1 = lm(regional_mean_bioarea ~ 
                             disturbance +
@@ -79,10 +85,10 @@ R2_day_16 = round(R2_day_16, digits = 3)
 
 
 
-day_input = 20
+time_point_input = 5
 
 filtered_dataset = ds_regional_predicted_shrunk_type %>%
-  filter(day == day_input)
+  filter(time_point == time_point_input)
 
 model_1 = lm(regional_mean_bioarea ~ 
                             disturbance +
@@ -102,10 +108,10 @@ R2_day_20 = round(R2_day_20, digits = 3)
 
 
 
-day_input = 24
+time_point_input = 6
 
 filtered_dataset = ds_regional_predicted_shrunk_type %>%
-  filter(day == day_input)
+  filter(time_point == time_point_input)
 
 model_1 = lm(regional_mean_bioarea ~ 
                             disturbance +
@@ -125,10 +131,10 @@ R2_day_24 = round(R2_day_24, digits = 3)
 
 
 
-day_input = 28
+time_point_input = 7
 
 filtered_dataset = ds_regional_predicted_shrunk_type %>%
-  filter(day == day_input)
+  filter(time_point == time_point_input)
 
 model_1 = lm(regional_mean_bioarea ~ 
                             disturbance +
@@ -147,11 +153,13 @@ R2_day_28 = summary(model_1)$adj.r.squared - summary(model_2)$adj.r.squared
 R2_day_28 = round(R2_day_28, digits = 3)
 ```
 
-| Day | R squared     |
-|-----|---------------|
-| 8   | `r R2_day_8`  |
-| 12  | `r R2_day_12` |
-| 16  | `r R2_day_16` |
-| 20  | `r R2_day_20` |
-| 24  | `r R2_day_24` |
-| 28  | `r R2_day_28` |
+| Time point |   R squared   |
+|:----------:|:-------------:|
+|     t2     | `r R2_day_8`  |
+|     t3     | `r R2_day_12` |
+|     t4     | `r R2_day_16` |
+|     t5     | `r R2_day_20` |
+|     t6     | `r R2_day_24` |
+|     t7     | `r R2_day_28` |
+
+That's odd. It seems like the r squared of meta-ecosystem effect is way lower than for each time point. it also seems like for the last points the meta-ecosystem effect is always kinda the same. So, I don't think it would make much sense to get rid of the last points.

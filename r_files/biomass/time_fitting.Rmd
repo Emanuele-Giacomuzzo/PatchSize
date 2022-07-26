@@ -3,9 +3,11 @@ title: "time_fitting"
 author: "Emanuele Giacomuzzo"
 date: '2022-07-22'
 output: html_document
+editor_options: 
+  chunk_output_type: console
 ---
 
-#### Fitting function to time dynamics
+## Fitting function to biomass dynamics across time (t0 - t7)
 
 Here we want to fit how biomass changes across time to a function. The biomass of our meta-ecosystems looks like this.
 
@@ -54,10 +56,10 @@ a1 = as.numeric(model$m$getPars()[1])
 a4 = as.numeric(model$m$getPars()[2])
 a5 = as.numeric(model$m$getPars()[3])
 ```
+
 ```{r show-fitted-parameters}
 model$m$getPars()
 ```
-
 
 And now let's plot the function to see how it fits our data.
 

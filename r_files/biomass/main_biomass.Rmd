@@ -2,7 +2,10 @@
 title: "Biomass analysis (PatchSizePilot)"
 author: "Emanuele Giacomuzzo"
 date: '2022-07-07'
-output: html_document
+output:
+  html_document:
+    toc: true
+    theme: united
 editor_options: 
   chunk_output_type: console
 bibliography: /Applications/Mendeley/library.bib
@@ -14,8 +17,7 @@ Here I study how **biomass density** changes across treatments in the PatchSizeP
 -   ecosystems that are connected (through the flow of nutrients) to an ecosystem of the same size or to an ecosystem that is larger\
 -   meta-ecosystems in which patch size is the same or in which one patch has most of the area (we keep the total area of the meta-ecosystem constant)
 
-```{r set up environment, echo = FALSE, results = FALSE, message = FALSE}
-
+```{r set-up-environment, echo = FALSE, results = FALSE, message = FALSE}
 start_time = Sys.time()
 
 rm( list = ls(  ) )
@@ -41,7 +43,6 @@ p = NULL #To run the plotting function
 # Import
 
 ```{r import, message = FALSE, echo = TRUE}
-
 culture_info = read.csv(here("data", "PatchSizePilot_culture_info.csv"), header = TRUE)
 load(here("data", "population", "t0.RData")); t0 = pop_output
 load(here("data", "population", "t1.RData")); t1 = pop_output
@@ -52,13 +53,11 @@ load(here("data", "population", "t5.RData")); t5 = pop_output
 load(here("data", "population", "t6.RData")); t6 = pop_output
 load(here("data", "population", "t7.RData")); t7 = pop_output
 rm(pop_output)
-
 ```
 
 # Tidy
 
 ```{r tidy-up}
-
 t0$time = NA
 t1$time = NA
 
@@ -97,10 +96,6 @@ t6 = merge(culture_info,t6, by = "culture_ID")
 t7 = merge(culture_info,t7, by = "culture_ID")
 ds = rbind(t0, t1, t2, t3, t4, t5, t6, t7)
 rm(elongating_t0, t0, t1, t2, t3, t4, t5, t6, t7)
-
-# Switch from data point to day
-# ds = ds %>%
-#   rename(day = time_point)
 
 ds$time_point[ds$time_point=="t0"] = 0
 ds$time_point[ds$time_point=="t1"] = 1
@@ -156,42 +151,233 @@ ds$eco_metaeco_type = factor(ds$eco_metaeco_type,
                                       'L', 
                                       'L (L_L)', 
                                       'L (S_L)'))
+
+ecosystems_to_take_off = 60 #Culture number 60 because it was spilled
+ds = ds %>%
+  filter(! culture_ID %in% ecosystems_to_take_off)
 ```
 
-```{r regional-biomass}
+# Create regional data set
 
+```{r regional-biomass}
 ds_regional = ds %>%
-    group_by(culture_ID, system_nr, disturbance, day, time_point, patch_size, metaecosystem_type) %>%
-    summarise(patch_mean_bioarea_across_videos = mean(bioarea_per_volume)) %>%
-    group_by(system_nr, disturbance, day, time_point, metaecosystem_type) %>%
-    summarise(regional_mean_bioarea = mean(patch_mean_bioarea_across_videos))
+  filter(metaecosystem == "yes") %>%
+  group_by(culture_ID, system_nr, disturbance, day, time_point, patch_size, metaecosystem_type) %>%
+  summarise(patch_mean_bioarea_across_videos = mean(bioarea_per_volume)) %>%
+  group_by(system_nr, disturbance, day, time_point, metaecosystem_type) %>%
+  summarise(regional_mean_bioarea = mean(patch_mean_bioarea_across_videos))
+
+metaecosystems_to_take_off = 40 #System 40 was the system of culture 60 that I spilled
+ds_regional = ds_regional %>%
+  filter(! system_nr %in% metaecosystems_to_take_off)
 ```
 
 ```{r child = "plots.Rmd", eval = FALSE}
 ```
 
+# Modelling considerations
+
+Before start modelling, just a few considerations on mixed effect models and model selection.
+
+## Mixed effects models
+
+-   To build the mixed effect models we will use the R package lme4. See page 6 of [this PDF](https://cran.r-project.org/web/packages/lme4/vignettes/lmer.pdf) to know more about the syntaxis of this package.
+
+-   To do model diagnostics of mixed effect models, I'm going to look at the following two plots (as suggested by @Zuur2009, page 487):
+
+    -   Quantile-quantile plots
+
+    -   Partial residual plots
+
+-   The effect size of the explaining variables is calculated in the mixed effect models as marginal and conditional r squared. The marginal r squared is how much variance is explained by the fixed effects. The conditional r squared is how much variance is explained by the fixed and the random effects. The marginal and conditional r squared are calculated using the package `MuMIn`. The computation is based on the methods of @Nakagawa2017. For the coding and interpretation of these r squared check the [documentation for the r.squaredGLMM function](https://rdrr.io/cran/MuMIn/man/r.squaredGLMM.html)
+
+## Model selection 
+
+-   I am starting from the largest model and then simplifying because ... (see statistical modelling course at ETH).
+
+-   I am going to select the best model according to BIC instead of AIC. This is because BIC is better for understanding and AIC for predicting.
+
 # Regional biomass modelling
 
-To build the mixed effect models we will use the R package lme4. See page 6 of [this PDF](https://cran.r-project.org/web/packages/lme4/vignettes/lmer.pdf) to know more about the syntaxis of this package.
+When modelling the regional biomass, we want to understand if the regional biomass produced by an ecosystem with a small and a large patch (metaecosystem_type = S_L) is lower than the regional biomass produced by an ecosystem with two medium patches (metaecosystem_type = M_M).
 
-To do model diagnostics, I'm going to look at the following two plots (as suggested by @Zuur2009, page 487):
+## Tidy
 
--   Quantile-quantile plots
--   Partial residual plots
+First of all, let's modify the data set including the regional biomass of our meta-ecosystems. In this data set, we want to have the regional biomass of the meta-ecosystems (averaged first across videos and then across patches) in which we:
 
-Also, I am going to select the best model acccording to BIC instead of AIC. This is because BIC is better for understanding and AIC for predicting. 
+-   Include only the meta-ecosystems in which patches had both medium size (metaecosystem_type = M_M) and meta-ecosystems in which patches had one a small size and the other large size (metaecosystem_type = S_L).
+
+-   Take off the first two point (day 0 and day = 4). This is because the first perturbation happened only at day 5.
+
+```{r}
+ds_regional_shrunk_type_n_day = ds_regional %>%
+    filter (metaecosystem_type == "M_M" | metaecosystem_type == "S_L", 
+            time_point >= 2)
+```
+
+## Plot
+
+```{r}
+ds_regional %>%
+    filter (metaecosystem_type == "S_L" | metaecosystem_type == "M_M") %>%
+    ggplot (aes(x = day,
+                y = regional_mean_bioarea,
+                fill = metaecosystem_type,
+                color = metaecosystem_type)) +
+    geom_point(stat = "summary", fun = "mean") +
+    geom_line (stat = "summary", fun = "mean") +
+    labs(x = "Day", 
+         y = "Regional biomass (average bioarea between 2 patches/µl)", 
+         color='Meta-ecosystem type', 
+         fill='Meta-ecosystem type') +
+    scale_fill_discrete(labels = c("Patches of same size", "Patches of different size")) +
+    scale_color_discrete(labels = c("Patches of same size", "Patches of different size")) +
+    theme_bw() +
+    theme(panel.grid.major = element_blank(), 
+          panel.grid.minor = element_blank())
+```
 
 ```{r child = "no_time_fitting_t2-t7.Rmd", echo = TRUE, eval = TRUE}
 ```
 
-```{r child = "time_fitting.Rmd", echo = TRUE, eval = FALSE}
+```{r child = "time_fitting.Rmd", echo = TRUE, eval = TRUE}
 ```
 
-```{r child = "time_fitted_t2-t7.Rmd", echo = TRUE, eval = FALSE}
+```{r child = "time_fitted_t2-t7.Rmd", echo = TRUE, eval = TRUE}
 ```
 
-```{r child = "time_fitted_each_time_point.Rmd", echo = TRUE, eval = FALSE}
+```{r child = "time_fitted_each_time_point.Rmd", echo = TRUE, eval = TRUE}
 ```
+
+```{r child = "time_fitted_different_time_periods.Rmd", echo = TRUE, eval = TRUE}
+```
+
+# Local biomass modelling
+
+## Tidy
+
+```{r}
+
+ds_local_S = ds %>%
+  filter (eco_metaeco_type == "S" | eco_metaeco_type == "S (S_S)" | eco_metaeco_type == "S (S_L)") %>%
+  filter(time_point >= 2) #Let's take off the first two time points which are before the first disturbance event.
+```
+
+## Plot
+
+```{r}
+
+ds_local_S %>%
+    filter (eco_metaeco_type == "S" | eco_metaeco_type == "S (S_S)" | eco_metaeco_type == "S (S_L)") %>%
+    ggplot(aes(x = day,
+               y = bioarea_per_volume,
+               fill = eco_metaeco_type,
+               color = eco_metaeco_type)) +
+    geom_point(stat = "summary", fun = "mean") +
+    geom_line(stat = "summary", fun = "mean") +
+    labs(x = "Day", y = "Local biomass (bioarea/µl)", color='Patch type', fill='Patch type') +
+    #scale_fill_discrete(labels = c("Connected to same sized patch", "Connected to larger patch")) +
+    #scale_color_discrete(labels = c("Connected to same sized patch", "Connected to larger patch")) +
+    theme_bw() +
+    theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())
+```
+
+## Model selection
+
+```{r}
+
+full_model_uncorrelated = lmer(bioarea_per_volume ~ 
+                    metaecosystem_type  + 
+                    disturbance + 
+                    metaecosystem_type * disturbance + 
+                    (metaecosystem_type || day) + 
+                    (disturbance || day) + 
+                    (metaecosystem_type*disturbance  || day) + 
+                    (metaecosystem_type || system_nr) + 
+                    (disturbance || system_nr) + 
+                    (metaecosystem_type*disturbance  || system_nr), 
+                  data = ds_local_S, 
+                  REML = FALSE)
+
+full_model_correlated = lmer(bioarea_per_volume ~ 
+                               metaecosystem_type  + 
+                               disturbance + 
+                               metaecosystem_type * disturbance + 
+                               (metaecosystem_type | day) + 
+                               (disturbance | day) + 
+                               (metaecosystem_type*disturbance  | day) + 
+                               (metaecosystem_type | system_nr) + 
+                               (disturbance | system_nr) + 
+                               (metaecosystem_type*disturbance  | system_nr), 
+                             data = ds_local_S, 
+                             REML = FALSE)
+
+anova(full_model_uncorrelated, full_model_correlated)
+
+no_system_nr_model = lmer(bioarea_per_volume ~ 
+                            metaecosystem_type  + 
+                            disturbance + 
+                            metaecosystem_type * disturbance + 
+                            (metaecosystem_type || day) + 
+                            (disturbance || day) + 
+                            (metaecosystem_type*disturbance || day), 
+                          data = ds_local_S, 
+                          REML = FALSE)
+
+anova(full_model_uncorrelated, no_system_nr_model)
+
+fixed_effects_model = lm(bioarea_per_volume ~ 
+                           metaecosystem_type  + 
+                           disturbance +
+                           metaecosystem_type * disturbance, 
+                         data = ds_local_S)
+
+anova(no_system_nr_model, fixed_effects_model)
+
+no_interaction_model = lmer(bioarea_per_volume ~ 
+                              metaecosystem_type + 
+                              disturbance  + 
+                              (metaecosystem_type || day) + 
+                              (disturbance || day), 
+                            data = ds_local_S, 
+                            REML = FALSE)
+
+anova(no_system_nr_model, no_interaction_model)
+
+no_slopes_model = lmer(bioarea_per_volume ~ 
+                         metaecosystem_type + 
+                         disturbance  + 
+                         (1 | day), 
+                       data = ds_local_S, 
+                       REML = FALSE)
+
+anova(no_interaction_model, no_slopes_model)
+#the two models are highly different. AIC suggests using no_interaction_model. BIC suggests using no_slopes_model. I'll then keep the no_slopes_model.
+
+best_model = no_slopes_model
+```
+
+## Analysis of the best model
+
+```{r}
+
+model.null = lm(bioarea_per_volume ~ 
+                  1, 
+                  data = ds_local_S)
+
+r2_best = r.squaredGLMM(best_model)
+r2_best = round(r2_best, digits = 3)
+
+anova = anova(best_model, model.null)
+p_best = anova$`Pr(>Chisq)`[2]
+p_best = round(p_best, digits = 5)
+
+if (p_best < 0.00001) {
+  p_best = "< 0.00001"
+}
+```
+
+# Running time
 
 ```{r running-time, echo = FALSE, eval = FALSE}
 end_time = Sys.time()
