@@ -1,24 +1,25 @@
 ---
-title: "L_and_L-L_L"
+title: "L_and_L-S_L"
 author: "Emanuele Giacomuzzo"
 date: '2022-07-26'
 output: html_document
 ---
 
-## Local biomass modelling - L and L (L_L)
+### Local biomass modelling - L and L (S_L)
 
-### Tidy
+#### Tidy
 
 ```{r}
 ds_local_S_t2_t7 = ds %>%
   filter (eco_metaeco_type == "L" | 
-          eco_metaeco_type == "L (L_L)") %>%
+          eco_metaeco_type == "L (S_L)") %>%
   filter(time_point >= 2) #Let's take off the first two time points which are before the first disturbance event.
 ```
 
-### Plot
+#### Plot
 
 ```{r}
+
 ds_local_S_t2_t7 %>%
     ggplot(aes(x = day,
                y = bioarea_per_volume,
@@ -30,15 +31,15 @@ ds_local_S_t2_t7 %>%
        y = "Local biomass (bioarea/µl)", 
        color = '', 
        fill = '') +
-  scale_fill_discrete(labels = c("Isolated patch (large)", 
-                                 "Patch connected to patch of the same size (large)")) +
-  scale_color_discrete(labels = c("Isolated patch (large)", 
-                                  "Patch connected to patch of the same size (large)")) +
+  scale_fill_discrete(labels = c("Isolated patch", 
+                                 "Patch connected to smaller patch")) +
+  scale_color_discrete(labels = c("Isolated patch", 
+                                  "Patch connected to smaller patch")) +
   theme_bw() +
   theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())
 ```
 
-### Model selection
+#### Model selection
 
 Let's start from building the full model.
 

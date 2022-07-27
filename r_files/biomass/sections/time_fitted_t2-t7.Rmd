@@ -7,16 +7,16 @@ editor_options:
   chunk_output_type: console
 ---
 
-## t2 - t7 with time fitting
+### t2 - t7 with time fitting
 
-### Tidy
+#### Tidy
 
 ```{r}
 ds_regional_predicted_shrunk_type_n_day = ds_regional_predicted_shrunk_type %>%
   filter(time_point >= 2)
 ```
 
-### Model selection
+#### Model selection
 
 **Are slopes and intercept correlated?**
 
@@ -167,7 +167,7 @@ anova(model_8, model_9)
 
 They are the same. Keep model_9.
 
-### Effect size of meta-ecosystem type in the best model
+#### Effect size of meta-ecosystem type in the best model
 
 ```{r}
 

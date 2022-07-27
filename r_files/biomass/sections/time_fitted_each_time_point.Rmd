@@ -7,7 +7,7 @@ editor_options:
   chunk_output_type: console
 ---
 
-## t2, t3, t4, t5, t6,t7 with time fitting
+### t2, t3, t4, t5, t6,t7 with time fitting
 
 Let's see how meta-ecosystem type influenced regional biomass at each time point. I'm skipping
 

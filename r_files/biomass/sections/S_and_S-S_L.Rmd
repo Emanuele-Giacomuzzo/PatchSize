@@ -1,22 +1,24 @@
 ---
-title: "S_S_and_S_L"
+title: "S_and_S-S_L"
 author: "Emanuele Giacomuzzo"
 date: '2022-07-26'
 output: html_document
+editor_options: 
+  chunk_output_type: console
 ---
 
-## Local biomass modelling - S_S and S_L
+### S and S (S_L)
 
-### Tidy
+#### Tidy
 
 ```{r}
 ds_local_S_t2_t7 = ds %>%
-  filter (eco_metaeco_type == "S (S_S)" | 
+  filter (eco_metaeco_type == "S" | 
           eco_metaeco_type == "S (S_L)") %>%
   filter(time_point >= 2) #Let's take off the first two time points which are before the first disturbance event.
 ```
 
-### Plot
+#### Plot
 
 ```{r}
 ds_local_S_t2_t7 %>%
@@ -30,15 +32,15 @@ ds_local_S_t2_t7 %>%
          y = "Local biomass (bioarea/µl)", 
          color = '', 
          fill = '') +
-    scale_fill_discrete(labels = c("Patch connected to patch of the same size", 
+    scale_fill_discrete(labels = c("Isolated patch", 
                                    "Patch connected to larger patch")) +
-    scale_color_discrete(labels = c("Patch connected to patch of the same size", 
+    scale_color_discrete(labels = c("Isolated patch", 
                                     "Patch connected to larger patch")) +
     theme_bw() +
     theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())
 ```
 
-### Model selection
+#### Model selection
 
 Let's start from building the full model.
 
@@ -86,7 +88,7 @@ no_interaction_model = lmer(bioarea_per_volume ~
 anova(best_model, no_interaction_model)
 ```
 
-Yes. Let's keep the model without the interaction between meta-ecosystem type and disturbance, as it has lower BIC.
+No. Let's keep the model without the interaction between meta-ecosystem type and disturbance.
 
 ```{r}
 best_model = no_interaction_model
@@ -124,16 +126,16 @@ no_disturbance_slopes_model = lmer(bioarea_per_volume ~
 anova(best_model, no_disturbance_slopes_model)
 ```
 
-Yes. Let's keep the model without slopes from disturbance, as it has lower BIC.
+No. Let's keep the model without slopes from disturbance.
 
 ```{r}
 best_model = no_disturbance_slopes_model
 summary(best_model)
 ```
 
-## Analysis of the best model
+### Analysis of the best model
 
-#### Effect size and significance of full model
+##### Effect size and significance of full model
 
 ```{r}
 model.null = lm(bioarea_per_volume ~ 
@@ -152,7 +154,7 @@ if (p_best < 0.00001) {
 }
 ```
 
-#### Effect size and significance of meta-ecosystem type
+##### Effect size and significance of meta-ecosystem type
 
 ```{r}
 metaecosystem_type_null = lmer(bioarea_per_volume ~  
@@ -174,7 +176,7 @@ if (p_no_metaecosystem_type < 0.00001) {
 }
 ```
 
-#### Effect size and significance of disturbance
+##### Effect size and significance of disturbance
 
 ```{r}
 disturbance_null = lmer(bioarea_per_volume ~ 
@@ -205,7 +207,7 @@ The effect size and significance of our results can be found in the following ta
 | Best model without meta-ecosystem type | `r r2_no_metaecosystem_type[1]` | `r r2_best[1] - r2_no_metaecosystem_type[1]` | `r r2_no_metaecosystem_type[2]` | `r r2_best[2] - r2_no_metaecosystem_type[2]` | `r p_no_metaecosystem_type` |
 | Best model without disturbance         |    `r r2_no_disturbance[1]`     |    `r r2_best[1] - r2_no_disturbance[1]`     |    `r r2_no_disturbance[2]`     |    `r r2_best[2] - r2_no_disturbance[2]`     |    `r p_no_disturbance`     |
 
-## t2-3, t2-t4, t2-t5, t2-t6, t2-t7
+### t2-3, t2-t4, t2-t5, t2-t6, t2-t7
 
 Let's now try to see how meta-ecosystem effect changes across different time periods.
 

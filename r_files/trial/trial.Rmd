@@ -1,0 +1,11 @@
+---
+title: "trial"
+author: "Emanuele Giacomuzzo"
+date: '2022-07-27'
+output: html_document
+---
+
+Hi
+
+```{r child = "/Users/ema/github/PatchSizePilot/r_files/biomass/sections/time_fitting.Rmd"}
+```

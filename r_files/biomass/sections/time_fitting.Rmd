@@ -7,7 +7,7 @@ editor_options:
   chunk_output_type: console
 ---
 
-## Fitting function to biomass dynamics across time (t0 - t7)
+### Fitting function to biomass dynamics across time (t0 - t7)
 
 Here we want to fit how biomass changes across time to a function. The biomass of our meta-ecosystems looks like this.
 

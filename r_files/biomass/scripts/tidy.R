@@ -1,11 +1,3 @@
----
-title: "tidy"
-author: "Emanuele Giacomuzzo"
-date: '2022-07-26'
-output: html_document
----
-
-```{r tidy-up}
 t0$time = NA
 t1$time = NA
 
@@ -92,13 +84,13 @@ ds = ds[, c("culture_ID",
 
 ds$eco_metaeco_type = factor(ds$eco_metaeco_type, 
                              levels = c('S', 
-                                      'S (S_S)', 
-                                      'S (S_L)', 
-                                      'M', 
-                                      'M (M_M)', 
-                                      'L', 
-                                      'L (L_L)', 
-                                      'L (S_L)'))
+                                        'S (S_S)', 
+                                        'S (S_L)', 
+                                        'M', 
+                                        'M (M_M)', 
+                                        'L', 
+                                        'L (L_L)', 
+                                        'L (S_L)'))
 
 #ds$patch_size = factor(ds$patch_size,
 #                        levels = c ('S', 'M', 'L'))
@@ -109,4 +101,3 @@ ds$eco_metaeco_type = factor(ds$eco_metaeco_type,
 ecosystems_to_take_off = 60 #Culture number 60 because it was spilled
 ds = ds %>%
   filter(! culture_ID %in% ecosystems_to_take_off)
-```

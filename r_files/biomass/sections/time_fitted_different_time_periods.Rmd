@@ -7,7 +7,7 @@ editor_options:
   chunk_output_type: console
 ---
 
-## t2-3, t2-t4, t2-t5, t2-t6, t2-t7 with time fitting
+### t2-3, t2-t4, t2-t5, t2-t6, t2-t7 with time fitting
 
 Let's now try to see how meta-ecosystem effect changes across different time periods.
 

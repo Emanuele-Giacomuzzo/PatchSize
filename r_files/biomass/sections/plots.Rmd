@@ -5,9 +5,9 @@ date: '2022-07-22'
 output: html_document
 ---
 
-# Plot
+## Plot
 
-## Biomass \@ low disturbance
+### Biomass \@ low disturbance
 
 ```{r low-disturbance-plots, eval = TRUE, echo = FALSE, message = FALSE}
 
@@ -30,7 +30,7 @@ grid = grid.arrange(p[[1]],p[[3]],p[[5]],p[[2]],p[[4]],p[[6]],
 ggsave(here("results", "biomass", "Clean_biomass_low.jpg"), grid, width = 22, height = 13)
 ```
 
-## Biomass \@ high disturbance
+### Biomass \@ high disturbance
 
 ```{r high-disturbance-plots, eval = TRUE, echo = FALSE, message = FALSE}
 
