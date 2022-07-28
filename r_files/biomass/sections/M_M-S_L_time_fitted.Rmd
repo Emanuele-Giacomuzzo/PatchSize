@@ -1,5 +1,5 @@
 ---
-title: "model_all_points_with_time_fitting"
+title: "time_fitting"
 author: "Emanuele Giacomuzzo"
 date: '2022-07-22'
 output: html_document
@@ -7,18 +7,96 @@ editor_options:
   chunk_output_type: console
 ---
 
-### t2 - t7 with time fitting
+##### Fitting function to biomass dynamics across time (t0 - t7)
 
-#### Tidy
+Here we want to fit how biomass changes across time to a function. The biomass of our meta-ecosystems looks like this.
+
+```{r regional biomass plot}
+
+ds_regional_shrunk_type = ds_regional %>%
+    filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L")
+
+ds_regional_shrunk_type%>%
+  ggplot(aes(x = day,
+             y = regional_mean_bioarea,
+             group = day)) + 
+  geom_boxplot() +
+  labs(x = "day", y = "regional bioarea")
+```
+
+To fit these data, we need to produce (and parameterise) a function that resemble how the biomass first increases and then decreases.
+
+Hank produced the following function:
+
+$$biomass = a_4 * (day - a_5) * e^{a_1(day - a_5)}$$
+
+If we parameterise the function and then plot, it looks as follows.
+
+```{r time-function}
+
+a1 = -0.1
+a4 = 1200
+a5 = -1
+
+day = seq(0, 30, 0.01)
+biomass = a4*(day-a5) * exp(a1*(day-a5))
+plot(biomass ~ day)
+```
+
+Now, let's find the best parameters (a1, a4, a5) that fit our data.
+
+```{r parameterise-time-function, results= FALSE}
+
+model = nls(regional_mean_bioarea ~ a4 * (day-a5) * exp(a1 * (day-a5)), 
+            start = list(a1 = -0.1, a4 = 1200, a5 = -1),
+            trace = T,
+            data = ds_regional_shrunk_type)
+
+a1 = as.numeric(model$m$getPars()[1])
+a4 = as.numeric(model$m$getPars()[2])
+a5 = as.numeric(model$m$getPars()[3])
+```
+
+```{r show-fitted-parameters}
+model$m$getPars()
+```
+
+And now let's plot the function to see how it fits our data.
+
+```{r plot-parameterised-time-function}
+
+day = seq(0,30,1)
+predicted = a4*(day-a5)*exp(a1*(day-a5))
+data_fitted=data.frame(day=day,regional_mean_bioarea=predicted)
+
+ds_regional_shrunk_type%>%
+  ggplot(aes(x = day,
+             y = regional_mean_bioarea,
+             group = day)) + 
+  geom_boxplot() +
+  labs(x = "day", y = "regional bioarea") +
+  geom_line(data=data_fitted,aes(x = day, y=regional_mean_bioarea),color="red", group = 1)
+```
+
+Let's then include our predictions into the data set.
+
+```{r predicted-ds}
+
+ds_regional_predicted_shrunk_type = ds_regional %>%
+  mutate(predicted_from_time = a4*(day-a5)*exp(a1*(day-a5))) %>%
+  filter(metaecosystem_type == "S_L" | metaecosystem_type == "M_M")
+```
+
+##### Tidy
 
 ```{r}
 ds_regional_predicted_shrunk_type_n_day = ds_regional_predicted_shrunk_type %>%
   filter(time_point >= 2)
 ```
 
-#### Model selection
+##### Model selection
 
-**Are slopes and intercept correlated?**
+*Are slopes and intercept correlated?*
 
 ```{r eval = FALSE}
 model_slopes_correlated = lmer(regional_mean_bioarea ~ 
@@ -50,7 +128,7 @@ anova(model_slopes_uncorrelated, model_slopes_correlated)
 
 It doesn't work. Wired. Well, let's just keep the slopes as uncorrelated (`model_slopes_uncorrelated`).
 
-**Does meta-ecosystem type have a different effect on regional biomass at different time (*does predicted_from_time \* metaecosystem_type have an effect*) ?**
+*Does meta-ecosystem type have a different effect on regional biomass at different time (does predicted_from_time \* metaecosystem_type have an effect) ?*
 
 ```{r time-fitted-random-effects}
 model_1 = lmer(regional_mean_bioarea ~ 
@@ -81,7 +159,7 @@ anova(model_1, model_2)
 
 They are the same. Keep model_2.
 
-**Does disturbance have a different effect on regional biomass at different time points (*does the interaction between time and disturbance have an effect*)?**
+*Does disturbance have a different effect on regional biomass at different time points (does the interaction between time and disturbance have an effect)?*
 
 ```{r}
 model_3 = lmer(regional_mean_bioarea ~ 
@@ -99,7 +177,7 @@ anova(model_2, model_3)
 
 They are the same. Keep model_3.
 
-**Does meta-ecosystem type have a different effect on regional biomass at different disturbance regimes (*does the interaction between meta-ecosystem type and disturbance have an effect*)?**
+*Does meta-ecosystem type have a different effect on regional biomass at different disturbance regimes (does the interaction between meta-ecosystem type and disturbance have an effect)?*
 
 ```{r}
 model_4 = lmer(regional_mean_bioarea ~ 
@@ -116,7 +194,7 @@ anova(model_3, model_4)
 
 They are the same. Keep model_4.
 
-**Does the interaction between different meta-ecosystem types and disturbance have a different effect at different time points (*does the interaction between meta-ecosystem type, disturbance, and time have an effect*)?**
+*Does the interaction between different meta-ecosystem types and disturbance have a different effect at different time points (does the interaction between meta-ecosystem type, disturbance, and time have an effect)?*
 
 ```{r}
 model_5 = lmer(regional_mean_bioarea ~ 
@@ -132,7 +210,7 @@ anova(model_4, model_5)
 
 They are the same. Keep model_5.
 
-**Does the difference in biomass between medium-medium and small-large meta-ecosystems differ across time (*does system number have a random effect on the slope of predicted from time*)?**
+*Does the difference in biomass between medium-medium and small-large meta-ecosystems differ across time (does system number have a random effect on the slope of predicted from time)?*
 
 ```{r}
 
@@ -151,7 +229,7 @@ anova(model_5, model_8)
 
 They are the same. Keep model_8.
 
-**Do different medium-medium meta-ecosystems have different starting value (t2) at low disturbance** **(*does system number have a random effect on the intercept*)?**
+*Do different medium-medium meta-ecosystems have different starting value (t2) at low disturbance (does system number have a random effect on the intercept)?*
 
 ```{r}
 
@@ -167,7 +245,7 @@ anova(model_8, model_9)
 
 They are the same. Keep model_9.
 
-#### Effect size of meta-ecosystem type in the best model
+##### Effect size
 
 ```{r}
 
@@ -192,3 +270,43 @@ R2_metaecosystem = round(R2_metaecosystem, digits = 3)
 ```
 
 So, if we fit time dynamics to our data, we get an effect size of meta-ecosystem type of `r R2_metaecosystem`. That is still really low.
+
+##### t2-3, t2-t4, t2-t5, t2-t6, t2-t7
+
+Let's now try to see how meta-ecosystem effect changes across different time periods.
+
+```{r}
+
+R2 = NULL
+
+for (last_point in 3:7) {
+  
+  filtered_dataset = ds_regional_predicted_shrunk_type %>%
+  filter(time_point <= last_point)
+  
+  full_model = lm(regional_mean_bioarea ~ 
+                            disturbance +
+                            metaecosystem_type,
+                        data = filtered_dataset)
+  
+  no_metaeco_type_model = lm(regional_mean_bioarea ~ 
+                            disturbance,
+                        data = filtered_dataset)
+  
+  anova(full_model, no_metaeco_type_model)
+  
+  summary(full_model)
+  summary(no_metaeco_type_model)
+  R2[[last_point]] = summary(full_model)$adj.r.squared - summary(no_metaeco_type_model)$adj.r.squared
+  R2[[last_point]] = round(R2[[last_point]], digits = 3)
+  
+}
+```
+
+|     Time points     |  R squared  |
+|:-------------------:|:-----------:|
+|       t2 - t3       | `r R2[[3]]` |
+|       t2 -t4        | `r R2[[4]]` |
+| t2 - t5 (my choice) | `r R2[[5]]` |
+|       t2 - t6       | `r R2[[6]]` |
+|       t2 - t7       | `r R2[[7]]` |

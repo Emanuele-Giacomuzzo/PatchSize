@@ -5,7 +5,7 @@ date: '2022-07-26'
 output: html_document
 ---
 
-### Local biomass modelling - L and L (L_L)
+### L vs L (L_L)
 
 #### Tidy
 
@@ -40,7 +40,7 @@ ds_local_S_t2_t7 %>%
 
 #### Model selection
 
-Let's start from building the full model.
+There doesn't seem to be an effect from what we just plotted. But let's test statistically what we see.
 
 ```{r}
 full_model = lmer(bioarea_per_volume ~ 
@@ -52,11 +52,7 @@ full_model = lmer(bioarea_per_volume ~
                     (metaecosystem_type*disturbance  || day),
                   data = ds_local_S_t2_t7, 
                   REML = FALSE)
-```
 
-**Does meta-ecosystem type have an effect?**
-
-```{r}
 no_metaeco_type_model = lmer(bioarea_per_volume ~ 
                     disturbance + 
                     (disturbance || day),
@@ -66,4 +62,4 @@ no_metaeco_type_model = lmer(bioarea_per_volume ~
 anova(full_model, no_metaeco_type_model)
 ```
 
-**No. Meta-ecosystem type has no effect.**
+As we predicted, there is no difference between whether a large patch was isolated or it was connected to an identical patch. 

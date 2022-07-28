@@ -5,7 +5,7 @@ date: '2022-07-26'
 output: html_document
 ---
 
-### Local biomass modelling - S_S and S_L
+### S (S_S) vs S (S_L)
 
 #### Tidy
 
@@ -20,22 +20,22 @@ ds_local_S_t2_t7 = ds %>%
 
 ```{r}
 ds_local_S_t2_t7 %>%
-    ggplot(aes(x = day,
+  ggplot(aes(x = day,
                y = bioarea_per_volume,
+               group= interaction(day, eco_metaeco_type),
                fill = eco_metaeco_type,
                color = eco_metaeco_type)) +
-    geom_point(stat = "summary", fun = "mean") +
-    geom_line(stat = "summary", fun = "mean") +
-    labs(x = "Day", 
-         y = "Local biomass (bioarea/µl)", 
-         color = '', 
-         fill = '') +
-    scale_fill_discrete(labels = c("Patch connected to patch of the same size", 
+  geom_boxplot() + 
+  labs(x = "Day", 
+       y = "Local biomass (bioarea/µl)", 
+       color = '', 
+       fill = '') +
+  scale_fill_discrete(labels = c("Patch connected to patch of the same size", 
                                    "Patch connected to larger patch")) +
-    scale_color_discrete(labels = c("Patch connected to patch of the same size", 
+  scale_color_discrete(labels = c("Patch connected to patch of the same size", 
                                     "Patch connected to larger patch")) +
-    theme_bw() +
-    theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())
+  theme_bw() +
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())
 ```
 
 #### Model selection
@@ -54,7 +54,7 @@ full_model = lmer(bioarea_per_volume ~
                   REML = FALSE)
 ```
 
-**Does time have a random effect?**
+*Does time have a random effect?*
 
 ```{r}
 fixed_effects_model = lm(bioarea_per_volume ~ 
@@ -72,7 +72,7 @@ Yes. Let's then keep the random effect of time.
 best_model = full_model
 ```
 
-**Do meta-ecosystem type and disturbance interact?**
+*Do meta-ecosystem type and disturbance interact?*
 
 ```{r}
 no_interaction_model = lmer(bioarea_per_volume ~ 
@@ -92,7 +92,7 @@ Yes. Let's keep the model without the interaction between meta-ecosystem type an
 best_model = no_interaction_model
 ```
 
-**Does time have an effect on the slope of metaecosystem_type?**
+*Does time have an effect on the slope of metaecosystem_type?*
 
 ```{r}
 no_metaeco_slopes_model = lmer(bioarea_per_volume ~ 
@@ -109,7 +109,7 @@ anova(best_model, no_metaeco_slopes_model)
 
 No. Let's then keep the model without the random effect of time on meta-ecosystem type slopes.
 
-**Does time have an effect on the slope of disturbance?**
+*Does time have an effect on the slope of disturbance?*
 
 ```{r}
 no_disturbance_slopes_model = lmer(bioarea_per_volume ~ 
@@ -131,11 +131,10 @@ best_model = no_disturbance_slopes_model
 summary(best_model)
 ```
 
-### Analysis of the best model
-
-##### Effect size and significance of full model
+#### Effect size
 
 ```{r}
+#Effect size of the whole model
 model.null = lm(bioarea_per_volume ~ 
                   1, 
                   data = ds_local_S_t2_t7)
@@ -150,11 +149,8 @@ p_best = round(p_best, digits = 5)
 if (p_best < 0.00001) {
   p_best = "< 0.00001"
 }
-```
 
-##### Effect size and significance of meta-ecosystem type
-
-```{r}
+#Effect size and significance of meta-ecosystem type
 metaecosystem_type_null = lmer(bioarea_per_volume ~  
                                  disturbance  + 
                                  (1 | day),
@@ -172,11 +168,8 @@ p_no_metaecosystem_type = round(p_no_metaecosystem_type, digits = 5)
 if (p_no_metaecosystem_type < 0.00001) {
   p_no_metaecosystem_type = "< 0.00001"
 }
-```
 
-##### Effect size and significance of disturbance
-
-```{r}
+#Effect size of disturbance 
 disturbance_null = lmer(bioarea_per_volume ~ 
                           metaecosystem_type  + 
                           (1 | day), 
@@ -204,8 +197,6 @@ The effect size and significance of our results can be found in the following ta
 | Best model                             |         `r r2_best[1]`          |                      /                       |         `r r2_best[2]`          |                      /                       |         `r p_best`          |
 | Best model without meta-ecosystem type | `r r2_no_metaecosystem_type[1]` | `r r2_best[1] - r2_no_metaecosystem_type[1]` | `r r2_no_metaecosystem_type[2]` | `r r2_best[2] - r2_no_metaecosystem_type[2]` | `r p_no_metaecosystem_type` |
 | Best model without disturbance         |    `r r2_no_disturbance[1]`     |    `r r2_best[1] - r2_no_disturbance[1]`     |    `r r2_no_disturbance[2]`     |    `r r2_best[2] - r2_no_disturbance[2]`     |    `r p_no_disturbance`     |
-
-### t2-3, t2-t4, t2-t5, t2-t6, t2-t7
 
 Let's now try to see how meta-ecosystem effect changes across different time periods.
 

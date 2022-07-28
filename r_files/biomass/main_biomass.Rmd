@@ -2,10 +2,7 @@
 title: "Biomass analysis (PatchSizePilot)"
 author: "Emanuele Giacomuzzo"
 date: '2022-07-07'
-output:
-  html_document:
-    toc: true
-    theme: united
+output: html_document
 editor_options: 
   chunk_output_type: console
 bibliography: /Applications/Mendeley/library.bib
@@ -13,7 +10,7 @@ bibliography: /Applications/Mendeley/library.bib
 
 # PatchSizePilot {.tabset}
 
-## Aim 
+## Aim
 
 Here I study how **biomass density** changes across treatments in the PatchSizePilot. In particular, I'm studying how biomass density changes across:
 
@@ -196,13 +193,17 @@ ds_regional = ds_regional %>%
 #source(here("r_files", "biomass", "extracted_sections", "plots.R"))
 ```
 
-## Regional biomass  {.tabset}
+## Regional biomass {.tabset}
 
-### Medium-medium vs small-large meta-ecosystems
+### Aim
+
+We are here going to model 
+
+### M_M vs S_L {.tabset}
 
 We want to understand if the regional biomass produced by an ecosystem with a small and a large patch (metaecosystem_type = S_L) is lower than the regional biomass produced by an ecosystem with two medium patches (metaecosystem_type = M_M).
 
-#### Tidy
+#### Tidy & plot
 
 First of all, let's modify the data set including the regional biomass of our meta-ecosystems. In this data set, we want to have the regional biomass of the meta-ecosystems (averaged first across videos and then across patches) in which we:
 
@@ -215,8 +216,6 @@ ds_regional_shrunk_type_n_day = ds_regional %>%
     filter (metaecosystem_type == "M_M" | metaecosystem_type == "S_L", 
             time_point >= 2)
 ```
-
-#### Plot
 
 Let's start by plotting the single ecosystems to see that everything is fine.
 
@@ -331,61 +330,32 @@ ds_regional %>%
 
 We can see that the regional biomass was higher for meta-ecosystems with the same size, regardless of the . As both disturbance levels showed the same pattern, I would just keep the one with low disturbance in the publication, as it shows a stronger pattern.
 
-```{r}
+```{r, fig.align='center', fig.cap = "Figure 2 of the paper: Regional biomass production in meta-ecosystems of the same total area, but whose two patches are either identical (red, medium-medium meta-ecosystem) or one is five times larger (blue, small-large meta-ecosystem). Error bars represent the standard deviation and point represents the mean at a specific time point. For clarity, only the low disturbance treatment is shown here. See the Appendix for equivalent the figure of the high disturbance treatment."}
 final_plot
 ```
 
-*Figure 2. Regional biomass production in meta-ecosystems of the same total area, but whose two patches are either identical (red, medium-medium meta-ecosystem) or one is five times larger (blue, small-large meta-ecosystem). Error bars represent the standard deviation and point represents the mean at a specific time point. For clarity, only the low disturbance treatment is shown here. See the Appendix for equivalent the figure of the high disturbance treatment.*
+#### Time as random effect
 
-```{r child = here("r_files", "biomass", "sections", "no_time_fitting_t2-t7.Rmd"), echo = TRUE, eval = TRUE}
-#source(here("r_files", "biomass", "extracted_sections", "no_time_fitting_t2-t7.R"))
+```{r child = here("r_files", "biomass", "sections", "M_M-S_L_time_random.Rmd"), echo = TRUE, eval = TRUE}
+#source(here("r_files", "biomass", "extracted_sections", "M_M-S_L_time_random.R"))
 ```
 
-```{r child = here("r_files", "biomass", "sections", "no_time_fitted_different_time_periods.Rmd"), echo = TRUE, eval = TRUE}
-#source(here("r_files", "biomass", "extracted_sections", "no_time_fitted_different_time_periods.R"))
+#### Time as explanatory variable
+
+```{r child = here("r_files", "biomass", "sections", "M_M-S_L_time_fitted.Rmd"), echo = TRUE, eval = TRUE}
+#source(here("r_files", "biomass", "extracted_sections", "M_M-S_L_time_fitted.R"))
 ```
 
-```{r child = here("r_files", "biomass", "sections", "time_fitting.Rmd"), echo = TRUE, eval = TRUE}
-#source(here("r_files", "biomass", "extracted_sections", "time_fitting.R"))
-```
+## Local biomass {.tabset}
 
-```{r child = here("r_files", "biomass", "sections", "time_fitted_t2-t7.Rmd"), echo = TRUE, eval = TRUE}
-#source(here("r_files", "biomass", "extracted_sections", "time_fitted_t2-t7.R"))
-```
+### Aim
 
-```{r child = here("r_files", "biomass", "sections", "time_fitted_each_time_point.Rmd"), echo = TRUE, eval = TRUE}
-#source(here("r_files", "biomass", "extracted_sections", "time_fitted_each_time_point.R"))
-```
-
-```{r child = here("r_files", "biomass", "sections", "time_fitted_different_time_periods.Rmd"), echo = TRUE, eval = TRUE}
-#source(here("r_files", "biomass", "extracted_sections", "time_fitted_different_time_periods.R"))
-```
-
-## Local biomass
-
-### Plot
+Here we are going to model how local biomass changes across treatments. At the end of the day, however, we are interested in knowing the difference between the biomass of:
+- an isolated small patch (S)
+- a small patch connected to another small patch S (S_S)
+- a small patch connected to a larger patch S (S_L)
 
 ```{r}
-
-ds %>%
-  group_by(day,eco_metaeco_type,system_nr) %>%
-  summarise(bioarea_per_volume = mean(bioarea_per_volume)) %>%
-    filter (eco_metaeco_type == "S (S_L)") %>%
-    ggplot (aes(x = day,
-                y = bioarea_per_volume,
-                group = system_nr,
-                fill = system_nr,
-                color = system_nr,
-                linetype = eco_metaeco_type)) +
-    geom_point() +
-    geom_line () +
-    labs(x = "Day", 
-         y = "Local biomass (bioarea/µl)") +
-    scale_y_continuous(limits = c(0, 6250)) +
-    scale_x_continuous(limits = c(-2, 30)) +
-    theme_bw() +
-    theme(panel.grid.major = element_blank(), 
-          panel.grid.minor = element_blank())
 
 ds %>%
     filter (  eco_metaeco_type == "S" | 
@@ -414,8 +384,8 @@ ds %>%
 
 *Figure 3. Local biomass production in patches that are either isolated (red, small isolated patches), connected to patches of the same size (green, patches of small-small meta-ecosystems), or connected to patches five times larger (blue, small patches of small-large meta-ecosystems).*
 
-```{r child = here("r_files", "biomass", "sections", "S_S_and_S_L.Rmd")}
-#source(here("r_files", "biomass", "extracted_sections", "S_S\_and_S\_L.R"))
+```{r child = here("r_files", "biomass", "sections", "S-S_S_and_S-S_L.Rmd")}
+#source(here("r_files", "biomass", "extracted_sections", "S-S_S_and_S-S_L.R"))
 ```
 
 ```{r child = here("r_files", "biomass", "sections", "S_and_S-S_L.Rmd")}

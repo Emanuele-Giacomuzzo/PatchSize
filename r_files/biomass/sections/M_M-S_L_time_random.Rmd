@@ -7,9 +7,7 @@ editor_options:
   chunk_output_type: console
 ---
 
-### t2 - t7 with time as random effect
-
-#### Model selection
+##### Model selection
 
 First of all, let's include time as a random variable. Let's start from the largest mixed effect model makes sense to construct. This will include:
 
@@ -18,7 +16,7 @@ First of all, let's include time as a random variable. Let's start from the larg
 
 We are actually going to construct two full models. One with the correlated and one with the uncorrelated random slopes and intercept, the other without
 
-**Should we get rid of the correlation between intercept and slopes?**
+*Should we get rid of the correlation between intercept and slopes?*
 
 ```{r full-models}
 full_model_correlated = lmer(regional_mean_bioarea ~ 
@@ -43,7 +41,7 @@ full_model_uncorrelated = lmer(regional_mean_bioarea ~
                   data = ds_regional_shrunk_type_n_day, 
                   REML = FALSE)
 
-BIC(full_model_uncorrelated, full_model_correlated)
+anova(full_model_uncorrelated, full_model_correlated)
 ```
 
 No.
@@ -52,7 +50,7 @@ No.
 best_model = full_model_correlated
 ```
 
-**Should we get rid of the interaction between meta-ecosystem and disturbance?**
+*Should we get rid of the interaction between meta-ecosystem and disturbance?*
 
 ```{r no_interaction_model, message=FALSE}
 no_interaction_model = lmer(regional_mean_bioarea ~ 
@@ -64,7 +62,7 @@ no_interaction_model = lmer(regional_mean_bioarea ~
                             data = ds_regional_shrunk_type_n_day, 
                             REML = FALSE)
 
-BIC(best_model, no_interaction_model)
+anova(best_model, no_interaction_model)
 ```
 
 Yes.
@@ -73,7 +71,7 @@ Yes.
 best_model = no_interaction_model
 ```
 
-**Should we get rid of the random slopes?**
+*Should we get rid of the random slopes at different days?*
 
 ```{r no_slopes_model, message=FALSE}
 no_slopes_model = lmer(regional_mean_bioarea ~ 
@@ -84,16 +82,16 @@ no_slopes_model = lmer(regional_mean_bioarea ~
                        data = ds_regional_shrunk_type_n_day, 
                        REML = FALSE)
 
-BIC(best_model, no_slopes_model)
+anova(best_model, no_slopes_model)
 ```
 
-Yes.
+According to BIC yes (but according to AIC no). I'll still follow the suggestion of BIC.
 
 ```{r best-model}
 best_model = no_slopes_model
 ```
 
-**Should we get rid of the random effect of system number?**
+*Should we get rid of the random effect of system number?*
 
 ```{r}
 no_system_nr = lmer(regional_mean_bioarea ~ 
@@ -106,7 +104,7 @@ no_system_nr = lmer(regional_mean_bioarea ~
 anova(best_model, no_system_nr)
 ```
 
-Yes.
+Yes. Although the difference between the two models according to AIC is not that much.
 
 ```{r}
 best_model = no_system_nr
@@ -117,11 +115,12 @@ Therefore, the best model is the following one:
 
 `regional_mean_bioarea ~ metaecosystem_type + disturbance + (1 | day)`
 
-#### Effect size of meta-ecosystem type in the best model
+##### Effect size
 
-##### Effect size and significance of the whole model
+Let's now look at the effect size of meta-ecosystem type. It will be the effect size of such model minus the effect size of the same model but without meta-ecosystem type.
 
 ```{r r2-p-best-model}
+#Effect size of the whole model 
 model.null = lm(regional_mean_bioarea ~ 1 , 
                   data = ds_regional_shrunk_type_n_day)
 
@@ -135,11 +134,8 @@ p_best = round(p_best, digits = 5)
 if (p_best < 0.00001) {
   p_best = "< 0.00001"
 }
-```
 
-##### Effect size and significance of meta-ecosystem type
-
-```{r}
+#Effect size of meta-ecosystem type
 metaecosystem_type_null = lmer(regional_mean_bioarea ~  
                                  disturbance  + 
                                  (1 | day),
@@ -157,12 +153,8 @@ p_no_metaecosystem_type = round(p_no_metaecosystem_type, digits = 5)
 if (p_no_metaecosystem_type < 0.00001) {
   p_no_metaecosystem_type = "< 0.00001"
 }
-```
 
-##### Effect size and significance of disturbance
-
-```{r p-r2-disturbance}
-
+#Effect size of disturbance
 disturbance_null = lmer(regional_mean_bioarea ~ 
                           metaecosystem_type  + 
                           (1 | day), 
@@ -191,4 +183,76 @@ The effect size and significance of our results can be found in the following ta
 | Best model without meta-ecosystem type | `r r2_no_metaecosystem_type[1]` | `r r2_best[1] - r2_no_metaecosystem_type[1]` | `r r2_no_metaecosystem_type[2]` | `r r2_best[2] - r2_no_metaecosystem_type[2]` | `r p_no_metaecosystem_type` |
 | Best model without disturbance         |    `r r2_no_disturbance[1]`     |    `r r2_best[1] - r2_no_disturbance[1]`     |    `r r2_no_disturbance[2]`     |    `r r2_best[2] - r2_no_disturbance[2]`     |    `r p_no_disturbance`     |
 
-This means that meta-ecosystem type should explain more than disturbance regional biomass dynamics. However, the effect size isn't that high (`r r2_best[1] - r2_no_metaecosystem_type[1]`). Because of this, we thought we should fit a function to the time dynamics of the regional biomass.
+This means that meta-ecosystem type should explain more than disturbance regional biomass dynamics. However, the effect size isn't that high (`r r2_best[1] - r2_no_metaecosystem_type[1]`). Let's Let's now try to see how meta-ecosystem effect changes across different time periods.
+
+```{r}
+
+R2 = NULL
+
+for (last_point in 3:7) {
+  
+  filtered_dataset = ds_regional_shrunk_type_n_day %>%
+  filter(time_point <= last_point)
+  
+  full_model = lm(regional_mean_bioarea ~ 
+                            disturbance +
+                            metaecosystem_type +
+                            (1 | day),
+                        data = filtered_dataset)
+  
+  no_metaeco_type_model = lm(regional_mean_bioarea ~ 
+                            disturbance +
+                            (1 | day),
+                        data = filtered_dataset)
+  
+  anova(full_model, no_metaeco_type_model)
+  
+  R2_full = r.squaredGLMM(full_model)[1,1]
+  R2_null = r.squaredGLMM(no_metaeco_type_model)[1,1]
+  
+  R2[[last_point]] =  R2_full - R2_null
+  R2[[last_point]] = round(R2[[last_point]], digits = 3)
+  
+}
+```
+
+|     Time points     | R squared of meta-ecosystem type (marginal) |
+|:-------------------:|:-------------------------------------------:|
+|       t2 - t3       |                 `r R2[[3]]`                 |
+|       t2 -t4        |                 `r R2[[4]]`                 |
+| t2 - t5 (my choice) |                 `r R2[[5]]`                 |
+|       t2 - t6       |                 `r R2[[6]]`                 |
+|       t2 - t7       |                 `r R2[[7]]`                 |
+
+Let's now see how meta-ecosystem type influenced regional biomass at each time point.
+
+```{r}
+
+R2 = NULL
+for (t in 2:7) {
+  
+  time_point_input = t
+  filtered_dataset = ds_regional_shrunk_type_n_day %>%
+    filter(time_point == time_point_input)
+  model_1 = lm(regional_mean_bioarea ~ 
+                            disturbance +
+                            metaecosystem_type,
+                        data = filtered_dataset)
+  model_2 = lm(regional_mean_bioarea ~ 
+                            disturbance,
+                        data = filtered_dataset)
+  R2[[t]] = summary(model_1)$adj.r.squared - summary(model_2)$adj.r.squared
+  R2[[t]] = round(R2[[t]], digits = 3)
+  
+}
+
+```
+
+| Time point |   R squared   |
+|:----------:|:-------------:|
+|     t2     | `r R2[[2]]`  |
+|     t3     | `r R2[[3]]` |
+|     t4     | `r R2[[4]]` |
+|     t5     | `r R2[[5]]` |
+|     t6     | `r R2[[6]]` |
+|     t7     | `r R2[[7]]` |

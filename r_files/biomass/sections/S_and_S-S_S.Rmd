@@ -5,7 +5,7 @@ date: '2022-07-26'
 output: html_document
 ---
 
-### Local biomass modelling - S and S (S_S)
+### S vs S (S_S)
 
 #### Tidy
 
@@ -22,10 +22,10 @@ ds_local_S_t2_t7 = ds %>%
 ds_local_S_t2_t7 %>%
     ggplot(aes(x = day,
                y = bioarea_per_volume,
+               group= interaction(day, eco_metaeco_type),
                fill = eco_metaeco_type,
                color = eco_metaeco_type)) +
-    geom_point(stat = "summary", fun = "mean") +
-    geom_line(stat = "summary", fun = "mean") +
+    geom_boxplot() +
     labs(x = "Day", 
          y = "Local biomass (bioarea/µl)", 
          color = '', 
@@ -38,9 +38,9 @@ ds_local_S_t2_t7 %>%
     theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())
 ```
 
-#### Model selection
+#### Statistical test
 
-Let's start from building the full model.
+There doesn't seem to be a difference in local biomass production between small isolated patches and small patches connected to identical small patches. But let's test it statistically. 
 
 ```{r}
 full_model = lmer(bioarea_per_volume ~ 
@@ -52,11 +52,6 @@ full_model = lmer(bioarea_per_volume ~
                     (metaecosystem_type*disturbance  || day),
                   data = ds_local_S_t2_t7, 
                   REML = FALSE)
-```
-
-**Does meta-ecosystem type have an effect?**
-
-```{r}
 
 no_metaeco_type_model = lmer(bioarea_per_volume ~ 
                     disturbance + 
@@ -67,4 +62,4 @@ no_metaeco_type_model = lmer(bioarea_per_volume ~
 anova(full_model, no_metaeco_type_model)
 ```
 
-**No. Meta-ecosystem type has no effect.**
+As we predicted, they are the same. 

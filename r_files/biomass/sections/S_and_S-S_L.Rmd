@@ -7,7 +7,7 @@ editor_options:
   chunk_output_type: console
 ---
 
-### S and S (S_L)
+### S vs S (S_L)
 
 #### Tidy
 
@@ -24,10 +24,10 @@ ds_local_S_t2_t7 = ds %>%
 ds_local_S_t2_t7 %>%
     ggplot(aes(x = day,
                y = bioarea_per_volume,
+               group= interaction(day, eco_metaeco_type),
                fill = eco_metaeco_type,
                color = eco_metaeco_type)) +
-    geom_point(stat = "summary", fun = "mean") +
-    geom_line(stat = "summary", fun = "mean") +
+    geom_boxplot() + 
     labs(x = "Day", 
          y = "Local biomass (bioarea/µl)", 
          color = '', 
@@ -133,9 +133,9 @@ best_model = no_disturbance_slopes_model
 summary(best_model)
 ```
 
-### Analysis of the best model
+#### Analysis of the best model
 
-##### Effect size and significance of full model
+###### Effect size and significance of full model
 
 ```{r}
 model.null = lm(bioarea_per_volume ~ 
@@ -154,7 +154,7 @@ if (p_best < 0.00001) {
 }
 ```
 
-##### Effect size and significance of meta-ecosystem type
+###### Effect size and significance of meta-ecosystem type
 
 ```{r}
 metaecosystem_type_null = lmer(bioarea_per_volume ~  
@@ -176,7 +176,7 @@ if (p_no_metaecosystem_type < 0.00001) {
 }
 ```
 
-##### Effect size and significance of disturbance
+###### Effect size and significance of disturbance
 
 ```{r}
 disturbance_null = lmer(bioarea_per_volume ~ 
@@ -207,7 +207,7 @@ The effect size and significance of our results can be found in the following ta
 | Best model without meta-ecosystem type | `r r2_no_metaecosystem_type[1]` | `r r2_best[1] - r2_no_metaecosystem_type[1]` | `r r2_no_metaecosystem_type[2]` | `r r2_best[2] - r2_no_metaecosystem_type[2]` | `r p_no_metaecosystem_type` |
 | Best model without disturbance         |    `r r2_no_disturbance[1]`     |    `r r2_best[1] - r2_no_disturbance[1]`     |    `r r2_no_disturbance[2]`     |    `r r2_best[2] - r2_no_disturbance[2]`     |    `r p_no_disturbance`     |
 
-### t2-3, t2-t4, t2-t5, t2-t6, t2-t7
+#### t2-3, t2-t4, t2-t5, t2-t6, t2-t7
 
 Let's now try to see how meta-ecosystem effect changes across different time periods.
 
