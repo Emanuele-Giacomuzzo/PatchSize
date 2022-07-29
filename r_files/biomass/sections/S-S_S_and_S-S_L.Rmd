@@ -238,3 +238,145 @@ for (last_point in 3:7) {
 |   t2 - t5   |                `r R2[[5]]`                |
 |   t2 - t6   |                `r R2[[6]]`                |
 |   t2 - t7   |                `r R2[[7]]`                |
+
+Let's now try to do model selection by selecting some models that might be good.
+
+```{r}
+
+full = lmer(bioarea_per_volume ~ 
+                    metaecosystem_type  + 
+                    disturbance + 
+                    metaecosystem_type * disturbance + #1
+                    (metaecosystem_type || day) + #2
+                    (disturbance || day) + #3
+                    (metaecosystem_type * disturbance  || day), #4
+            data = ds_local_S_t2_t7, 
+            REML = FALSE,
+            control = lmerControl(optimizer = 'optimx', optCtrl = list(method = 'L-BFGS-B')))
+
+m1 = lmer(bioarea_per_volume ~ 
+                    metaecosystem_type  + 
+                    disturbance + 
+                    (metaecosystem_type || day) + #2
+                    (disturbance || day) + #3
+                    (metaecosystem_type*disturbance  || day), #4
+          data = ds_local_S_t2_t7, 
+          REML = FALSE,
+          control = lmerControl(optimizer = 'optimx', optCtrl = list(method = 'L-BFGS-B')))
+
+m2 = lmer(bioarea_per_volume ~ 
+                    metaecosystem_type  + 
+                    disturbance + 
+                    metaecosystem_type * disturbance + #1
+                    (disturbance || day) + #3
+                    (metaecosystem_type*disturbance  || day), #4
+          data = ds_local_S_t2_t7, 
+          REML = FALSE,
+          control = lmerControl(optimizer = 'optimx', optCtrl = list(method = 'L-BFGS-B')))
+
+m3 = lmer(bioarea_per_volume ~ 
+                    metaecosystem_type  + 
+                    disturbance + 
+                    metaecosystem_type * disturbance + #1
+                    (metaecosystem_type || day) + #2
+                    (metaecosystem_type*disturbance  || day), #4
+          data = ds_local_S_t2_t7, 
+          REML = FALSE,
+          control = lmerControl(optimizer = 'optimx', optCtrl = list(method = 'L-BFGS-B')))
+
+m4 = lmer(bioarea_per_volume ~ 
+                    metaecosystem_type  + 
+                    disturbance + 
+                    metaecosystem_type * disturbance + #1
+                    (metaecosystem_type || day) + #2
+                    (disturbance || day), #3
+            data = ds_local_S_t2_t7, 
+            REML = FALSE,
+            control = lmerControl(optimizer = 'optimx', optCtrl = list(method = 'L-BFGS-B')))
+
+m5 = lmer(bioarea_per_volume ~ 
+                    metaecosystem_type  + 
+                    disturbance + 
+                    (disturbance || day), #3
+            data = ds_local_S_t2_t7, 
+            REML = FALSE,
+            control = lmerControl (optimizer = "Nelder_Mead"))
+
+m6 = lmer(bioarea_per_volume ~ 
+                    metaecosystem_type  + 
+                    disturbance + 
+                    (metaecosystem_type || day), #2
+            data = ds_local_S_t2_t7, 
+            REML = FALSE,
+            control = lmerControl(optimizer = 'optimx', optCtrl = list(method = 'L-BFGS-B')))
+
+m7 = lmer(bioarea_per_volume ~ 
+                    metaecosystem_type  + 
+                    disturbance + 
+                    (metaecosystem_type || day) + #2
+                    (disturbance || day), #3
+            data = ds_local_S_t2_t7, 
+            REML = FALSE,
+            control = lmerControl(optimizer = 'optimx', optCtrl = list(method = 'L-BFGS-B')))
+
+m8 = lmer(bioarea_per_volume ~ 
+                    metaecosystem_type  + 
+                    disturbance + 
+                    metaecosystem_type * disturbance + #1
+                    (metaecosystem_type*disturbance  || day), #4
+            data = ds_local_S_t2_t7, 
+            REML = FALSE,
+            control = lmerControl(optimizer = 'optimx', optCtrl = list(method = 'L-BFGS-B')))
+
+m9 = lmer(bioarea_per_volume ~ 
+                    metaecosystem_type  + 
+                    disturbance + 
+                    metaecosystem_type * disturbance + #1
+                    (disturbance || day), #3
+            data = ds_local_S_t2_t7, 
+            REML = FALSE,
+            control = lmerControl(optimizer = 'optimx', optCtrl = list(method = 'nlminb')))
+
+m10 = lmer(bioarea_per_volume ~ 
+                    metaecosystem_type  + 
+                    disturbance + 
+                    metaecosystem_type * disturbance + #1
+                    (metaecosystem_type || day), #2
+            data = ds_local_S_t2_t7, 
+            REML = FALSE,
+            control = lmerControl(optimizer = 'optimx', optCtrl = list(method = 'L-BFGS-B')))
+
+m11 = lm(bioarea_per_volume ~ 
+                    metaecosystem_type  + 
+                    disturbance +
+                    metaecosystem_type * disturbance, #1
+            data = ds_local_S_t2_t7
+)
+
+m12 = lmer(bioarea_per_volume ~ 
+                    metaecosystem_type  + 
+                    disturbance + 
+                    (metaecosystem_type || day), #2
+            data = ds_local_S_t2_t7, 
+            REML = FALSE,
+            control = lmerControl(optimizer = 'optimx', optCtrl = list(method = 'L-BFGS-B')))
+
+m13 = lmer(bioarea_per_volume ~ 
+                    metaecosystem_type  + 
+                    disturbance + 
+                    (disturbance || day), #3
+            data = ds_local_S_t2_t7, 
+            REML = FALSE,
+            control = lmerControl (optimizer = "Nelder_Mead"))
+
+m14 = lm(bioarea_per_volume ~ 
+                    metaecosystem_type  + 
+                    disturbance,
+            data = ds_local_S_t2_t7
+)
+
+anova(m1, m2, m3, m4, m5, m6, m7, m8, m9, m10, m11, m12, m13, m14, full)
+```
+
+Lowest BIC: m9
+Lowest AIC: m8

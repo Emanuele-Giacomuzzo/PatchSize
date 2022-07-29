@@ -24,6 +24,7 @@ cat( "\014" )
 
 start_time = Sys.time()
 
+library("conflicted")
 library("tidyverse")
 library("grid")
 library("gridExtra") 
@@ -35,6 +36,7 @@ library("knitr")
 library("optimx")
 library("GenSA")
 library("purrr")
+library("kableExtra")
 
 knitr::opts_chunk$set(message = FALSE)
 
@@ -190,14 +192,14 @@ ds_regional = ds_regional %>%
 ```
 
 ```{r child = here("r_files", "biomass", "sections", "plots.Rmd"), eval = FALSE}
-#source(here("r_files", "biomass", "extracted_sections", "plots.R"))
+source(here("r_files", "biomass", "extracted_sections", "plots.R"))
 ```
 
 ## Regional biomass {.tabset}
 
 ### Aim
 
-We are here going to model 
+We are here going to model the regional biomass of different meta-ecosystems. However, the comparison we are interested in the most is the one between a meta-ecosystem with two medium patches (M_M) and the meta-ecosytem with a small and a large patches (S_L).
 
 ### M_M vs S_L {.tabset}
 
@@ -336,24 +338,21 @@ final_plot
 
 #### Time as random effect
 
-```{r child = here("r_files", "biomass", "sections", "M_M-S_L_time_random.Rmd"), echo = TRUE, eval = TRUE}
-#source(here("r_files", "biomass", "extracted_sections", "M_M-S_L_time_random.R"))
+```{r M_M-S_L_time_random, child = here("r_files", "biomass", "sections", "M_M-S_L_time_random.Rmd"), echo = TRUE, eval = TRUE}
+source(here("r_files", "biomass", "extracted_sections", "M_M-S_L_time_random.R"))
 ```
 
 #### Time as explanatory variable
 
-```{r child = here("r_files", "biomass", "sections", "M_M-S_L_time_fitted.Rmd"), echo = TRUE, eval = TRUE}
-#source(here("r_files", "biomass", "extracted_sections", "M_M-S_L_time_fitted.R"))
+```{r M_M-S_L_time_fitted, child = here("r_files", "biomass", "sections", "M_M-S_L_time_fitted.Rmd"), echo = TRUE, eval = TRUE}
+source(here("r_files", "biomass", "extracted_sections", "M_M-S_L_time_fitted.R"))
 ```
 
 ## Local biomass {.tabset}
 
 ### Aim
 
-Here we are going to model how local biomass changes across treatments. At the end of the day, however, we are interested in knowing the difference between the biomass of:
-- an isolated small patch (S)
-- a small patch connected to another small patch S (S_S)
-- a small patch connected to a larger patch S (S_L)
+Here we are going to model how local biomass changes across treatments. At the end of the day, however, we are interested in knowing the difference between the biomass of: - an isolated small patch (S) - a small patch connected to another small patch S (S_S) - a small patch connected to a larger patch S (S_L).
 
 ```{r}
 
@@ -385,25 +384,25 @@ ds %>%
 *Figure 3. Local biomass production in patches that are either isolated (red, small isolated patches), connected to patches of the same size (green, patches of small-small meta-ecosystems), or connected to patches five times larger (blue, small patches of small-large meta-ecosystems).*
 
 ```{r child = here("r_files", "biomass", "sections", "S-S_S_and_S-S_L.Rmd")}
-#source(here("r_files", "biomass", "extracted_sections", "S-S_S_and_S-S_L.R"))
+source(here("r_files", "biomass", "extracted_sections", "S-S_S_and_S-S_L.R"))
 ```
 
 ```{r child = here("r_files", "biomass", "sections", "S_and_S-S_L.Rmd")}
-#source(here("r_files", "biomass", "extracted_sections", "S_and_S-S_L.R"))
+source(here("r_files", "biomass", "extracted_sections", "S_and_S-S_L.R"))
 ```
 
 Problem of rescaling variables
 
 ```{r child = here("r_files", "biomass", "sections", "S_and_S-S_S.Rmd")}
-#source(here("r_files", "biomass", "extracted_sections", "S_and_S-S_S.R"))
+source(here("r_files", "biomass", "extracted_sections", "S_and_S-S_S.R"))
 ```
 
 ```{r child = here("r_files", "biomass", "sections", "L_and_L-L_L.Rmd")}
-#source(here("r_files", "biomass", "extracted_sections", "L_and_L-L_L.R"))
+source(here("r_files", "biomass", "extracted_sections", "L_and_L-L_L.R"))
 ```
 
 ```{r child = here("r_files", "biomass", "sections", "L_and_L-S_L.Rmd")}
-#source(here("r_files", "biomass", "extracted_sections", "L_and_L-S_L.R"))
+source(here("r_files", "biomass", "extracted_sections", "L_and_L-S_L.R"))
 ```
 
 ## Modelling considerations

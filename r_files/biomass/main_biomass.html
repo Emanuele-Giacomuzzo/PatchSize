@@ -554,6 +554,13 @@ ds_regional = ds_regional %&gt;%
 </div>
 <div id="regional-biomass" class="section level2 tabset">
 <h2 class="tabset">Regional biomass</h2>
+<div id="aim-1" class="section level3">
+<h3>Aim</h3>
+<p>We are here going to model the regional biomass of different
+meta-ecosystems. However, the comparison we are interested in the most
+is the one between a meta-ecosystem with two medium patches (M_M) and
+the meta-ecosytem with a small and a large patches (S_L).</p>
+</div>
 <div id="m_m-vs-s_l" class="section level3 tabset">
 <h3 class="tabset">M_M vs S_L</h3>
 <p>We want to understand if the regional biomass produced by an
@@ -813,41 +820,14 @@ anova(best_model, no_system_nr)</code></pre>
 ## best_model      6 1868.3 1885.0 -928.14   1856.3 1.7125  1     0.1907</code></pre>
 <p>Yes. Although the difference between the two models according to AIC
 is not that much.</p>
-<pre class="r"><code>best_model = no_system_nr
-summary(best_model)</code></pre>
-<pre><code>## Linear mixed model fit by maximum likelihood  [&#39;lmerMod&#39;]
-## Formula: regional_mean_bioarea ~ metaecosystem_type + disturbance + (1 |  
-##     day)
-##    Data: ds_regional_shrunk_type_n_day
-## 
-##      AIC      BIC   logLik deviance df.resid 
-##   1868.0   1881.9   -929.0   1858.0      115 
-## 
-## Scaled residuals: 
-##     Min      1Q  Median      3Q     Max 
-## -3.0235 -0.6119  0.0464  0.4594  3.5129 
-## 
-## Random effects:
-##  Groups   Name        Variance Std.Dev.
-##  day      (Intercept) 822404   906.9   
-##  Residual             251601   501.6   
-## Number of obs: 120, groups:  day, 6
-## 
-## Fixed effects:
-##                       Estimate Std. Error t value
-## (Intercept)            1894.65     378.63   5.004
-## metaecosystem_typeS_L  -618.09      91.58  -6.749
-## disturbancelow          547.75      91.58   5.981
-## 
-## Correlation of Fixed Effects:
-##             (Intr) mt_S_L
-## mtcsyst_S_L -0.121       
-## disturbnclw -0.121  0.000</code></pre>
-<p>Therefore, the best model is the following one:</p>
-<p><code>regional_mean_bioarea ~ metaecosystem_type + disturbance + (1 | day)</code></p>
+<p>As it seems like the random slopes and intercepts of meta-ecoystem
+number had a weak effect, but still an effect, let’s then keep both
+models as possible models.</p>
+<pre class="r"><code>best_model_without_system_nr = no_system_nr
+best_model_with_system_nr = no_interaction_model</code></pre>
 </div>
-<div id="effect-size" class="section level5">
-<h5>Effect size</h5>
+<div id="model-without-system-number-as-random-effect" class="section level5">
+<h5>Model <u>without</u> system number as random effect</h5>
 <p>Let’s now look at the effect size of meta-ecosystem type. It will be
 the effect size of such model minus the effect size of the same model
 but without meta-ecosystem type.</p>
@@ -855,11 +835,252 @@ but without meta-ecosystem type.</p>
 model.null = lm(regional_mean_bioarea ~ 1 , 
                   data = ds_regional_shrunk_type_n_day)
 
-r2_best = r.squaredGLMM(best_model)</code></pre>
+r2_best = r.squaredGLMM(best_model_without_system_nr)</code></pre>
 <pre><code>## Warning: &#39;r.squaredGLMM&#39; now calculates a revised statistic. See the help page.</code></pre>
 <pre class="r"><code>r2_best = round(r2_best, digits = 3)
 
-anova = anova(best_model, model.null)
+#anova = anova(best_model_without_system_nr, model.null)
+#p_best = anova$`Pr(&gt;Chisq)`[2]
+#p_best = round(p_best, digits = 5)
+#if (p_best &lt; 0.00001) {
+#  p_best = &quot;&lt; 0.00001&quot;
+#}
+
+#Effect size of meta-ecosystem type
+metaecosystem_type_null = lmer(regional_mean_bioarea ~  
+                                 disturbance  + 
+                                 (1 | day),
+                               data = ds_regional_shrunk_type_n_day, 
+                               REML = FALSE, 
+                               control = lmerControl(optimizer =&quot;Nelder_Mead&quot;))
+
+r2_no_metaecosystem_type_model = r.squaredGLMM(metaecosystem_type_null)
+r2_no_metaecosystem_type_model = round(r2_no_metaecosystem_type_model, digits = 3)
+r2_no_metaecosystem_type = r2_best - r2_no_metaecosystem_type_model
+
+
+# anova = anova(best_model_without_system_nr, metaecosystem_type_null)
+# p_no_metaecosystem_type = anova$`Pr(&gt;Chisq)`[2]
+# p_no_metaecosystem_type = round(p_no_metaecosystem_type, digits = 5)
+# 
+# if (p_no_metaecosystem_type &lt; 0.00001) {
+#   p_no_metaecosystem_type = &quot;&lt; 0.00001&quot;
+# }
+
+#Effect size of disturbance
+# disturbance_null = lmer(regional_mean_bioarea ~ 
+#                           metaecosystem_type  + 
+#                           (1 | day), 
+#                         data = ds_regional_shrunk_type_n_day, 
+#                         REML = FALSE,
+#                         control = lmerControl(optimizer =&#39;optimx&#39;, 
+#                                                      optCtrl=list(method=&#39;L-BFGS-B&#39;)))
+# 
+# r2_no_disturbance = r.squaredGLMM(disturbance_null)
+# r2_no_disturbance = round(r2_no_disturbance, digits = 3)
+# 
+# anova = anova(best_model_without_system_nr, disturbance_null)
+# p_no_disturbance = anova$`Pr(&gt;Chisq)`[2]
+# p_no_disturbance = round(p_no_disturbance, digits = 5)
+# 
+# if (p_no_disturbance &lt; 0.00001) {
+#   p_no_disturbance = &quot;&lt; 0.00001&quot;
+# }
+
+#Different time points range
+R2_range = NULL
+for (last_point in 3:7) {
+  
+  filtered_dataset = ds_regional_shrunk_type_n_day %&gt;%
+  filter(time_point &lt;= last_point)
+  
+  full_model = lm(regional_mean_bioarea ~ 
+                            disturbance +
+                            metaecosystem_type +
+                            (1 | day),
+                        data = filtered_dataset)
+  
+  no_metaeco_type_model = lm(regional_mean_bioarea ~ 
+                            disturbance +
+                            (1 | day),
+                        data = filtered_dataset)
+  
+  anova(full_model, no_metaeco_type_model)
+  
+  R2_full = r.squaredGLMM(full_model)[1,1]
+  R2_null = r.squaredGLMM(no_metaeco_type_model)[1,1]
+  
+  R2_range[[last_point]] =  R2_full - R2_null
+  R2_range[[last_point]] = round(R2_range[[last_point]], digits = 3)
+  
+}
+
+#Different time points single points 
+R2 = NULL
+for (t in 2:7) {
+  
+  time_point_input = t
+  filtered_dataset = ds_regional_shrunk_type_n_day %&gt;%
+    filter(time_point == time_point_input)
+  model_1 = lm(regional_mean_bioarea ~ 
+                            disturbance +
+                            metaecosystem_type,
+                        data = filtered_dataset)
+  model_2 = lm(regional_mean_bioarea ~ 
+                            disturbance,
+                        data = filtered_dataset)
+  R2[[t]] = summary(model_1)$adj.r.squared - summary(model_2)$adj.r.squared
+  R2[[t]] = round(R2[[t]], digits = 3)
+  
+}</code></pre>
+<p>The effect size and significance of our results can be found in the
+following table.</p>
+<table>
+<caption>D = disturbance, M = meta-ecosystem type, R2 (m) = marginal r
+squared, R2 (c) = conditional r squared,</caption>
+<colgroup>
+<col width="6%" />
+<col width="6%" />
+<col width="6%" />
+<col width="6%" />
+<col width="6%" />
+<col width="6%" />
+<col width="6%" />
+<col width="6%" />
+<col width="6%" />
+<col width="6%" />
+<col width="6%" />
+<col width="6%" />
+<col width="7%" />
+<col width="6%" />
+<col width="5%" />
+<col width="6%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left"><strong>Model</strong></th>
+<th align="center"><strong>R2 (m)</strong></th>
+<th align="center"><strong>R2 (m) M</strong></th>
+<th align="center"><strong>R2 (c)</strong></th>
+<th align="center"><strong>R2 (c) M</strong></th>
+<th><strong>t2-t3</strong></th>
+<th align="center"><strong>t2-t4</strong></th>
+<th align="center"><strong>t2-t5</strong></th>
+<th align="center"><strong>t2-t6</strong></th>
+<th align="center">t2-t7</th>
+<th>t2</th>
+<th>t3</th>
+<th>t4</th>
+<th>t5</th>
+<th>t6</th>
+<th>t7</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">D + M + (1|day)</td>
+<td align="center">0.138</td>
+<td align="center">0.077</td>
+<td align="center">0.798</td>
+<td align="center">0.081</td>
+<td>0.344</td>
+<td align="center">0.2</td>
+<td align="center">0.142</td>
+<td align="center">0.098</td>
+<td align="center">0.075</td>
+<td>0.206</td>
+<td>0.52</td>
+<td>0.161</td>
+<td>0.167</td>
+<td>0.158</td>
+<td>0.176</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr class="header">
+<th align="center">Time point</th>
+<th align="center">R squared</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">t2</td>
+<td align="center"></td>
+</tr>
+<tr class="even">
+<td align="center">t3</td>
+<td align="center">0.52</td>
+</tr>
+<tr class="odd">
+<td align="center">t4</td>
+<td align="center">0.161</td>
+</tr>
+<tr class="even">
+<td align="center">t5</td>
+<td align="center">0.167</td>
+</tr>
+<tr class="odd">
+<td align="center">t6</td>
+<td align="center">0.158</td>
+</tr>
+<tr class="even">
+<td align="center">t7</td>
+<td align="center">0.176</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="model-with-system-number-as-random-effect" class="section level5">
+<h5>Model <u>with</u> system number as random effect</h5>
+<p>Let’s now look at the effect size of meta-ecosystem type. It will be
+the effect size of such model minus the effect size of the same model
+but without meta-ecosystem type.</p>
+<pre class="r"><code>#Effect size of the whole model 
+model.null = lm(regional_mean_bioarea ~ 1 , 
+                  data = ds_regional_shrunk_type_n_day)
+
+r2_best = r.squaredGLMM(best_model_with_system_nr)
+r2_best = round(r2_best, digits = 3)
+
+anova = anova(best_model_with_system_nr, model.null)
 p_best = anova$`Pr(&gt;Chisq)`[2]
 p_best = round(p_best, digits = 5)
 
@@ -878,7 +1099,7 @@ metaecosystem_type_null = lmer(regional_mean_bioarea ~
 r2_no_metaecosystem_type = r.squaredGLMM(metaecosystem_type_null)
 r2_no_metaecosystem_type = round(r2_no_metaecosystem_type, digits = 3)
 
-anova = anova(best_model, metaecosystem_type_null)
+anova = anova(best_model_with_system_nr, metaecosystem_type_null)
 p_no_metaecosystem_type = anova$`Pr(&gt;Chisq)`[2]
 p_no_metaecosystem_type = round(p_no_metaecosystem_type, digits = 5)
 
@@ -898,7 +1119,7 @@ disturbance_null = lmer(regional_mean_bioarea ~
 r2_no_disturbance = r.squaredGLMM(disturbance_null)
 r2_no_disturbance = round(r2_no_disturbance, digits = 3)
 
-anova = anova(best_model, disturbance_null)
+anova = anova(best_model_with_system_nr, disturbance_null)
 p_no_disturbance = anova$`Pr(&gt;Chisq)`[2]
 p_no_disturbance = round(p_no_disturbance, digits = 5)
 
@@ -929,33 +1150,33 @@ following table.</p>
 <tbody>
 <tr class="odd">
 <td align="left">Best model</td>
-<td align="center">0.138</td>
+<td align="center">0.123</td>
 <td align="center">/</td>
-<td align="center">0.798</td>
+<td align="center">0.872</td>
 <td align="center">/</td>
 <td align="center">&lt; 0.00001</td>
 </tr>
 <tr class="even">
 <td align="left">Best model without meta-ecosystem type</td>
 <td align="center">0.061</td>
-<td align="center">0.077</td>
+<td align="center">0.062</td>
 <td align="center">0.717</td>
-<td align="center">0.081</td>
+<td align="center">0.155</td>
 <td align="center">&lt; 0.00001</td>
 </tr>
 <tr class="odd">
 <td align="left">Best model without disturbance</td>
 <td align="center">0.077</td>
-<td align="center">0.061</td>
+<td align="center">0.046</td>
 <td align="center">0.735</td>
-<td align="center">0.063</td>
+<td align="center">0.137</td>
 <td align="center">&lt; 0.00001</td>
 </tr>
 </tbody>
 </table>
 <p>This means that meta-ecosystem type should explain more than
 disturbance regional biomass dynamics. However, the effect size isn’t
-that high (0.077). Let’s Let’s now try to see how meta-ecosystem effect
+that high (0.062). Let’s Let’s now try to see how meta-ecosystem effect
 changes across different time periods.</p>
 <pre class="r"><code>R2 = NULL
 
@@ -985,6 +1206,7 @@ for (last_point in 3:7) {
   
 }</code></pre>
 <table>
+<caption>This is a caption.</caption>
 <thead>
 <tr class="header">
 <th align="center">Time points</th>
@@ -1068,11 +1290,17 @@ for (t in 2:7) {
 </tbody>
 </table>
 </div>
+<div id="results" class="section level5">
+<h5>Results</h5>
+<p>It seems like the inclusion of the random effect increased the power
+of the overall model but decreased the effect size of meta-ecosystem
+type.</p>
+</div>
 </div>
 <div id="time-as-explanatory-variable" class="section level4">
 <h4>Time as explanatory variable</h4>
-<div id="fitting-function-to-biomass-dynamics-across-time-t0---t7" class="section level5">
-<h5>Fitting function to biomass dynamics across time (t0 - t7)</h5>
+<div id="fitting-function-to-biomass-across-time-t0---t7" class="section level5">
+<h5>Fitting function to biomass across time (t0 - t7)</h5>
 <p>Here we want to fit how biomass changes across time to a function.
 The biomass of our meta-ecosystems looks like this.</p>
 <pre class="r"><code>ds_regional_shrunk_type = ds_regional %&gt;%
@@ -1166,9 +1394,8 @@ model_slopes_uncorrelated = lmer(regional_mean_bioarea ~
 anova(model_slopes_uncorrelated, model_slopes_correlated)</code></pre>
 <p>It doesn’t work. Wired. Well, let’s just keep the slopes as
 uncorrelated (<code>model_slopes_uncorrelated</code>).</p>
-<p><em>Does meta-ecosystem type have a different effect on regional
-biomass at different time (does predicted_from_time * metaecosystem_type
-have an effect) ?</em></p>
+<p><em>Should we get rid of the interaction between time and
+meta-ecosystem type?</em></p>
 <pre class="r"><code>model_1 = lmer(regional_mean_bioarea ~ 
                             predicted_from_time + 
                             metaecosystem_type  + 
@@ -1178,15 +1405,12 @@ have an effect) ?</em></p>
                             metaecosystem_type * disturbance +
                             predicted_from_time * metaecosystem_type * disturbance +
                             (predicted_from_time || system_nr),
-                        data = ds_regional_predicted_shrunk_type_n_day,
-                        REML = FALSE)</code></pre>
+               data = ds_regional_predicted_shrunk_type_n_day,
+               REML = FALSE,
+               control = lmerControl (optimizer = &quot;Nelder_Mead&quot;)
+               )</code></pre>
 <pre><code>## Warning: Some predictor variables are on very different scales: consider
 ## rescaling</code></pre>
-<pre><code>## Warning in checkConv(attr(opt, &quot;derivs&quot;), opt$par, ctrl = control$checkConv, :
-## Model failed to converge with max|grad| = 9.25435 (tol = 0.002, component 1)</code></pre>
-<pre><code>## Warning in checkConv(attr(opt, &quot;derivs&quot;), opt$par, ctrl = control$checkConv, : Model is nearly unidentifiable: very large eigenvalue
-##  - Rescale variables?;Model is nearly unidentifiable: large eigenvalue ratio
-##  - Rescale variables?</code></pre>
 <pre class="r"><code>model_2 = lmer(regional_mean_bioarea ~ 
                             predicted_from_time + 
                             metaecosystem_type  + 
@@ -1195,27 +1419,23 @@ have an effect) ?</em></p>
                             metaecosystem_type * disturbance +
                             predicted_from_time * metaecosystem_type * disturbance +
                             (predicted_from_time || system_nr),
-                        data = ds_regional_predicted_shrunk_type_n_day,
-                        REML = FALSE)</code></pre>
+               data = ds_regional_predicted_shrunk_type_n_day,
+               REML = FALSE,
+               control = lmerControl (optimizer = &quot;Nelder_Mead&quot;)
+               )</code></pre>
 <pre><code>## Warning: Some predictor variables are on very different scales: consider
 ## rescaling</code></pre>
-<pre><code>## Warning in checkConv(attr(opt, &quot;derivs&quot;), opt$par, ctrl = control$checkConv, :
-## Model failed to converge with max|grad| = 9.25435 (tol = 0.002, component 1)</code></pre>
-<pre><code>## Warning in checkConv(attr(opt, &quot;derivs&quot;), opt$par, ctrl = control$checkConv, : Model is nearly unidentifiable: very large eigenvalue
-##  - Rescale variables?;Model is nearly unidentifiable: large eigenvalue ratio
-##  - Rescale variables?</code></pre>
 <pre class="r"><code>anova(model_1, model_2)</code></pre>
 <pre><code>## Data: ds_regional_predicted_shrunk_type_n_day
 ## Models:
 ## model_1: regional_mean_bioarea ~ predicted_from_time + metaecosystem_type + disturbance + predicted_from_time * metaecosystem_type + predicted_from_time * disturbance + metaecosystem_type * disturbance + predicted_from_time * metaecosystem_type * disturbance + ((1 | system_nr) + (0 + predicted_from_time | system_nr))
 ## model_2: regional_mean_bioarea ~ predicted_from_time + metaecosystem_type + disturbance + predicted_from_time * disturbance + metaecosystem_type * disturbance + predicted_from_time * metaecosystem_type * disturbance + ((1 | system_nr) + (0 + predicted_from_time | system_nr))
-##         npar    AIC    BIC  logLik deviance Chisq Df Pr(&gt;Chisq)
-## model_1   11 1840.7 1871.4 -909.35   1818.7                    
-## model_2   11 1840.7 1871.4 -909.35   1818.7     0  0</code></pre>
-<p>They are the same. Keep model_2.</p>
-<p><em>Does disturbance have a different effect on regional biomass at
-different time points (does the interaction between time and disturbance
-have an effect)?</em></p>
+##         npar    AIC    BIC logLik deviance Chisq Df Pr(&gt;Chisq)
+## model_1   11 1841.8 1872.5 -909.9   1819.8                    
+## model_2   11 1841.8 1872.5 -909.9   1819.8     0  0</code></pre>
+<p>Yes.</p>
+<p><em>Should we get rid of the interaction between time and
+disturbance?</em></p>
 <pre class="r"><code>model_3 = lmer(regional_mean_bioarea ~ 
                             predicted_from_time + 
                             metaecosystem_type  + 
@@ -1223,102 +1443,87 @@ have an effect)?</em></p>
                             metaecosystem_type * disturbance +
                             predicted_from_time * metaecosystem_type * disturbance +
                             (predicted_from_time || system_nr),
-                        data = ds_regional_predicted_shrunk_type_n_day,
-                        REML = FALSE)</code></pre>
+               data = ds_regional_predicted_shrunk_type_n_day,
+               REML = FALSE,
+               control = lmerControl (optimizer = &quot;Nelder_Mead&quot;))</code></pre>
 <pre><code>## Warning: Some predictor variables are on very different scales: consider
 ## rescaling</code></pre>
-<pre><code>## Warning in checkConv(attr(opt, &quot;derivs&quot;), opt$par, ctrl = control$checkConv, :
-## Model failed to converge with max|grad| = 9.25435 (tol = 0.002, component 1)</code></pre>
-<pre><code>## Warning in checkConv(attr(opt, &quot;derivs&quot;), opt$par, ctrl = control$checkConv, : Model is nearly unidentifiable: very large eigenvalue
-##  - Rescale variables?;Model is nearly unidentifiable: large eigenvalue ratio
-##  - Rescale variables?</code></pre>
 <pre class="r"><code>anova(model_2, model_3)</code></pre>
 <pre><code>## Data: ds_regional_predicted_shrunk_type_n_day
 ## Models:
 ## model_2: regional_mean_bioarea ~ predicted_from_time + metaecosystem_type + disturbance + predicted_from_time * disturbance + metaecosystem_type * disturbance + predicted_from_time * metaecosystem_type * disturbance + ((1 | system_nr) + (0 + predicted_from_time | system_nr))
 ## model_3: regional_mean_bioarea ~ predicted_from_time + metaecosystem_type + disturbance + metaecosystem_type * disturbance + predicted_from_time * metaecosystem_type * disturbance + ((1 | system_nr) + (0 + predicted_from_time | system_nr))
-##         npar    AIC    BIC  logLik deviance Chisq Df Pr(&gt;Chisq)
-## model_2   11 1840.7 1871.4 -909.35   1818.7                    
-## model_3   11 1840.7 1871.4 -909.35   1818.7     0  0</code></pre>
-<p>They are the same. Keep model_3.</p>
-<p><em>Does meta-ecosystem type have a different effect on regional
-biomass at different disturbance regimes (does the interaction between
-meta-ecosystem type and disturbance have an effect)?</em></p>
+##         npar    AIC    BIC logLik deviance Chisq Df Pr(&gt;Chisq)
+## model_2   11 1841.8 1872.5 -909.9   1819.8                    
+## model_3   11 1841.8 1872.5 -909.9   1819.8     0  0</code></pre>
+<p>Yes.</p>
+<p><em>Should we get rid of the interaction between meta-ecosystem type
+and disturbance?</em></p>
 <pre class="r"><code>model_4 = lmer(regional_mean_bioarea ~ 
                             predicted_from_time + 
                             metaecosystem_type  + 
                             disturbance + 
                             predicted_from_time * metaecosystem_type * disturbance +
                             (predicted_from_time || system_nr),
-                        data = ds_regional_predicted_shrunk_type_n_day,
-                        REML = FALSE)</code></pre>
+               data = ds_regional_predicted_shrunk_type_n_day,
+               REML = FALSE,
+               control = lmerControl (optimizer = &quot;Nelder_Mead&quot;))</code></pre>
 <pre><code>## Warning: Some predictor variables are on very different scales: consider
 ## rescaling</code></pre>
-<pre><code>## Warning in checkConv(attr(opt, &quot;derivs&quot;), opt$par, ctrl = control$checkConv, :
-## Model failed to converge with max|grad| = 9.25435 (tol = 0.002, component 1)</code></pre>
-<pre><code>## Warning in checkConv(attr(opt, &quot;derivs&quot;), opt$par, ctrl = control$checkConv, : Model is nearly unidentifiable: very large eigenvalue
-##  - Rescale variables?;Model is nearly unidentifiable: large eigenvalue ratio
-##  - Rescale variables?</code></pre>
 <pre class="r"><code>anova(model_3, model_4)</code></pre>
 <pre><code>## Data: ds_regional_predicted_shrunk_type_n_day
 ## Models:
 ## model_3: regional_mean_bioarea ~ predicted_from_time + metaecosystem_type + disturbance + metaecosystem_type * disturbance + predicted_from_time * metaecosystem_type * disturbance + ((1 | system_nr) + (0 + predicted_from_time | system_nr))
 ## model_4: regional_mean_bioarea ~ predicted_from_time + metaecosystem_type + disturbance + predicted_from_time * metaecosystem_type * disturbance + ((1 | system_nr) + (0 + predicted_from_time | system_nr))
-##         npar    AIC    BIC  logLik deviance Chisq Df Pr(&gt;Chisq)
-## model_3   11 1840.7 1871.4 -909.35   1818.7                    
-## model_4   11 1840.7 1871.4 -909.35   1818.7     0  0</code></pre>
-<p>They are the same. Keep model_4.</p>
-<p><em>Does the interaction between different meta-ecosystem types and
-disturbance have a different effect at different time points (does the
-interaction between meta-ecosystem type, disturbance, and time have an
-effect)?</em></p>
+##         npar    AIC    BIC logLik deviance Chisq Df Pr(&gt;Chisq)
+## model_3   11 1841.8 1872.5 -909.9   1819.8                    
+## model_4   11 1841.8 1872.5 -909.9   1819.8     0  0</code></pre>
+<p>Yes.</p>
+<p><em>Should we get rid of the interaction between meta-ecosystem type,
+disturbance, and time?</em></p>
 <pre class="r"><code>model_5 = lmer(regional_mean_bioarea ~ 
                             predicted_from_time + 
                             metaecosystem_type  + 
                             disturbance + 
                             (predicted_from_time || system_nr),
-                        data = ds_regional_predicted_shrunk_type_n_day,
-                        REML = FALSE)</code></pre>
-<pre><code>## Warning in checkConv(attr(opt, &quot;derivs&quot;), opt$par, ctrl = control$checkConv, :
-## Model failed to converge with max|grad| = 9.50799 (tol = 0.002, component 1)</code></pre>
-<pre><code>## Warning in checkConv(attr(opt, &quot;derivs&quot;), opt$par, ctrl = control$checkConv, : Model is nearly unidentifiable: very large eigenvalue
-##  - Rescale variables?;Model is nearly unidentifiable: large eigenvalue ratio
-##  - Rescale variables?</code></pre>
-<pre class="r"><code>anova(model_4, model_5)</code></pre>
+               data = ds_regional_predicted_shrunk_type_n_day,
+               REML = FALSE,
+               control = lmerControl (optimizer = &quot;Nelder_Mead&quot;))
+
+anova(model_4, model_5)</code></pre>
 <pre><code>## Data: ds_regional_predicted_shrunk_type_n_day
 ## Models:
 ## model_5: regional_mean_bioarea ~ predicted_from_time + metaecosystem_type + disturbance + ((1 | system_nr) + (0 + predicted_from_time | system_nr))
 ## model_4: regional_mean_bioarea ~ predicted_from_time + metaecosystem_type + disturbance + predicted_from_time * metaecosystem_type * disturbance + ((1 | system_nr) + (0 + predicted_from_time | system_nr))
-##         npar    AIC    BIC  logLik deviance  Chisq Df Pr(&gt;Chisq)  
-## model_5    7 1842.3 1861.8 -914.16   1828.3                       
-## model_4   11 1840.7 1871.4 -909.35   1818.7 9.6245  4    0.04725 *
+##         npar    AIC    BIC  logLik deviance Chisq Df Pr(&gt;Chisq)  
+## model_5    7 1844.3 1863.8 -915.15   1830.3                      
+## model_4   11 1841.8 1872.5 -909.90   1819.8 10.49  4    0.03294 *
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
-<p>They are the same. Keep model_5.</p>
-<p><em>Does the difference in biomass between medium-medium and
-small-large meta-ecosystems differ across time (does system number have
-a random effect on the slope of predicted from time)?</em></p>
+<p>Yes and no. It depends whether we consider more important AIC or BIC.
+I would now follow BIC and keep the most parsimonious model.</p>
+<p><em>Should we get rid of the random effect of system number on the
+slope of time?</em></p>
 <pre class="r"><code>#Take off disturbance slopes
 model_8 = lmer(regional_mean_bioarea ~ 
                             predicted_from_time + 
                             metaecosystem_type  + 
                             disturbance + 
                             (1 | system_nr),
-                        data = ds_regional_predicted_shrunk_type_n_day,
-                        REML = FALSE)
+               data = ds_regional_predicted_shrunk_type_n_day,
+               REML = FALSE,
+               control = lmerControl (optimizer = &quot;Nelder_Mead&quot;))
 
 anova(model_5, model_8)</code></pre>
 <pre><code>## Data: ds_regional_predicted_shrunk_type_n_day
 ## Models:
 ## model_8: regional_mean_bioarea ~ predicted_from_time + metaecosystem_type + disturbance + (1 | system_nr)
 ## model_5: regional_mean_bioarea ~ predicted_from_time + metaecosystem_type + disturbance + ((1 | system_nr) + (0 + predicted_from_time | system_nr))
-##         npar    AIC    BIC  logLik deviance  Chisq Df Pr(&gt;Chisq)
-## model_8    6 1842.3 1859.0 -915.15   1830.3                     
-## model_5    7 1842.3 1861.8 -914.16   1828.3 1.9771  1     0.1597</code></pre>
-<p>They are the same. Keep model_8.</p>
-<p><em>Do different medium-medium meta-ecosystems have different
-starting value (t2) at low disturbance (does system number have a random
-effect on the intercept)?</em></p>
+##         npar    AIC    BIC  logLik deviance Chisq Df Pr(&gt;Chisq)
+## model_8    6 1842.3 1859.0 -915.15   1830.3                    
+## model_5    7 1844.3 1863.8 -915.15   1830.3     0  1          1</code></pre>
+<p>Yes.</p>
+<p><em>Should we get rid of the random effect of system number?</em></p>
 <pre class="r"><code>#Take off random effects
 model_9 = lm(regional_mean_bioarea ~ 
                             predicted_from_time + 
@@ -1334,107 +1539,42 @@ anova(model_8, model_9)</code></pre>
 ##         npar    AIC    BIC  logLik deviance  Chisq Df Pr(&gt;Chisq)
 ## model_9    5 1841.7 1855.6 -915.84   1831.7                     
 ## model_8    6 1842.3 1859.0 -915.15   1830.3 1.3783  1     0.2404</code></pre>
-<p>They are the same. Keep model_9.</p>
+<p>Yes. Let’s then keep this last model as our best model and then
+calculate the effect size of meta-ecosystem type. But actually other two
+models that are feasible are the one with the interaction between time,
+disturbance, and meta-ecosystem type (model_4) and the one with system
+number as a random effect. I think we should test those too.</p>
 </div>
-<div id="effect-size-1" class="section level5">
-<h5>Effect size</h5>
-<pre class="r"><code>best_model = model_9
-
-summary(best_model)</code></pre>
-<pre><code>## 
-## Call:
-## lm(formula = regional_mean_bioarea ~ predicted_from_time + metaecosystem_type + 
-##     disturbance, data = ds_regional_predicted_shrunk_type_n_day)
-## 
-## Residuals:
-##      Min       1Q   Median       3Q      Max 
-## -1665.42  -232.79    29.08   263.77  1698.22 
-## 
-## Coefficients:
-##                         Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)             20.73777  124.86786   0.166    0.868    
-## predicted_from_time      1.01042    0.05157  19.594  &lt; 2e-16 ***
-## metaecosystem_typeS_L -618.08667   92.70159  -6.667 9.25e-10 ***
-## disturbancelow         547.74890   92.70159   5.909 3.53e-08 ***
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-## 
-## Residual standard error: 507.7 on 116 degrees of freedom
-## Multiple R-squared:  0.7998, Adjusted R-squared:  0.7946 
-## F-statistic: 154.4 on 3 and 116 DF,  p-value: &lt; 2.2e-16</code></pre>
-<pre class="r"><code>#R squared: 0.795
-
-#Take off metaecosystem type
-best_model_without_metaeco_type = lm(regional_mean_bioarea ~ 
-                            predicted_from_time + 
-                            disturbance,
-                        data = ds_regional_predicted_shrunk_type_n_day)
-
-anova(best_model, best_model_without_metaeco_type)</code></pre>
-<pre><code>## Analysis of Variance Table
-## 
-## Model 1: regional_mean_bioarea ~ predicted_from_time + metaecosystem_type + 
-##     disturbance
-## Model 2: regional_mean_bioarea ~ predicted_from_time + disturbance
-##   Res.Df      RSS Df Sum of Sq      F    Pr(&gt;F)    
-## 1    116 29905677                                  
-## 2    117 41366610 -1 -11460934 44.455 9.255e-10 ***
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
-<pre class="r"><code>#they are different.
-summary(best_model_without_metaeco_type)</code></pre>
-<pre><code>## 
-## Call:
-## lm(formula = regional_mean_bioarea ~ predicted_from_time + disturbance, 
-##     data = ds_regional_predicted_shrunk_type_n_day)
-## 
-## Residuals:
-##      Min       1Q   Median       3Q      Max 
-## -1413.78  -279.67   -18.03   254.71  2007.26 
-## 
-## Coefficients:
-##                       Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)         -288.30556  135.78186  -2.123   0.0358 *  
-## predicted_from_time    1.01042    0.06039  16.731  &lt; 2e-16 ***
-## disturbancelow       547.74890  108.56039   5.046 1.67e-06 ***
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-## 
-## Residual standard error: 594.6 on 117 degrees of freedom
-## Multiple R-squared:  0.723,  Adjusted R-squared:  0.7183 
-## F-statistic: 152.7 on 2 and 117 DF,  p-value: &lt; 2.2e-16</code></pre>
-<pre class="r"><code>#R squared: 0.718
-
-R2_metaecosystem = summary(best_model)$adj.r.squared - summary(best_model_without_metaeco_type)$adj.r.squared
-R2_metaecosystem = round(R2_metaecosystem, digits = 3)</code></pre>
-<p>So, if we fit time dynamics to our data, we get an effect size of
-meta-ecosystem type of 0.076. That is still really low.</p>
-</div>
-<div id="t2-3-t2-t4-t2-t5-t2-t6-t2-t7" class="section level5">
-<h5>t2-3, t2-t4, t2-t5, t2-t6, t2-t7</h5>
-<p>Let’s now try to see how meta-ecosystem effect changes across
-different time periods.</p>
+<div id="good-model-1" class="section level5">
+<h5>Good model 1</h5>
+<p><code>regional_mean_bioarea ~ predicted_from_time + metaecosystem_type  + disturbance</code></p>
 <pre class="r"><code>R2 = NULL
 
 for (last_point in 3:7) {
   
-  filtered_dataset = ds_regional_predicted_shrunk_type %&gt;%
-  filter(time_point &lt;= last_point)
-  
   full_model = lm(regional_mean_bioarea ~ 
-                            disturbance +
-                            metaecosystem_type,
-                        data = filtered_dataset)
+                    predicted_from_time +
+                    metaecosystem_type +
+                    disturbance,
+                  data = ds_regional_predicted_shrunk_type %&gt;%
+                         filter(time_point &lt;= last_point)
+                  )
   
   no_metaeco_type_model = lm(regional_mean_bioarea ~ 
-                            disturbance,
-                        data = filtered_dataset)
+                               predicted_from_time +
+                               disturbance,
+                             data = ds_regional_predicted_shrunk_type %&gt;%
+                               filter(time_point &lt;= last_point)
+                             )
   
   anova(full_model, no_metaeco_type_model)
   
-  summary(full_model)
-  summary(no_metaeco_type_model)
-  R2[[last_point]] = summary(full_model)$adj.r.squared - summary(no_metaeco_type_model)$adj.r.squared
+  #summary(full_model)
+  #summary(no_metaeco_type_model)
+  
+  R2_full = summary(full_model)$adj.r.squared
+  R2_no_metaeco_type = summary(no_metaeco_type_model)$adj.r.squared
+  R2[[last_point]] = R2_full - R2_no_metaeco_type
   R2[[last_point]] = round(R2[[last_point]], digits = 3)
   
 }</code></pre>
@@ -1448,23 +1588,260 @@ for (last_point in 3:7) {
 <tbody>
 <tr class="odd">
 <td align="center">t2 - t3</td>
-<td align="center">0.085</td>
+<td align="center">0.093</td>
 </tr>
 <tr class="even">
 <td align="center">t2 -t4</td>
-<td align="center">0.085</td>
+<td align="center">0.091</td>
 </tr>
 <tr class="odd">
 <td align="center">t2 - t5 (my choice)</td>
-<td align="center">0.076</td>
+<td align="center">0.081</td>
 </tr>
 <tr class="even">
 <td align="center">t2 - t6</td>
-<td align="center">0.057</td>
+<td align="center">0.063</td>
 </tr>
 <tr class="odd">
 <td align="center">t2 - t7</td>
-<td align="center">0.046</td>
+<td align="center">0.051</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="good-model-2" class="section level5">
+<h5>Good model 2</h5>
+<p><code>regional_mean_bioarea ~ predicted_from_time + metaecosystem_type  + disturbance + predicted_from_time * metaecosystem_type * disturbance</code></p>
+<pre class="r"><code>R2 = NULL
+
+for (last_point in 3:7) {
+  
+  full_model = lm(regional_mean_bioarea ~ 
+                    predicted_from_time +
+                    metaecosystem_type +
+                    disturbance +
+                    predicted_from_time * metaecosystem_type * disturbance,
+                  data = ds_regional_predicted_shrunk_type %&gt;%
+                         filter(time_point &lt;= last_point)
+                  )
+  
+  no_metaeco_type_model = lm(regional_mean_bioarea ~ 
+                               predicted_from_time +
+                               disturbance +
+                               predicted_from_time * disturbance,
+                             data = ds_regional_predicted_shrunk_type %&gt;%
+                               filter(time_point &lt;= last_point)
+                             )
+  
+  anova(full_model, no_metaeco_type_model)
+  
+  #summary(full_model)
+  #summary(no_metaeco_type_model)
+  
+  R2_full = summary(full_model)$adj.r.squared
+  R2_no_metaeco_type = summary(no_metaeco_type_model)$adj.r.squared
+  R2[[last_point]] = R2_full - R2_no_metaeco_type
+  R2[[last_point]] = round(R2[[last_point]], digits = 3)
+  
+}</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="center">Time points</th>
+<th align="center">R squared</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">t2 - t3</td>
+<td align="center">0.092</td>
+</tr>
+<tr class="even">
+<td align="center">t2 -t4</td>
+<td align="center">0.089</td>
+</tr>
+<tr class="odd">
+<td align="center">t2 - t5 (my choice)</td>
+<td align="center">0.079</td>
+</tr>
+<tr class="even">
+<td align="center">t2 - t6</td>
+<td align="center">0.064</td>
+</tr>
+<tr class="odd">
+<td align="center">t2 - t7</td>
+<td align="center">0.054</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="good-model-3" class="section level5">
+<h5>Good model 3</h5>
+<p><code>regional_mean_bioarea ~ predicted_from_time + metaecosystem_type  + disturbance + predicted_from_time * metaecosystem_type * disturbance + (predicted_from_time || system_nr)</code></p>
+<pre class="r"><code>R2 = NULL
+
+for (last_point in 3:7) {
+
+  full_model = lmer(regional_mean_bioarea ~ 
+                    predicted_from_time +
+                    metaecosystem_type +
+                    disturbance +
+                    predicted_from_time * metaecosystem_type * disturbance + 
+                    (predicted_from_time || system_nr),
+                  data = ds_regional_predicted_shrunk_type %&gt;%
+                         filter(time_point &lt;= last_point), 
+                  REML = FALSE,
+                  control = lmerControl (optimizer = &quot;Nelder_Mead&quot;)
+                  )
+  
+  no_metaeco_type_model = lmer(regional_mean_bioarea ~ 
+                               predicted_from_time +
+                               disturbance +
+                               predicted_from_time * disturbance + 
+                               (predicted_from_time || system_nr),
+                             data = ds_regional_predicted_shrunk_type %&gt;%
+                               filter(time_point &lt;= last_point),
+                             REML = FALSE,
+                             control = lmerControl (optimizer = &quot;Nelder_Mead&quot;)
+                             )
+  
+  anova(full_model, no_metaeco_type_model)
+  #summary(full_model)
+  #summary(no_metaeco_type_model)
+  
+  R2_full = r.squaredGLMM(full_model)[1,1]
+  R2_null = r.squaredGLMM(no_metaeco_type_model)[1,1]
+  
+  R2[[last_point]] =  R2_full - R2_null
+  R2[[last_point]] = round(R2[[last_point]], digits = 3)
+  
+}</code></pre>
+<pre><code>## Warning: Some predictor variables are on very different scales: consider
+## rescaling
+
+## Warning: Some predictor variables are on very different scales: consider
+## rescaling
+
+## Warning: Some predictor variables are on very different scales: consider
+## rescaling
+
+## Warning: Some predictor variables are on very different scales: consider
+## rescaling
+
+## Warning: Some predictor variables are on very different scales: consider
+## rescaling
+
+## Warning: Some predictor variables are on very different scales: consider
+## rescaling
+
+## Warning: Some predictor variables are on very different scales: consider
+## rescaling
+
+## Warning: Some predictor variables are on very different scales: consider
+## rescaling
+
+## Warning: Some predictor variables are on very different scales: consider
+## rescaling
+
+## Warning: Some predictor variables are on very different scales: consider
+## rescaling</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="center">Time points</th>
+<th align="center">R squared</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">t2 - t3</td>
+<td align="center">0.109</td>
+</tr>
+<tr class="even">
+<td align="center">t2 -t4</td>
+<td align="center">0.101</td>
+</tr>
+<tr class="odd">
+<td align="center">t2 - t5 (my choice)</td>
+<td align="center">0.088</td>
+</tr>
+<tr class="even">
+<td align="center">t2 - t6</td>
+<td align="center">0.07</td>
+</tr>
+<tr class="odd">
+<td align="center">t2 - t7</td>
+<td align="center">0.058</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="good-model-4" class="section level5">
+<h5>Good model 4</h5>
+<p><code>regional_mean_bioarea ~ predicted_from_time + metaecosystem_type  + disturbance + (predicted_from_time || system_nr)</code></p>
+<pre class="r"><code>R2 = NULL
+
+for (last_point in 3:7) {
+  
+  full_model = lmer(regional_mean_bioarea ~ 
+                    predicted_from_time +
+                    metaecosystem_type +
+                    disturbance +
+                    (predicted_from_time || system_nr),
+                  data = ds_regional_predicted_shrunk_type %&gt;%
+                         filter(time_point &lt;= last_point),
+                  REML = FALSE,
+                  control = lmerControl (optimizer = &quot;Nelder_Mead&quot;)
+                  )
+  
+  no_metaeco_type_model = lmer(regional_mean_bioarea ~ 
+                               predicted_from_time +
+                               disturbance +
+                               (predicted_from_time || system_nr),
+                             data = ds_regional_predicted_shrunk_type %&gt;%
+                               filter(time_point &lt;= last_point),
+                             REML = FALSE,
+                             control = lmerControl (optimizer = &quot;Nelder_Mead&quot;)
+                             )
+
+  anova(full_model, no_metaeco_type_model)
+  #summary(full_model)
+  #summary(no_metaeco_type_model)
+  
+  R2_full = r.squaredGLMM(full_model)[1,1]
+  R2_null = r.squaredGLMM(no_metaeco_type_model)[1,1]
+  
+  R2[[last_point]] =  R2_full - R2_null
+  R2[[last_point]] = round(R2[[last_point]], digits = 3)
+  
+}</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="center">Time points</th>
+<th align="center">R squared</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">t2 - t3</td>
+<td align="center">0.095</td>
+</tr>
+<tr class="even">
+<td align="center">t2 -t4</td>
+<td align="center">0.093</td>
+</tr>
+<tr class="odd">
+<td align="center">t2 - t5 (my choice)</td>
+<td align="center">0.082</td>
+</tr>
+<tr class="even">
+<td align="center">t2 - t6</td>
+<td align="center">0.063</td>
+</tr>
+<tr class="odd">
+<td align="center">t2 - t7</td>
+<td align="center">0.051</td>
 </tr>
 </tbody>
 </table>
@@ -1474,13 +1851,13 @@ for (last_point in 3:7) {
 </div>
 <div id="local-biomass" class="section level2 tabset">
 <h2 class="tabset">Local biomass</h2>
+<div id="aim-2" class="section level3">
+<h3>Aim</h3>
 <p>Here we are going to model how local biomass changes across
 treatments. At the end of the day, however, we are interested in knowing
 the difference between the biomass of: - an isolated small patch (S) - a
 small patch connected to another small patch S (S_S) - a small patch
-connected to a larger patch S (S_L)</p>
-<div id="plot" class="section level3">
-<h3>Plot</h3>
+connected to a larger patch S (S_L).</p>
 <pre class="r"><code>ds %&gt;%
     filter (  eco_metaeco_type == &quot;S&quot; | 
               eco_metaeco_type == &quot;S (S_S)&quot; |
@@ -1520,7 +1897,7 @@ meta-ecosystems).</em></p>
           eco_metaeco_type == &quot;S (S_L)&quot;) %&gt;%
   filter(time_point &gt;= 2) #Let&#39;s take off the first two time points which are before the first disturbance event.</code></pre>
 </div>
-<div id="plot-1" class="section level4">
+<div id="plot" class="section level4">
 <h4>Plot</h4>
 <pre class="r"><code>ds_local_S_t2_t7 %&gt;%
   ggplot(aes(x = day,
@@ -1679,7 +2056,7 @@ summary(best_model)</code></pre>
 ## mtcsyst_S_S -0.110       
 ## disturbnclw -0.078  0.000</code></pre>
 </div>
-<div id="effect-size-2" class="section level4">
+<div id="effect-size" class="section level4">
 <h4>Effect size</h4>
 <pre class="r"><code>#Effect size of the whole model
 model.null = lm(bioarea_per_volume ~ 
@@ -1843,6 +2220,177 @@ for (last_point in 3:7) {
 </tr>
 </tbody>
 </table>
+<p>Let’s now try to do model selection by selecting some models that
+might be good.</p>
+<pre class="r"><code>full = lmer(bioarea_per_volume ~ 
+                    metaecosystem_type  + 
+                    disturbance + 
+                    metaecosystem_type * disturbance + #1
+                    (metaecosystem_type || day) + #2
+                    (disturbance || day) + #3
+                    (metaecosystem_type * disturbance  || day), #4
+            data = ds_local_S_t2_t7, 
+            REML = FALSE,
+            control = lmerControl(optimizer = &#39;optimx&#39;, optCtrl = list(method = &#39;L-BFGS-B&#39;)))
+
+m1 = lmer(bioarea_per_volume ~ 
+                    metaecosystem_type  + 
+                    disturbance + 
+                    (metaecosystem_type || day) + #2
+                    (disturbance || day) + #3
+                    (metaecosystem_type*disturbance  || day), #4
+          data = ds_local_S_t2_t7, 
+          REML = FALSE,
+          control = lmerControl(optimizer = &#39;optimx&#39;, optCtrl = list(method = &#39;L-BFGS-B&#39;)))
+
+m2 = lmer(bioarea_per_volume ~ 
+                    metaecosystem_type  + 
+                    disturbance + 
+                    metaecosystem_type * disturbance + #1
+                    (disturbance || day) + #3
+                    (metaecosystem_type*disturbance  || day), #4
+          data = ds_local_S_t2_t7, 
+          REML = FALSE,
+          control = lmerControl(optimizer = &#39;optimx&#39;, optCtrl = list(method = &#39;L-BFGS-B&#39;)))
+
+m3 = lmer(bioarea_per_volume ~ 
+                    metaecosystem_type  + 
+                    disturbance + 
+                    metaecosystem_type * disturbance + #1
+                    (metaecosystem_type || day) + #2
+                    (metaecosystem_type*disturbance  || day), #4
+          data = ds_local_S_t2_t7, 
+          REML = FALSE,
+          control = lmerControl(optimizer = &#39;optimx&#39;, optCtrl = list(method = &#39;L-BFGS-B&#39;)))
+
+m4 = lmer(bioarea_per_volume ~ 
+                    metaecosystem_type  + 
+                    disturbance + 
+                    metaecosystem_type * disturbance + #1
+                    (metaecosystem_type || day) + #2
+                    (disturbance || day), #3
+            data = ds_local_S_t2_t7, 
+            REML = FALSE,
+            control = lmerControl(optimizer = &#39;optimx&#39;, optCtrl = list(method = &#39;L-BFGS-B&#39;)))
+
+m5 = lmer(bioarea_per_volume ~ 
+                    metaecosystem_type  + 
+                    disturbance + 
+                    (disturbance || day), #3
+            data = ds_local_S_t2_t7, 
+            REML = FALSE,
+            control = lmerControl (optimizer = &quot;Nelder_Mead&quot;))
+
+m6 = lmer(bioarea_per_volume ~ 
+                    metaecosystem_type  + 
+                    disturbance + 
+                    (metaecosystem_type || day), #2
+            data = ds_local_S_t2_t7, 
+            REML = FALSE,
+            control = lmerControl(optimizer = &#39;optimx&#39;, optCtrl = list(method = &#39;L-BFGS-B&#39;)))
+
+m7 = lmer(bioarea_per_volume ~ 
+                    metaecosystem_type  + 
+                    disturbance + 
+                    (metaecosystem_type || day) + #2
+                    (disturbance || day), #3
+            data = ds_local_S_t2_t7, 
+            REML = FALSE,
+            control = lmerControl(optimizer = &#39;optimx&#39;, optCtrl = list(method = &#39;L-BFGS-B&#39;)))
+
+m8 = lmer(bioarea_per_volume ~ 
+                    metaecosystem_type  + 
+                    disturbance + 
+                    metaecosystem_type * disturbance + #1
+                    (metaecosystem_type*disturbance  || day), #4
+            data = ds_local_S_t2_t7, 
+            REML = FALSE,
+            control = lmerControl(optimizer = &#39;optimx&#39;, optCtrl = list(method = &#39;L-BFGS-B&#39;)))
+
+m9 = lmer(bioarea_per_volume ~ 
+                    metaecosystem_type  + 
+                    disturbance + 
+                    metaecosystem_type * disturbance + #1
+                    (disturbance || day), #3
+            data = ds_local_S_t2_t7, 
+            REML = FALSE,
+            control = lmerControl(optimizer = &#39;optimx&#39;, optCtrl = list(method = &#39;nlminb&#39;)))
+
+m10 = lmer(bioarea_per_volume ~ 
+                    metaecosystem_type  + 
+                    disturbance + 
+                    metaecosystem_type * disturbance + #1
+                    (metaecosystem_type || day), #2
+            data = ds_local_S_t2_t7, 
+            REML = FALSE,
+            control = lmerControl(optimizer = &#39;optimx&#39;, optCtrl = list(method = &#39;L-BFGS-B&#39;)))
+
+m11 = lm(bioarea_per_volume ~ 
+                    metaecosystem_type  + 
+                    disturbance +
+                    metaecosystem_type * disturbance, #1
+            data = ds_local_S_t2_t7
+)
+
+m12 = lmer(bioarea_per_volume ~ 
+                    metaecosystem_type  + 
+                    disturbance + 
+                    (metaecosystem_type || day), #2
+            data = ds_local_S_t2_t7, 
+            REML = FALSE,
+            control = lmerControl(optimizer = &#39;optimx&#39;, optCtrl = list(method = &#39;L-BFGS-B&#39;)))
+
+m13 = lmer(bioarea_per_volume ~ 
+                    metaecosystem_type  + 
+                    disturbance + 
+                    (disturbance || day), #3
+            data = ds_local_S_t2_t7, 
+            REML = FALSE,
+            control = lmerControl (optimizer = &quot;Nelder_Mead&quot;))
+
+m14 = lm(bioarea_per_volume ~ 
+                    metaecosystem_type  + 
+                    disturbance,
+            data = ds_local_S_t2_t7
+)
+
+anova(m1, m2, m3, m4, m5, m6, m7, m8, m9, m10, m11, m12, m13, m14, full)</code></pre>
+<pre><code>## Data: ds_local_S_t2_t7
+## Models:
+## m14: bioarea_per_volume ~ metaecosystem_type + disturbance
+## m11: bioarea_per_volume ~ metaecosystem_type + disturbance + metaecosystem_type * disturbance
+## m5: bioarea_per_volume ~ metaecosystem_type + disturbance + ((1 | day) + (0 + disturbance | day))
+## m6: bioarea_per_volume ~ metaecosystem_type + disturbance + ((1 | day) + (0 + metaecosystem_type | day))
+## m12: bioarea_per_volume ~ metaecosystem_type + disturbance + ((1 | day) + (0 + metaecosystem_type | day))
+## m13: bioarea_per_volume ~ metaecosystem_type + disturbance + ((1 | day) + (0 + disturbance | day))
+## m9: bioarea_per_volume ~ metaecosystem_type + disturbance + metaecosystem_type * disturbance + ((1 | day) + (0 + disturbance | day))
+## m10: bioarea_per_volume ~ metaecosystem_type + disturbance + metaecosystem_type * disturbance + ((1 | day) + (0 + metaecosystem_type | day))
+## m7: bioarea_per_volume ~ metaecosystem_type + disturbance + ((1 | day) + (0 + metaecosystem_type | day)) + ((1 | day) + (0 + disturbance | day))
+## m4: bioarea_per_volume ~ metaecosystem_type + disturbance + metaecosystem_type * disturbance + ((1 | day) + (0 + metaecosystem_type | day)) + ((1 | day) + (0 + disturbance | day))
+## m8: bioarea_per_volume ~ metaecosystem_type + disturbance + metaecosystem_type * disturbance + ((1 | day) + (0 + metaecosystem_type | day) + (0 + disturbance | day) + (0 + metaecosystem_type:disturbance | day))
+## m2: bioarea_per_volume ~ metaecosystem_type + disturbance + metaecosystem_type * disturbance + ((1 | day) + (0 + disturbance | day)) + ((1 | day) + (0 + metaecosystem_type | day) + (0 + disturbance | day) + (0 + metaecosystem_type:disturbance | day))
+## m3: bioarea_per_volume ~ metaecosystem_type + disturbance + metaecosystem_type * disturbance + ((1 | day) + (0 + metaecosystem_type | day)) + ((1 | day) + (0 + metaecosystem_type | day) + (0 + disturbance | day) + (0 + metaecosystem_type:disturbance | day))
+## m1: bioarea_per_volume ~ metaecosystem_type + disturbance + ((1 | day) + (0 + metaecosystem_type | day)) + ((1 | day) + (0 + disturbance | day)) + ((1 | day) + (0 + metaecosystem_type | day) + (0 + disturbance | day) + (0 + metaecosystem_type:disturbance | day))
+## full: bioarea_per_volume ~ metaecosystem_type + disturbance + metaecosystem_type * disturbance + ((1 | day) + (0 + metaecosystem_type | day)) + ((1 | day) + (0 + disturbance | day)) + ((1 | day) + (0 + metaecosystem_type | day) + (0 + disturbance | day) + (0 + metaecosystem_type:disturbance | day))
+##      npar    AIC    BIC  logLik deviance    Chisq Df Pr(&gt;Chisq)    
+## m14     4 3885.0 3898.9 -1938.5   3877.0                           
+## m11     5 3885.7 3903.1 -1937.8   3875.7   1.3041  1   0.253470    
+## m5      8 3530.9 3558.8 -1757.5   3514.9 360.7156  3  &lt; 2.2e-16 ***
+## m6      8 3547.3 3575.1 -1765.6   3531.3   0.0000  0               
+## m12     8 3547.3 3575.1 -1765.6   3531.3   0.0000  0               
+## m13     8 3530.9 3558.8 -1757.5   3514.9  16.3385  0               
+## m9      9 3525.9 3557.2 -1753.9   3507.9   7.0782  1   0.007803 ** 
+## m10     9 3543.0 3574.3 -1762.5   3525.0   0.0000  0               
+## m7     12 3530.4 3572.2 -1753.2   3506.4  18.5114  3   0.000345 ***
+## m4     13 3525.1 3570.3 -1749.5   3499.1   7.3738  1   0.006618 ** 
+## m8     22 3521.2 3597.8 -1738.6   3477.2  21.8496  9   0.009368 ** 
+## m2     26 3529.2 3619.7 -1738.6   3477.2   0.0001  4   1.000000    
+## m3     26 3529.2 3619.7 -1738.6   3477.2   0.0000  0               
+## m1     29 3536.0 3636.9 -1739.0   3478.0   0.0000  3   1.000000    
+## full   30 3537.2 3641.6 -1738.6   3477.2   0.7526  1   0.385660    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>Lowest BIC: m9 Lowest AIC: m8</p>
 </div>
 </div>
 <div id="s-vs-s-s_l" class="section level3">
@@ -1854,7 +2402,7 @@ for (last_point in 3:7) {
           eco_metaeco_type == &quot;S (S_L)&quot;) %&gt;%
   filter(time_point &gt;= 2) #Let&#39;s take off the first two time points which are before the first disturbance event.</code></pre>
 </div>
-<div id="plot-2" class="section level4">
+<div id="plot-1" class="section level4">
 <h4>Plot</h4>
 <pre class="r"><code>ds_local_S_t2_t7 %&gt;%
     ggplot(aes(x = day,
@@ -2116,7 +2664,7 @@ following table.</p>
 </table>
 </div>
 </div>
-<div id="t2-3-t2-t4-t2-t5-t2-t6-t2-t7-1" class="section level4">
+<div id="t2-3-t2-t4-t2-t5-t2-t6-t2-t7" class="section level4">
 <h4>t2-3, t2-t4, t2-t5, t2-t6, t2-t7</h4>
 <p>Let’s now try to see how meta-ecosystem effect changes across
 different time periods.</p>
@@ -2190,7 +2738,7 @@ for (last_point in 3:7) {
           eco_metaeco_type == &quot;S (S_S)&quot;) %&gt;%
   filter(time_point &gt;= 2) #Let&#39;s take off the first two time points which are before the first disturbance event.</code></pre>
 </div>
-<div id="plot-3" class="section level4">
+<div id="plot-2" class="section level4">
 <h4>Plot</h4>
 <pre class="r"><code>ds_local_S_t2_t7 %&gt;%
     ggplot(aes(x = day,
@@ -2253,7 +2801,7 @@ no_metaeco_type_model = lmer(bioarea_per_volume ~
           eco_metaeco_type == &quot;L (L_L)&quot;) %&gt;%
   filter(time_point &gt;= 2) #Let&#39;s take off the first two time points which are before the first disturbance event.</code></pre>
 </div>
-<div id="plot-4" class="section level4">
+<div id="plot-3" class="section level4">
 <h4>Plot</h4>
 <pre class="r"><code>ds_local_S_t2_t7 %&gt;%
     ggplot(aes(x = day,
@@ -2315,7 +2863,7 @@ was isolated or it was connected to an identical patch.</p>
           eco_metaeco_type == &quot;L (S_L)&quot;) %&gt;%
   filter(time_point &gt;= 2) #Let&#39;s take off the first two time points which are before the first disturbance event.</code></pre>
 </div>
-<div id="plot-5" class="section level4">
+<div id="plot-4" class="section level4">
 <h4>Plot</h4>
 <pre class="r"><code>ds_local_S_t2_t7 %&gt;%
     ggplot(aes(x = day,
@@ -2417,7 +2965,7 @@ this approach instead of p values.</p></li>
 </div>
 <div id="running-time" class="section level2">
 <h2>Running time</h2>
-<pre><code>## Time difference of 18.0403 secs</code></pre>
+<pre><code>## Time difference of 26.99313 secs</code></pre>
 </div>
 <div id="bibliography" class="section level2 unnumbered">
 <h2 class="unnumbered">Bibliography</h2>
