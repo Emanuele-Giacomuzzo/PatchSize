@@ -471,7 +471,6 @@ datatable(full_table,
                                            list(targets=c(5), visible=TRUE, width='10'),
                                            list(targets=c(6), visible=TRUE, width='10'),
                                            list(targets=c(7), visible=TRUE, width='10'),
-                                           list(targets=c(8), visible=TRUE, width='10'),
                                            list(targets='_all', visible=FALSE))),
           caption = "
           M = Meta-ecosystem type, 

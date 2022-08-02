@@ -158,7 +158,7 @@ So, the models I'm going to consider as possible models are the following ones:
 
 ### --- INITIALISE TABLE --- ###
 
-columns = c("model", "time_point", "AIC", "BIC", "R2", "R2_mixed", "R2_fixed", "R2_meta_mixed", "R2_meta_fixed")
+columns = c("model", "time_point", "AIC", "BIC", "R2", "R2_fixed", "R2_meta_mixed", "R2_meta_fixed") # "R2_mixed"
 random_time_table = data.frame(matrix(ncol = length(columns),
                                      nrow = 0))
 colnames(random_time_table) = columns

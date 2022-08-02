@@ -17,7 +17,7 @@ update_all_models_table = function(model_name,
     R2_metaeco = round(R2_whole - r.squaredGLMM(metaeco_null), digits = 2)
     
     R2 = R2_whole[2]
-    mixed_R2_whole = R2_whole[2]
+    #mixed_R2_whole = R2_whole[2]
     mixed_R2_metaeco = R2_metaeco[2]
     fixed_R2_whole = R2_whole[1]
     fixed_R2_metaeco = R2_metaeco[1]
@@ -62,7 +62,7 @@ update_all_models_table = function(model_name,
   all_models_table$AIC[row] = AIC_whole
   all_models_table$BIC[row] = BIC_whole
   all_models_table$R2[row] = R2
-  all_models_table$R2_mixed[row] = mixed_R2_whole
+  #all_models_table$R2_mixed[row] = mixed_R2_whole
   all_models_table$R2_fixed[row] = fixed_R2_whole
   all_models_table$R2_meta_mixed[row] = mixed_R2_metaeco
   all_models_table$R2_meta_fixed[row] = fixed_R2_metaeco
