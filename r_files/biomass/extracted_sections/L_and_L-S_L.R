@@ -1,4 +1,4 @@
-## ---- echo = FALSE-----------------------------------------------------------------------------------------
+## ---- echo = FALSE-------------------------------------------------------------------------------------------------------------------------------------------
 ds %>%
   filter(eco_metaeco_type == "L" | 
             eco_metaeco_type == "L (S_L)") %>%
@@ -54,27 +54,27 @@ ds %>%
         legend.margin = margin(6, 6, 6, 6))
 
 
-## ----------------------------------------------------------------------------------------------------------
+## ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ds_local_S_t2_t7 = ds %>%
-  filter (eco_metaeco_type == "L" | 
+  filter (eco_metaeco_type == "L" |
           eco_metaeco_type == "L (S_L)") %>%
   filter(time_point >= 2) #Let's take off the first two time points which are before the first disturbance event.
 
-full_model = lmer(bioarea_per_volume ~ 
-                    metaecosystem_type  + 
-                    disturbance + 
-                    metaecosystem_type * disturbance + 
-                    (metaecosystem_type || day) + 
-                    (disturbance || day) + 
+full_model = lmer(bioarea_per_volume ~
+                    metaecosystem_type  +
+                    disturbance +
+                    metaecosystem_type * disturbance +
+                    (metaecosystem_type || day) +
+                    (disturbance || day) +
                     (metaecosystem_type*disturbance  || day),
-                  data = ds_local_S_t2_t7, 
+                  data = ds_local_S_t2_t7,
                   REML = FALSE)
 
-no_metaeco_type_model = lmer(bioarea_per_volume ~ 
-                    disturbance + 
+no_metaeco_type_model = lmer(bioarea_per_volume ~
+                    disturbance +
                     (disturbance || day),
-                  data = ds_local_S_t2_t7, 
+                  data = ds_local_S_t2_t7,
                   REML = FALSE)
 
 anova(full_model, no_metaeco_type_model)

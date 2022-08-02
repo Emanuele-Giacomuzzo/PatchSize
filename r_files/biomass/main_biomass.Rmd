@@ -441,6 +441,12 @@ We can see that the regional biomass was higher for meta-ecosystems with the sam
 source(here("r_files", "biomass", "extracted_sections", "M_M-S_L_time_random.R"))
 ```
 
+#### Time fitting
+
+```{r MM_SL_time_fitting, child = here("r_files", "biomass", "sections", "MM_SL_time_fitting.Rmd"), echo = TRUE, eval = TRUE}
+source(here("r_files", "biomass", "extracted_sections", "MM_SL_time_fitting.R"))
+```
+
 #### Time as fixed effect
 
 ```{r M_M-S_L_time_fitted, child = here("r_files", "biomass", "sections", "M_M-S_L_time_fitted.Rmd"), echo = TRUE, eval = TRUE}
@@ -465,10 +471,17 @@ datatable(full_table,
                                            list(targets=c(5), visible=TRUE, width='10'),
                                            list(targets=c(6), visible=TRUE, width='10'),
                                            list(targets=c(7), visible=TRUE, width='10'),
+                                           list(targets=c(8), visible=TRUE, width='10'),
                                            list(targets='_all', visible=FALSE))),
-          caption = "M = Meta-ecosystem type, D = disturbance, 
+          caption = "
+          M = Meta-ecosystem type, 
+          D = disturbance, 
           (1 | t) = random effect of time on the intercept,
           (1 | ID) = random effect of meta-ecosystem ID on the intercept, 
+          || = no correlation between intercept and slope,
+          | = correlation between intercept and slope,
+          R2 = r squared of the whole model,
+          R2_fixed = fixed part of the mixed model,
           mixed_R2 = r squared when considering both fixed and random effects (conditional r squared), 
           fixed_R2 = r squared when considering only the fixed effects (marginal r squared)")
 
@@ -530,10 +543,7 @@ ggsave(here("results", "biomass", "publication_local_low_mean.jpg"),
        height = publication_height)
 ```
 
-
-## Some considerations
-
-Before start modelling, just a few considerations on mixed effect models and model selection.
+## Other
 
 ### Mixed effects models
 
@@ -551,22 +561,35 @@ Before start modelling, just a few considerations on mixed effect models and mod
 
 -   I am starting from the largest model and then simplifying because ... (see statistical modelling course at ETH).
 
--   I am going to select the best model according to BIC instead of AIC. This is because BIC is better for understanding and AIC for predicting. @Halsey2019 also suggests this approach instead of p values.
+-   I am going to select the best model according to AIC. BIC is better for understanding and AIC for predicting. @Halsey2019 also suggests this approach instead of p values. I'm going to use AIC because I'm interested in knowign how much meta-ecosystem type contributed to the overall regional biomass.
 
-### Error bars.
+### Error bars
 
 ...
 
-## Running time
+### To do 
+
+1. Research which error bars to include. Then including them. 
+
+What error bars should I show in the plots? @Cumming2007 advises that when we are in the realm of experimental biology and we want to compare treatment and control, we should use inferential error bars, such as the standard error (SE) or the confidence interval (CI). However, they are both not robust to different sample sizes. Therefore, we need a robust measure of scale that is robust to sample size. These are interquartile ranges (IQR) and median absolute deviation (MAD). According to @Rousseeuw1993, however, MAD is more robust than IQR. The problem, however, is that if I show the median instead of the mean, the patterns of regional and local biomass just disappear. So, I should show something different. Basically, I need to show a error bar that is a robust measure of scale that is robust to sample size and is not based on the median. 
+
+2. Re-run the analysis without 106-110, as I overboiled them and then compare it to the analysis with them. 
+
+3. Produce boxplots in which points are connected to each other.
+
+4. Include a figure with all the local biomass.
+
+5. Include a figure with all the regional biomass.
+
+6. Model S vs M vs L
+
+7. Model SS vs MM vs LL
+
+### Running time
 
 ```{r running-time, echo = FALSE, eval = TRUE}
 end_time = Sys.time()
-end_time - start_time #For some reason it doesn't work 
+end_time - start_time
 ```
-
-## Problems
-
-1. What error bars should I show in the plots? @Cumming2007 advises that when we are in the realm of experimental biology and we want to compare treatment and control, we should use inferential error bars, such as the standard error (SE) or the confidence interval (CI). However, they are both not robust to different sample sizes. Therefore, we need a robust measure of scale that is robust to sample size. These are interquartile ranges (IQR) and median absolute deviation (MAD). According to @Rousseeuw1993, however, MAD is more robust than IQR. The problem, however, is that if I show the median instead of the mean, the patterns of regional and local biomass just disappear. So, I should show something different. Basically, I need to show a error bar that is a robust measure of scale that is robust to sample size and is not based on the median. 
-2. Should I take off cultures 106-110 because I overboiled them?
 
 ## Bibliography

@@ -23,16 +23,16 @@ ds_regional_MM_SL_t2t7 = ds_regional %>%
 
 ##### Model selection
 
-First of all, let's include time as a random variable. Let's start from the largest mixed effect model makes sense to construct. This will include:
+Let's start from the largest mixed effect model makes sense to construct. This will include:
 
--   As fixed effect: disturbance, metaecosystem type, and their interaction
+-   As fixed effect: metaecosystem type (M), disturbance (D), and their interaction (M \* D)
 -   As random effect (random intercept and slope): day and the number of the metaecosystem (system_nr).
 
 We are actually going to construct two full models. One with the correlated and one with the uncorrelated random slopes and intercept, the other without
 
-*Should we get rid of the correlation between intercept and slopes?*
+*Should we keep the correlation between intercept and slopes (\|)?*
 
-```{r full-models}
+```{r}
 full_model_correlated = lmer(regional_mean_bioarea ~ 
                              metaecosystem_type  + 
                              disturbance + 
@@ -58,15 +58,11 @@ full_model_uncorrelated = lmer(regional_mean_bioarea ~
 anova(full_model_uncorrelated, full_model_correlated)
 ```
 
-No.
+Yes (according to BIC and AIC). Interestingly enough, the p-value is 1 (how should I interpret this?).
 
-```{r}
-best_model = full_model_correlated
-```
+*Should we keep M \** D ?
 
-*Should we get rid of the interaction between meta-ecosystem and disturbance?*
-
-```{r no_interaction_model, message=FALSE}
+```{r, message=FALSE}
 no_interaction_model = lmer(regional_mean_bioarea ~ 
                               metaecosystem_type + 
                               disturbance  + 
@@ -76,79 +72,108 @@ no_interaction_model = lmer(regional_mean_bioarea ~
                             data = ds_regional_MM_SL_t2t7, 
                             REML = FALSE)
 
-anova(best_model, no_interaction_model)
+anova(full_model_correlated, no_interaction_model)
 ```
 
-Yes.
+No (according to AIC and BIC). The p-value is also here almost 1 (how should I interpret this?).
 
-```{r}
-best_model = no_interaction_model
+*Should we keep (M \| day)?*
+
+```{r, message=FALSE}
+no_metaeco_slopes_model = lmer(regional_mean_bioarea ~ 
+                                 metaecosystem_type + 
+                                 disturbance  + 
+                                 (disturbance | day) +
+                                 (1 | system_nr), 
+                               data = ds_regional_MM_SL_t2t7, 
+                               REML = FALSE)
+
+anova(no_interaction_model, no_metaeco_slopes_model)
 ```
 
-*Should we get rid of the random slopes at different days?*
+Yes (according to AIC and BIC - however, BIC is only slightly lower). The p-value is really low (0.002).
 
-```{r no_slopes_model, message=FALSE}
-no_slopes_model = lmer(regional_mean_bioarea ~ 
-                         metaecosystem_type + 
-                         disturbance  + 
-                         (1 | day) +
-                         (1 | system_nr), 
-                       data = ds_regional_MM_SL_t2t7, 
-                       REML = FALSE)
+*Should we keep (D \| day)?*
 
-anova(best_model, no_slopes_model)
+```{r, message=FALSE}
+no_disturbance_slopes_model = lmer(regional_mean_bioarea ~ 
+                                     metaecosystem_type + 
+                                     disturbance  + 
+                                     (metaecosystem_type | day) +
+                                     (1 | system_nr), 
+                                   data = ds_regional_MM_SL_t2t7, 
+                                   REML = FALSE)
+
+anova(no_interaction_model, no_disturbance_slopes_model)
 ```
 
-According to BIC yes (but according to AIC no). I'll still follow the suggestion of BIC.
+No (according to AIC and BIC - however, AIC is only slightly lower). The p-value is low (0.1785).
 
-```{r best-model}
-best_model = no_slopes_model
-```
-
-*Should we get rid of the random effect of system number?*
+*Should we keep (1 \| system_nr)?*
 
 ```{r}
 no_system_nr = lmer(regional_mean_bioarea ~ 
-                         metaecosystem_type + 
-                         disturbance  + 
-                         (1 | day), 
-                       data = ds_regional_MM_SL_t2t7, 
-                       REML = FALSE)
+                      metaecosystem_type + 
+                      disturbance  + 
+                      (metaecosystem_type | day), 
+                    data = ds_regional_MM_SL_t2t7, 
+                    REML = FALSE)
 
-anova(best_model, no_system_nr)
+anova(no_disturbance_slopes_model, no_system_nr)
 ```
 
-Yes. Although the difference between the two models according to AIC is not that much.
+Yes according to AIC (but no according to BIC). The p-value is low (0.09).
 
-As it seems like the random slopes and intercepts of meta-ecoystem number had a weak effect, but still an effect, let's then keep both models as possible models.
+*Should we keep these parameters?*
+
+|    Parameter     |           AIC           |           BIC            |
+|:----------------:|:-----------------------:|:------------------------:|
+| \| (correlation) |           Yes           |           Yes            |
+|      M \* D      |           No            |            No            |
+|     (M \| t)     |           Yes           | Yes (but slightly lower) |
+|    *(D \| t)*    | No (but slightly lower) |            No            |
+|   *(1 \| ID)*    |           Yes           |            No            |
+
+According to AIC, the best model should be M + D + (1 \| system_nr). BIC would take out (1 \| system_nr). But as we are going for AIC here, our best model should include it.
+
+To make sure everything is okay, let's take a look at all our models.
 
 ```{r}
-best_model_without_system_nr = no_system_nr
-best_model_with_system_nr = no_interaction_model
+anova(full_model_correlated, full_model_uncorrelated, no_interaction_model, no_metaeco_slopes_model, no_disturbance_slopes_model, no_system_nr)
 ```
 
-##### Table comparing between models
+Odd, in some of the models chi squared is zero and in some the degrees of freedom are zero.
 
-Let's now create and show the table with the results of all models.
+The best model according to AIC should be M + D + (M \| day) + (1 \| system number) (`no_disturbance_slopes_model`). However, it has zero degrees of freedom.
+
+So, the models I'm going to consider as possible models are the following ones:
+
+-   M + D + (M \| t) + (1 \| ID) [Best model according to AIC]
+-   M + D + (M \| t) + (D \| t) + (1 \| ID) [Best model according to AIC with (D \| t), which had a slightly higher AIC]
+-   M + D + (M \| t) [Best model according to BIC]
+-   M + D [Best model according to BIC without (M \| t), which had only a slightly higher BIC]
 
 ```{r, echo = FALSE, warning = FALSE, message = FALSE}
+#Create a table with all the models in which time is a random effect. 
 
 ### --- INITIALISE TABLE --- ###
 
-columns = c("model", "time_point", "AIC", "BIC", "mixed_R2", "mixed_R2_metaeco", "fixed_R2", "fixed_R2_metaeco")
+columns = c("model", "time_point", "AIC", "BIC", "R2", "R2_mixed", "R2_fixed", "R2_meta_mixed", "R2_meta_fixed")
 random_time_table = data.frame(matrix(ncol = length(columns),
                                      nrow = 0))
 colnames(random_time_table) = columns
 
-### --- "M + D + (1 | t)" --- ###
+### --- M + D + (M | t) + (1 | ID) --- ###
 
 for (last_point in 3:7) {
   
   full_model = lmer(regional_mean_bioarea ~ 
                       disturbance +
                       metaecosystem_type +
-                      (1 | day),
-                    data = filter(ds_regional_MM_SL_t2t7, time_point <= last_point),
+                      (metaecosystem_type | day) +
+                      (1 | system_nr),
+                    data = filter(ds_regional_MM_SL_t2t7, 
+                                  time_point <= last_point),
                     REML = FALSE,
                     control = lmerControl(optimizer ="Nelder_Mead"))
   
@@ -157,14 +182,15 @@ for (last_point in 3:7) {
                   data = filter(ds_regional_MM_SL_t2t7, time_point <= last_point))
    
   metaeco_null = lmer(regional_mean_bioarea ~  
-                                   disturbance  + 
-                                   (1 | day),
+                        disturbance  + 
+                        (1 | day) +
+                        (1 | system_nr),
                                  data = filter(ds_regional_MM_SL_t2t7, 
                                                time_point <= last_point),
                                  REML = FALSE, 
                                  control = lmerControl(optimizer ="Nelder_Mead"))
   
-  random_time_table = update_all_models_table("M + D + (1 | t)",
+  random_time_table = update_all_models_table("M + D + (M|t) + (1|ID)",
                                              random_time_table, 
                                              full_model, 
                                              null_model,
@@ -173,33 +199,36 @@ for (last_point in 3:7) {
   
 }
 
-### --- M + D + (1 | t) + (1 |ID) --- ###
+### --- M + D + (M | t) + (D | t) + (1 | ID) --- ###
 
 for (last_point in 3:7) {
   
   full_model = lmer(regional_mean_bioarea ~ 
                       disturbance +
                       metaecosystem_type +
-                      (1 | day) +
+                      (metaecosystem_type | day) +
+                      (disturbance | day) +
                       (1 | system_nr),
-                    data = filter(ds_regional_MM_SL_t2t7, time_point <= last_point),
+                    data = filter(ds_regional_MM_SL_t2t7, 
+                                  time_point <= last_point),
                     REML = FALSE,
                     control = lmerControl(optimizer ="Nelder_Mead"))
   
   null_model = lm(regional_mean_bioarea ~ 
                     1 , 
-                  data = filter(ds_regional_MM_SL_t2t7, time_point <= last_point))
+                  data = filter(ds_regional_MM_SL_t2t7, 
+                                time_point <= last_point))
   
   metaeco_null = lmer(regional_mean_bioarea ~  
-                                   disturbance  + 
-                                   (1 | day) +
-                                   (1 | system_nr),
+                        disturbance +
+                        (disturbance | day) +
+                        (1 | system_nr),
                                  data = filter(ds_regional_MM_SL_t2t7, 
                                                time_point <= last_point),
                                  REML = FALSE, 
                                  control = lmerControl(optimizer ="Nelder_Mead"))
   
-  random_time_table = update_all_models_table("M + D + (1 | t) + (1 | ID)",
+  random_time_table = update_all_models_table("M + D + (M|t) + (D|t) + (1|ID)",
                                              random_time_table, 
                                              full_model, 
                                              null_model,
@@ -207,21 +236,64 @@ for (last_point in 3:7) {
                                              "mixed")
   
 }
-```
 
-```{r echo = FALSE}
-datatable(random_time_table,
-          rownames = FALSE,
-          options = list(scrollX=T,
-                         autoWidth = TRUE,
-                         columnDefs = list(list(targets=c(0), visible=TRUE, width='160'),
-                                           list(targets=c(1), visible=TRUE, width='80'),
-                                           list(targets=c(2), visible=TRUE, width='80'),
-                                           list(targets=c(3), visible=TRUE, width='80'),
-                                           list(targets=c(4), visible=TRUE, width='80'),
-                                           list(targets=c(5), visible=TRUE, width='80'),
-                                           list(targets=c(6), visible=TRUE, width='80'),
-                                           list(targets=c(7), visible=TRUE, width='80'),
-                                           list(targets='_all', visible=FALSE))),
-          caption = "M = Meta-ecosystem type, D = disturbance, (1 | t) = random effect of time on the intercept, (1 | ID) = random effect of meta-ecosystem ID on the intercept, mixed_R2 = r squared when considering both fixed and random effects (conditional r squared), fixed_R2 = r squared when considering only the fixed effects (marginal r squared)")
+### --- M + D + (M  | t) --- ###
+
+for (last_point in 3:7) {
+  
+  full_model = lmer(regional_mean_bioarea ~ 
+                      metaecosystem_type +
+                      disturbance +
+                      (metaecosystem_type | day),
+                    data = filter(ds_regional_MM_SL_t2t7, 
+                                  time_point <= last_point),
+                    REML = FALSE,
+                    control = lmerControl(optimizer ="Nelder_Mead"))
+  
+  null_model = lm(regional_mean_bioarea ~ 
+                    1 , 
+                  data = filter(ds_regional_MM_SL_t2t7, time_point <= last_point))
+   
+  metaeco_null = lm(regional_mean_bioarea ~  
+                        disturbance,
+                      data = filter(ds_regional_MM_SL_t2t7, 
+                                    time_point <= last_point))
+  
+  random_time_table = update_all_models_table("M + D + (M|t)",
+                                             random_time_table, 
+                                             full_model, 
+                                             null_model,
+                                             metaeco_null,
+                                             "mixed")
+  
+}
+
+### --- M + D --- ###
+
+for (last_point in 3:7) {
+  
+  full_model = lm(regional_mean_bioarea ~ 
+                      metaecosystem_type +
+                      disturbance,
+                    data = filter(ds_regional_MM_SL_t2t7, 
+                                  time_point <= last_point))
+
+  null_model = lm(regional_mean_bioarea ~ 
+                    1 , 
+                  data = filter(ds_regional_MM_SL_t2t7, time_point <= last_point))
+   
+  metaeco_null = lm(regional_mean_bioarea ~  
+                        disturbance,
+                      data = filter(ds_regional_MM_SL_t2t7, 
+                                    time_point <= last_point))
+  
+  random_time_table = update_all_models_table("M + D",
+                                             random_time_table, 
+                                             full_model, 
+                                             null_model,
+                                             metaeco_null,
+                                             "fixed")
+  
+}
+
 ```
