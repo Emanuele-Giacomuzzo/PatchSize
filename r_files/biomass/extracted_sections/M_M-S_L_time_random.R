@@ -1,38 +1,10 @@
----
-title: "model_all_points_without_time_fitting"
-author: "Emanuele Giacomuzzo"
-date: '2022-07-22'
-output: html_document
-editor_options: 
-  chunk_output_type: console
----
-
-##### Tidy
-
-First of all, let's modify the data set including the regional biomass of our meta-ecosystems. In this data set, we want to have the regional biomass of the meta-ecosystems (averaged first across videos and then across patches) in which we:
-
--   Include only the meta-ecosystems in which patches had both medium size (metaecosystem_type = M_M) and meta-ecosystems in which patches had one a small size and the other large size (metaecosystem_type = S_L).
-
--   Take off the first two point (day 0 and day = 4). This is because the first perturbation happened only at day 5.
-
-```{r}
+## ----------------------------------------------------------------------------------------------------------
 ds_regional_MM_SL_t2t7 = ds_regional %>%
     filter (metaecosystem_type == "M_M" | metaecosystem_type == "S_L", 
             time_point >= 2)
-```
 
-##### Model selection
 
-First of all, let's include time as a random variable. Let's start from the largest mixed effect model makes sense to construct. This will include:
-
--   As fixed effect: disturbance, metaecosystem type, and their interaction
--   As random effect (random intercept and slope): day and the number of the metaecosystem (system_nr).
-
-We are actually going to construct two full models. One with the correlated and one with the uncorrelated random slopes and intercept, the other without
-
-*Should we get rid of the correlation between intercept and slopes?*
-
-```{r full-models}
+## ----full-models-------------------------------------------------------------------------------------------
 full_model_correlated = lmer(regional_mean_bioarea ~ 
                              metaecosystem_type  + 
                              disturbance + 
@@ -56,17 +28,13 @@ full_model_uncorrelated = lmer(regional_mean_bioarea ~
                   REML = FALSE)
 
 anova(full_model_uncorrelated, full_model_correlated)
-```
 
-No.
 
-```{r}
+## ----------------------------------------------------------------------------------------------------------
 best_model = full_model_correlated
-```
 
-*Should we get rid of the interaction between meta-ecosystem and disturbance?*
 
-```{r no_interaction_model, message=FALSE}
+## ----no_interaction_model, message=FALSE-------------------------------------------------------------------
 no_interaction_model = lmer(regional_mean_bioarea ~ 
                               metaecosystem_type + 
                               disturbance  + 
@@ -77,17 +45,13 @@ no_interaction_model = lmer(regional_mean_bioarea ~
                             REML = FALSE)
 
 anova(best_model, no_interaction_model)
-```
 
-Yes.
 
-```{r}
+## ----------------------------------------------------------------------------------------------------------
 best_model = no_interaction_model
-```
 
-*Should we get rid of the random slopes at different days?*
 
-```{r no_slopes_model, message=FALSE}
+## ----no_slopes_model, message=FALSE------------------------------------------------------------------------
 no_slopes_model = lmer(regional_mean_bioarea ~ 
                          metaecosystem_type + 
                          disturbance  + 
@@ -97,17 +61,13 @@ no_slopes_model = lmer(regional_mean_bioarea ~
                        REML = FALSE)
 
 anova(best_model, no_slopes_model)
-```
 
-According to BIC yes (but according to AIC no). I'll still follow the suggestion of BIC.
 
-```{r best-model}
+## ----best-model--------------------------------------------------------------------------------------------
 best_model = no_slopes_model
-```
 
-*Should we get rid of the random effect of system number?*
 
-```{r}
+## ----------------------------------------------------------------------------------------------------------
 no_system_nr = lmer(regional_mean_bioarea ~ 
                          metaecosystem_type + 
                          disturbance  + 
@@ -116,22 +76,14 @@ no_system_nr = lmer(regional_mean_bioarea ~
                        REML = FALSE)
 
 anova(best_model, no_system_nr)
-```
 
-Yes. Although the difference between the two models according to AIC is not that much.
 
-As it seems like the random slopes and intercepts of meta-ecoystem number had a weak effect, but still an effect, let's then keep both models as possible models.
-
-```{r}
+## ----------------------------------------------------------------------------------------------------------
 best_model_without_system_nr = no_system_nr
 best_model_with_system_nr = no_interaction_model
-```
 
-##### Table comparing between models
 
-Let's now create and show the table with the results of all models.
-
-```{r, echo = FALSE, warning = FALSE, message = FALSE}
+## ----------------------------------------------------------------------------------------------------------
 
 ### --- INITIALISE TABLE --- ###
 
@@ -207,21 +159,8 @@ for (last_point in 3:7) {
                                              "mixed")
   
 }
-```
 
-```{r echo = FALSE}
-datatable(random_time_table,
-          rownames = FALSE,
-          options = list(scrollX=T,
-                         autoWidth = TRUE,
-                         columnDefs = list(list(targets=c(0), visible=TRUE, width='160'),
-                                           list(targets=c(1), visible=TRUE, width='80'),
-                                           list(targets=c(2), visible=TRUE, width='80'),
-                                           list(targets=c(3), visible=TRUE, width='80'),
-                                           list(targets=c(4), visible=TRUE, width='80'),
-                                           list(targets=c(5), visible=TRUE, width='80'),
-                                           list(targets=c(6), visible=TRUE, width='80'),
-                                           list(targets=c(7), visible=TRUE, width='80'),
-                                           list(targets='_all', visible=FALSE))),
-          caption = "M = Meta-ecosystem type, D = disturbance, (1 | t) = random effect of time on the intercept, (1 | ID) = random effect of meta-ecosystem ID on the intercept, mixed_R2 = r squared when considering both fixed and random effects (conditional r squared), fixed_R2 = r squared when considering only the fixed effects (marginal r squared)")
-```
+
+## ----echo = FALSE------------------------------------------------------------------------------------------
+datatable(random_time_table, caption = "M = Meta-ecosystem type, D = disturbance, (1 | t) = random effect of time on the intercept, (1 | ID) = random effect of meta-ecosystem ID on the intercept, mixed_R2 = r squared when considering both fixed and random effects (conditional r squared), fixed_R2 = r squared when considering only the fixed effects (marginal r squared)")
+

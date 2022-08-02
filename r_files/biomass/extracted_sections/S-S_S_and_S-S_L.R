@@ -1,15 +1,4 @@
----
-title: "S_S_and_S_L"
-author: "Emanuele Giacomuzzo"
-date: '2022-07-26'
-output: html_document
-editor_options: 
-  chunk_output_type: console
----
-
-### S (small-small) vs S (small-large)
-
-```{r, echo = FALSE}
+## ---- echo = FALSE-----------------------------------------------------------------------------------------
 ### --- BOXPLOTS --- ###
 local_low_boxplots = ds %>%
   filter (eco_metaeco_type == "S (S_S)" |
@@ -140,22 +129,16 @@ local_high_mean = ds %>%
         legend.box.just = "right",
         legend.margin = margin(6, 6, 6, 6))
 local_high_mean
-```
 
-#### Model selection
 
-Let's take off the first two time points which are before the first disturbance event.
-
-```{r}
+## ----------------------------------------------------------------------------------------------------------
 ds_local_S_t2_t7 = ds %>%
   filter (eco_metaeco_type == "S (S_S)" | 
           eco_metaeco_type == "S (S_L)") %>%
   filter(time_point >= 2) 
-```
 
-Then let's build the full model.
 
-```{r}
+## ----------------------------------------------------------------------------------------------------------
 full_model = lmer(bioarea_per_volume ~ 
                     metaecosystem_type  + 
                     disturbance + 
@@ -165,11 +148,9 @@ full_model = lmer(bioarea_per_volume ~
                     (metaecosystem_type*disturbance  || day),
                   data = ds_local_S_t2_t7, 
                   REML = FALSE)
-```
 
-*Does time have a random effect?*
 
-```{r}
+## ----------------------------------------------------------------------------------------------------------
 fixed_effects_model = lm(bioarea_per_volume ~ 
                            metaecosystem_type  + 
                            disturbance +
@@ -177,17 +158,13 @@ fixed_effects_model = lm(bioarea_per_volume ~
                          data = ds_local_S_t2_t7)
 
 anova(full_model, fixed_effects_model)
-```
 
-Yes. Let's then keep the random effect of time.
 
-```{r}
+## ----------------------------------------------------------------------------------------------------------
 best_model = full_model
-```
 
-*Do meta-ecosystem type and disturbance interact?*
 
-```{r}
+## ----------------------------------------------------------------------------------------------------------
 no_interaction_model = lmer(bioarea_per_volume ~ 
                               metaecosystem_type + 
                               disturbance  + 
@@ -197,17 +174,13 @@ no_interaction_model = lmer(bioarea_per_volume ~
                             REML = FALSE)
 
 anova(best_model, no_interaction_model)
-```
 
-Yes. Let's keep the model without the interaction between meta-ecosystem type and disturbance, as it has lower BIC.
 
-```{r}
+## ----------------------------------------------------------------------------------------------------------
 best_model = no_interaction_model
-```
 
-*Does time have an effect on the slope of metaecosystem_type?*
 
-```{r}
+## ----------------------------------------------------------------------------------------------------------
 no_metaeco_slopes_model = lmer(bioarea_per_volume ~ 
                          metaecosystem_type + 
                          disturbance  + 
@@ -218,13 +191,9 @@ no_metaeco_slopes_model = lmer(bioarea_per_volume ~
                        )
 
 anova(best_model, no_metaeco_slopes_model)
-```
 
-No. Let's then keep the model without the random effect of time on meta-ecosystem type slopes.
 
-*Does time have an effect on the slope of disturbance?*
-
-```{r}
+## ----------------------------------------------------------------------------------------------------------
 no_disturbance_slopes_model = lmer(bioarea_per_volume ~ 
                          metaecosystem_type + 
                          disturbance  + 
@@ -235,18 +204,14 @@ no_disturbance_slopes_model = lmer(bioarea_per_volume ~
                        )
 
 anova(best_model, no_disturbance_slopes_model)
-```
 
-Yes. Let's keep the model without slopes from disturbance, as it has lower BIC.
 
-```{r}
+## ----------------------------------------------------------------------------------------------------------
 best_model = no_disturbance_slopes_model
 summary(best_model)
-```
 
-#### Effect size
 
-```{r}
+## ----------------------------------------------------------------------------------------------------------
 #Effect size of the whole model
 model.null = lm(bioarea_per_volume ~ 
                   1, 
@@ -301,19 +266,9 @@ p_no_disturbance = round(p_no_disturbance, digits = 5)
 if (p_no_disturbance < 0.00001) {
   p_no_disturbance = "< 0.00001"
 }
-```
 
-The effect size and significance of our results can be found in the following table.
 
-| Model                                  |           Marginal R2           |   Marginal R2 of the best model explained    |         Conditional R2          |  Conditional R2 of the best model explained  |           P-value           |
-|:-----------|:----------:|:----------:|:----------:|:----------:|:----------:|
-| Best model                             |         `r r2_best[1]`          |                      /                       |         `r r2_best[2]`          |                      /                       |         `r p_best`          |
-| Best model without meta-ecosystem type | `r r2_no_metaecosystem_type[1]` | `r r2_best[1] - r2_no_metaecosystem_type[1]` | `r r2_no_metaecosystem_type[2]` | `r r2_best[2] - r2_no_metaecosystem_type[2]` | `r p_no_metaecosystem_type` |
-| Best model without disturbance         |    `r r2_no_disturbance[1]`     |    `r r2_best[1] - r2_no_disturbance[1]`     |    `r r2_no_disturbance[2]`     |    `r r2_best[2] - r2_no_disturbance[2]`     |    `r p_no_disturbance`     |
-
-Let's now try to see how meta-ecosystem effect changes across different time periods.
-
-```{r}
+## ----------------------------------------------------------------------------------------------------------
 R2 = NULL
 for (last_point in 3:7) {
   
@@ -342,19 +297,9 @@ for (last_point in 3:7) {
   R2[[last_point]] = round(R2[[last_point]], digits = 3)
   
 }
-```
 
-| Time points | Marginal R squared of meta-ecosystem type |
-|:-----------:|:-----------------------------------------:|
-|   t2 - t3   |                `r R2[[3]]`                |
-|   t2 -t4    |                `r R2[[4]]`                |
-|   t2 - t5   |                `r R2[[5]]`                |
-|   t2 - t6   |                `r R2[[6]]`                |
-|   t2 - t7   |                `r R2[[7]]`                |
 
-Let's now try to do model selection by selecting some models that might be good.
-
-```{r}
+## ----------------------------------------------------------------------------------------------------------
 
 full = lmer(bioarea_per_volume ~ 
                     metaecosystem_type  + 
@@ -489,7 +434,4 @@ m14 = lm(bioarea_per_volume ~
 )
 
 anova(m1, m2, m3, m4, m5, m6, m7, m8, m9, m10, m11, m12, m13, m14, full)
-```
 
-Lowest BIC: m9
-Lowest AIC: m8

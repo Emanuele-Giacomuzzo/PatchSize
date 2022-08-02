@@ -1,17 +1,4 @@
----
-title: "time_fitting"
-author: "Emanuele Giacomuzzo"
-date: '2022-07-22'
-output: html_document
-editor_options: 
-  chunk_output_type: console
----
-
-##### Fitting function to biomass across time (t0 - t7)
-
-Here we want to fit how biomass changes across time to a function. The biomass of our meta-ecosystems looks like this.
-
-```{r regional biomass plot, echo = FALSE}
+## ----regional biomass plot, echo = FALSE-------------------------------------------------------------------
 ds_regional %>%
   filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L") %>%
   ggplot(aes(x = day,
@@ -19,17 +6,9 @@ ds_regional %>%
              group = day)) + 
   geom_boxplot() +
   labs(x = "day", y = "Regional bioarea (something/microlitres)")
-```
 
-To fit these data, we need to produce (and parameterise) a function that resemble how the biomass first increases and then decreases.
 
-Hank produced the following function:
-
-$$biomass = a_4 * (day - a_5) * e^{a_1(day - a_5)}$$
-
-If we parameterise the function and then plot, it looks as follows.
-
-```{r time-function}
+## ----time-function-----------------------------------------------------------------------------------------
 
 a1 = -0.1
 a4 = 1200
@@ -38,11 +17,9 @@ a5 = -1
 day = seq(0, 30, 0.01)
 biomass = a4*(day-a5) * exp(a1*(day-a5))
 plot(biomass ~ day)
-```
 
-Now, let's find the best parameters (a1, a4, a5) that fit our data.
 
-```{r parameterise-time-function, results = FALSE, echo = FALSE}
+## ----parameterise-time-function, results = FALSE, echo = FALSE---------------------------------------------
 
 ds_regional_shrunk_type = ds_regional %>%
     filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L")
@@ -55,15 +32,13 @@ model = nls(regional_mean_bioarea ~ a4 * (day-a5) * exp(a1 * (day-a5)),
 a1 = as.numeric(model$m$getPars()[1])
 a4 = as.numeric(model$m$getPars()[2])
 a5 = as.numeric(model$m$getPars()[3])
-```
 
-```{r show-fitted-parameters}
+
+## ----show-fitted-parameters--------------------------------------------------------------------------------
 model$m$getPars()
-```
 
-And now let's plot the function to see how it fits our data.
 
-```{r plot-parameterised-time-function}
+## ----plot-parameterised-time-function----------------------------------------------------------------------
 
 day = seq(0,30,1)
 predicted = a4*(day-a5)*exp(a1*(day-a5))
@@ -76,61 +51,49 @@ ds_regional_shrunk_type%>%
   geom_boxplot() +
   labs(x = "day", y = "regional bioarea") +
   geom_line(data=data_fitted,aes(x = day, y=regional_mean_bioarea),color="red", group = 1)
-```
 
-Let's then include our predictions into the data set.
 
-```{r predicted-ds}
+## ----predicted-ds------------------------------------------------------------------------------------------
 
 ds_regional_predicted_shrunk_type = ds_regional %>%
   mutate(predicted_from_time = a4*(day-a5)*exp(a1*(day-a5))) %>%
   filter(metaecosystem_type == "S_L" | metaecosystem_type == "M_M")
-```
 
-##### Tidy
 
-```{r}
+## ----------------------------------------------------------------------------------------------------------
 ds_regional_predicted_shrunk_type_n_day = ds_regional_predicted_shrunk_type %>%
   filter(time_point >= 2)
-```
 
-##### Model selection
 
-*Are slopes and intercept correlated?*
+## ----eval = FALSE------------------------------------------------------------------------------------------
+## model_slopes_correlated = lmer(regional_mean_bioarea ~
+##                             predicted_from_time +
+##                             metaecosystem_type  +
+##                             disturbance +
+##                             predicted_from_time * metaecosystem_type +
+##                             predicted_from_time * disturbance +
+##                             metaecosystem_type * disturbance +
+##                             predicted_from_time * metaecosystem_type * disturbance +
+##                             (predicted_from_time | system_nr),
+##                         data = ds_regional_predicted_shrunk_type_n_day,
+##                         REML = FALSE)
+## 
+## model_slopes_uncorrelated = lmer(regional_mean_bioarea ~
+##                             predicted_from_time +
+##                             metaecosystem_type  +
+##                             disturbance +
+##                             predicted_from_time * metaecosystem_type +
+##                             predicted_from_time * disturbance +
+##                             metaecosystem_type * disturbance +
+##                             predicted_from_time * metaecosystem_type * disturbance +
+##                             (predicted_from_time || system_nr),
+##                         data = ds_regional_predicted_shrunk_type_n_day,
+##                         REML = FALSE)
+## 
+## anova(model_slopes_uncorrelated, model_slopes_correlated)
 
-```{r eval = FALSE}
-model_slopes_correlated = lmer(regional_mean_bioarea ~ 
-                            predicted_from_time + 
-                            metaecosystem_type  + 
-                            disturbance + 
-                            predicted_from_time * metaecosystem_type +
-                            predicted_from_time * disturbance +
-                            metaecosystem_type * disturbance +
-                            predicted_from_time * metaecosystem_type * disturbance +
-                            (predicted_from_time | system_nr),
-                        data = ds_regional_predicted_shrunk_type_n_day,
-                        REML = FALSE)
 
-model_slopes_uncorrelated = lmer(regional_mean_bioarea ~ 
-                            predicted_from_time + 
-                            metaecosystem_type  + 
-                            disturbance + 
-                            predicted_from_time * metaecosystem_type +
-                            predicted_from_time * disturbance +
-                            metaecosystem_type * disturbance +
-                            predicted_from_time * metaecosystem_type * disturbance +
-                            (predicted_from_time || system_nr),
-                        data = ds_regional_predicted_shrunk_type_n_day,
-                        REML = FALSE)
-
-anova(model_slopes_uncorrelated, model_slopes_correlated)
-```
-
-It doesn't work. Wired. Well, let's just keep the slopes as uncorrelated (`model_slopes_uncorrelated`).
-
-*Should we get rid of the interaction between time and meta-ecosystem type?*
-
-```{r time-fitted-random-effects}
+## ----time-fitted-random-effects----------------------------------------------------------------------------
 model_1 = lmer(regional_mean_bioarea ~ 
                             predicted_from_time + 
                             metaecosystem_type  + 
@@ -159,13 +122,9 @@ model_2 = lmer(regional_mean_bioarea ~
                )
 
 anova(model_1, model_2)
-```
 
-Yes.
 
-*Should we get rid of the interaction between time and disturbance?*
-
-```{r}
+## ----------------------------------------------------------------------------------------------------------
 model_3 = lmer(regional_mean_bioarea ~ 
                             predicted_from_time + 
                             metaecosystem_type  + 
@@ -178,13 +137,9 @@ model_3 = lmer(regional_mean_bioarea ~
                control = lmerControl (optimizer = "Nelder_Mead"))
 
 anova(model_2, model_3)
-```
 
-Yes.
 
-*Should we get rid of the interaction between meta-ecosystem type and disturbance?*
-
-```{r}
+## ----------------------------------------------------------------------------------------------------------
 model_4 = lmer(regional_mean_bioarea ~ 
                             predicted_from_time + 
                             metaecosystem_type  + 
@@ -196,13 +151,9 @@ model_4 = lmer(regional_mean_bioarea ~
                control = lmerControl (optimizer = "Nelder_Mead"))
 
 anova(model_3, model_4)
-```
 
-Yes.
 
-*Should we get rid of the interaction between meta-ecosystem type, disturbance, and time?*
-
-```{r}
+## ----------------------------------------------------------------------------------------------------------
 model_5 = lmer(regional_mean_bioarea ~ 
                             predicted_from_time + 
                             metaecosystem_type  + 
@@ -213,13 +164,9 @@ model_5 = lmer(regional_mean_bioarea ~
                control = lmerControl (optimizer = "Nelder_Mead"))
 
 anova(model_4, model_5)
-```
 
-Yes and no. It depends whether we consider more important AIC or BIC. I would now follow BIC and keep the most parsimonious model.
 
-*Should we get rid of the random effect of system number on the slope of time?*
-
-```{r}
+## ----------------------------------------------------------------------------------------------------------
 
 #Take off disturbance slopes
 model_8 = lmer(regional_mean_bioarea ~ 
@@ -232,13 +179,9 @@ model_8 = lmer(regional_mean_bioarea ~
                control = lmerControl (optimizer = "Nelder_Mead"))
 
 anova(model_5, model_8)
-```
 
-Yes.
 
-*Should we get rid of the random effect of system number?*
-
-```{r}
+## ----------------------------------------------------------------------------------------------------------
 
 #Take off random effects
 model_9 = lm(regional_mean_bioarea ~ 
@@ -248,17 +191,13 @@ model_9 = lm(regional_mean_bioarea ~
                         data = ds_regional_predicted_shrunk_type_n_day)
 
 anova(model_8, model_9)
-```
 
-Yes. Let's then keep this last model as our best model and then calculate the effect size of meta-ecosystem type. But actually other two models that are feasible are the one with the interaction between time, disturbance, and meta-ecosystem type (model_4) and the one with system number as a random effect. I think we should test those too.
 
-##### Create table
-
-```{r echo = FALSE, warning = FALSE}
+## ----------------------------------------------------------------------------------------------------------
 
 ### --- INITIALISE TABLE --- ###
 
-columns = c("model", "time_point", "AIC", "BIC", "mixed_R2", "mixed_R2_metaeco", "fixed_R2", "fixed_R2_metaeco")
+columns = c("model", "time_point", "AIC", "BIC", "mixed_r2", "mixed_r2_metaeco", "fixed_r2", "fixed_r2_metaeco")
 fitted_time_table = data.frame(matrix(ncol = length(columns),
                                      nrow = 0))
 colnames(fitted_time_table) = columns
@@ -354,7 +293,7 @@ for (last_point in 3:7) {
                       control = lmerControl(optimizer ="Nelder_Mead"))
   
   fitted_time_table = update_all_models_table("T + M + D + T*M*D + (T|ID)",
-                                             fitted_time_table, 
+                                             random_time_table, 
                                              full_model, 
                                              null_model,
                                              metaeco_null,
@@ -388,28 +327,15 @@ for (last_point in 3:7) {
                       control = lmerControl(optimizer ="Nelder_Mead"))
   
   fitted_time_table = update_all_models_table("T + M + D + (T|ID)",
-                                             fitted_time_table, 
+                                             random_time_table, 
                                              full_model, 
                                              null_model,
                                              metaeco_null,
                                              "mixed")
 }
 
-```
 
-```{r echo = FALSE}
-datatable(fitted_time_table, 
-          rownames = FALSE,
-          options = list(scrollX=T,
-                         autoWidth = TRUE,
-                         columnDefs = list(list(targets=c(0),visible=TRUE, width='160'),
-                                           list(targets=c(1), visible=TRUE, width='10'),
-                                           list(targets=c(2), visible=TRUE, width='10'),
-                                           list(targets=c(3), visible=TRUE, width='10'),
-                                           list(targets=c(4), visible=TRUE, width='10'),
-                                           list(targets=c(5), visible=TRUE, width='10'),
-                                           list(targets=c(6), visible=TRUE, width='10'),
-                                           list(targets=c(7), visible=TRUE, width='10'),
-                                           list(targets='_all', visible=FALSE))),
-          caption = "M = Meta-ecosystem type, D = disturbance, (1 | t) = random effect of time on the intercept, (1 | ID) = random effect of meta-ecosystem ID on the intercept, mixed_R2 = r squared when considering both fixed and random effects (conditional r squared), fixed_R2 = r squared when considering only the fixed effects (marginal r squared)")
-```
+
+## ----echo = FALSE------------------------------------------------------------------------------------------
+datatable(fitted_time_table, caption = "M = Meta-ecosystem type, D = disturbance, (1 | t) = random effect of time on the intercept, (1 | ID) = random effect of meta-ecosystem ID on the intercept, mixed_r2 = r squared when considering both fixed and random effects (conditional r squared), fixed_r2 = r squared when considering only the fixed effects (marginal r squared)")
+

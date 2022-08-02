@@ -1,31 +1,69 @@
-## -----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## ---- echo = FALSE-----------------------------------------------------------------------------------------
+ds %>%
+  filter (eco_metaeco_type == "S" | 
+            eco_metaeco_type == "S (S_L)") %>%
+  filter(disturbance == "low") %>%
+  ggplot(aes(x = day,
+             y = bioarea_per_volume,
+             group= interaction(day, eco_metaeco_type),
+             fill = eco_metaeco_type,
+             color = eco_metaeco_type)) +
+  geom_boxplot() +
+  labs(x = "Day", 
+       y = "Local biomass (bioarea/µl)", 
+       color = '', 
+       fill = '',
+       title = "Disturbance = low") +
+  scale_fill_discrete(labels = c("Isolated", 
+                                 "Connected to larger patch")) +
+  scale_color_discrete(labels = c("Isolated", 
+                                  "Connected to larger patch")) +
+  theme_bw() +
+  theme(panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(),
+        legend.position = c(.95, .95),
+        legend.justification = c("right", "top"),
+        legend.box.just = "right",
+        legend.margin = margin(6, 6, 6, 6))
+
+ds %>%
+  filter (eco_metaeco_type == "S" | 
+            eco_metaeco_type == "S (S_L)") %>%
+  filter(disturbance == "high") %>%
+  ggplot(aes(x = day,
+             y = bioarea_per_volume,
+             group= interaction(day, eco_metaeco_type),
+             fill = eco_metaeco_type,
+             color = eco_metaeco_type)) +
+  geom_boxplot() +
+  labs(x = "Day", 
+       y = "Local biomass (bioarea/µl)", 
+       color = '', 
+       fill = '',
+       title = "Disturbance = high") +
+  scale_fill_discrete(labels = c("Isolated", 
+                                 "Connected to larger patch")) +
+  scale_color_discrete(labels = c("Isolated", 
+                                  "Connected to larger patch")) +
+  theme_bw() +
+  theme(panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(),
+        legend.position = c(.95, .95),
+        legend.justification = c("right", "top"),
+        legend.box.just = "right",
+        legend.margin = margin(6, 6, 6, 6))
+
+
+
+
+## ----------------------------------------------------------------------------------------------------------
 ds_local_S_t2_t7 = ds %>%
   filter (eco_metaeco_type == "S" | 
           eco_metaeco_type == "S (S_L)") %>%
-  filter(time_point >= 2) #Let's take off the first two time points which are before the first disturbance event.
+  filter(time_point >= 2) 
 
 
-## -----------------------------------------------------------------------------------------------------------------------------------------------------------------------
-ds_local_S_t2_t7 %>%
-    ggplot(aes(x = day,
-               y = bioarea_per_volume,
-               fill = eco_metaeco_type,
-               color = eco_metaeco_type)) +
-    geom_point(stat = "summary", fun = "mean") +
-    geom_line(stat = "summary", fun = "mean") +
-    labs(x = "Day", 
-         y = "Local biomass (bioarea/µl)", 
-         color = '', 
-         fill = '') +
-    scale_fill_discrete(labels = c("Isolated patch", 
-                                   "Patch connected to larger patch")) +
-    scale_color_discrete(labels = c("Isolated patch", 
-                                    "Patch connected to larger patch")) +
-    theme_bw() +
-    theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())
-
-
-## -----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## ----------------------------------------------------------------------------------------------------------
 full_model = lmer(bioarea_per_volume ~ 
                     metaecosystem_type  + 
                     disturbance + 
@@ -37,7 +75,7 @@ full_model = lmer(bioarea_per_volume ~
                   REML = FALSE)
 
 
-## -----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## ----------------------------------------------------------------------------------------------------------
 fixed_effects_model = lm(bioarea_per_volume ~ 
                            metaecosystem_type  + 
                            disturbance +
@@ -47,11 +85,11 @@ fixed_effects_model = lm(bioarea_per_volume ~
 anova(full_model, fixed_effects_model)
 
 
-## -----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## ----------------------------------------------------------------------------------------------------------
 best_model = full_model
 
 
-## -----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## ----------------------------------------------------------------------------------------------------------
 no_interaction_model = lmer(bioarea_per_volume ~ 
                               metaecosystem_type + 
                               disturbance  + 
@@ -63,11 +101,11 @@ no_interaction_model = lmer(bioarea_per_volume ~
 anova(best_model, no_interaction_model)
 
 
-## -----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## ----------------------------------------------------------------------------------------------------------
 best_model = no_interaction_model
 
 
-## -----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## ----------------------------------------------------------------------------------------------------------
 no_metaeco_slopes_model = lmer(bioarea_per_volume ~ 
                          metaecosystem_type + 
                          disturbance  + 
@@ -80,7 +118,7 @@ no_metaeco_slopes_model = lmer(bioarea_per_volume ~
 anova(best_model, no_metaeco_slopes_model)
 
 
-## -----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## ----------------------------------------------------------------------------------------------------------
 no_disturbance_slopes_model = lmer(bioarea_per_volume ~ 
                          metaecosystem_type + 
                          disturbance  + 
@@ -93,12 +131,12 @@ no_disturbance_slopes_model = lmer(bioarea_per_volume ~
 anova(best_model, no_disturbance_slopes_model)
 
 
-## -----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## ----------------------------------------------------------------------------------------------------------
 best_model = no_disturbance_slopes_model
 summary(best_model)
 
 
-## -----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## ----------------------------------------------------------------------------------------------------------
 model.null = lm(bioarea_per_volume ~ 
                   1, 
                   data = ds_local_S_t2_t7)
@@ -115,7 +153,7 @@ if (p_best < 0.00001) {
 }
 
 
-## -----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## ----------------------------------------------------------------------------------------------------------
 metaecosystem_type_null = lmer(bioarea_per_volume ~  
                                  disturbance  + 
                                  (1 | day),
@@ -135,7 +173,7 @@ if (p_no_metaecosystem_type < 0.00001) {
 }
 
 
-## -----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## ----------------------------------------------------------------------------------------------------------
 disturbance_null = lmer(bioarea_per_volume ~ 
                           metaecosystem_type  + 
                           (1 | day), 
@@ -156,7 +194,7 @@ if (p_no_disturbance < 0.00001) {
 }
 
 
-## -----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## ----------------------------------------------------------------------------------------------------------
 R2 = NULL
 for (last_point in 3:7) {
   
