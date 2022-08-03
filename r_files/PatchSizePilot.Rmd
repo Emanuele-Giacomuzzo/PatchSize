@@ -1,0 +1,77 @@
+---
+title: "PatchSizePilot"
+author: "Emanuele Giacomuzzo"
+date: "2022-08-03"
+output: html_document
+bibliography: /Applications/Mendeley/library.bib
+html_document:
+    toc: true
+    toc_float: true
+    code_folding: hide
+    number_sections: true
+    includes:
+      after_body: tabset-dropdown.html
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r set-up-environment, echo = FALSE, results = FALSE, message = FALSE}
+rm( list = ls(  ) )
+cat( "\014" )
+
+start_time = Sys.time()
+
+library("conflicted")
+library("tidyverse")
+library("grid")
+library("gridExtra") 
+library("lme4")
+library("here")
+library("MuMIn")
+library("equatiomatic")
+library("knitr")
+library("optimx")
+library("GenSA")
+library("purrr")
+library("kableExtra")
+library("DT")
+
+conflict_prefer("filter", "dplyr")
+
+knitr::opts_chunk$set(message = FALSE)
+
+source(here("r_files", "biomass", "functions", "biomass_plots.R"))
+source(here("r_files", "biomass", "functions", "update_all_models_table.R"))
+source(here("r_files", "body_size", "functions", "plot_data_mean.R"))
+source(here("r_files", "body_size", "functions", "plot_data_raw.R"))
+
+
+p = NULL #To run the plotting function
+
+#Publication settings
+publication_width = 12
+publication_height = 12
+publication_unit = "cm"
+
+```
+
+# PatchSizePilot {.tabset}
+
+## Biomass {.tabset .tabset-pills}
+
+```{r child = here("r_files", "biomass", "main_biomass.Rmd")}
+```
+
+## Body size {.tabset .tabset-pills}
+
+```{r child = here("r_files", "body_size", "main_body_size.Rmd")}
+```
+
+## Running time
+
+```{r running-time, echo = FALSE, eval = TRUE}
+end_time = Sys.time()
+end_time - start_time
+```
+
+## Bibliography

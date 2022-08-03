@@ -13,6 +13,7 @@ Let's try to convert the biomass into its logarithm. So, let's plot it first.
 ```{r plot-logarithm-biomass}
 
 ds_regional %>%
+  filter(time_point > 1) %>%
   ggplot(aes(x = day,
              y = log(regional_mean_bioarea),
              group = day)) + 

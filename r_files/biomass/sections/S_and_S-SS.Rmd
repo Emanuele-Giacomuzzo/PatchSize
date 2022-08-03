@@ -1,0 +1,98 @@
+---
+title: "S_and_S-S_S"
+author: "Emanuele Giacomuzzo"
+date: '2022-07-26'
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+### S vs S (small-small)
+
+```{r, echo = FALSE}
+ds %>%
+  filter(eco_metaeco_type == "S" | 
+          eco_metaeco_type == "S (S_S)") %>%
+  filter(disturbance == "low") %>%
+  ggplot(aes(x = day,
+             y = bioarea_per_volume,
+             group= interaction(day, eco_metaeco_type),
+             fill = eco_metaeco_type,
+             color = eco_metaeco_type)) +
+  geom_boxplot() +
+  labs(x = "Day", 
+       y = "Local biomass (bioarea/µl)", 
+       color = '', 
+       fill = '',
+       title = "Disturbance = low") +
+  scale_fill_discrete(labels = c("Isolated", 
+                                 "Connected to same size")) +
+  scale_color_discrete(labels = c("Isolated", 
+                                  "Connected to same size")) +
+  theme_bw() +
+  theme(panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(),
+        legend.position = c(.95, .95),
+        legend.justification = c("right", "top"),
+        legend.box.just = "right",
+        legend.margin = margin(6, 6, 6, 6))
+
+ds %>%
+  filter(eco_metaeco_type == "S" | 
+          eco_metaeco_type == "S (S_S)") %>%
+  filter(disturbance == "high") %>%
+  ggplot(aes(x = day,
+             y = bioarea_per_volume,
+             group= interaction(day, eco_metaeco_type),
+             fill = eco_metaeco_type,
+             color = eco_metaeco_type)) +
+  geom_boxplot() +
+  labs(x = "Day", 
+       y = "Local biomass (bioarea/µl)", 
+       color = '', 
+       fill = '',
+       title = "Disturbance = high") +
+  scale_fill_discrete(labels = c("Isolated", 
+                                 "Connected to same size")) +
+  scale_color_discrete(labels = c("Isolated", 
+                                  "Connected to same size")) +
+  theme_bw() +
+  theme(panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(),
+        legend.position = c(.95, .95),
+        legend.justification = c("right", "top"),
+        legend.box.just = "right",
+        legend.margin = margin(6, 6, 6, 6))
+```
+
+#### Statistical test
+
+There doesn't seem to be a difference in local biomass production between small Isolatedes and small patches connected to identical small patches. But let's test it statistically. 
+
+```{r}
+
+ds_local_S_t2_t7 = ds %>%
+  filter (eco_metaeco_type == "S" | 
+          eco_metaeco_type == "S (S_S)") %>%
+  filter(time_point >= 2) #Let's take off the first two time points which are before the first disturbance event.
+
+full_model = lmer(bioarea_per_volume ~ 
+                    metaecosystem_type  + 
+                    disturbance + 
+                    metaecosystem_type * disturbance + 
+                    (metaecosystem_type || day) + 
+                    (disturbance || day) + 
+                    (metaecosystem_type*disturbance  || day),
+                  data = ds_local_S_t2_t7, 
+                  REML = FALSE)
+
+no_metaeco_type_model = lmer(bioarea_per_volume ~ 
+                    disturbance + 
+                    (disturbance || day),
+                  data = ds_local_S_t2_t7, 
+                  REML = FALSE)
+
+anova(full_model, no_metaeco_type_model)
+```
+
+As we predicted, they are the same. 

@@ -8,52 +8,13 @@ editor_options:
 bibliography: /Applications/Mendeley/library.bib
 ---
 
-# PatchSizePilot {.tabset}
-
-## Aim
+### Aim
 
 Here I study how **biomass density** changes across treatments in the PatchSizePilot. In particular, I'm studying how biomass density changes across:
 
 -   ecosystems of different size (this is the case in nature, but we need to make sure that it's the case also in our experiment)\
 -   ecosystems that are connected (through the flow of nutrients) to an ecosystem of the same size or to an ecosystem that is larger\
 -   meta-ecosystems in which patch size is the same or in which one patch has most of the area (we keep the total area of the meta-ecosystem constant)
-
-```{r set-up-environment, echo = FALSE, results = FALSE, message = FALSE}
-rm( list = ls(  ) )
-cat( "\014" )
-
-start_time = Sys.time()
-
-library("conflicted")
-library("tidyverse")
-library("grid")
-library("gridExtra") 
-library("lme4")
-library("here")
-library("MuMIn")
-library("equatiomatic")
-library("knitr")
-library("optimx")
-library("GenSA")
-library("purrr")
-library("kableExtra")
-library("DT")
-
-conflict_prefer("filter", "dplyr")
-
-knitr::opts_chunk$set(message = FALSE)
-
-source(here("r_files", "biomass", "functions", "biomass_plots.R"))
-source(here("r_files", "biomass", "functions", "update_all_models_table.R"))
-
-p = NULL #To run the plotting function
-
-#Publication settings
-publication_width = 12
-publication_height = 12
-publication_unit = "cm"
-
-```
 
 ```{r extract-sections, echo = FALSE, eval = FALSE}
 #You can just run this to run all the sections so then you can work on them. 
@@ -72,9 +33,9 @@ purrr::map(rmd.files, function(file.i) {
 })
 ```
 
-## Data manipulation
+### Data manipulation
 
-### Import
+#### Import
 
 ```{r import, message = FALSE, echo = TRUE}
 culture_info = read.csv(here("data", "PatchSizePilot_culture_info.csv"), header = TRUE)
@@ -89,19 +50,20 @@ load(here("data", "population", "t7.RData")); t7 = pop_output
 rm(pop_output)
 ```
 
-### Tidy
+#### Tidy
 
 ```{r}
+#Column: time
 t0$time = NA
 t1$time = NA
 
+#Column: replicate_video
 t0$replicate_video = 1:12 #In t1 I took 12 videos of a single 
 t1$replicate_video = 1 #In t1 I took only 1 video/culture
 t2$replicate_video = 1 #In t2 I took only 1 video/culture
 t3$replicate_video = 1 #In t3 I took only 1 video/culture
 t4$replicate_video = 1 #In t4 I took only 1 video/culture
 t5$replicate_video = 1 #In t5 I took only 1 video/culture
-
 t6 = t6 %>%
   rename(replicate_video = replicate)
 t7 = t7 %>%
@@ -110,16 +72,21 @@ t7 = t7 %>%
 #Create an elongated version of t0 so that each of the 110 cultures can have 12 video replicates at t0.
 elongating_t0 = NULL
 for (video in 1:nrow(t0)){
+  
   for (ID in 1:nrow(culture_info)) {
+    
     elongating_t0 = rbind(elongating_t0, t0[video,])
+    
+    }
+
   }
-}
 
 ID_vector = rep(1:nrow(culture_info), 
                 times = nrow(t0))
 
 elongating_t0$culture_ID = ID_vector
 
+#Merge previous data-sets
 t0 = merge(culture_info,elongating_t0, by="culture_ID")
 t1 = merge(culture_info,t1, by = "culture_ID")
 t2 = merge(culture_info,t2, by = "culture_ID")
@@ -197,7 +164,7 @@ ds = ds %>%
   filter(! culture_ID %in% ecosystems_to_take_off)
 ```
 
-### Create regional data set
+#### Create regional data set
 
 ```{r regional-biomass}
 ds_regional = ds %>%
@@ -222,34 +189,31 @@ ds_regional = ds_regional %>%
 source(here("r_files", "biomass", "extracted_sections", "plots.R"))
 ```
 
-## Regional biomass {.tabset .tabset-pills .tabset-fade}
+### Regional biomass {.tabset .tabset-dropdown}
 
-### Aim
-
-We are here going to model the regional biomass of different meta-ecosystems. However, the comparison we are interested in the most is the one between a meta-ecosystem with two medium patches (M_M) and the meta-ecosytem with a small and a large patches (S_L).
-
-### M_M vs S_L {.tabset}
+#### Medium-Medium vs Small-Large {.tabset}
 
 We want to understand if the regional biomass produced by an ecosystem with a small and a large patch (metaecosystem_type = S_L) is lower than the regional biomass produced by an ecosystem with two medium patches (metaecosystem_type = M_M).
 
-#### Plot
+##### Plot
 
 Let's start by plotting the single ecosystems to see that everything is fine. To make the patterns clear let's plot the low disturbance and high disturbance in two different figures. 
 
 ```{r, echo = FALSE}
-single_ecosystems_low = ds_regional %>%
+ds_regional %>%
     filter ( disturbance == "low") %>%
-    filter (metaecosystem_type == "S_L" | metaecosystem_type == "M_M") %>%
+    filter (metaecosystem_type == "S_L" | 
+              metaecosystem_type == "M_M") %>%
     ggplot (aes(x = day,
                 y = regional_mean_bioarea,
                 group = system_nr,
                 fill = system_nr,
                 color = system_nr,
                 linetype = metaecosystem_type)) +
-    geom_point() +
+    geom_point(show.legend = F) +
     geom_line () +
     labs(x = "Day", 
-         y = "Mean bioarea between two patches (something/µl)",
+         y = "Regional bioarea (something/µl)",
          title = "Disturbance = low",
          fill = "System nr",
          color = "System nr",
@@ -263,9 +227,8 @@ single_ecosystems_low = ds_regional %>%
           legend.justification = c("right", "top"),
           legend.box.just = "right",
           legend.margin = margin(6, 6, 6, 6))
-        
 
-single_ecosystems_high = ds_regional %>%
+ds_regional %>%
     filter ( disturbance == "high") %>%
     filter (metaecosystem_type == "S_L" | metaecosystem_type == "M_M") %>%
     ggplot (aes(x = day,
@@ -274,10 +237,10 @@ single_ecosystems_high = ds_regional %>%
                 fill = system_nr,
                 color = system_nr,
                 linetype = metaecosystem_type)) +
-    geom_point() +
+    geom_point(show.legend = F) +
     geom_line () +
     labs(x = "Day", 
-         y = "Mean bioarea between two patches (something/µl)",
+         y = "Regional bioarea (something/µl)",
          title = "Disturbance = high",
          fill = "System nr",
          color = "System nr",
@@ -293,32 +256,24 @@ single_ecosystems_high = ds_regional %>%
           legend.margin = margin(6, 6, 6, 6))
 ```
 
-```{r, echo = FALSE}
-single_ecosystems_low
-single_ecosystems_high
-```
-
 Let's then show these data as boxplots. 
 
 ```{r, echo = FALSE}
-p_regional_low_boxplots = ds_regional %>%
+p_regional_low_mean = ds_regional %>%
   filter(disturbance == "low") %>%
   filter (metaecosystem_type == "S_L" | metaecosystem_type == "M_M") %>%
   ggplot (aes(x = day,
               y = regional_mean_bioarea,
               group = interaction(day, metaecosystem_type),
-              fill = metaecosystem_type,
-              color = metaecosystem_type)) +
+              fill = metaecosystem_type)) +
   geom_boxplot() +
   labs(x = "Day", 
-       y = "Mean bioarea between two patches (something/µl)",
+       y = "Regional bioarea (something/µl)",
        title = "Disturbance = low",
        color='', 
        fill='') +
-  scale_fill_discrete(labels = c("Same size", 
-                                 "Different size")) +
-  scale_color_discrete(labels = c("Same size", 
-                                  "Different size")) +
+  scale_fill_discrete(labels = c("medium-medium", 
+                                 "small-large")) +
   theme_bw() +
   theme(panel.grid.major = element_blank(), 
         panel.grid.minor = element_blank(),
@@ -326,25 +281,22 @@ p_regional_low_boxplots = ds_regional %>%
         legend.justification = c("right", "top"),
         legend.box.just = "right",
         legend.margin = margin(6, 6, 6, 6))
+p_regional_low_mean
 
-p_regional_high_boxplots = ds_regional %>%
+ds_regional %>%
   filter(disturbance == "high") %>%
   filter (metaecosystem_type == "S_L" | metaecosystem_type == "M_M") %>%
   ggplot (aes(x = day,
               y = regional_mean_bioarea,
               group = interaction (day, metaecosystem_type),
-              fill = metaecosystem_type,
-              color = metaecosystem_type)) +
+              fill = metaecosystem_type)) +
   geom_boxplot() +
   labs(x = "Day", 
-       y = "Mean bioarea between two patches (something/µl)",
+       y = "Regional bioarea (something/µl)",
        title = "Disturbance = high",
        color='', 
        fill='') +
-  scale_fill_discrete(labels = c("Same size", 
-                                 "Different size")) +
-  scale_color_discrete(labels = c("Same size", 
-                                  "Different size")) +
+  scale_fill_discrete(labels = c("medium-medium", "small-large")) +
   theme_bw() +
   theme(panel.grid.major = element_blank(), 
         panel.grid.minor = element_blank(),
@@ -353,107 +305,29 @@ p_regional_high_boxplots = ds_regional %>%
         legend.box.just = "right",
         legend.margin = margin(6, 6, 6, 6))
 
-p_regional_low_boxplots
-p_regional_high_boxplots
-```
-
-And their mean and standard deviation.
-
-```{r echo = FALSE}
-
-p_regional_low_mean = ds_regional %>%
-  group_by(metaecosystem_type, disturbance, day) %>%
-  summarise(mean_bioarea = mean(regional_mean_bioarea), 
-            sd_bioarea = sd(regional_mean_bioarea)) %>%
-  filter(disturbance == "low") %>%
-  filter (metaecosystem_type == "S_L" | metaecosystem_type == "M_M") %>%
-  ggplot (aes(x = day,
-                y = mean_bioarea,
-                fill = metaecosystem_type,
-                color = metaecosystem_type)) +
-  geom_line (stat = "summary", 
-             fun = "mean", 
-             position=position_dodge(width=0.5)) +
-  geom_pointrange(aes(ymin = mean_bioarea - sd_bioarea, 
-                      ymax = mean_bioarea + sd_bioarea),
-                  position=position_dodge(width=0.5)) +
-  labs(x = "Day", 
-       y = "Mean bioarea between two patches (something/µl)",
-       title = "Disturbance = low",
-       color='', 
-       fill='') +
-  scale_fill_discrete(labels = c("Same size", 
-                                 "Different size")) +
-  scale_color_discrete(labels = c("Same size", 
-                                  "Different size")) +
-  theme_bw() +
-  theme(panel.grid.major = element_blank(), 
-        panel.grid.minor = element_blank(),
-        legend.position = c(.95, .95),
-        legend.justification = c("right", "top"),
-        legend.box.just = "right",
-        legend.margin = margin(6, 6, 6, 6))
-
-p_regional_high_mean = ds_regional %>%
-  group_by(metaecosystem_type, disturbance, day) %>%
-  summarise(mean_bioarea = mean(regional_mean_bioarea), 
-            sd_bioarea = sd(regional_mean_bioarea)) %>%
-  filter(disturbance == "high") %>%
-  filter (metaecosystem_type == "S_L" | metaecosystem_type == "M_M") %>%
-  ggplot (aes(x = day,
-                y = mean_bioarea,
-                fill = metaecosystem_type,
-                color = metaecosystem_type)) +
-  #geom_point(stat = "summary", fun = "mean") +
-  geom_line (stat = "summary", 
-             fun = "mean", 
-             position=position_dodge(width=0.5)) +
-  geom_pointrange(
-    aes(ymin = mean_bioarea - sd_bioarea, 
-        ymax = mean_bioarea + sd_bioarea),
-    position=position_dodge(width=0.5)) +
-  labs(x = "Day", 
-       y = "Mean bioarea between two patches (something/µl)",
-       title = "Disturbance = high",
-       color='', 
-       fill='') +
-  scale_fill_discrete(labels = c("Same size", 
-                                 "Different size")) +
-  scale_color_discrete(labels = c("Same size", 
-                                  "Different size")) +
-  theme_bw() +
-  theme(panel.grid.major = element_blank(), 
-        panel.grid.minor = element_blank(),
-        legend.position = c(.95, .95),
-        legend.justification = c("right", "top"),
-        legend.box.just = "right",
-        legend.margin = margin(6, 6, 6, 6))
-
-p_regional_low_mean
-p_regional_high_mean
 ```
 
 We can see that the regional biomass was higher for meta-ecosystems with the same size, regardless of disturbance. As both disturbance levels showed the same pattern, I would just keep the one with low disturbance in the publication, as it shows a stronger pattern.
 
-#### Time as random effect
+##### Time as random effect
 
-```{r M_M-S_L_time_random, child = here("r_files", "biomass", "sections", "M_M-S_L_time_random.Rmd"), echo = TRUE, eval = TRUE}
-source(here("r_files", "biomass", "extracted_sections", "M_M-S_L_time_random.R"))
+```{r MM_SL_time_random, child = here("r_files", "biomass", "sections", "MM_SL_time_random.Rmd"), echo = TRUE, eval = TRUE}
+source(here("r_files", "biomass", "extracted_sections", "MM_SL_time_random.R"))
 ```
 
-#### Time fitting
+##### Time fitting
 
 ```{r MM_SL_time_fitting, child = here("r_files", "biomass", "sections", "MM_SL_time_fitting.Rmd"), echo = TRUE, eval = TRUE}
 source(here("r_files", "biomass", "extracted_sections", "MM_SL_time_fitting.R"))
 ```
 
-#### Time as fixed effect
+##### Time as fixed effect
 
-```{r M_M-S_L_time_fitted, child = here("r_files", "biomass", "sections", "M_M-S_L_time_fitted.Rmd"), echo = TRUE, eval = TRUE}
-source(here("r_files", "biomass", "extracted_sections", "M_M-S_L_time_fitted.R"))
+```{r MM_SL_time_fitted, child = here("r_files", "biomass", "sections", "MM_SL_time_fitted.Rmd"), echo = TRUE, eval = TRUE}
+source(here("r_files", "biomass", "extracted_sections", "MM_SL_time_fitted.R"))
 ```
 
-#### Selected models
+##### Selected models
 
 ```{r, echo = FALSE}
 full_table = rbind(random_time_table, fitted_time_table)
@@ -486,43 +360,44 @@ datatable(full_table,
 
 ```
 
+### Local biomass {.tabset .tabset-dropdown}
 
+#### Small patches
 
-## Local biomass {.tabset .tabset-pills .tabset-fade}
-
-### Aim
-
-Here we are going to model how local biomass changes across treatments. At the end of the day, however, we are interested in knowing the difference between the biomass of: - an isolated small patch (S) - a small patch connected to another small patch S (S_S) - a small patch connected to a larger patch S (S_L).
-
-### S (small-large) vs S (small-small) vs S
-
-Include here. 
-
-```{r child = here("r_files", "biomass", "sections", "S-S_S_and_S-S_L.Rmd")}
-source(here("r_files", "biomass", "extracted_sections", "S-S_S_and_S-S_L.R"))
+```{r child = here("r_files", "biomass", "sections", "small_patches.Rmd")}
+source(here("r_files", "biomass", "extracted_sections", "small_patches.R"))
 ```
 
-```{r child = here("r_files", "biomass", "sections", "S_and_S-S_L.Rmd")}
-source(here("r_files", "biomass", "extracted_sections", "S_and_S-S_L.R"))
+```{r child = here("r_files", "biomass", "sections", "S-SS_and_S-SL.Rmd"), eval = FALSE}
+source(here("r_files", "biomass", "extracted_sections", "S-SS_and_S-SL.R"))
 ```
 
-Problem of rescaling variables
-
-```{r child = here("r_files", "biomass", "sections", "S_and_S-S_S.Rmd")}
-source(here("r_files", "biomass", "extracted_sections", "S_and_S-S_S.R"))
+```{r child = here("r_files", "biomass", "sections", "S_and_S-SL.Rmd"), eval = FALSE}
+source(here("r_files", "biomass", "extracted_sections", "S_and_S-SL.R"))
 ```
 
-```{r child = here("r_files", "biomass", "sections", "L_and_L-L_L.Rmd")}
-source(here("r_files", "biomass", "extracted_sections", "L_and_L-L_L.R"))
+```{r child = here("r_files", "biomass", "sections", "S_and_S-SS.Rmd"), eval = FALSE}
+source(here("r_files", "biomass", "extracted_sections", "S_and_S-SS.R"))
 ```
 
-```{r child = here("r_files", "biomass", "sections", "L_and_L-S_L.Rmd")}
-source(here("r_files", "biomass", "extracted_sections", "L_and_L-S_L.R"))
+#### Large patches
+
+```{r child = here("r_files", "biomass", "sections", "large_patches.Rmd")}
+source(here("r_files", "biomass", "extracted_sections", "large_patches.R"))
 ```
 
-## Figures
 
-```{r, echo = FALSE, fig.align='center', fig.cap = "Regional biomass production in meta-ecosystems of the same total area, but whose two patches have either the same size (red, medium-medium meta-ecosystem) or that have a smaller and larger patch (blue, small-large meta-ecosystem). Points represent the mean, error bars represent the standard deviation. For clarity, only the low disturbance treatment is shown here. See the Appendix for equivalent the figure of the high disturbance treatment."}
+```{r child = here("r_files", "biomass", "sections", "L_and_L-LL.Rmd"), eval = FALSE}
+source(here("r_files", "biomass", "extracted_sections", "L_and_L-LL.R"))
+```
+
+```{r child = here("r_files", "biomass", "sections", "L_and_L-SL.Rmd"), eval= FALSE}
+source(here("r_files", "biomass", "extracted_sections", "L_and_L-SL.R"))
+```
+
+### Figures
+
+```{r, echo = FALSE, fig.align='center', fig.cap = "Regional bioarea density (mean bioarea density between two patches) in meta-ecosystems of the same total area, but whose two patches have either the same size (red, medium-medium meta-ecosystem) or that have a smaller and larger patch (blue, small-large meta-ecosystem). Points represent the mean, error bars represent the standard deviation. For clarity, only the low disturbance treatment is shown here. See the Appendix for equivalent the figure of the high disturbance treatment."}
 p_regional_low_mean + labs(title = "")
 
 ggsave(here("results", "biomass", "publication_regional_low_mean.jpg"), 
@@ -533,18 +408,18 @@ ggsave(here("results", "biomass", "publication_regional_low_mean.jpg"),
 ```
 
 ```{r, echo = FALSE, fig.align = 'center', fig.cap = "Local biomass production in patches that are either connnected to a patch of the same size (green, small patches of small-small meta-ecosystemes) or to a patch of larger size (orange, small patches of small-large meta-ecosystems). Points represent the mean, error bars represent the standard deviation. For clarity, only the low disturbance treatment is shown here. See the Appendix for equivalent the figure of the high disturbance treatment. Problem: the small patches in green actually have different sample size than the one in orange. Does it still make sense to include the standard deviation?"}
-local_low_mean + labs(title = "")
+local_small_low_plot + labs(title = "")
 
-ggsave(here("results", "biomass", "publication_local_low_mean.jpg"), 
-       local_low_mean + labs(title = ""), 
+ggsave(here("results", "biomass", "publication_local_small_low_plot.jpg"), 
+       local_small_low_plot + labs(title = ""), 
        units = publication_unit,
        width = publication_width, 
        height = publication_height)
 ```
 
-## Other
+### Other
 
-### Mixed effects models
+#### Mixed effects models
 
 -   To build the mixed effect models we will use the R package lme4. See page 6 of [this PDF](https://cran.r-project.org/web/packages/lme4/vignettes/lmer.pdf) to know more about the syntaxis of this package.
 
@@ -556,39 +431,12 @@ ggsave(here("results", "biomass", "publication_local_low_mean.jpg"),
 
 -   The effect size of the explaining variables is calculated in the mixed effect models as marginal and conditional r squared. The marginal r squared is how much variance is explained by the fixed effects. The conditional r squared is how much variance is explained by the fixed and the random effects. The marginal and conditional r squared are calculated using the package `MuMIn`. The computation is based on the methods of @Nakagawa2017. For the coding and interpretation of these r squared check the [documentation for the r.squaredGLMM function](https://rdrr.io/cran/MuMIn/man/r.squaredGLMM.html)
 
-### Model selection
+#### Model selection
 
 -   I am starting from the largest model and then simplifying because ... (see statistical modelling course at ETH).
 
 -   I am going to select the best model according to AIC. BIC is better for understanding and AIC for predicting. @Halsey2019 also suggests this approach instead of p values. I'm going to use AIC because I'm interested in knowign how much meta-ecosystem type contributed to the overall regional biomass.
 
-### Error bars
+#### Error bars
 
 ...
-
-### To do 
-
-1. Research which error bars to include. Then including them. 
-
-What error bars should I show in the plots? @Cumming2007 advises that when we are in the realm of experimental biology and we want to compare treatment and control, we should use inferential error bars, such as the standard error (SE) or the confidence interval (CI). However, they are both not robust to different sample sizes. Therefore, we need a robust measure of scale that is robust to sample size. These are interquartile ranges (IQR) and median absolute deviation (MAD). According to @Rousseeuw1993, however, MAD is more robust than IQR. The problem, however, is that if I show the median instead of the mean, the patterns of regional and local biomass just disappear. So, I should show something different. Basically, I need to show a error bar that is a robust measure of scale that is robust to sample size and is not based on the median. 
-
-2. Re-run the analysis without 106-110, as I overboiled them and then compare it to the analysis with them. 
-
-3. Produce boxplots in which points are connected to each other.
-
-4. Include a figure with all the local biomass.
-
-5. Include a figure with all the regional biomass.
-
-6. Model S vs M vs L
-
-7. Model SS vs MM vs LL
-
-### Running time
-
-```{r running-time, echo = FALSE, eval = TRUE}
-end_time = Sys.time()
-end_time - start_time
-```
-
-## Bibliography
