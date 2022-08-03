@@ -258,7 +258,7 @@ for (time_point in 0:7) {
 }
 ```
 
-#### Isolated Small vs Small connected to Large
+#### All patches across time 
 
 ```{r, echo = FALSE, fig.align = "center", out.width="200%"}
 S = ds_classes %>%
@@ -349,7 +349,7 @@ grid.arrange(S, S_L,
 
 #### Disturbance = low
 
-```{r, echo = FALSE, fig.align = "center", out.width="200%"}
+```{r, echo = FALSE, fig.align = "center"}
 S = ds_classes %>%
   filter(eco_metaeco_type == "S") %>%
   filter(disturbance == "low") %>%
@@ -502,12 +502,20 @@ L_S_L = ds_classes %>%
           legend.box.just = "right",
           legend.margin = margin(6, 6, 6, 6))
 
-grid.arrange(S, S_S, S_S_L, 
-             M, M_M, 
-             L, L_L, L_S_L,
-             ncol = 2,
-             nrow = 4,
-             top = "Disturbance = Low")
+# grid.arrange(S, S_S, S_S_L, 
+#              M, M_M, 
+#              L, L_L, L_S_L,
+#              ncol = 2,
+#              nrow = 4,
+#              top = "Disturbance = Low")
+S
+S_S
+S_S_L
+M
+M_M 
+L
+L_L
+L_S_L
 ```
 
 ```{r, echo = FALSE, fig.align = "center", out.width="200%"}
@@ -664,7 +672,7 @@ L_S_L = ds_classes %>%
           legend.margin = margin(6, 6, 6, 6))
 
 grid.arrange(S, S_S, S_S_L, 
-             M, M_M, blank,
+             M, M_M, 
              L, L_L, L_S_L,
              ncol = 2,
              nrow = 4,

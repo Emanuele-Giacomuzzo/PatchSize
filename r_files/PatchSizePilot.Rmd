@@ -67,6 +67,28 @@ publication_unit = "cm"
 ```{r child = here("r_files", "body_size", "main_body_size.Rmd")}
 ```
 
+## Figures
+
+```{r, echo = FALSE, fig.align='center', fig.cap = "Regional bioarea density (mean bioarea density between two patches) in meta-ecosystems of the same total area, but whose two patches have either the same size (red, medium-medium meta-ecosystem) or that have a smaller and larger patch (blue, small-large meta-ecosystem). Points represent the mean, error bars represent the standard deviation. For clarity, only the low disturbance treatment is shown here. See the Appendix for equivalent the figure of the high disturbance treatment."}
+p_regional_low_mean + labs(title = "")
+
+ggsave(here("results", "biomass", "publication_regional_low_mean.jpg"), 
+       p_regional_low_mean + labs(title = ""), 
+       units = publication_unit,
+       width = publication_width, 
+       height = publication_height)
+```
+
+```{r, echo = FALSE, fig.align = 'center', fig.cap = "Local biomass production in patches that are either connnected to a patch of the same size (green, small patches of small-small meta-ecosystemes) or to a patch of larger size (orange, small patches of small-large meta-ecosystems). Points represent the mean, error bars represent the standard deviation. For clarity, only the low disturbance treatment is shown here. See the Appendix for equivalent the figure of the high disturbance treatment. Problem: the small patches in green actually have different sample size than the one in orange. Does it still make sense to include the standard deviation?"}
+local_small_low_plot + labs(title = "")
+
+ggsave(here("results", "biomass", "publication_local_small_low_plot.jpg"), 
+       local_small_low_plot + labs(title = ""), 
+       units = publication_unit,
+       width = publication_width, 
+       height = publication_height)
+```
+
 ## Running time
 
 ```{r running-time, echo = FALSE, eval = TRUE}

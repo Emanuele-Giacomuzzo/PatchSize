@@ -4,7 +4,7 @@
 
 ds %>%
   filter(disturbance == "low") %>%
-  filter(eco_metaeco_type == "S" | eco_metaeco_type == "S (S_L)") %>%
+  filter(eco_metaeco_type == "S (S_S)" | eco_metaeco_type == "S (S_L)") %>%
   ggplot(aes(x = day,
              y = bioarea_per_volume,
              group = system_nr,
@@ -22,13 +22,15 @@ ds %>%
         legend.position = c(.95, .95),
         legend.justification = c("right", "top"),
         legend.box.just = "right",
-        legend.margin = margin(6, 6, 6, 6))
+        legend.margin = margin(6, 6, 6, 6)) +
+  scale_linetype_discrete(labels = c("small connected to small",
+                                 "small connected to large"))
 
 ### --- S PATCHES HIGH DISTURBANCE SINGLE PATCHES --- ###
 
 ds %>%
   filter(disturbance == "high") %>%
-  filter(eco_metaeco_type == "S" | eco_metaeco_type == "S (S_L)") %>%
+  filter(eco_metaeco_type == "S (S_S)" | eco_metaeco_type == "S (S_L)") %>%
   ggplot(aes(x = day,
              y = bioarea_per_volume,
              group = system_nr,
@@ -46,7 +48,9 @@ ds %>%
         legend.position = c(.95, .95),
         legend.justification = c("right", "top"),
         legend.box.just = "right",
-        legend.margin = margin(6, 6, 6, 6))
+        legend.margin = margin(6, 6, 6, 6)) +
+  scale_linetype_discrete(labels = c("small connected to small",
+                                 "small connected to large"))
 
 ### --- S PATCHES LOW DISTURBANCE BOXPLOTS --- ###
 

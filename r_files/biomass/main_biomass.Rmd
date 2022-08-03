@@ -118,6 +118,23 @@ ds$day[ds$time_point== 5] = 20
 ds$day[ds$time_point== 6] = 24
 ds$day[ds$time_point== 7] = 28
 
+#Column: eco_metaeco_type
+ds$eco_metaeco_type = factor(ds$eco_metaeco_type, 
+                             levels = c('S', 
+                                        'S (S_S)', 
+                                        'S (S_L)', 
+                                        'M', 
+                                        'M (M_M)', 
+                                        'L', 
+                                        'L (L_L)', 
+                                        'L (S_L)'))
+
+ecosystems_to_take_off = 60 #Culture number 60 because it was spilled
+ds = ds %>%
+  filter(! culture_ID %in% ecosystems_to_take_off)
+
+ds_for_evaporation = ds
+
 ds = ds %>% 
   select(culture_ID, 
          patch_size, 
@@ -142,26 +159,6 @@ ds = ds[, c("culture_ID",
             "eco_metaeco_type", 
             "replicate_video",
             "bioarea_per_volume")]
-
-ds$eco_metaeco_type = factor(ds$eco_metaeco_type, 
-                             levels = c('S', 
-                                        'S (S_S)', 
-                                        'S (S_L)', 
-                                        'M', 
-                                        'M (M_M)', 
-                                        'L', 
-                                        'L (L_L)', 
-                                        'L (S_L)'))
-
-#ds$patch_size = factor(ds$patch_size,
-#                        levels = c ('S', 'M', 'L'))
-
-#ds$metaecosystem_type = factor(ds$metaecosystem_type, 
-#levels = c ('S_S', 'M_M', 'L_L', 'S_L'))
-
-ecosystems_to_take_off = 60 #Culture number 60 because it was spilled
-ds = ds %>%
-  filter(! culture_ID %in% ecosystems_to_take_off)
 ```
 
 #### Create regional data set
@@ -197,7 +194,7 @@ We want to understand if the regional biomass produced by an ecosystem with a sm
 
 ##### Plot
 
-Let's start by plotting the single ecosystems to see that everything is fine. To make the patterns clear let's plot the low disturbance and high disturbance in two different figures. 
+Let's start by plotting the single ecosystems to see that everything is fine. To make the patterns clear let's plot the low disturbance and high disturbance in two different figures.
 
 ```{r, echo = FALSE}
 ds_regional %>%
@@ -256,7 +253,7 @@ ds_regional %>%
           legend.margin = margin(6, 6, 6, 6))
 ```
 
-Let's then show these data as boxplots. 
+Let's then show these data as boxplots.
 
 ```{r, echo = FALSE}
 p_regional_low_mean = ds_regional %>%
@@ -386,7 +383,6 @@ source(here("r_files", "biomass", "extracted_sections", "S_and_S-SS.R"))
 source(here("r_files", "biomass", "extracted_sections", "large_patches.R"))
 ```
 
-
 ```{r child = here("r_files", "biomass", "sections", "L_and_L-LL.Rmd"), eval = FALSE}
 source(here("r_files", "biomass", "extracted_sections", "L_and_L-LL.R"))
 ```
@@ -395,26 +391,10 @@ source(here("r_files", "biomass", "extracted_sections", "L_and_L-LL.R"))
 source(here("r_files", "biomass", "extracted_sections", "L_and_L-SL.R"))
 ```
 
-### Figures
+### Evaporation
 
-```{r, echo = FALSE, fig.align='center', fig.cap = "Regional bioarea density (mean bioarea density between two patches) in meta-ecosystems of the same total area, but whose two patches have either the same size (red, medium-medium meta-ecosystem) or that have a smaller and larger patch (blue, small-large meta-ecosystem). Points represent the mean, error bars represent the standard deviation. For clarity, only the low disturbance treatment is shown here. See the Appendix for equivalent the figure of the high disturbance treatment."}
-p_regional_low_mean + labs(title = "")
-
-ggsave(here("results", "biomass", "publication_regional_low_mean.jpg"), 
-       p_regional_low_mean + labs(title = ""), 
-       units = publication_unit,
-       width = publication_width, 
-       height = publication_height)
-```
-
-```{r, echo = FALSE, fig.align = 'center', fig.cap = "Local biomass production in patches that are either connnected to a patch of the same size (green, small patches of small-small meta-ecosystemes) or to a patch of larger size (orange, small patches of small-large meta-ecosystems). Points represent the mean, error bars represent the standard deviation. For clarity, only the low disturbance treatment is shown here. See the Appendix for equivalent the figure of the high disturbance treatment. Problem: the small patches in green actually have different sample size than the one in orange. Does it still make sense to include the standard deviation?"}
-local_small_low_plot + labs(title = "")
-
-ggsave(here("results", "biomass", "publication_local_small_low_plot.jpg"), 
-       local_small_low_plot + labs(title = ""), 
-       units = publication_unit,
-       width = publication_width, 
-       height = publication_height)
+```{r child = here("r_files", "biomass", "sections", "evaporation.Rmd"), eval= TRUE}
+source(here("r_files", "biomass", "extracted_sections", "evaporation.R"))
 ```
 
 ### Other
