@@ -7,6 +7,8 @@ editor_options:
   chunk_output_type: console
 ---
 
+### Aim
+
 ### Data manipulation
 
 #### Import
@@ -131,7 +133,7 @@ ds = ds[, c("culture_ID",
             "mean_area")]
 ```
 
-#### Create size classes dataset
+#### Create size classes data-set
 
 As in @Jacquet2020 I will create 12 size classes.
 
@@ -190,11 +192,11 @@ ds_classes = rbind(size_class[[1]], size_class[[2]], size_class[[3]], size_class
 
 ### Plot
 
-#### Small patches
+#### Comparison of the three small patches
 
-##### Low disturbance
+The code for plotting the size class distribution across small patches doesn't work for some reason. It displays all plots as if they were the same.
 
-```{r echo = FALSE}
+```{r echo = FALSE, eval = FALSE}
 for (time_point in 0:7) {
    
   print(ds_classes %>%
@@ -223,11 +225,7 @@ for (time_point in 0:7) {
           legend.box.just = "right",
           legend.margin = margin(6, 6, 6, 6)))
 }
-```
 
-##### High disturbance
-
-```{r, echo = FALSE}
 for (time_point in 0:7) {
    
   print(ds_classes %>%
@@ -258,101 +256,17 @@ for (time_point in 0:7) {
 }
 ```
 
-#### All patches across time 
-
-```{r, echo = FALSE, fig.align = "center", out.width="200%"}
-S = ds_classes %>%
-  filter(eco_metaeco_type == "S") %>%
-  filter(disturbance == "low") %>%
-  ggplot(aes(x = log_size,
-             y = log_abundance,
-             group = interaction(log_size, day),
-             color = day)) +
-  labs(title = "small isolated") +
-  geom_point(stat = "summary", fun = "mean") +
-  geom_line(stat = "summary", fun = "mean", aes(group = day)) +
-  scale_fill_gradient(low="blue", high="yellow") + 
-  theme_bw() +
-  theme(panel.grid.major = element_blank(), 
-          panel.grid.minor = element_blank(),
-          legend.position = c(.95, .95),
-          legend.justification = c("right", "top"),
-          legend.box.just = "right",
-          legend.margin = margin(6, 6, 6, 6))
-
-S_L = ds_classes %>%
-  filter(eco_metaeco_type == "S (S_L)") %>%
-  filter(disturbance == "low") %>%
-  ggplot(aes(x = log_size,
-             y = log_abundance,
-             group = interaction(log_size, day),
-             color = day)) +
-  labs(title = "small connected to large") +
-  geom_point(stat = "summary", fun = "mean") +
-  geom_line(stat = "summary", fun = "mean", aes(group = day)) +
-  scale_fill_gradient(low="blue", high="yellow") + 
-  theme_bw() +
-  theme(panel.grid.major = element_blank(), 
-          panel.grid.minor = element_blank(),
-          legend.position = c(.95, .95),
-          legend.justification = c("right", "top"),
-          legend.box.just = "right",
-          legend.margin = margin(6, 6, 6, 6))
-
-
-grid.arrange(S, S_L,
-             ncol = 2,
-             top = "Disturbance = low")  
-
-S = ds_classes %>%
-  filter(eco_metaeco_type == "S") %>%
-  filter(disturbance == "high") %>%
-  ggplot(aes(x = log_size,
-             y = log_abundance,
-             group = interaction(log_size, day),
-             color = day)) +
-  labs(title = "small isolated") +
-  geom_point(stat = "summary", fun = "mean") +
-  geom_line(stat = "summary", fun = "mean", aes(group = day)) +
-  scale_fill_gradient(low="blue", high="yellow") + 
-  theme_bw() +
-  theme(panel.grid.major = element_blank(), 
-          panel.grid.minor = element_blank(),
-          legend.position = c(.95, .95),
-          legend.justification = c("right", "top"),
-          legend.box.just = "right",
-          legend.margin = margin(6, 6, 6, 6))
-
-S_L = ds_classes %>%
-  filter(eco_metaeco_type == "S (S_L)") %>%
-  filter(disturbance == "high") %>%
-  ggplot(aes(x = log_size,
-             y = log_abundance,
-             group = interaction(log_size, day),
-             color = day)) +
-  labs(title = "small connected to large") +
-  geom_point(stat = "summary", fun = "mean") +
-  geom_line(stat = "summary", fun = "mean", aes(group = day)) +
-  scale_fill_gradient(low="blue", high="yellow") + 
-  theme_bw() +
-  theme(panel.grid.major = element_blank(), 
-          panel.grid.minor = element_blank(),
-          legend.position = c(.95, .95),
-          legend.justification = c("right", "top"),
-          legend.box.just = "right",
-          legend.margin = margin(6, 6, 6, 6))
-
-grid.arrange(S, S_L,
-             ncol = 2,
-             top = "Disturbance = high")  
-```
-
-#### Disturbance = low
+#### Comparison of different time points
 
 ```{r, echo = FALSE, fig.align = "center"}
-S = ds_classes %>%
+
+for (disturbance in c("low", "high")) {
+
+  print(paste("Disturbance =", disturbance))
+  
+print(ds_classes %>%
   filter(eco_metaeco_type == "S") %>%
-  filter(disturbance == "low") %>%
+  filter(disturbance == disturbance) %>%
   ggplot(aes(x = log_size,
              y = log_abundance,
              group = interaction(log_size, day),
@@ -367,11 +281,11 @@ S = ds_classes %>%
           legend.position = c(.95, .95),
           legend.justification = c("right", "top"),
           legend.box.just = "right",
-          legend.margin = margin(6, 6, 6, 6))
+          legend.margin = margin(6, 6, 6, 6)))
 
-S_S = ds_classes %>%
+print(ds_classes %>%
   filter(eco_metaeco_type == "S (S_S)") %>%
-  filter(disturbance == "low") %>%
+  filter(disturbance == disturbance) %>%
   ggplot(aes(x = log_size,
              y = log_abundance,
              group = interaction(log_size, day),
@@ -386,9 +300,9 @@ S_S = ds_classes %>%
           legend.position = c(.95, .95),
           legend.justification = c("right", "top"),
           legend.box.just = "right",
-          legend.margin = margin(6, 6, 6, 6))
+          legend.margin = margin(6, 6, 6, 6)))
 
-S_S_L = ds_classes %>%
+print(ds_classes %>%
   filter(eco_metaeco_type == "S (S_L)") %>%
   filter(disturbance == "low") %>%
   ggplot(aes(x = log_size,
@@ -405,11 +319,11 @@ S_S_L = ds_classes %>%
           legend.position = c(.95, .95),
           legend.justification = c("right", "top"),
           legend.box.just = "right",
-          legend.margin = margin(6, 6, 6, 6))
+          legend.margin = margin(6, 6, 6, 6)))
 
-M = ds_classes %>%
+print(ds_classes %>%
   filter(eco_metaeco_type == "M") %>%
-  filter(disturbance == "low") %>%
+  filter(disturbance == disturbance) %>%
   ggplot(aes(x = log_size,
              y = log_abundance,
              group = interaction(log_size, day),
@@ -424,11 +338,11 @@ M = ds_classes %>%
           legend.position = c(.95, .95),
           legend.justification = c("right", "top"),
           legend.box.just = "right",
-          legend.margin = margin(6, 6, 6, 6))
+          legend.margin = margin(6, 6, 6, 6)))
 
-M_M = ds_classes %>%
+print(ds_classes %>%
   filter(eco_metaeco_type == "M (M_M)") %>%
-  filter(disturbance == "low") %>%
+  filter(disturbance == disturbance) %>%
   ggplot(aes(x = log_size,
              y = log_abundance,
              group = interaction(log_size, day),
@@ -443,11 +357,11 @@ M_M = ds_classes %>%
           legend.position = c(.95, .95),
           legend.justification = c("right", "top"),
           legend.box.just = "right",
-          legend.margin = margin(6, 6, 6, 6))
+          legend.margin = margin(6, 6, 6, 6)))
 
-L = ds_classes %>%
+print(ds_classes %>%
   filter(eco_metaeco_type == "L") %>%
-  filter(disturbance == "low") %>%
+  filter(disturbance == disturbance) %>%
   ggplot(aes(x = log_size,
              y = log_abundance,
              group = interaction(log_size, day),
@@ -462,11 +376,11 @@ L = ds_classes %>%
           legend.position = c(.95, .95),
           legend.justification = c("right", "top"),
           legend.box.just = "right",
-          legend.margin = margin(6, 6, 6, 6))
+          legend.margin = margin(6, 6, 6, 6)))
 
-L_L = ds_classes %>%
+print(ds_classes %>%
   filter(eco_metaeco_type == "L (L_L)") %>%
-  filter(disturbance == "low") %>%
+  filter(disturbance == disturbance) %>%
   ggplot(aes(x = log_size,
              y = log_abundance,
              group = interaction(log_size, day),
@@ -481,11 +395,11 @@ L_L = ds_classes %>%
           legend.position = c(.95, .95),
           legend.justification = c("right", "top"),
           legend.box.just = "right",
-          legend.margin = margin(6, 6, 6, 6))
+          legend.margin = margin(6, 6, 6, 6)))
 
-L_S_L = ds_classes %>%
+print(ds_classes %>%
   filter(eco_metaeco_type == "L (S_L)") %>%
-  filter(disturbance == "low") %>%
+  filter(disturbance == disturbance) %>%
   ggplot(aes(x = log_size,
              y = log_abundance,
              group = interaction(log_size, day),
@@ -500,214 +414,12 @@ L_S_L = ds_classes %>%
           legend.position = c(.95, .95),
           legend.justification = c("right", "top"),
           legend.box.just = "right",
-          legend.margin = margin(6, 6, 6, 6))
+          legend.margin = margin(6, 6, 6, 6)))
 
-# grid.arrange(S, S_S, S_S_L, 
-#              M, M_M, 
-#              L, L_L, L_S_L,
-#              ncol = 2,
-#              nrow = 4,
-#              top = "Disturbance = Low")
-S
-S_S
-S_S_L
-M
-M_M 
-L
-L_L
-L_S_L
+}
 ```
 
-```{r, echo = FALSE, fig.align = "center", out.width="200%"}
-S = ds_classes %>%
-  filter(eco_metaeco_type == "S") %>%
-  filter(disturbance == "high") %>%
-  ggplot(aes(x = log_size,
-             y = log_abundance,
-             group = interaction(log_size, day),
-             color = day)) +
-  labs(title = "small isolated") +
-  geom_point(stat = "summary", fun = "mean") +
-  geom_line(stat = "summary", fun = "mean", aes(group = day)) +
-  scale_fill_gradient(low="blue", high="yellow") + 
-  theme_bw() +
-  theme(panel.grid.major = element_blank(), 
-          panel.grid.minor = element_blank(),
-          legend.position = c(.95, .95),
-          legend.justification = c("right", "top"),
-          legend.box.just = "right",
-          legend.margin = margin(6, 6, 6, 6))
-
-S_S = ds_classes %>%
-  filter(eco_metaeco_type == "S (S_S)") %>%
-  filter(disturbance == "high") %>%
-  ggplot(aes(x = log_size,
-             y = log_abundance,
-             group = interaction(log_size, day),
-             color = day)) +
-  labs(title = "small connected to small") +
-  geom_point(stat = "summary", fun = "mean") +
-  geom_line(stat = "summary", fun = "mean", aes(group = day)) +
-  scale_fill_gradient(low="blue", high="yellow") + 
-  theme_bw() +
-  theme(panel.grid.major = element_blank(), 
-          panel.grid.minor = element_blank(),
-          legend.position = c(.95, .95),
-          legend.justification = c("right", "top"),
-          legend.box.just = "right",
-          legend.margin = margin(6, 6, 6, 6))
-
-S_S_L = ds_classes %>%
-  filter(eco_metaeco_type == "S (S_L)") %>%
-  filter(disturbance == "high") %>%
-  ggplot(aes(x = log_size,
-             y = log_abundance,
-             group = interaction(log_size, day),
-             color = day)) +
-  labs(title = "small connected to large") +
-  geom_point(stat = "summary", fun = "mean") +
-  geom_line(stat = "summary", fun = "mean", aes(group = day)) +
-  scale_fill_gradient(low="blue", high="yellow") + 
-  theme_bw() +
-  theme(panel.grid.major = element_blank(), 
-          panel.grid.minor = element_blank(),
-          legend.position = c(.95, .95),
-          legend.justification = c("right", "top"),
-          legend.box.just = "right",
-          legend.margin = margin(6, 6, 6, 6))
-
-M = ds_classes %>%
-  filter(eco_metaeco_type == "M") %>%
-  filter(disturbance == "high") %>%
-  ggplot(aes(x = log_size,
-             y = log_abundance,
-             group = interaction(log_size, day),
-             color = day)) +
-  labs(title = "medium isolated") +
-  geom_point(stat = "summary", fun = "mean") +
-  geom_line(stat = "summary", fun = "mean", aes(group = day)) +
-  scale_fill_gradient(low="blue", high="yellow") + 
-  theme_bw() +
-  theme(panel.grid.major = element_blank(), 
-          panel.grid.minor = element_blank(),
-          legend.position = c(.95, .95),
-          legend.justification = c("right", "top"),
-          legend.box.just = "right",
-          legend.margin = margin(6, 6, 6, 6))
-
-M_M = ds_classes %>%
-  filter(eco_metaeco_type == "M (M_M)") %>%
-  filter(disturbance == "high") %>%
-  ggplot(aes(x = log_size,
-             y = log_abundance,
-             group = interaction(log_size, day),
-             color = day)) +
-  labs(title = "medium connected to medium") +
-  geom_point(stat = "summary", fun = "mean") +
-  geom_line(stat = "summary", fun = "mean", aes(group = day)) +
-  scale_fill_gradient(low="blue", high="yellow") + 
-  theme_bw() +
-  theme(panel.grid.major = element_blank(), 
-          panel.grid.minor = element_blank(),
-          legend.position = c(.95, .95),
-          legend.justification = c("right", "top"),
-          legend.box.just = "right",
-          legend.margin = margin(6, 6, 6, 6))
-
-L = ds_classes %>%
-  filter(eco_metaeco_type == "L") %>%
-  filter(disturbance == "high") %>%
-  ggplot(aes(x = log_size,
-             y = log_abundance,
-             group = interaction(log_size, day),
-             color = day)) +
-  labs(title = "large isolated") +
-  geom_point(stat = "summary", fun = "mean") +
-  geom_line(stat = "summary", fun = "mean", aes(group = day)) +
-  scale_fill_gradient(low="blue", high="yellow") + 
-  theme_bw() +
-  theme(panel.grid.major = element_blank(), 
-          panel.grid.minor = element_blank(),
-          legend.position = c(.95, .95),
-          legend.justification = c("right", "top"),
-          legend.box.just = "right",
-          legend.margin = margin(6, 6, 6, 6))
-
-L_L = ds_classes %>%
-  filter(eco_metaeco_type == "L (L_L)") %>%
-  filter(disturbance == "high") %>%
-  ggplot(aes(x = log_size,
-             y = log_abundance,
-             group = interaction(log_size, day),
-             color = day)) +
-  labs(title = "large connected to large") +
-  geom_point(stat = "summary", fun = "mean") +
-  geom_line(stat = "summary", fun = "mean", aes(group = day)) +
-  scale_fill_gradient(low="blue", high="yellow") + 
-  theme_bw() +
-  theme(panel.grid.major = element_blank(), 
-          panel.grid.minor = element_blank(),
-          legend.position = c(.95, .95),
-          legend.justification = c("right", "top"),
-          legend.box.just = "right",
-          legend.margin = margin(6, 6, 6, 6))
-
-L_S_L = ds_classes %>%
-  filter(eco_metaeco_type == "L (S_L)") %>%
-  filter(disturbance == "high") %>%
-  ggplot(aes(x = log_size,
-             y = log_abundance,
-             group = interaction(log_size, day),
-             color = day)) +
-  labs(title = "large connected to small") +
-  geom_point(stat = "summary", fun = "mean") +
-  geom_line(stat = "summary", fun = "mean", aes(group = day)) +
-  scale_fill_gradient(low="blue", high="yellow") + 
-  theme_bw() +
-  theme(panel.grid.major = element_blank(), 
-          panel.grid.minor = element_blank(),
-          legend.position = c(.95, .95),
-          legend.justification = c("right", "top"),
-          legend.box.just = "right",
-          legend.margin = margin(6, 6, 6, 6))
-
-grid.arrange(S, S_S, S_S_L, 
-             M, M_M, 
-             L, L_L, L_S_L,
-             ncol = 2,
-             nrow = 4,
-             top = "Disturbance = High")
-```
-
-```{r}
-ds_classes %>%
-  filter(eco_metaeco_type == "S") %>%
-  filter(disturbance == "low") %>%
-  ggplot(aes(x = log_size,
-             y = log_abundance,
-             group = interaction(log_size, day),
-             color = day)) +
-  labs(title = "Small patch, Disturbance = Low") +
-  geom_point(stat = "summary", fun = "mean") +
-  geom_line(stat = "summary", fun = "mean", aes(group = day)) +
-  scale_fill_gradient(low="blue", high="yellow")
-
-ds_classes %>%
-  filter(eco_metaeco_type == "S") %>%
-  filter(disturbance == "high") %>%
-  ggplot(aes(x = log_size,
-             y = log_abundance,
-             group = interaction(log_size, day),
-             color = day)) +
-  labs(title = "Small patch, Disturbance = High") +
-  geom_point(stat = "summary", fun = "mean") +
-  geom_line(stat = "summary", fun = "mean", aes(group = day)) +
-  scale_fill_gradient(low="blue", high="yellow")
-```
-
-#### Single size class over time
-
-```{r}
+```{r echo = FALSE}
 # ################### --- SINGLE SIZE CLASS OVER TIME --- #######################################
 # 
 # ds_classes %>%
