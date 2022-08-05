@@ -16,345 +16,67 @@ Here I study how **biomass density** changes across treatments in the PatchSizeP
 -   ecosystems that are connected (through the flow of nutrients) to an ecosystem of the same size or to an ecosystem that is larger\
 -   meta-ecosystems in which patch size is the same or in which one patch has most of the area (we keep the total area of the meta-ecosystem constant)
 
-```{r extract-sections, echo = FALSE, eval = FALSE}
-#You can just run this to run all the sections so then you can work on them. 
-sections.path = here("r_files", "biomass", "sections")
-r.files = list.files(sections.path)
-rmd.files = r.files[grepl(".Rmd", r.files)]
-extracted.path = here("r_files", "biomass", "extracted_sections")
-
-purrr::map(rmd.files, function(file.i) {
-  file.name = gsub(".Rmd", "", file.i)
-  extracted.file <- paste0(file.name, ".R")
-  knitr::purl(
-    file.path(sections.path, file.i),
-    file.path(extracted.path, extracted.file)
-    )
-})
-```
-
 ### Data manipulation
 
-#### Import
-
-```{r import, message = FALSE, echo = TRUE}
-culture_info = read.csv(here("data", "PatchSizePilot_culture_info.csv"), header = TRUE)
-load(here("data", "population", "t0.RData")); t0 = pop_output
-load(here("data", "population", "t1.RData")); t1 = pop_output
-load(here("data", "population", "t2.RData")); t2 = pop_output
-load(here("data", "population", "t3.RData")); t3 = pop_output
-load(here("data", "population", "t4.RData")); t4 = pop_output
-load(here("data", "population", "t5.RData")); t5 = pop_output
-load(here("data", "population", "t6.RData")); t6 = pop_output
-load(here("data", "population", "t7.RData")); t7 = pop_output
-rm(pop_output)
-```
-
-#### Tidy
-
-```{r}
-#Column: time
-t0$time = NA
-t1$time = NA
-
-#Column: replicate_video
-t0$replicate_video = 1:12 #In t1 I took 12 videos of a single 
-t1$replicate_video = 1 #In t1 I took only 1 video/culture
-t2$replicate_video = 1 #In t2 I took only 1 video/culture
-t3$replicate_video = 1 #In t3 I took only 1 video/culture
-t4$replicate_video = 1 #In t4 I took only 1 video/culture
-t5$replicate_video = 1 #In t5 I took only 1 video/culture
-t6 = t6 %>%
-  rename(replicate_video = replicate)
-t7 = t7 %>%
-  rename(replicate_video = replicate)
-
-#Create an elongated version of t0 so that each of the 110 cultures can have 12 video replicates at t0.
-elongating_t0 = NULL
-for (video in 1:nrow(t0)){
-  
-  for (ID in 1:nrow(culture_info)) {
-    
-    elongating_t0 = rbind(elongating_t0, t0[video,])
-    
-    }
-
-  }
-
-ID_vector = rep(1:nrow(culture_info), 
-                times = nrow(t0))
-
-elongating_t0$culture_ID = ID_vector
-
-#Merge previous data-sets
-t0 = merge(culture_info,elongating_t0, by="culture_ID")
-t1 = merge(culture_info,t1, by = "culture_ID")
-t2 = merge(culture_info,t2, by = "culture_ID")
-t3 = merge(culture_info,t3, by = "culture_ID")
-t4 = merge(culture_info,t4, by = "culture_ID")
-t5 = merge(culture_info,t5, by = "culture_ID")
-t6 = merge(culture_info,t6, by = "culture_ID")
-t7 = merge(culture_info,t7, by = "culture_ID")
-ds = rbind(t0, t1, t2, t3, t4, t5, t6, t7)
-rm(elongating_t0, t0, t1, t2, t3, t4, t5, t6, t7)
-
-ds$time_point[ds$time_point=="t0"] = 0
-ds$time_point[ds$time_point=="t1"] = 1
-ds$time_point[ds$time_point=="t2"] = 2
-ds$time_point[ds$time_point=="t3"] = 3
-ds$time_point[ds$time_point=="t4"] = 4
-ds$time_point[ds$time_point=="t5"] = 5
-ds$time_point[ds$time_point=="t6"] = 6
-ds$time_point[ds$time_point=="t7"] = 7
-ds$time_point = as.character(ds$time_point)
-
-ds$day = NA
-ds$day[ds$time_point== 0] = 0
-ds$day[ds$time_point== 1] = 4
-ds$day[ds$time_point== 2] = 8
-ds$day[ds$time_point== 3] = 12
-ds$day[ds$time_point== 4] = 16
-ds$day[ds$time_point== 5] = 20
-ds$day[ds$time_point== 6] = 24
-ds$day[ds$time_point== 7] = 28
-
-#Column: eco_metaeco_type
-ds$eco_metaeco_type = factor(ds$eco_metaeco_type, 
-                             levels = c('S', 
-                                        'S (S_S)', 
-                                        'S (S_L)', 
-                                        'M', 
-                                        'M (M_M)', 
-                                        'L', 
-                                        'L (L_L)', 
-                                        'L (S_L)'))
-
-ecosystems_to_take_off = 60 #Culture number 60 because it was spilled
-ds = ds %>%
-  filter(! culture_ID %in% ecosystems_to_take_off)
-
-ds_for_evaporation = ds
-
-ds = ds %>% 
-  select(culture_ID, 
-         patch_size, 
-         disturbance, 
-         metaecosystem_type, 
-         bioarea_per_volume, 
-         replicate_video, 
-         time_point,
-         day,
-         metaecosystem, 
-         system_nr, 
-         eco_metaeco_type)
-
-ds = ds[, c("culture_ID", 
-            "system_nr", 
-            "disturbance", 
-            "time_point",
-            "day", 
-            "patch_size", 
-            "metaecosystem", 
-            "metaecosystem_type", 
-            "eco_metaeco_type", 
-            "replicate_video",
-            "bioarea_per_volume")]
-```
-
-#### Create regional data set
-
-```{r regional-biomass}
-ds_regional = ds %>%
-  filter(metaecosystem == "yes") %>%
-  group_by(culture_ID, 
-           system_nr, 
-           disturbance, 
-           day, 
-           time_point, 
-           patch_size, 
-           metaecosystem_type) %>%
-  summarise(patch_mean_bioarea_across_videos = mean(bioarea_per_volume)) %>%
-  group_by(system_nr, disturbance, day, time_point, metaecosystem_type) %>%
-  summarise(regional_mean_bioarea = mean(patch_mean_bioarea_across_videos))
-
-metaecosystems_to_take_off = 40 #System 40 was the system of culture 60 that I spilled
-ds_regional = ds_regional %>%
-  filter(! system_nr %in% metaecosystems_to_take_off)
-```
-
-```{r child = here("r_files", "biomass", "sections", "plots.Rmd"), eval = FALSE}
-source(here("r_files", "biomass", "extracted_sections", "plots.R"))
+```{r child = here("r_files", "biomass", "sections", "data_manipulation.Rmd")}
+source(here("r_files", "biomass", "extracted_sections", "data_manipulation.R"))
 ```
 
 ### Regional biomass {.tabset .tabset-dropdown}
 
-#### Medium-Medium vs Small-Large {.tabset}
+#### Medium-Medium vs Small-Large {.tabset .tabset-pills}
 
 We want to understand if the regional biomass produced by an ecosystem with a small and a large patch (metaecosystem_type = S_L) is lower than the regional biomass produced by an ecosystem with two medium patches (metaecosystem_type = M_M).
 
-##### Plot
+##### Plots
 
-Let's start by plotting the single ecosystems to see that everything is fine. To make the patterns clear let's plot the low disturbance and high disturbance in two different figures.
+Let's start by plotting the single ecosystems to see that everything is fine. To make the patterns clear let's plot the low disturbance and high disturbance in two different figures. We first plot the single meta-ecosystems and then their box plots.
 
-```{r, echo = FALSE}
-ds_regional %>%
-    filter ( disturbance == "low") %>%
-    filter (metaecosystem_type == "S_L" | 
-              metaecosystem_type == "M_M") %>%
-    ggplot (aes(x = day,
-                y = regional_mean_bioarea,
-                group = system_nr,
-                fill = system_nr,
-                color = system_nr,
-                linetype = metaecosystem_type)) +
-    geom_point(show.legend = F) +
-    geom_line () +
-    labs(x = "Day", 
-         y = "Regional bioarea (something/µl)",
-         title = "Disturbance = low",
-         fill = "System nr",
-         color = "System nr",
-         linetype = "") +
-    scale_y_continuous(limits = c(0, 6250)) +
-    scale_x_continuous(limits = c(-2, 30)) +
-    theme_bw() +
-    theme(panel.grid.major = element_blank(), 
-          panel.grid.minor = element_blank(),
-          legend.position = c(.95, .95),
-          legend.justification = c("right", "top"),
-          legend.box.just = "right",
-          legend.margin = margin(6, 6, 6, 6))
-
-ds_regional %>%
-    filter ( disturbance == "high") %>%
-    filter (metaecosystem_type == "S_L" | metaecosystem_type == "M_M") %>%
-    ggplot (aes(x = day,
-                y = regional_mean_bioarea,
-                group = system_nr,
-                fill = system_nr,
-                color = system_nr,
-                linetype = metaecosystem_type)) +
-    geom_point(show.legend = F) +
-    geom_line () +
-    labs(x = "Day", 
-         y = "Regional bioarea (something/µl)",
-         title = "Disturbance = high",
-         fill = "System nr",
-         color = "System nr",
-         linetype = "") +
-    scale_y_continuous(limits = c(0, 6250)) +
-    scale_x_continuous(limits = c(-2, 30)) +
-    theme_bw() +
-    theme(panel.grid.major = element_blank(), 
-          panel.grid.minor = element_blank(),
-          legend.position = c(.95, .95),
-          legend.justification = c("right", "top"),
-          legend.box.just = "right",
-          legend.margin = margin(6, 6, 6, 6))
-```
-
-Let's then show these data as boxplots.
-
-```{r, echo = FALSE}
-p_regional_low_mean = ds_regional %>%
-  filter(disturbance == "low") %>%
-  filter (metaecosystem_type == "S_L" | metaecosystem_type == "M_M") %>%
-  ggplot (aes(x = day,
-              y = regional_mean_bioarea,
-              group = interaction(day, metaecosystem_type),
-              fill = metaecosystem_type)) +
-  geom_boxplot() +
-  labs(x = "Day", 
-       y = "Regional bioarea (something/µl)",
-       title = "Disturbance = low",
-       color='', 
-       fill='') +
-  scale_fill_discrete(labels = c("medium-medium", 
-                                 "small-large")) +
-  theme_bw() +
-  theme(panel.grid.major = element_blank(), 
-        panel.grid.minor = element_blank(),
-        legend.position = c(.95, .95),
-        legend.justification = c("right", "top"),
-        legend.box.just = "right",
-        legend.margin = margin(6, 6, 6, 6))
-p_regional_low_mean
-
-ds_regional %>%
-  filter(disturbance == "high") %>%
-  filter (metaecosystem_type == "S_L" | metaecosystem_type == "M_M") %>%
-  ggplot (aes(x = day,
-              y = regional_mean_bioarea,
-              group = interaction (day, metaecosystem_type),
-              fill = metaecosystem_type)) +
-  geom_boxplot() +
-  labs(x = "Day", 
-       y = "Regional bioarea (something/µl)",
-       title = "Disturbance = high",
-       color='', 
-       fill='') +
-  scale_fill_discrete(labels = c("medium-medium", "small-large")) +
-  theme_bw() +
-  theme(panel.grid.major = element_blank(), 
-        panel.grid.minor = element_blank(),
-        legend.position = c(.95, .95),
-        legend.justification = c("right", "top"),
-        legend.box.just = "right",
-        legend.margin = margin(6, 6, 6, 6))
-
+```{r child = here("r_files", "biomass", "sections", "MM_SL_plots.Rmd")}
 ```
 
 We can see that the regional biomass was higher for meta-ecosystems with the same size, regardless of disturbance. As both disturbance levels showed the same pattern, I would just keep the one with low disturbance in the publication, as it shows a stronger pattern.
 
-##### Time as random effect
+##### Model time series {.tabset .tabset-pills}
 
-```{r MM_SL_time_random, child = here("r_files", "biomass", "sections", "MM_SL_time_random.Rmd"), echo = TRUE, eval = TRUE}
+###### Time as random effect
+
+```{r child = here("r_files", "biomass", "sections", "MM_SL_time_random.Rmd"), echo = TRUE, eval = TRUE}
 source(here("r_files", "biomass", "extracted_sections", "MM_SL_time_random.R"))
 ```
 
-##### Time fitting
+###### Time as fixed effect
 
-```{r MM_SL_time_fitting, child = here("r_files", "biomass", "sections", "MM_SL_time_fitting.Rmd"), echo = TRUE, eval = TRUE}
+```{r child = here("r_files", "biomass", "sections", "MM_SL_log.Rmd")}
+source(here("r_files", "biomass", "extracted_sections", "MM_SL_log.R"))
+```
+
+###### Fitted time function
+
+```{r child = here("r_files", "biomass", "sections", "MM_SL_time_fitting.Rmd"), echo = TRUE, eval = TRUE}
 source(here("r_files", "biomass", "extracted_sections", "MM_SL_time_fitting.R"))
 ```
 
-##### Time as fixed effect
-
-```{r MM_SL_time_fitted, child = here("r_files", "biomass", "sections", "MM_SL_time_fitted.Rmd"), echo = TRUE, eval = TRUE}
+```{r child = here("r_files", "biomass", "sections", "MM_SL_time_fitted.Rmd"), echo = TRUE, eval = TRUE}
 source(here("r_files", "biomass", "extracted_sections", "MM_SL_time_fitted.R"))
 ```
 
-##### Selected models
+###### Models table
 
-```{r, echo = FALSE}
-full_table = rbind(random_time_table, fitted_time_table)
+```{r child = here("r_files", "biomass", "sections", "MM_SL_model_table.Rmd"), echo = TRUE, eval = TRUE}
+source(here("r_files", "biomass", "extracted_sections", "MM_SL_model_table.R"))
+```
 
-datatable(full_table, 
-          rownames = FALSE,
-          options = list(pageLength = 100,
-                         scrollX = TRUE,
-                         autoWidth = TRUE,
-                         columnDefs = list(list(targets=c(0),visible=TRUE, width='160'),
-                                           list(targets=c(1), visible=TRUE, width='10'),
-                                           list(targets=c(2), visible=TRUE, width='10'),
-                                           list(targets=c(3), visible=TRUE, width='10'),
-                                           list(targets=c(4), visible=TRUE, width='10'),
-                                           list(targets=c(5), visible=TRUE, width='10'),
-                                           list(targets=c(6), visible=TRUE, width='10'),
-                                           list(targets=c(7), visible=TRUE, width='10'),
-                                           list(targets='_all', visible=FALSE))),
-          caption = "
-          M = Meta-ecosystem type, 
-          D = disturbance, 
-          (1 | t) = random effect of time on the intercept,
-          (1 | ID) = random effect of meta-ecosystem ID on the intercept, 
-          || = no correlation between intercept and slope,
-          | = correlation between intercept and slope,
-          R2 = r squared of the whole model,
-          R2_fixed = fixed part of the mixed model,
-          mixed_R2 = r squared when considering both fixed and random effects (conditional r squared), 
-          fixed_R2 = r squared when considering only the fixed effects (marginal r squared)")
+##### Model single points
 
+```{r MM_SL_time_fitted, child = here("r_files", "biomass", "sections", "MM_SL_single_points.Rmd"), echo = TRUE, eval = TRUE}
+source(here("r_files", "biomass", "extracted_sections", "MM_SL_single_points.R"))
+```
+
+#### Meta-ecosystems of different total size
+
+```{r child = here("r_files", "biomass", "sections", "metaecos_of_different_size.Rmd")}
+source(here("r_files", "biomass", "extracted_sections", "metaecos_of_different_size.R"))
 ```
 
 ### Local biomass {.tabset .tabset-dropdown}
@@ -391,32 +113,14 @@ source(here("r_files", "biomass", "extracted_sections", "L_and_L-LL.R"))
 source(here("r_files", "biomass", "extracted_sections", "L_and_L-SL.R"))
 ```
 
+#### Isolated patches
+
+```{r child = here("r_files", "biomass", "sections", "isolated_patches.Rmd")}
+source(here("r_files", "biomass", "extracted_sections", "isolated_patches.R"))
+```
+
 ### Evaporation
 
 ```{r child = here("r_files", "biomass", "sections", "evaporation.Rmd"), eval= TRUE}
 source(here("r_files", "biomass", "extracted_sections", "evaporation.R"))
 ```
-
-### Other
-
-#### Mixed effects models
-
--   To build the mixed effect models we will use the R package lme4. See page 6 of [this PDF](https://cran.r-project.org/web/packages/lme4/vignettes/lmer.pdf) to know more about the syntaxis of this package.
-
--   To do model diagnostics of mixed effect models, I'm going to look at the following two plots (as suggested by @Zuur2009, page 487):
-
-    -   Quantile-quantile plots
-
-    -   Partial residual plots
-
--   The effect size of the explaining variables is calculated in the mixed effect models as marginal and conditional r squared. The marginal r squared is how much variance is explained by the fixed effects. The conditional r squared is how much variance is explained by the fixed and the random effects. The marginal and conditional r squared are calculated using the package `MuMIn`. The computation is based on the methods of @Nakagawa2017. For the coding and interpretation of these r squared check the [documentation for the r.squaredGLMM function](https://rdrr.io/cran/MuMIn/man/r.squaredGLMM.html)
-
-#### Model selection
-
--   I am starting from the largest model and then simplifying because ... (see statistical modelling course at ETH).
-
--   I am going to select the best model according to AIC. BIC is better for understanding and AIC for predicting. @Halsey2019 also suggests this approach instead of p values. I'm going to use AIC because I'm interested in knowign how much meta-ecosystem type contributed to the overall regional biomass.
-
-#### Error bars
-
-...

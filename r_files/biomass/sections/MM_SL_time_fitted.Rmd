@@ -9,312 +9,219 @@ editor_options:
 
 Let's now work using the fitted data that we found in the previous section.
 
-###### Tidy
+**Tidy**
 
 ```{r}
 ds_regional_predicted_shrunk_type_n_day = ds_regional_predicted_shrunk_type %>%
   filter(time_point >= 2)
 ```
 
-###### Model selection
-
-Let's start from the full model.
-
-```{r}
-model_slopes_correlated = lmer(regional_mean_bioarea ~ 
-                            predicted_from_time + 
-                            metaecosystem_type  + 
-                            disturbance + 
-                            predicted_from_time * metaecosystem_type +
-                            predicted_from_time * disturbance +
-                            metaecosystem_type * disturbance +
-                            predicted_from_time * metaecosystem_type * disturbance +
-                            (predicted_from_time | system_nr),
-                        data = ds_regional_predicted_shrunk_type_n_day,
-                        REML = FALSE)
-```
-
-*(1) Should we keep the correlation in (T \| ID)?*
+**Model selection**\
+Let's start from the largest mixed effect model.
 
 ```{r}
-model_slopes_uncorrelated = lmer(regional_mean_bioarea ~ 
-                            predicted_from_time + 
-                            metaecosystem_type  + 
-                            disturbance + 
-                            predicted_from_time * metaecosystem_type +
-                            predicted_from_time * disturbance +
-                            metaecosystem_type * disturbance +
-                            predicted_from_time * metaecosystem_type * disturbance +
-                            (predicted_from_time || system_nr),
-                        data = ds_regional_predicted_shrunk_type_n_day,
-                        REML = FALSE,
-                        control = lmerControl(optimizer = "Nelder_Mead"))
-
-anova(model_slopes_uncorrelated, model_slopes_correlated)
+full = lmer(log10(regional_mean_bioarea + 1) ~
+              predicted_from_time * metaecosystem_type * disturbance +
+              (predicted_from_time | system_nr),
+            data = ds_regional_predicted_shrunk_type_n_day,
+            REML = FALSE,
+            control = lmerControl(optimizer = "Nelder_Mead"))
 ```
 
-No (according to AIC and BIC - however, AIC is only slightly lower).
-
-*(2) Should we keep T \** M?
+*Should we keep the correlation in (day \| system_nr)?*
 
 ```{r}
-model_no_TM = lmer(regional_mean_bioarea ~ 
-                            predicted_from_time + 
-                            metaecosystem_type  + 
-                            disturbance + 
-                            predicted_from_time * disturbance +
-                            metaecosystem_type * disturbance +
-                            predicted_from_time * metaecosystem_type * disturbance +
-                            (predicted_from_time || system_nr),
-               data = ds_regional_predicted_shrunk_type_n_day,
-               REML = FALSE,
-               control = lmerControl (optimizer = "Nelder_Mead")
-               )
+no_correlation = lmer(log10(regional_mean_bioarea + 1) ~
+              predicted_from_time * metaecosystem_type * disturbance +
+              (predicted_from_time || system_nr),
+            data = ds_regional_predicted_shrunk_type_n_day,
+            REML = FALSE,
+            control = lmerControl(optimizer = "Nelder_Mead"))
 
-anova(model_slopes_uncorrelated, model_no_TM)
+anova(full, no_correlation)
+#Keep full
 ```
 
-This is really wired. Df = 0. Let's then say no then.
+Yes.
 
-*(3) Should we keep T \** D?
+*Should we keep t \* M \* D?*
 
 ```{r}
-model_no_TD = lmer(regional_mean_bioarea ~ 
-                            predicted_from_time + 
-                            metaecosystem_type  + 
-                            disturbance + 
-                            metaecosystem_type * disturbance +
-                            predicted_from_time * metaecosystem_type * disturbance +
-                            (predicted_from_time || system_nr),
-               data = ds_regional_predicted_shrunk_type_n_day,
-               REML = FALSE,
-               control = lmerControl (optimizer = "Nelder_Mead"))
+no_TMD = lmer(log10(regional_mean_bioarea + 1) ~
+              predicted_from_time +
+              metaecosystem_type +
+              disturbance +
+              predicted_from_time : metaecosystem_type +
+              predicted_from_time : disturbance +
+              metaecosystem_type : disturbance +
+              (predicted_from_time | system_nr),
+            data = ds_regional_predicted_shrunk_type_n_day,
+            REML = FALSE,
+            control = lmerControl(optimizer = "Nelder_Mead"))
 
-anova(model_no_TM, model_no_TD)
+anova(full, no_TMD)
+#Keep no_TMD
 ```
 
-This is really wired. Df = 0. Let's then say no then.
+No.
 
-*(4) Should we keep M \* D?*
+*Should we keep t \* M?*
 
 ```{r}
-model_no_MD = lmer(regional_mean_bioarea ~ 
-                            predicted_from_time + 
-                            metaecosystem_type  + 
-                            disturbance + 
-                            predicted_from_time * metaecosystem_type * disturbance +
-                            (predicted_from_time || system_nr),
-               data = ds_regional_predicted_shrunk_type_n_day,
-               REML = FALSE,
-               control = lmerControl (optimizer = "Nelder_Mead"))
+no_TM = lmer(log10(regional_mean_bioarea + 1) ~
+              predicted_from_time +
+              metaecosystem_type +
+              disturbance +
+              predicted_from_time : disturbance +
+              metaecosystem_type : disturbance +
+              (predicted_from_time | system_nr),
+            data = ds_regional_predicted_shrunk_type_n_day,
+            REML = FALSE,
+            control = lmerControl(optimizer = "Nelder_Mead"))
 
-anova(model_no_TD, model_no_MD)
+anova(no_TMD, no_TM)
+#Keep no_TM
 ```
 
-This is really wired. Df = 0. Let's then say no then.
+No.
 
-*(5) Should we keep T \* M \* D?*
+*Should we keep t \* D?*
 
 ```{r}
-model_no_TMD = lmer(regional_mean_bioarea ~ 
-                            predicted_from_time + 
-                            metaecosystem_type  + 
-                            disturbance + 
-                            (predicted_from_time || system_nr),
-               data = ds_regional_predicted_shrunk_type_n_day,
-               REML = FALSE,
-               control = lmerControl (optimizer = "Nelder_Mead"))
+no_TD = lmer(log10(regional_mean_bioarea + 1) ~
+              predicted_from_time +
+              metaecosystem_type +
+              disturbance +
+              metaecosystem_type : disturbance +
+              (predicted_from_time | system_nr),
+            data = ds_regional_predicted_shrunk_type_n_day,
+            REML = FALSE,
+            control = lmerControl(optimizer = "Nelder_Mead"))
 
-anova(model_no_MD, model_no_TMD)
+anova(no_TM, no_TD)
+#Keep no_TM
 ```
 
-Yes according to AIC (but no according to BIC).
+Yes.
 
-*(6) Should we keep (T \|\| ID)?*
+*Should we keep M \* D?*
 
 ```{r}
-model_no_random_slope = lmer(regional_mean_bioarea ~ 
-                            predicted_from_time + 
-                            metaecosystem_type  + 
-                            disturbance + 
-                            (1 | system_nr),
-               data = ds_regional_predicted_shrunk_type_n_day,
-               REML = FALSE,
-               control = lmerControl (optimizer = "Nelder_Mead"))
+no_MD = lmer(log10(regional_mean_bioarea + 1) ~
+              predicted_from_time +
+              metaecosystem_type +
+              disturbance +
+              predicted_from_time : disturbance +
+              (predicted_from_time | system_nr),
+            data = ds_regional_predicted_shrunk_type_n_day,
+            REML = FALSE,
+            control = lmerControl(optimizer = "Nelder_Mead"))
 
-anova(model_no_MD, model_no_random_slope)
+anova(no_TM, no_MD)
+#Keep no_MD
 ```
 
-Yes according to AIC (but no according to BIC).
+No.
 
-*(7) Should we introduce the correlation (T \| ID) ?*
+*Should we keep the random effect of system nr on the time slopes (day \| system_nr)?*
 
 ```{r}
-model_no_MD_correlated = lmer(regional_mean_bioarea ~ 
-                            predicted_from_time + 
-                            metaecosystem_type  + 
-                            disturbance + 
-                            predicted_from_time * metaecosystem_type * disturbance +
-                            (predicted_from_time | system_nr),
-               data = ds_regional_predicted_shrunk_type_n_day,
-               REML = FALSE,
-               control = lmerControl (optimizer = "Nelder_Mead"))
+no_random_slopes = lmer(log10(regional_mean_bioarea + 1) ~
+              predicted_from_time +
+              metaecosystem_type +
+              disturbance +
+              predicted_from_time : disturbance +
+              (1 | system_nr),
+            data = ds_regional_predicted_shrunk_type_n_day,
+            REML = FALSE,
+            control = lmerControl(optimizer = "Nelder_Mead"))
 
-anova(model_no_MD, model_no_MD_correlated)
+anova(no_MD, no_random_slopes)
+#Keep no_MD
 ```
 
-Yes according to AIC (but no according to BIC). This is odd as at the beginning the model told us we shouldn't keep it.
+Yes.
 
-*Should we keep these parameters?*
+**Best model**
 
-|        Parameter        |             AIC              | BIC |
-|:-----------------------:|:----------------------------:|:---:|
-| (T \| ID) (correlation) | No (but only slightly lower) | No  |
-|         T \* M          |              ?               |  ?  |
-|         T \* D          |              ?               |  ?  |
-|         M \* D          |              ?               |  ?  |
-|       T \* M \* D       |             Yes              | No  |
-|       (T \|\| ID)       |             Yes              | No  |
+Therefore, our best model is:
 
-According to the previous table, then BIC should be the highest for a fixed effect model. Let's see if this is the case.
+$$
+log_{10}(regional \: bioarea + 1) = t + M + D + t*D + (t| system \: nr) 
+$$
 
-```{r}
-fixed_model = lm(regional_mean_bioarea ~ 
-                            predicted_from_time + 
-                            metaecosystem_type  + 
-                            disturbance,
-               data = ds_regional_predicted_shrunk_type_n_day)
-```
+This model is the best model when looking at all time points coming after the first disturbance event (t2-\>t7). Assuming that this model holds for also other sections of the time series, the r squared of the model and of meta-ecosystem type is as follows.
 
-To make sure everything is okay, let's take a look at all our models.
-
-```{r}
-anova(model_slopes_correlated, model_slopes_uncorrelated, model_no_random_slope, fixed_model) #Only with models df > 0 
-
-#anova(model_slopes_correlated, model_slopes_uncorrelated, model_no_TM, model_no_TD, model_no_MD, model_no_TMD, model_no_random_slope, fixed_model) #With all the models
-```
-
-The best model according to AIC is T + M + D + (T \|\| ID) (`model_no_MD`), as we found before. However, all other models seem to be of similar goodness. According to BIC, the best is (`fixed_model`)
-
-Therefore, the models I will consider are:
-
--   T + M + D + T \* M \* D + (T \|\| ID) [best model according to AIC]
--   T + M + D [best model according to BIC]
--   T + M + D + T \* M \* D + (T \| ID) [best model found introducing the correlation at the end]\*
-
-\*DOESN't WORK THOUGH (number of observations (=40) \<= number of random effects (=40) )
-
-```{r echo = FALSE, warning = FALSE}
+```{r, warning = FALSE}
 #Create a table in which time is a fixed effect. 
 
 ### --- INITIALISE TABLE --- ###
-
-columns = c("model", "time_point", "AIC", "BIC", "R2", "R2_fixed", "R2_meta_mixed", "R2_meta_fixed") #"R2_mixed"
-fitted_time_table = data.frame(matrix(ncol = length(columns),
-                                     nrow = 0))
+columns = c("model", "time_point", "AIC", "BIC", "R2_mixed", "R2_fixed", "R2_mixed_M", "R2_fixed_M")
+fitted_time_table = data.frame(matrix(ncol = length(columns), nrow = 0))
 colnames(fitted_time_table) = columns
 
-### --- T + M + D --- ###
+### --- POPULATE TABLE --- ###
 
-for (last_point in 3:7) {
+for (last_point in 4:7) {
   
-  full_model = lm(regional_mean_bioarea ~ 
-                    predicted_from_time +
-                    metaecosystem_type +
-                    disturbance,
-                    data = filter(ds_regional_predicted_shrunk_type_n_day, 
-                                  time_point <= last_point))
-  
+  full_model = lmer(log10(regional_mean_bioarea + 1) ~
+                     predicted_from_time +
+                     metaecosystem_type +
+                     disturbance +
+                     predicted_from_time : disturbance +
+                     (predicted_from_time | system_nr),
+                     data = ds_regional_predicted_shrunk_type_n_day %>%
+                            filter(time_point <= last_point),
+                    REML = FALSE,
+                    control = lmerControl(optimizer = "Nelder_Mead"))
+
   null_model = lm(regional_mean_bioarea ~ 
                     1 , 
-                  data = filter(ds_regional_predicted_shrunk_type_n_day, 
-                                time_point <= last_point))
+                  data = ds_regional_predicted_shrunk_type_n_day %>%
+                            filter(time_point <= last_point))
   
-  metaeco_null_model = lm(regional_mean_bioarea ~  
-                            predicted_from_time +
-                            disturbance,
-                                 data = filter(ds_regional_predicted_shrunk_type_n_day, 
-                                               time_point <= last_point))
+  metaeco_null_model = lmer(log10(regional_mean_bioarea + 1) ~
+                              predicted_from_time +
+                              disturbance +
+                              predicted_from_time : disturbance +
+                              (predicted_from_time | system_nr),
+                            data = ds_regional_predicted_shrunk_type_n_day %>%
+                              filter(time_point <= last_point),
+                            REML = FALSE,
+                            control = lmerControl(optimizer = "Nelder_Mead"))
   
-  fitted_time_table = update_all_models_table("T + M + D",
+  fitted_time_table = update_all_models_table("Tp + M + D + Tp * D + (Tp | system_nr)",
                                              fitted_time_table, 
                                              full_model, 
                                              null_model,
                                              metaeco_null_model,
-                                             "fixed")
-}
-
-### --- T + M + D + T*M*D + (T||ID) --- ###
-
-for (last_point in 3:7) {
-  
-  full_model = lmer(regional_mean_bioarea ~ 
-                      predicted_from_time +
-                      metaecosystem_type +
-                      disturbance +
-                      predicted_from_time * metaecosystem_type * disturbance + 
-                      (predicted_from_time || system_nr),
-                    data = filter(ds_regional_predicted_shrunk_type_n_day, 
-                                  time_point <= last_point),
-                    REML = FALSE,
-                    control = lmerControl(optimizer ="Nelder_Mead"))
-  
-  null_model = lm(regional_mean_bioarea ~ 
-                    1 , 
-                  data = filter(ds_regional_predicted_shrunk_type_n_day, 
-                                time_point <= last_point))
-   
-  metaeco_null = lmer(regional_mean_bioarea ~  
-                        predicted_from_time +
-                        disturbance +
-                        predicted_from_time * disturbance + 
-                        (predicted_from_time || system_nr),
-                      data = filter(ds_regional_predicted_shrunk_type_n_day, 
-                                               time_point <= last_point),
-                      REML = FALSE, 
-                      control = lmerControl(optimizer ="Nelder_Mead"))
-  
-  fitted_time_table = update_all_models_table("T + M + D + T*M*D + (T||ID)",
-                                             fitted_time_table, 
-                                             full_model, 
-                                             null_model,
-                                             metaeco_null,
                                              "mixed")
 }
 
-# for (last_point in 3:7) {
-#   
-#   full_model = lmer(regional_mean_bioarea ~ 
-#                             predicted_from_time + 
-#                             metaecosystem_type  + 
-#                             disturbance + 
-#                             predicted_from_time * metaecosystem_type * disturbance +
-#                             (predicted_from_time | system_nr),
-#                data = filter(ds_regional_predicted_shrunk_type_n_day, 
-#                                   time_point <= last_point),
-#                REML = FALSE,
-#                control = lmerControl (optimizer = "Nelder_Mead"))
-#   
-#   null_model = lm(regional_mean_bioarea ~ 
-#                     1 , 
-#                   data = filter(ds_regional_predicted_shrunk_type_n_day, 
-#                                 time_point <= last_point))
-#    
-#   metaeco_null = lmer(regional_mean_bioarea ~  
-#                         predicted_from_time +
-#                         disturbance +
-#                         predicted_from_time * disturbance + 
-#                         (predicted_from_time | system_nr),
-#                       data = filter(ds_regional_predicted_shrunk_type_n_day, 
-#                                                time_point <= last_point),
-#                       REML = FALSE, 
-#                       control = lmerControl(optimizer ="Nelder_Mead"))
-#   
-#   fitted_time_table = update_all_models_table("T + M + D + T*M*D + (T|ID)",
-#                                              fitted_time_table, 
-#                                              full_model, 
-#                                              null_model,
-#                                              metaeco_null,
-#                                              "mixed")
-# }
+datatable(fitted_time_table, 
+          rownames = FALSE,
+          options = list(pageLength = 100,
+                         scrollX = TRUE,
+                         autoWidth = TRUE,
+                         columnDefs = list(list(targets=c(0),visible=TRUE, width='160'),
+                                           list(targets=c(1), visible=TRUE, width='10'),
+                                           list(targets=c(2), visible=TRUE, width='10'),
+                                           list(targets=c(3), visible=TRUE, width='10'),
+                                           list(targets=c(4), visible=TRUE, width='10'),
+                                           list(targets=c(5), visible=TRUE, width='10'),
+                                           list(targets=c(6), visible=TRUE, width='10'),
+                                           list(targets=c(7), visible=TRUE, width='10'),
+                                           list(targets='_all', visible=FALSE))),
+          caption = "
+          Tp = predicted from time,
+          M = Meta-ecosystem type, 
+          D = disturbance, 
+          (1 | t) = random effect of time on the intercept,
+          (1 | ID) = random effect of meta-ecosystem ID on the intercept, 
+          || = no correlation between intercept and slope,
+          | = correlation between intercept and slope,
+          R2 = r squared of the whole model,
+          R2_fixed = fixed part of the mixed model,
+          mixed_R2 = r squared when considering both fixed and random effects (conditional r squared), 
+          fixed_R2 = r squared when considering only the fixed effects (marginal r squared)")
 ```

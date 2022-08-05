@@ -196,7 +196,7 @@ ds_classes = rbind(size_class[[1]], size_class[[2]], size_class[[3]], size_class
 
 The code for plotting the size class distribution across small patches doesn't work for some reason. It displays all plots as if they were the same.
 
-```{r echo = FALSE, eval = FALSE}
+```{r, eval = FALSE}
 for (time_point in 0:7) {
    
   print(ds_classes %>%
@@ -208,8 +208,7 @@ for (time_point in 0:7) {
                 group = interaction(log_size, eco_metaeco_type),
                 fill = eco_metaeco_type)) +
      geom_boxplot() +
-     labs(title = paste0("Disturbance = Low, Day = ", time_point*4), 
-          x = "log body size (µm2)", 
+     labs(x = "Log size (μm2)", y = "Log abundance + 1 (indiv/μm2)", title = paste0("Disturbance = Low, Day = ", time_point*4),           x = "log body size (µm2)", 
           y = "log mean abundance + 1 (indiv/µl)",
           fill='') +
      scale_y_continuous(limits = c(0,5))+
@@ -237,7 +236,7 @@ for (time_point in 0:7) {
                 group = interaction(log_size, eco_metaeco_type),
                 fill = eco_metaeco_type)) +
      geom_boxplot() +
-     labs(title = paste0("Disturbance = High, Day = ", time_point*4), 
+     labs(x = "Log size (μm2)", y = "Log abundance + 1 (indiv/μm2)", title = paste0("Disturbance = High, Day = ", time_point*4), 
           x = "log body size (µm2)", 
           y = "log mean abundance + 1 (indiv/µl)",
           fill='') +
@@ -258,7 +257,7 @@ for (time_point in 0:7) {
 
 #### Comparison of different time points
 
-```{r, echo = FALSE, fig.align = "center"}
+```{r, fig.align = "center"}
 
 for (disturbance in c("low", "high")) {
 
@@ -271,7 +270,7 @@ print(ds_classes %>%
              y = log_abundance,
              group = interaction(log_size, day),
              color = day)) +
-  labs(title = "small isolated") +
+  labs(x = "Log size (μm2)", y = "Log abundance + 1 (indiv/μm2)", title = "small isolated") +
   geom_point(stat = "summary", fun = "mean") +
   geom_line(stat = "summary", fun = "mean", aes(group = day)) +
   scale_fill_gradient(low="blue", high="yellow") + 
@@ -290,7 +289,7 @@ print(ds_classes %>%
              y = log_abundance,
              group = interaction(log_size, day),
              color = day)) +
-  labs(title = "small connected to small") +
+  labs(x = "Log size (μm2)", y = "Log abundance + 1 (indiv/μm2)", title = "small connected to small") +
   geom_point(stat = "summary", fun = "mean") +
   geom_line(stat = "summary", fun = "mean", aes(group = day)) +
   scale_fill_gradient(low="blue", high="yellow") + 
@@ -309,7 +308,7 @@ print(ds_classes %>%
              y = log_abundance,
              group = interaction(log_size, day),
              color = day)) +
-  labs(title = "small connected to large") +
+  labs(x = "Log size (μm2)", y = "Log abundance + 1 (indiv/μm2)", title = "small connected to large") +
   geom_point(stat = "summary", fun = "mean") +
   geom_line(stat = "summary", fun = "mean", aes(group = day)) +
   scale_fill_gradient(low="blue", high="yellow") + 
@@ -328,7 +327,7 @@ print(ds_classes %>%
              y = log_abundance,
              group = interaction(log_size, day),
              color = day)) +
-  labs(title = "medium isolated") +
+  labs(x = "Log size (μm2)", y = "Log abundance + 1 (indiv/μm2)", title = "medium isolated") +
   geom_point(stat = "summary", fun = "mean") +
   geom_line(stat = "summary", fun = "mean", aes(group = day)) +
   scale_fill_gradient(low="blue", high="yellow") + 
@@ -347,7 +346,7 @@ print(ds_classes %>%
              y = log_abundance,
              group = interaction(log_size, day),
              color = day)) +
-  labs(title = "medium connected to medium") +
+  labs(x = "Log size (μm2)", y = "Log abundance + 1 (indiv/μm2)", title = "medium connected to medium") +
   geom_point(stat = "summary", fun = "mean") +
   geom_line(stat = "summary", fun = "mean", aes(group = day)) +
   scale_fill_gradient(low="blue", high="yellow") + 
@@ -366,7 +365,7 @@ print(ds_classes %>%
              y = log_abundance,
              group = interaction(log_size, day),
              color = day)) +
-  labs(title = "large isolated") +
+  labs(x = "Log size (μm2)", y = "Log abundance + 1 (indiv/μm2)", title = "large isolated") +
   geom_point(stat = "summary", fun = "mean") +
   geom_line(stat = "summary", fun = "mean", aes(group = day)) +
   scale_fill_gradient(low="blue", high="yellow") + 
@@ -385,7 +384,7 @@ print(ds_classes %>%
              y = log_abundance,
              group = interaction(log_size, day),
              color = day)) +
-  labs(title = "large connected to large") +
+  labs(x = "Log size (μm2)", y = "Log abundance + 1 (indiv/μm2)", title = "large connected to large") +
   geom_point(stat = "summary", fun = "mean") +
   geom_line(stat = "summary", fun = "mean", aes(group = day)) +
   scale_fill_gradient(low="blue", high="yellow") + 
@@ -403,8 +402,7 @@ print(ds_classes %>%
   ggplot(aes(x = log_size,
              y = log_abundance,
              group = interaction(log_size, day),
-             color = day)) +
-  labs(title = "large connected to small") +
+             color = day)) +  labs(x = "Log size (μm2)", y = "Log abundance + 1 (indiv/μm2)", title = "large connected to small") +
   geom_point(stat = "summary", fun = "mean") +
   geom_line(stat = "summary", fun = "mean", aes(group = day)) +
   scale_fill_gradient(low="blue", high="yellow") + 

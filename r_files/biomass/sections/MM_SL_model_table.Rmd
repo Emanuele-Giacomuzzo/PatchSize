@@ -1,0 +1,37 @@
+---
+title: "MM_SL_model_table"
+author: "Emanuele Giacomuzzo"
+date: "2022-08-05"
+output: html_document
+---
+
+```{r}
+#Table with all the different models
+full_table = rbind(random_time_table, fitted_time_table, log_time_table)
+
+datatable(full_table, 
+          rownames = FALSE,
+          options = list(pageLength = 100,
+                         scrollX = TRUE,
+                         autoWidth = TRUE,
+                         columnDefs = list(list(targets=c(0),visible=TRUE, width='160'),
+                                           list(targets=c(1), visible=TRUE, width='10'),
+                                           list(targets=c(2), visible=TRUE, width='10'),
+                                           list(targets=c(3), visible=TRUE, width='10'),
+                                           list(targets=c(4), visible=TRUE, width='10'),
+                                           list(targets=c(5), visible=TRUE, width='10'),
+                                           list(targets=c(6), visible=TRUE, width='10'),
+                                           list(targets=c(7), visible=TRUE, width='10'),
+                                           list(targets='_all', visible=FALSE))),
+          caption = "
+          M = Meta-ecosystem type, 
+          D = disturbance, 
+          (1 | t) = random effect of time on the intercept,
+          (1 | ID) = random effect of meta-ecosystem ID on the intercept, 
+          || = no correlation between intercept and slope,
+          | = correlation between intercept and slope,
+          R2 = r squared of the whole model,
+          R2_fixed = fixed part of the mixed model,
+          mixed_R2 = r squared when considering both fixed and random effects (conditional r squared), 
+          fixed_R2 = r squared when considering only the fixed effects (marginal r squared)")
+```

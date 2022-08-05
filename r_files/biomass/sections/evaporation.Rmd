@@ -37,7 +37,7 @@ ds_for_evaporation$nr_of_tubes_in_rack[ds_for_evaporation$exchange == 6] = 4
 
 #### Plot
 
-```{r plot, echo = FALSE, warning = FALSE}
+```{r plot, warning = FALSE}
 ds_for_evaporation %>%
   filter(disturbance == disturbance) %>%
   ggplot(aes(x = as.character(nr_of_tubes_in_rack),

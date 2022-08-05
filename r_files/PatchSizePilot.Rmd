@@ -2,7 +2,9 @@
 title: "PatchSizePilot"
 author: "Emanuele Giacomuzzo"
 date: "2022-08-03"
-output: html_document
+output: 
+  html_document:
+     code_folding: hide
 bibliography: /Applications/Mendeley/library.bib
 html_document:
     toc: true
@@ -52,7 +54,26 @@ p = NULL #To run the plotting function
 publication_width = 12
 publication_height = 12
 publication_unit = "cm"
+```
 
+```{r extract-sections, echo = FALSE, eval = FALSE}
+#You can just run this to run all the sections so then you can work on them. 
+
+for (main_section in c("biomass", "body_size")){
+  
+ sections.path = here("r_files", main_section, "sections")
+ r.files = list.files(sections.path)
+ rmd.files = r.files[grepl(".Rmd", r.files)]
+ extracted.path = here("r_files", main_section, "extracted_sections")
+ 
+ purrr::map(rmd.files, function(file.i) {
+   file.name = gsub(".Rmd", "", file.i)
+   extracted.file <- paste0(file.name, ".R")
+   knitr::purl(
+     file.path(sections.path, file.i),
+     file.path(extracted.path, extracted.file))}) 
+  
+}
 ```
 
 # PatchSizePilot {.tabset}
@@ -89,11 +110,38 @@ ggsave(here("results", "biomass", "publication_local_small_low_plot.jpg"),
        height = publication_height)
 ```
 
+## Tests
+
+```{r child = here("r_files", "tests", "evaporation_tests.Rmd")}
+```
+
 ## Running time
 
 ```{r running-time, echo = FALSE, eval = TRUE}
 end_time = Sys.time()
 end_time - start_time
 ```
+
+## Other
+
+### Mixed effects models
+
+-   To build the mixed effect models we will use the R package lme4. See page 6 of [this PDF](https://cran.r-project.org/web/packages/lme4/vignettes/lmer.pdf) to know more about the syntaxis of this package.
+
+-   To do model diagnostics of mixed effect models, I'm going to look at the following two plots (as suggested by @Zuur2009, page 487):
+
+    -   Quantile-quantile plots
+
+    -   Partial residual plots
+
+-   The effect size of the explaining variables is calculated in the mixed effect models as marginal and conditional r squared. The marginal r squared is how much variance is explained by the fixed effects. The conditional r squared is how much variance is explained by the fixed and the random effects. The marginal and conditional r squared are calculated using the package `MuMIn`. The computation is based on the methods of @Nakagawa2017. For the coding and interpretation of these r squared check the [documentation for the r.squaredGLMM function](https://rdrr.io/cran/MuMIn/man/r.squaredGLMM.html)
+
+-   See for the interaction syntaxis [this link.](https://mspeekenbrink.github.io/sdam-r-companion/linear-mixed-effects-models.html)
+
+### Model selection
+
+-   I am starting from the largest model and then simplifying because ... (see statistical modelling course at ETH).
+
+-   I am going to select the best model according to AIC. BIC is better for understanding and AIC for predicting. @Halsey2019 also suggests this approach instead of p values. I'm going to use AIC because I'm interested in knowing how much meta-ecosystem type contributed to the overall regional biomass.
 
 ## Bibliography

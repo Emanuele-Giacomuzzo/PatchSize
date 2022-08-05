@@ -7,7 +7,7 @@ output: html_document
 
 Here we want to fit how biomass changes across time to a function. The biomass of our meta-ecosystems looks like this.
 
-```{r regional biomass plot, echo = FALSE}
+```{r regional biomass plot}
 ds_regional %>%
   filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L") %>%
   ggplot(aes(x = day,
@@ -38,7 +38,7 @@ plot(biomass ~ day)
 
 Now, let's find the best parameters (a1, a4, a5) that fit our data.
 
-```{r parameterise-time-function, results = FALSE, echo = FALSE}
+```{r parameterise-time-function, results = FALSE}
 
 ds_regional_shrunk_type = ds_regional %>%
     filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L")
@@ -59,7 +59,7 @@ model$m$getPars()
 
 And now let's plot the function to see how it fits our data.
 
-```{r, echo = FALSE}
+```{r}
 
 day = seq(0,30,1)
 predicted = a4*(day-a5)*exp(a1*(day-a5))

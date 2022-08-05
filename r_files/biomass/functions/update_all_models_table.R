@@ -5,52 +5,64 @@ update_all_models_table = function(model_name,
                                    metaeco_null,
                                    mixed_or_fixed) {
   
-  R2_range = NULL
-  fixed_R2_whole = NULL
-  mixed_R2_whole = NULL
-  
-  #R2
-  
+  R2_fixed = NULL
+  R2_mixed = NULL
+
   if (mixed_or_fixed == "mixed") {
   
-    R2_whole = round(r.squaredGLMM(full_model), digits = 2)
-    R2_metaeco = round(R2_whole - r.squaredGLMM(metaeco_null), digits = 2)
+    #AIC and BIC
+    anova = anova(full_model, null_model)
+    AIC = round(anova$AIC[2], digits = 2)
+    BIC = round(anova$BIC[2], digits = 2)
     
-    R2 = R2_whole[2]
-    #mixed_R2_whole = R2_whole[2]
-    mixed_R2_metaeco = R2_metaeco[2]
-    fixed_R2_whole = R2_whole[1]
-    fixed_R2_metaeco = R2_metaeco[1]
-
+    #Marginal and conditional R2
+    R2_full = r.squaredGLMM(full_model)                    
+    R2_without_metaeco = r.squaredGLMM(metaeco_null)
+    R2_metaeco = R2_full - R2_without_metaeco
+    
+    R2_mixed = R2_full[2]
+    R2_fixed = R2_full[1]
+    R2_mixed_M = R2_metaeco[2]
+    R2_fixed_M = R2_metaeco[1]
+    
+    #P-value (not used now)
     anova = anova(full_model, null_model)
     p_whole = round(anova$`Pr(>Chisq)`[2], digits = 5)
     if (p_whole < 0.00001) {p_whole = "< 0.00001"}
     
-    AIC_whole = round(anova$AIC[2], digits = 2)
-    BIC_whole = round(anova$BIC[2], digits = 2)
     
+    
+    ### Round
+    R2_mixed = round(R2_mixed, digits = 2)
+    R2_fixed = round(R2_fixed, digits = 2)
+    R2_mixed_M = round(R2_mixed_M, digits = 2)
+    R2_fixed_M = round(R2_fixed_M, digits = 2)
     
     
   }
   
   if (mixed_or_fixed == "fixed") {
     
-    R2_whole = round(summary(full_model)$adj.r.squared, digits = 2)
-    R2_metaeco = round(R2_whole - summary(metaeco_null)$adj.r.squared, digits = 2)
+    R2_full = summary(full_model)$adj.r.squared
+    R2_without_metaeco = summary(metaeco_null)$adj.r.squared
+    R2_metaeco = R2_full - R2_without_metaeco
     
-    R2 = R2_whole
-    mixed_R2_whole = "NA"
-    fixed_R2_whole = "NA"
-    mixed_R2_metaeco = "NA"
-    fixed_R2_metaeco = R2_metaeco
+    R2_mixed = "NA"
+    R2_fixed = "NA"
+
+    R2_mixed_M = "NA"
+    R2_fixed_M = R2_metaeco
     
     anova = anova(full_model, null_model)
     p_whole = round(anova$`Pr(>F)`[2], digits = 5)
     if (p_whole < 0.00001) {p_whole = "< 0.00001"}
     
-    AIC_whole = round(AIC(full_model), digits = 2)
-    BIC_whole = round(BIC(full_model), digits = 2)
+    AIC = round(AIC(full_model), digits = 2)
+    BIC = round(BIC(full_model), digits = 2)
     
+    ### Round
+    R2_fixed_M = round(R2_fixed_M, digits = 2)
+
   }
   
   #Assign
@@ -59,13 +71,12 @@ update_all_models_table = function(model_name,
   
   all_models_table$model[row] = model_name
   all_models_table$time_point[row] = paste0(" t2 - t", last_point)
-  all_models_table$AIC[row] = AIC_whole
-  all_models_table$BIC[row] = BIC_whole
-  all_models_table$R2[row] = R2
-  #all_models_table$R2_mixed[row] = mixed_R2_whole
-  all_models_table$R2_fixed[row] = fixed_R2_whole
-  all_models_table$R2_meta_mixed[row] = mixed_R2_metaeco
-  all_models_table$R2_meta_fixed[row] = fixed_R2_metaeco
+  all_models_table$AIC[row] = AIC
+  all_models_table$BIC[row] = BIC
+  all_models_table$R2_mixed[row] = R2_mixed
+  all_models_table$R2_fixed[row] = R2_fixed
+  all_models_table$R2_mixed_M[row] = R2_mixed_M
+  all_models_table$R2_fixed_M[row] = R2_fixed_M
   
   return(all_models_table)
   
