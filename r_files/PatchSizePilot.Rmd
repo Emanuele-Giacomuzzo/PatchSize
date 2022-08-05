@@ -54,26 +54,8 @@ p = NULL #To run the plotting function
 publication_width = 12
 publication_height = 12
 publication_unit = "cm"
-```
 
-```{r extract-sections, echo = FALSE, eval = FALSE}
-#You can just run this to run all the sections so then you can work on them. 
-
-for (main_section in c("biomass", "body_size")){
-  
- sections.path = here("r_files", main_section, "sections")
- r.files = list.files(sections.path)
- rmd.files = r.files[grepl(".Rmd", r.files)]
- extracted.path = here("r_files", main_section, "extracted_sections")
- 
- purrr::map(rmd.files, function(file.i) {
-   file.name = gsub(".Rmd", "", file.i)
-   extracted.file <- paste0(file.name, ".R")
-   knitr::purl(
-     file.path(sections.path, file.i),
-     file.path(extracted.path, extracted.file))}) 
-  
-}
+first_perturbation_day = 5
 ```
 
 # PatchSizePilot {.tabset}
@@ -144,4 +126,104 @@ end_time - start_time
 
 -   I am going to select the best model according to AIC. BIC is better for understanding and AIC for predicting. @Halsey2019 also suggests this approach instead of p values. I'm going to use AIC because I'm interested in knowing how much meta-ecosystem type contributed to the overall regional biomass.
 
+## Work in progress
+
+```{r}
+S = ds_biomass %>%
+  filter(eco_metaeco_type == "S") %>%
+  group_by(system_nr, disturbance, time_point, day, patch_size) %>%
+  summarise(bioarea_per_volume_across_videos = mean(bioarea_per_volume))
+
+unique(S$system_nr)
+
+L = ds_biomass %>%
+  filter(eco_metaeco_type == "L") %>%
+  group_by(system_nr, disturbance, time_point, day, patch_size) %>%
+  summarise(bioarea_per_volume_across_videos = mean(bioarea_per_volume))
+
+#sum now 
+unique(L$system_nr)
+
+L = L%>%
+  filter(!system_nr == 50)
+
+number_for_pairing = rep(c(1:9),each=8)
+
+S = cbind(S, number_for_pairing)
+
+S = S%>%
+  mutate(number_for_pairing = ...7)
+
+L = cbind(L, number_for_pairing)
+
+L = L%>%
+  mutate(number_for_pairing = ...7)
+
+S_and_L = rbind(S, L)
+
+S_and_L = S_and_L %>%
+  group_by(disturbance, time_point, day, number_for_pairing) %>%
+  summarise(regional_mean_bioarea = mean(bioarea_per_volume_across_videos)) %>%
+  mutate(metaecosystem_type = "S_L_random") %>%
+  mutate(system_nr = number_for_pairing)
+
+ds_regional_to_merge = ds_regional %>%
+  select(disturbance, day, time_point, metaecosystem_type, regional_mean_bioarea)
+
+dataset_to_plot = rbind(S_and_L, ds_regional_to_merge)
+
+dataset_to_plot %>%
+  filter(metaecosystem_type == "S_L" | metaecosystem_type == "S_L_random") %>%
+  ggplot(aes(x = day,
+             y = regional_mean_bioarea,
+             group = interaction(day, metaecosystem_type),
+             fill = metaecosystem_type)) +
+  geom_boxplot()
+
+mixed_model = lmer(regional_mean_bioarea ~ 
+                     metaecosystem_type * disturbance +
+                     (1 | system_nr),
+                   data = dataset_to_plot %>%
+                     filter(metaecosystem_type == "S_L" | 
+                              metaecosystem_type == "S_L_random") %>%
+                     filter(time_point >= 2),
+                   REML = FALSE)
+
+null_model = lmer(regional_mean_bioarea ~
+                    disturbance +
+                    (1 | system_nr),
+                   data = dataset_to_plot %>%
+                    filter(metaecosystem_type == "S_L" | 
+                             metaecosystem_type == "S_L_random") %>%
+                     filter(time_point >= 2),
+                   REML = FALSE)
+
+anova(mixed_model, null_model)
+
+summary(mixed_model)
+```
+
 ## Bibliography
+
+```{r extract-sections, echo = FALSE, eval = FALSE}
+#You can just run this to run all the sections so then you can work on them. 
+
+library(here)
+library(knitr)
+for (main_section in c("biomass", "body_size")){
+  
+ sections.path = here("r_files", main_section, "sections")
+ extracted.path = here("r_files", main_section, "extracted_sections")
+ 
+ r.files = list.files(sections.path)
+ rmd.files = r.files[grepl(".Rmd", r.files)]
+ 
+ 
+ map(rmd.files, function(file.i) {
+   
+   file.name = gsub(".Rmd", "", file.i)
+   extracted.file = paste0(file.name, ".R")
+   purl(file.path(sections.path, file.i),
+        file.path(extracted.path, extracted.file))}) 
+}
+```

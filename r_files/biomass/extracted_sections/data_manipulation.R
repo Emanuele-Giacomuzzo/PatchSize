@@ -1,4 +1,4 @@
-## ----import, message = FALSE, echo = TRUE--------------------------------------------------------------------------------------------------
+## ----import, message = FALSE, echo = TRUE-----------------------------------------------------------------------------------------------------------------------------------
 culture_info = read.csv(here("data", "PatchSizePilot_culture_info.csv"), header = TRUE)
 load(here("data", "population", "t0.RData")); t0 = pop_output
 load(here("data", "population", "t1.RData")); t1 = pop_output
@@ -11,7 +11,7 @@ load(here("data", "population", "t7.RData")); t7 = pop_output
 rm(pop_output)
 
 
-## ------------------------------------------------------------------------------------------------------------------------------------------
+## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #Column: time
 t0$time = NA
 t1$time = NA
@@ -54,31 +54,31 @@ t4 = merge(culture_info,t4, by = "culture_ID")
 t5 = merge(culture_info,t5, by = "culture_ID")
 t6 = merge(culture_info,t6, by = "culture_ID")
 t7 = merge(culture_info,t7, by = "culture_ID")
-ds = rbind(t0, t1, t2, t3, t4, t5, t6, t7)
+ds_biomass = rbind(t0, t1, t2, t3, t4, t5, t6, t7)
 rm(elongating_t0, t0, t1, t2, t3, t4, t5, t6, t7)
 
-ds$time_point[ds$time_point=="t0"] = 0
-ds$time_point[ds$time_point=="t1"] = 1
-ds$time_point[ds$time_point=="t2"] = 2
-ds$time_point[ds$time_point=="t3"] = 3
-ds$time_point[ds$time_point=="t4"] = 4
-ds$time_point[ds$time_point=="t5"] = 5
-ds$time_point[ds$time_point=="t6"] = 6
-ds$time_point[ds$time_point=="t7"] = 7
-ds$time_point = as.character(ds$time_point)
+ds_biomass$time_point[ds_biomass$time_point=="t0"] = 0
+ds_biomass$time_point[ds_biomass$time_point=="t1"] = 1
+ds_biomass$time_point[ds_biomass$time_point=="t2"] = 2
+ds_biomass$time_point[ds_biomass$time_point=="t3"] = 3
+ds_biomass$time_point[ds_biomass$time_point=="t4"] = 4
+ds_biomass$time_point[ds_biomass$time_point=="t5"] = 5
+ds_biomass$time_point[ds_biomass$time_point=="t6"] = 6
+ds_biomass$time_point[ds_biomass$time_point=="t7"] = 7
+ds_biomass$time_point = as.character(ds_biomass$time_point)
 
-ds$day = NA
-ds$day[ds$time_point== 0] = 0
-ds$day[ds$time_point== 1] = 4
-ds$day[ds$time_point== 2] = 8
-ds$day[ds$time_point== 3] = 12
-ds$day[ds$time_point== 4] = 16
-ds$day[ds$time_point== 5] = 20
-ds$day[ds$time_point== 6] = 24
-ds$day[ds$time_point== 7] = 28
+ds_biomass$day = NA
+ds_biomass$day[ds_biomass$time_point== 0] = 0
+ds_biomass$day[ds_biomass$time_point== 1] = 4
+ds_biomass$day[ds_biomass$time_point== 2] = 8
+ds_biomass$day[ds_biomass$time_point== 3] = 12
+ds_biomass$day[ds_biomass$time_point== 4] = 16
+ds_biomass$day[ds_biomass$time_point== 5] = 20
+ds_biomass$day[ds_biomass$time_point== 6] = 24
+ds_biomass$day[ds_biomass$time_point== 7] = 28
 
 #Column: eco_metaeco_type
-ds$eco_metaeco_type = factor(ds$eco_metaeco_type, 
+ds_biomass$eco_metaeco_type = factor(ds_biomass$eco_metaeco_type, 
                              levels = c('S', 
                                         'S (S_S)', 
                                         'S (S_L)', 
@@ -89,12 +89,12 @@ ds$eco_metaeco_type = factor(ds$eco_metaeco_type,
                                         'L (S_L)'))
 
 ecosystems_to_take_off = 60 #Culture number 60 because it was spilled
-ds = ds %>%
+ds_biomass = ds_biomass %>%
   filter(! culture_ID %in% ecosystems_to_take_off)
 
-ds_for_evaporation = ds
+ds_for_evaporation = ds_biomass
 
-ds = ds %>% 
+ds_biomass = ds_biomass %>% 
   select(culture_ID, 
          patch_size, 
          disturbance, 
@@ -107,7 +107,7 @@ ds = ds %>%
          system_nr, 
          eco_metaeco_type)
 
-ds = ds[, c("culture_ID", 
+ds_biomass = ds_biomass[, c("culture_ID", 
             "system_nr", 
             "disturbance", 
             "time_point",
@@ -120,8 +120,8 @@ ds = ds[, c("culture_ID",
             "bioarea_per_volume")]
 
 
-## ----regional-biomass----------------------------------------------------------------------------------------------------------------------
-ds_regional = ds %>%
+## ----regional-biomass-------------------------------------------------------------------------------------------------------------------------------------------------------
+ds_regional = ds_biomass %>%
   filter(metaecosystem == "yes") %>%
   group_by(culture_ID, 
            system_nr, 

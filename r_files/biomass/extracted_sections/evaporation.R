@@ -1,4 +1,4 @@
-## ----tidy----------------------------------------------------------------------------------------------------------------------------------
+## ----tidy-------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 #Columns: exchange & evaporation
 ds_for_evaporation = gather(ds_for_evaporation, 
@@ -22,7 +22,7 @@ ds_for_evaporation$nr_of_tubes_in_rack[ds_for_evaporation$exchange == 5] = 4
 ds_for_evaporation$nr_of_tubes_in_rack[ds_for_evaporation$exchange == 6] = 4
 
 
-## ----plot, warning = FALSE-----------------------------------------------------------------------------------------------------------------
+## ----plot, warning = FALSE--------------------------------------------------------------------------------------------------------------------------------------------------
 ds_for_evaporation %>%
   filter(disturbance == disturbance) %>%
   ggplot(aes(x = as.character(nr_of_tubes_in_rack),
@@ -56,24 +56,14 @@ ds_for_evaporation %>%
        y = "Evaporation (ml)")
 
 
-## ----mixed model, eval = FALSE-------------------------------------------------------------------------------------------------------------
+## ----mixed model, eval = FALSE----------------------------------------------------------------------------------------------------------------------------------------------
 ## 
-## mixed.model = lmer(evaporation  ~ exchange +
-##                      patch_size +
-##                      disturbance  +
-##                      exchange*patch_size +
-##                      exchange*disturbance +
-##                      patch_size*disturbance +
-##                      exchange*patch_size*disturbance +
-##                      (exchange||culture_ID) +
-##                      (patch_size||culture_ID) +
-##                      (disturbance||culture_ID) +
-##                      (exchange*patch_size||culture_ID) +
-##                      (exchange*disturbance||culture_ID) +
-##                      (patch_size*disturbance||culture_ID) +
-##                      (exchange*patch_size*disturbance||culture_ID),
-##                    data=ds_for_evaporation,
-##                    REML = FALSE)
+## mixed.model = lmer(evaporation  ~
+##                      patch_size * disturbance  * exchange +
+##                      (exchange | culture_ID),
+##                    data = ds_for_evaporation,
+##                    REML = FALSE,
+##                    control = lmerControl (optimizer = "Nelder_Mead"))
 ## 
 ## null.model = lm(evaporation ~
 ##                   1,

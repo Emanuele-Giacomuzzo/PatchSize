@@ -1,14 +1,19 @@
-## ----regional biomass plot-----------------------------------------------------------------------------------------------------------------
+## ----regional biomass plot--------------------------------------------------------------------------------------------------------------------------------------------------
 ds_regional %>%
   filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L") %>%
   ggplot(aes(x = day,
              y = regional_mean_bioarea,
              group = day)) + 
   geom_boxplot() +
-  labs(x = "day", y = "Regional bioarea (something/microlitres)")
+  labs(x = "day", y = "Regional bioarea (something/microlitres)")  +
+  geom_vline(xintercept = first_perturbation_day + 0.7, 
+             linetype="dotdash", 
+             color = "grey", 
+             size=0.7) +
+  labs(caption = "Vertical grey line: first perturbation")
 
 
-## ----time-function-------------------------------------------------------------------------------------------------------------------------
+## ----time-function----------------------------------------------------------------------------------------------------------------------------------------------------------
 
 a1 = -0.1
 a4 = 1200
@@ -19,7 +24,7 @@ biomass = a4*(day-a5) * exp(a1*(day-a5))
 plot(biomass ~ day)
 
 
-## ----parameterise-time-function, results = FALSE-------------------------------------------------------------------------------------------
+## ----parameterise-time-function, results = FALSE----------------------------------------------------------------------------------------------------------------------------
 
 ds_regional_shrunk_type = ds_regional %>%
     filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L")
@@ -34,11 +39,11 @@ a4 = as.numeric(model$m$getPars()[2])
 a5 = as.numeric(model$m$getPars()[3])
 
 
-## ----show-fitted-parameters----------------------------------------------------------------------------------------------------------------
+## ----show-fitted-parameters-------------------------------------------------------------------------------------------------------------------------------------------------
 model$m$getPars()
 
 
-## ------------------------------------------------------------------------------------------------------------------------------------------
+## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 day = seq(0,30,1)
 predicted = a4*(day-a5)*exp(a1*(day-a5))
@@ -49,11 +54,16 @@ ds_regional_shrunk_type%>%
              y = regional_mean_bioarea,
              group = day)) + 
   geom_boxplot() +
-  labs(x = "day", y = "regional bioarea") +
-  geom_line(data=data_fitted,aes(x = day, y=regional_mean_bioarea),color="red", group = 1)
+  labs(x = "Day", y = "Regional bioarea") +
+  geom_line(data=data_fitted,aes(x = day, y=regional_mean_bioarea),color="red", group = 1) +
+  geom_vline(xintercept = first_perturbation_day + 0.7, 
+             linetype="dotdash", 
+             color = "grey", 
+             size=0.7) +
+  labs(caption = "Vertical grey line: first perturbation")
 
 
-## ----predicted-ds--------------------------------------------------------------------------------------------------------------------------
+## ----predicted-ds-----------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ds_regional_predicted_shrunk_type = ds_regional %>%
   mutate(predicted_from_time = a4*(day-a5)*exp(a1*(day-a5))) %>%

@@ -35,7 +35,12 @@ ds_regional %>%
           legend.margin = margin(6, 6, 6, 6)) +
   scale_linetype_discrete(labels = c("large-large",
                                      "medium-medium",
-                                     "small-small"))
+                                     "small-small"))  +
+  geom_vline(xintercept = first_perturbation_day, 
+             linetype="dotdash", 
+             color = "grey", 
+             size=0.7) +
+  labs(caption = "Vertical grey line: first perturbation")
 
 ds_regional %>%
   filter(!metaecosystem_type == "S_L") %>%
@@ -64,7 +69,12 @@ ds_regional %>%
           legend.margin = margin(6, 6, 6, 6)) +
   scale_linetype_discrete(labels = c("large-large",
                                      "medium-medium",
-                                     "small-small"))
+                                     "small-small"))  +
+  geom_vline(xintercept = first_perturbation_day, 
+             linetype="dotdash", 
+             color = "grey", 
+             size=0.7) +
+  labs(caption = "Vertical grey line: first perturbation")
 
 ds_regional %>%
   filter(disturbance == "low") %>%
@@ -85,7 +95,16 @@ ds_regional %>%
           legend.position = c(.95, .95),
           legend.justification = c("right", "top"),
           legend.box.just = "right",
-          legend.margin = margin(6, 6, 6, 6))
+          legend.margin = margin(6, 6, 6, 6)) +
+  scale_fill_discrete(labels = c("large-large",
+                                 "medium-medium",
+                                 "small-small")) +
+  geom_vline(xintercept = first_perturbation_day + 0.7, 
+             linetype="dotdash", 
+             color = "grey", 
+             size=0.7) +
+  labs(caption = "Vertical grey line: first perturbation")
+
 
 ds_regional %>%
   filter(disturbance == "high") %>%
@@ -106,7 +125,15 @@ ds_regional %>%
           legend.position = c(.95, .95),
           legend.justification = c("right", "top"),
           legend.box.just = "right",
-          legend.margin = margin(6, 6, 6, 6))
+          legend.margin = margin(6, 6, 6, 6)) +
+  scale_fill_discrete(labels = c("large-large",
+                                 "medium-medium",
+                                 "small-small")) +
+  geom_vline(xintercept = first_perturbation_day + 0.7, 
+             linetype="dotdash", 
+             color = "grey", 
+             size=0.7) +
+  labs(caption = "Vertical grey line: first perturbation")
 ```
 
-Interesting. It seems like there's not much difference between the medium-medium and the large-large. 
+Interesting. It seems like there's not much difference between the medium-medium and the large-large.

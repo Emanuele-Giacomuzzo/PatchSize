@@ -75,26 +75,16 @@ It seems like there is no real difference across time, disturbance, or patch typ
 
 #### Mixed effect model
 
-I'm not going to run it becuase it takes a long time.
+I'm not going to run it because it takes a long time.
 
 ```{r mixed model, eval = FALSE}
 
-mixed.model = lmer(evaporation  ~ exchange + 
-                     patch_size + 
-                     disturbance  + 
-                     exchange*patch_size + 
-                     exchange*disturbance + 
-                     patch_size*disturbance + 
-                     exchange*patch_size*disturbance + 
-                     (exchange||culture_ID) + 
-                     (patch_size||culture_ID) + 
-                     (disturbance||culture_ID) + 
-                     (exchange*patch_size||culture_ID) + 
-                     (exchange*disturbance||culture_ID) + 
-                     (patch_size*disturbance||culture_ID) + 
-                     (exchange*patch_size*disturbance||culture_ID), 
-                   data=ds_for_evaporation,
-                   REML = FALSE)
+mixed.model = lmer(evaporation  ~ 
+                     patch_size * disturbance  * exchange + 
+                     (exchange | culture_ID), 
+                   data = ds_for_evaporation,
+                   REML = FALSE, 
+                   control = lmerControl (optimizer = "Nelder_Mead"))
 
 null.model = lm(evaporation ~
                   1, 

@@ -3,6 +3,8 @@ title: "MM_SL_time_fitting"
 author: "Emanuele Giacomuzzo"
 date: "2022-08-02"
 output: html_document
+editor_options: 
+  chunk_output_type: console
 ---
 
 Here we want to fit how biomass changes across time to a function. The biomass of our meta-ecosystems looks like this.
@@ -14,7 +16,12 @@ ds_regional %>%
              y = regional_mean_bioarea,
              group = day)) + 
   geom_boxplot() +
-  labs(x = "day", y = "Regional bioarea (something/microlitres)")
+  labs(x = "day", y = "Regional bioarea (something/microlitres)")  +
+  geom_vline(xintercept = first_perturbation_day + 0.7, 
+             linetype="dotdash", 
+             color = "grey", 
+             size=0.7) +
+  labs(caption = "Vertical grey line: first perturbation")
 ```
 
 To fit these data, we need to produce (and parameterise) a function that resemble how the biomass first increases and then decreases.
@@ -70,8 +77,13 @@ ds_regional_shrunk_type%>%
              y = regional_mean_bioarea,
              group = day)) + 
   geom_boxplot() +
-  labs(x = "day", y = "regional bioarea") +
-  geom_line(data=data_fitted,aes(x = day, y=regional_mean_bioarea),color="red", group = 1)
+  labs(x = "Day", y = "Regional bioarea") +
+  geom_line(data=data_fitted,aes(x = day, y=regional_mean_bioarea),color="red", group = 1) +
+  geom_vline(xintercept = first_perturbation_day + 0.7, 
+             linetype="dotdash", 
+             color = "grey", 
+             size=0.7) +
+  labs(caption = "Vertical grey line: first perturbation")
 ```
 
 Let's then include our predictions into the data set.

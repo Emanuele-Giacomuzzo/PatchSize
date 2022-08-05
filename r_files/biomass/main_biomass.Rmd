@@ -33,6 +33,7 @@ We want to understand if the regional biomass produced by an ecosystem with a sm
 Let's start by plotting the single ecosystems to see that everything is fine. To make the patterns clear let's plot the low disturbance and high disturbance in two different figures. We first plot the single meta-ecosystems and then their box plots.
 
 ```{r child = here("r_files", "biomass", "sections", "MM_SL_plots.Rmd")}
+source(here("r_files", "biomass", "extracted_sections", "MM_SL_plots.R"))
 ```
 
 We can see that the regional biomass was higher for meta-ecosystems with the same size, regardless of disturbance. As both disturbance levels showed the same pattern, I would just keep the one with low disturbance in the publication, as it shows a stronger pattern.
@@ -87,30 +88,10 @@ source(here("r_files", "biomass", "extracted_sections", "metaecos_of_different_s
 source(here("r_files", "biomass", "extracted_sections", "small_patches.R"))
 ```
 
-```{r child = here("r_files", "biomass", "sections", "S-SS_and_S-SL.Rmd"), eval = FALSE}
-source(here("r_files", "biomass", "extracted_sections", "S-SS_and_S-SL.R"))
-```
-
-```{r child = here("r_files", "biomass", "sections", "S_and_S-SL.Rmd"), eval = FALSE}
-source(here("r_files", "biomass", "extracted_sections", "S_and_S-SL.R"))
-```
-
-```{r child = here("r_files", "biomass", "sections", "S_and_S-SS.Rmd"), eval = FALSE}
-source(here("r_files", "biomass", "extracted_sections", "S_and_S-SS.R"))
-```
-
 #### Large patches
 
 ```{r child = here("r_files", "biomass", "sections", "large_patches.Rmd")}
 source(here("r_files", "biomass", "extracted_sections", "large_patches.R"))
-```
-
-```{r child = here("r_files", "biomass", "sections", "L_and_L-LL.Rmd"), eval = FALSE}
-source(here("r_files", "biomass", "extracted_sections", "L_and_L-LL.R"))
-```
-
-```{r child = here("r_files", "biomass", "sections", "L_and_L-SL.Rmd"), eval= FALSE}
-source(here("r_files", "biomass", "extracted_sections", "L_and_L-SL.R"))
 ```
 
 #### Isolated patches

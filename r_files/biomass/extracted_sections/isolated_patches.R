@@ -1,5 +1,5 @@
-## ------------------------------------------------------------------------------------------------------------------------------------------
-ds %>%
+## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ds_biomass %>%
   filter ( disturbance == "low") %>%
   filter(metaecosystem == "no") %>%
   group_by (system_nr, day, patch_size) %>%
@@ -25,9 +25,12 @@ ds %>%
           legend.position = c(.95, .95),
           legend.justification = c("right", "top"),
           legend.box.just = "right",
-          legend.margin = margin(6, 6, 6, 6))
+          legend.margin = margin(6, 6, 6, 6)) +
+  scale_linetype_discrete(labels = c("large isolated",
+                                     "medium isolated",
+                                     "small isolated"))
 
-ds %>%
+ds_biomass %>%
   filter ( disturbance == "high") %>%
   filter(metaecosystem == "no") %>%
   group_by (system_nr, day, patch_size) %>%
@@ -53,11 +56,14 @@ ds %>%
           legend.position = c(.95, .95),
           legend.justification = c("right", "top"),
           legend.box.just = "right",
-          legend.margin = margin(6, 6, 6, 6))
+          legend.margin = margin(6, 6, 6, 6)) +
+  scale_linetype_discrete(labels = c("large isolated",
+                                     "medium isolated",
+                                     "small isolated"))
 
 
-## ------------------------------------------------------------------------------------------------------------------------------------------
-ds %>%
+## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ds_biomass %>%
   filter(disturbance == "low") %>%
   filter(metaecosystem == "no") %>%
   ggplot(aes(x = day,
@@ -78,7 +84,7 @@ ds %>%
           legend.box.just = "right",
           legend.margin = margin(6, 6, 6, 6))
 
-ds %>%
+ds_biomass %>%
   filter(disturbance == "high") %>%
   filter(metaecosystem == "no") %>%
   ggplot(aes(x = day,

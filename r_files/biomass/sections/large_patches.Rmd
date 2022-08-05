@@ -11,7 +11,7 @@ editor_options:
 
 ### --- SINGLE PATCHES --- ###
 
-ds %>%
+ds_biomass %>%
   filter(disturbance == "low") %>%
   filter(patch_size == "L") %>%
   ggplot(aes(x = day,
@@ -36,7 +36,7 @@ ds %>%
                                      "large connected to large",
                                      "large connected to small"))
 
-ds %>%
+ds_biomass %>%
   filter(disturbance == "high") %>%
   filter(patch_size == "L") %>%
   ggplot(aes(x = day,
@@ -63,7 +63,7 @@ ds %>%
 
 ### --- BOXPLOTS --- ###
 
-ds %>%
+ds_biomass %>%
   filter(disturbance == "low") %>%
   filter(patch_size == "L") %>%
   ggplot(aes(x = day,
@@ -86,7 +86,7 @@ ds %>%
                                  "large connected to large",
                                  "large connected to small"))
 
-ds %>%
+local_large_low_plot = ds_biomass %>%
   filter(disturbance == "high") %>%
   filter(patch_size == "L") %>%
   ggplot(aes(x = day,
@@ -109,4 +109,31 @@ ds %>%
                                  "large connected to large",
                                  "large connected to small"))
 
+```
+
+L vs L (small-large)
+
+```{r}
+
+ds_local_S_t2_t7 = ds_biomass %>%
+  filter (eco_metaeco_type == "L" |
+          eco_metaeco_type == "L (S_L)") %>%
+  filter(time_point >= 2) #Let's take off the first two time points which are before the first disturbance event.
+
+full_model = lmer(bioarea_per_volume ~
+                    metaecosystem_type * disturbance  +
+                    (1 | day),
+                  data = ds_local_S_t2_t7,
+                  REML = FALSE)
+
+no_metaeco_type_model = lmer(bioarea_per_volume ~
+                    disturbance +
+                    (1 | day),
+                  data = ds_local_S_t2_t7,
+                  REML = FALSE)
+
+anova(full_model, no_metaeco_type_model)
+r.squaredGLMM(full_model)
+r.squaredGLMM(no_metaeco_type_model)
+summary(full_model)
 ```

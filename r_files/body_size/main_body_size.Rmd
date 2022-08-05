@@ -58,7 +58,7 @@ t6 = t6 %>% rename(replicate_video = replicate)
 t7 = t7 %>% rename(replicate_video = replicate)
 
 
-### --- Create ds dataset --- ###
+### --- Create ds_body_size dataset --- ###
 
 long_t0 = t0 %>% slice(rep(1:n(), max(culture_info$culture_ID)))
 ID_vector = NULL
@@ -76,39 +76,39 @@ t4 = merge(culture_info,t4,by="culture_ID")
 t5 = merge(culture_info,t5,by="culture_ID")
 t6 = merge(culture_info,t6,by="culture_ID")
 t7 = merge(culture_info,t7,by="culture_ID")
-ds = rbind(t0, t1, t2, t3, t4, t5, t6, t7); rm(t0, t1, t2, t3, t4, t5, t6, t7)
+ds_body_size = rbind(t0, t1, t2, t3, t4, t5, t6, t7); rm(t0, t1, t2, t3, t4, t5, t6, t7)
 
-### --- Tidy ds data-set --- ###
+### --- Tidy ds_body_size data-set --- ###
 
 #Column: day
-ds$day = ds$time_point;
-ds$day[ds$day=="t0"] = "0"
-ds$day[ds$day=="t1"] = "4"
-ds$day[ds$day=="t2"] = "8"
-ds$day[ds$day=="t3"] = "12"
-ds$day[ds$day=="t4"] = "16"
-ds$day[ds$day=="t5"] = "20"
-ds$day[ds$day=="t6"] = "24"
-ds$day[ds$day=="t7"] = "28"
-ds$day = as.numeric(ds$day)
+ds_body_size$day = ds_body_size$time_point;
+ds_body_size$day[ds_body_size$day=="t0"] = "0"
+ds_body_size$day[ds_body_size$day=="t1"] = "4"
+ds_body_size$day[ds_body_size$day=="t2"] = "8"
+ds_body_size$day[ds_body_size$day=="t3"] = "12"
+ds_body_size$day[ds_body_size$day=="t4"] = "16"
+ds_body_size$day[ds_body_size$day=="t5"] = "20"
+ds_body_size$day[ds_body_size$day=="t6"] = "24"
+ds_body_size$day[ds_body_size$day=="t7"] = "28"
+ds_body_size$day = as.numeric(ds_body_size$day)
 
 #Column: time point
-ds$time_point[ds$time_point=="t0"] = 0
-ds$time_point[ds$time_point=="t1"] = 1
-ds$time_point[ds$time_point=="t2"] = 2
-ds$time_point[ds$time_point=="t3"] = 3
-ds$time_point[ds$time_point=="t4"] = 4
-ds$time_point[ds$time_point=="t5"] = 5
-ds$time_point[ds$time_point=="t6"] = 6
-ds$time_point[ds$time_point=="t7"] = 7
-ds$time_point = as.character(ds$time_point)
+ds_body_size$time_point[ds_body_size$time_point=="t0"] = 0
+ds_body_size$time_point[ds_body_size$time_point=="t1"] = 1
+ds_body_size$time_point[ds_body_size$time_point=="t2"] = 2
+ds_body_size$time_point[ds_body_size$time_point=="t3"] = 3
+ds_body_size$time_point[ds_body_size$time_point=="t4"] = 4
+ds_body_size$time_point[ds_body_size$time_point=="t5"] = 5
+ds_body_size$time_point[ds_body_size$time_point=="t6"] = 6
+ds_body_size$time_point[ds_body_size$time_point=="t7"] = 7
+ds_body_size$time_point = as.character(ds_body_size$time_point)
 
 #Column: eco_metaeco_type
-ds$eco_metaeco_type = factor(ds$eco_metaeco_type, 
+ds_body_size$eco_metaeco_type = factor(ds_body_size$eco_metaeco_type, 
                              levels=c('S', 'S (S_S)', 'S (S_L)', 'M', 'M (M_M)', 'L', 'L (L_L)', 'L (S_L)'))
 
 #Select useful columns
-ds = ds %>% 
+ds_body_size = ds_body_size %>% 
   select(culture_ID, 
          patch_size, 
          disturbance, 
@@ -121,7 +121,7 @@ ds = ds %>%
          eco_metaeco_type)
 
 #Reorder columns
-ds = ds[, c("culture_ID", 
+ds_body_size = ds_body_size[, c("culture_ID", 
             "system_nr", 
             "disturbance", 
             "day",
@@ -142,7 +142,7 @@ As in @Jacquet2020 I will create 12 size classes.
 #### --- PARAMETERS & INITIALISATION --- ###
 
 nr_of_size_classes = 12
-largest_size = max(ds$mean_area)
+largest_size = max(ds_body_size$mean_area)
 size_class_width = largest_size/nr_of_size_classes
 size_class = NULL
 
@@ -156,7 +156,7 @@ for (class in 1:nr_of_size_classes){
   bin_upper_limit = size_class_boundaries[class+1]
   size_input = (size_class_boundaries[class] + size_class_boundaries[class + 1])/2
   
-  size_class[[class]] = ds%>%
+  size_class[[class]] = ds_body_size%>%
     filter(bin_lower_limit <= mean_area) %>%
     filter(mean_area <= bin_upper_limit) %>%
     group_by(culture_ID, 

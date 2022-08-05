@@ -8,7 +8,7 @@ editor_options:
 ---
 
 ```{r}
-ds %>%
+ds_biomass %>%
   filter ( disturbance == "low") %>%
   filter(metaecosystem == "no") %>%
   group_by (system_nr, day, patch_size) %>%
@@ -39,7 +39,7 @@ ds %>%
                                      "medium isolated",
                                      "small isolated"))
 
-ds %>%
+ds_biomass %>%
   filter ( disturbance == "high") %>%
   filter(metaecosystem == "no") %>%
   group_by (system_nr, day, patch_size) %>%
@@ -73,7 +73,7 @@ ds %>%
 
 
 ```{r}
-ds %>%
+ds_biomass %>%
   filter(disturbance == "low") %>%
   filter(metaecosystem == "no") %>%
   ggplot(aes(x = day,
@@ -94,7 +94,7 @@ ds %>%
           legend.box.just = "right",
           legend.margin = margin(6, 6, 6, 6))
 
-ds %>%
+ds_biomass %>%
   filter(disturbance == "high") %>%
   filter(metaecosystem == "no") %>%
   ggplot(aes(x = day,

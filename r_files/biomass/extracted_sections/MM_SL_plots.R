@@ -1,4 +1,4 @@
-## ------------------------------------------------------------------------------------------------------------------------------------------
+## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ds_regional %>%
     filter ( disturbance == "low") %>%
     filter (metaecosystem_type == "S_L" | 
@@ -26,7 +26,12 @@ ds_regional %>%
           legend.position = c(.95, .95),
           legend.justification = c("right", "top"),
           legend.box.just = "right",
-          legend.margin = margin(6, 6, 6, 6))
+          legend.margin = margin(6, 6, 6, 6)) +
+  geom_vline(xintercept = first_perturbation_day, 
+             linetype="dotdash", 
+             color = "grey", 
+             size=0.7) +
+  labs(caption = "Vertical grey line: first perturbation")
 
 ds_regional %>%
     filter ( disturbance == "high") %>%
@@ -54,7 +59,12 @@ ds_regional %>%
           legend.position = c(.95, .95),
           legend.justification = c("right", "top"),
           legend.box.just = "right",
-          legend.margin = margin(6, 6, 6, 6))
+          legend.margin = margin(6, 6, 6, 6)) +
+  geom_vline(xintercept = first_perturbation_day, 
+             linetype="dotdash", 
+             color = "grey", 
+             size=0.7) +
+  labs(caption = "Vertical grey line: first perturbation")
 
 p_regional_low_mean = ds_regional %>%
   filter(disturbance == "low") %>%
@@ -77,7 +87,12 @@ p_regional_low_mean = ds_regional %>%
         legend.position = c(.95, .95),
         legend.justification = c("right", "top"),
         legend.box.just = "right",
-        legend.margin = margin(6, 6, 6, 6))
+        legend.margin = margin(6, 6, 6, 6))  +
+  geom_vline(xintercept = first_perturbation_day + 0.7, 
+             linetype="dotdash", 
+             color = "grey", 
+             size=0.7) +
+  labs(caption = "Vertical grey line: first perturbation")
 p_regional_low_mean
 
 ds_regional %>%
@@ -100,5 +115,10 @@ ds_regional %>%
         legend.position = c(.95, .95),
         legend.justification = c("right", "top"),
         legend.box.just = "right",
-        legend.margin = margin(6, 6, 6, 6))
+        legend.margin = margin(6, 6, 6, 6)) +
+  geom_vline(xintercept = first_perturbation_day + 0.7, 
+             linetype="dotdash", 
+             color = "grey", 
+             size=0.7) +
+  labs(caption = "Vertical grey line: first perturbation")
 

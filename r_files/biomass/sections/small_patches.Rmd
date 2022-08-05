@@ -9,7 +9,9 @@ editor_options:
 
 ```{r}
 
-ds %>%
+### --- SINGLE ECOSYSTEMS FOR ALL SMALL PATCHES --- ###
+
+ds_biomass %>%
   filter(disturbance == "low") %>%
   #filter(eco_metaeco_type == "S (S_S)" | eco_metaeco_type == "S (S_L)") %>%
   filter(patch_size == "S") %>%
@@ -33,9 +35,14 @@ ds %>%
         legend.margin = margin(6, 6, 6, 6)) +
   scale_linetype_discrete(labels = c("small isolated",
                                      "small connected to small",
-                                     "small connected to large"))
+                                     "small connected to large"))  +
+  geom_vline(xintercept = first_perturbation_day, 
+             linetype="dotdash", 
+             color = "grey", 
+             size=0.7) +
+  labs(caption = "Vertical grey line: first perturbation")
 
-ds %>%
+ds_biomass %>%
   filter(disturbance == "high") %>%
   #filter(eco_metaeco_type == "S (S_S)" | eco_metaeco_type == "S (S_L)") %>%
   filter(patch_size == "S") %>%
@@ -59,13 +66,21 @@ ds %>%
         legend.margin = margin(6, 6, 6, 6)) +
   scale_linetype_discrete(labels = c("small isolated",
                                      "small connected to small",
-                                     "small connected to large"))
+                                     "small connected to large"))  +
+  geom_vline(xintercept = first_perturbation_day, 
+             linetype="dotdash", 
+             color = "grey", 
+             size=0.7) +
+  labs(caption = "Vertical grey line: first perturbation")
 ```
 
-This is quite messy, as the three types overlap quite a bit. I will then just show the difference between a small patch connected to another small and the one connected to a large one. 
+This is quite messy, as the three types overlap quite a bit. I will then just show the difference between a small patch connected to another small and the one connected to a large one.
 
 ```{r}
-ds %>%
+
+### --- SINGLE ECOSYSTEMS FOR SMALL PATCHES CONNTED TO S OR L --- ###
+
+ds_biomass %>%
   filter(disturbance == "low") %>%
   filter(eco_metaeco_type == "S (S_S)" | eco_metaeco_type == "S (S_L)") %>%
   ggplot(aes(x = day,
@@ -88,7 +103,7 @@ ds %>%
         legend.margin = margin(6, 6, 6, 6)) +
   scale_linetype_discrete(labels = c("small connected to small",
                                      "small connected to large"))
-ds %>%
+ds_biomass %>%
   filter(disturbance == "high") %>%
   filter(eco_metaeco_type == "S (S_S)" | eco_metaeco_type == "S (S_L)") %>%
   ggplot(aes(x = day,
@@ -110,11 +125,16 @@ ds %>%
         legend.box.just = "right",
         legend.margin = margin(6, 6, 6, 6)) +
   scale_linetype_discrete(labels = c("small connected to small",
-                                     "small connected to large"))
+                                     "small connected to large")) +
+  geom_vline(xintercept = first_perturbation_day, 
+             linetype="dotdash", 
+             color = "grey", 
+             size=0.7) +
+  labs(caption = "Vertical grey line: first perturbation")
 
-### --- S PATCHES LOW DISTURBANCE BOXPLOTS --- ###
+### --- BOXPLOTS FOR SMALL PATCHES CONNTED TO S OR L --- ###
 
-local_small_low_plot = ds %>%
+local_small_low_plot = ds_biomass %>%
   filter(disturbance == "low") %>%
   filter(patch_size == "S") %>%
   ggplot(aes(x = day,
@@ -135,10 +155,15 @@ local_small_low_plot = ds %>%
         legend.margin = margin(6, 6, 6, 6)) +
   scale_fill_discrete(labels = c("small isolated", 
                                  "small connected to small",
-                                 "small connected to large"))
+                                 "small connected to large")) +
+  geom_vline(xintercept = first_perturbation_day + 0.7, 
+             linetype="dotdash", 
+             color = "grey", 
+             size=0.7) +
+  labs(caption = "Vertical grey line: first perturbation")
 local_small_low_plot
 
-ds %>%
+ds_biomass %>%
   filter(disturbance == "high") %>%
   filter(patch_size == "S") %>%
   ggplot(aes(x = day,
@@ -159,7 +184,10 @@ ds %>%
         legend.margin = margin(6, 6, 6, 6)) +
   scale_fill_discrete(labels = c("small isolated", 
                                  "small connected to small",
-                                 "small connected to large"))
-
+                                 "small connected to large")) +
+  geom_vline(xintercept = first_perturbation_day + 0.7, 
+             linetype="dotdash", 
+             color = "grey", 
+             size=0.7) +
+  labs(caption = "Vertical grey line: first perturbation")
 ```
-
