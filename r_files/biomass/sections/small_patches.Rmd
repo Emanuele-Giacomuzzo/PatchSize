@@ -7,6 +7,8 @@ editor_options:
   chunk_output_type: console
 ---
 
+##### plots
+
 ```{r}
 
 ### --- SINGLE ECOSYSTEMS FOR ALL SMALL PATCHES --- ###
@@ -72,65 +74,6 @@ ds_biomass %>%
              color = "grey", 
              size=0.7) +
   labs(caption = "Vertical grey line: first perturbation")
-```
-
-This is quite messy, as the three types overlap quite a bit. I will then just show the difference between a small patch connected to another small and the one connected to a large one.
-
-```{r}
-
-### --- SINGLE ECOSYSTEMS FOR SMALL PATCHES CONNTED TO S OR L --- ###
-
-ds_biomass %>%
-  filter(disturbance == "low") %>%
-  filter(eco_metaeco_type == "S (S_S)" | eco_metaeco_type == "S (S_L)") %>%
-  ggplot(aes(x = day,
-             y = bioarea_per_volume,
-             group = system_nr,
-             fill = system_nr,
-             color = system_nr,
-             linetype = eco_metaeco_type)) +
-  geom_line(stat = "summary", fun = "mean") + 
-  labs(title = "Disturbance = low",
-       x = "Day",
-       y = "Local bioarea (something/μl)",
-       linetype = "") +
-  theme_bw() +
-  theme(panel.grid.major = element_blank(), 
-        panel.grid.minor = element_blank(),
-        legend.position = c(.95, .95),
-        legend.justification = c("right", "top"),
-        legend.box.just = "right",
-        legend.margin = margin(6, 6, 6, 6)) +
-  scale_linetype_discrete(labels = c("small connected to small",
-                                     "small connected to large"))
-ds_biomass %>%
-  filter(disturbance == "high") %>%
-  filter(eco_metaeco_type == "S (S_S)" | eco_metaeco_type == "S (S_L)") %>%
-  ggplot(aes(x = day,
-             y = bioarea_per_volume,
-             group = system_nr,
-             fill = system_nr,
-             color = system_nr,
-             linetype = eco_metaeco_type)) +
-  geom_line(stat = "summary", fun = "mean") + 
-  labs(x = "Day",
-       y = "Local bioarea (something/μl)",
-       title = "Disturbance = high",
-       linetype = "") +
-  theme_bw() +
-  theme(panel.grid.major = element_blank(), 
-        panel.grid.minor = element_blank(),
-        legend.position = c(.95, .95),
-        legend.justification = c("right", "top"),
-        legend.box.just = "right",
-        legend.margin = margin(6, 6, 6, 6)) +
-  scale_linetype_discrete(labels = c("small connected to small",
-                                     "small connected to large")) +
-  geom_vline(xintercept = first_perturbation_day, 
-             linetype="dotdash", 
-             color = "grey", 
-             size=0.7) +
-  labs(caption = "Vertical grey line: first perturbation")
 
 ### --- BOXPLOTS FOR SMALL PATCHES CONNTED TO S OR L --- ###
 
@@ -191,3 +134,21 @@ ds_biomass %>%
              size=0.7) +
   labs(caption = "Vertical grey line: first perturbation")
 ```
+
+##### isolated vs connected to small
+
+Let's start from the largest model.
+
+```{r}
+
+```
+
+Should we
+
+```{r}
+
+```
+
+##### isolated vs connected to large
+
+##### connected to small vs connected to large

@@ -9,7 +9,7 @@ editor_options:
 
 Here we want to see whether we can include time as a fixed effect by transforming the bioarea into its logarithm with base 10. As we are not considering the first two time points because they were before the first disturbance (we want to see the effects of meta-ecosystem type under disturbance), we are lucky that there is a better chance that the biomass will look like goes down in a linear fashion.
 
-**Regional bioarea \~ time**
+**Linearity of regional bioarea \~ time**
 
 ```{r}
 ds_regional %>%
@@ -38,7 +38,7 @@ plot(linear_model, which = 1:5)
 
 I'm not 100% convinced, as the residuals vs fitted has a bit of a banana shape line.
 
-**Log Regional bioarea \~ time**
+**Linearity of Log10(Regional bioarea +1) \~ time**
 
 ```{r}
 ds_regional %>%

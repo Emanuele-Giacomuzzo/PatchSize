@@ -16,7 +16,7 @@ Here I study how **biomass density** changes across treatments in the PatchSizeP
 -   ecosystems that are connected (through the flow of nutrients) to an ecosystem of the same size or to an ecosystem that is larger\
 -   meta-ecosystems in which patch size is the same or in which one patch has most of the area (we keep the total area of the meta-ecosystem constant)
 
-### Data manipulation
+### Data
 
 ```{r child = here("r_files", "biomass", "sections", "data_manipulation.Rmd")}
 source(here("r_files", "biomass", "extracted_sections", "data_manipulation.R"))
@@ -74,6 +74,14 @@ source(here("r_files", "biomass", "extracted_sections", "MM_SL_model_table.R"))
 source(here("r_files", "biomass", "extracted_sections", "MM_SL_single_points.R"))
 ```
 
+#### Small-Large vs Small-Large from isolated {.tabset .tabset-pills}
+
+Here I test whether the bioarea of small-large we see is due to meta-ecosystem dynamics or simply to their area.
+
+```{r child = here("r_files", "biomass", "sections", "SL_SL_from_isolated.Rmd")}
+source(here("r_files", "biomass", "extracted_sections", "SL_SL_from_isolated.R"))
+```
+
 #### Meta-ecosystems of different total size
 
 ```{r child = here("r_files", "biomass", "sections", "metaecos_of_different_size.Rmd")}
@@ -82,13 +90,13 @@ source(here("r_files", "biomass", "extracted_sections", "metaecos_of_different_s
 
 ### Local biomass {.tabset .tabset-dropdown}
 
-#### Small patches
+#### Small patches {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "biomass", "sections", "small_patches.Rmd")}
 source(here("r_files", "biomass", "extracted_sections", "small_patches.R"))
 ```
 
-#### Large patches
+#### Large patches {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "biomass", "sections", "large_patches.Rmd")}
 source(here("r_files", "biomass", "extracted_sections", "large_patches.R"))
