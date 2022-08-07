@@ -11,6 +11,7 @@ editor_options:
 
 ```{r}
 culture_info = read.csv(here("data", "PatchSizePilot_culture_info.csv"), header = TRUE)
+
 datatable(culture_info[,1:10],
           rownames = FALSE,
           options = list(scrollX = TRUE),
@@ -131,19 +132,18 @@ ds_biomass = ds_biomass %>%
          day,
          metaecosystem, 
          system_nr, 
-         eco_metaeco_type)
-
-ds_biomass = ds_biomass[, c("culture_ID", 
-            "system_nr", 
-            "disturbance", 
-            "time_point",
-            "day", 
-            "patch_size", 
-            "metaecosystem", 
-            "metaecosystem_type", 
-            "eco_metaeco_type", 
-            "replicate_video",
-            "bioarea_per_volume")]
+         eco_metaeco_type) %>%
+  relocate(culture_ID,
+           system_nr,
+           disturbance,
+           time_point,
+           day,
+           patch_size,
+           metaecosystem,
+           metaecosystem_type,
+           eco_metaeco_type,
+           replicate_video,
+           bioarea_per_volume)
 
 datatable(ds_biomass,
           rownames = FALSE,
