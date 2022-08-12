@@ -75,7 +75,9 @@ It seems like there is no real difference across time, disturbance, or patch typ
 
 #### Mixed effect model
 
-I'm not going to run it because it takes a long time.
+[It gives me the following error:]{.underline}
+
+-   *Error in fn(nM\$xeval()) : Downdated VtV is not positive definite*
 
 ```{r mixed model, eval = FALSE}
 

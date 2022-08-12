@@ -36,7 +36,12 @@ ds_biomass %>%
         legend.margin = margin(6, 6, 6, 6)) +
   scale_linetype_discrete(labels = c("large isolated",
                                      "large connected to large",
-                                     "large connected to small"))
+                                     "large connected to small")) +
+  geom_vline(xintercept = first_perturbation_day, 
+             linetype="dotdash", 
+             color = "grey", 
+             size=0.7) +
+  labs(caption = "Vertical grey line: first perturbation")
 
 ds_biomass %>%
   filter(disturbance == "high") %>%
@@ -61,7 +66,12 @@ ds_biomass %>%
         legend.margin = margin(6, 6, 6, 6)) +
   scale_linetype_discrete(labels = c("large isolated",
                                      "large connected to large",
-                                     "large connected to small"))
+                                     "large connected to small")) +
+  geom_vline(xintercept = first_perturbation_day, 
+             linetype="dotdash", 
+             color = "grey", 
+             size=0.7) +
+  labs(caption = "Vertical grey line: first perturbation")
 
 ### --- BOXPLOTS --- ###
 
@@ -86,9 +96,14 @@ ds_biomass %>%
         legend.margin = margin(6, 6, 6, 6)) +
   scale_fill_discrete(labels = c("large isolated", 
                                  "large connected to large",
-                                 "large connected to small"))
+                                 "large connected to small")) +
+  geom_vline(xintercept = first_perturbation_day, 
+             linetype="dotdash", 
+             color = "grey", 
+             size=0.7) +
+  labs(caption = "Vertical grey line: first perturbation")
 
-local_large_low_plot = ds_biomass %>%
+local_large_high_plot = ds_biomass %>%
   filter(disturbance == "high") %>%
   filter(patch_size == "L") %>%
   ggplot(aes(x = day,
@@ -109,7 +124,13 @@ local_large_low_plot = ds_biomass %>%
         legend.margin = margin(6, 6, 6, 6)) +
   scale_fill_discrete(labels = c("large isolated", 
                                  "large connected to large",
-                                 "large connected to small"))
+                                 "large connected to small")) +
+  geom_vline(xintercept = first_perturbation_day + 0.7, 
+             linetype="dotdash", 
+             color = "grey", 
+             size=0.7) +
+  labs(caption = "Vertical grey line: first perturbation")
+local_large_high_plot
 ```
 
 ##### isolated vs connected to large

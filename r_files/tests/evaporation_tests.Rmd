@@ -7,7 +7,7 @@ editor_options:
   chunk_output_type: console
 ---
 
-### Evaporation when microwaving 15 falcon tubes at the time 
+### Evaporation when microwaving 15 falcon tubes at the time
 
 ```{r, class.source = 'fold-hide'}
 evaporation.test = read.csv(here("data", "evaporation_test","evaporation_test_right.csv"), header = TRUE)

@@ -45,8 +45,12 @@ library("gganimate")
 library("gapminder")
 library("gifski")
 library("av")
-library("transformr")
+#library("transformr") #Can't call it because sf package is not installed and when I try installing sf I get the error: configure: error: libproj or sqlite3 not found in standard or given locations. I'm for now not reinstalling it. I'll need it once that I update the body size gganimate plots. 
 library("gifski")
+library("GGally")
+library("strengejacke")
+library("sjPlot")
+library("sjstats")
 
 conflict_prefer("load", "base")
 conflict_prefer("filter", "dplyr")
@@ -84,7 +88,7 @@ first_perturbation_day = 5
 
 ## Figures
 
-```{r, echo = FALSE, fig.align='center', fig.cap = "Regional bioarea density (mean bioarea density between two patches) in meta-ecosystems of the same total area, but whose two patches have either the same size (red, medium-medium meta-ecosystem) or that have a smaller and larger patch (blue, small-large meta-ecosystem). Points represent the mean, error bars represent the standard deviation. For clarity, only the low disturbance treatment is shown here. See the Appendix for equivalent the figure of the high disturbance treatment."}
+```{r, echo = FALSE, fig.align='center', fig.cap = "Regional biomass production (mean bioarea density between two patches) in meta-ecosystems of the same total area, but whose two patches have either the same size or that have a smaller and larger patch. For clarity, only the low disturbance treatment is shown here. See the Appendix for equivalent the figure of the high disturbance treatment."}
 p_regional_low_mean + labs(title = "")
 
 ggsave(here("results", "biomass", "publication_regional_low_mean.jpg"), 
@@ -94,7 +98,7 @@ ggsave(here("results", "biomass", "publication_regional_low_mean.jpg"),
        height = publication_height)
 ```
 
-```{r, echo = FALSE, fig.align = 'center', fig.cap = "Local biomass production in patches that are either connnected to a patch of the same size (green, small patches of small-small meta-ecosystemes) or to a patch of larger size (orange, small patches of small-large meta-ecosystems). Points represent the mean, error bars represent the standard deviation. For clarity, only the low disturbance treatment is shown here. See the Appendix for equivalent the figure of the high disturbance treatment. Problem: the small patches in green actually have different sample size than the one in orange. Does it still make sense to include the standard deviation?"}
+```{r, echo = FALSE, fig.align = 'center', fig.cap = "Local biomass production (bioarea density) in patches that are either isolated, connnected to a patch of the same size or to a patch of a larger size. For clarity, only the low disturbance treatment is shown here. See the Appendix for equivalent the figure of the high disturbance treatment."}
 local_small_low_plot + labs(title = "")
 
 ggsave(here("results", "biomass", "publication_local_small_low_plot.jpg"), 
@@ -102,6 +106,20 @@ ggsave(here("results", "biomass", "publication_local_small_low_plot.jpg"),
        units = publication_unit,
        width = publication_width, 
        height = publication_height)
+```
+
+```{r, echo = FALSE, fig.align = 'center', fig.cap = "Local biomass production in patches that are either isolated, connected to the same size, or connected to a smaller size. For clarity, only the high disturbance treatment is shown here. See the Appendix for equivalent the figure of the low disturbance treatment."}
+local_large_high_plot + labs(title = "")
+
+ggsave(here("results", "biomass", "publication_local_small_low_plot.jpg"), 
+       local_large_high_plot + labs(title = ""), 
+       units = publication_unit,
+       width = publication_width, 
+       height = publication_height)
+```
+
+```{r, fig.align = 'center', fig.cap="Small patches this time in logRR"}
+small_patches_figure + labs(title = "")
 ```
 
 ## Tests

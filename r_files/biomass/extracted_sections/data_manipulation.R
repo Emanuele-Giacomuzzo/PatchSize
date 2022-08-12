@@ -1,5 +1,17 @@
-## ----import, message = FALSE, echo = TRUE-----------------------------------------------------------------------------------------------------------------------------------
+## ------------------------------------------------------------------------------------------------------------
 culture_info = read.csv(here("data", "PatchSizePilot_culture_info.csv"), header = TRUE)
+
+datatable(culture_info[,1:10],
+          rownames = FALSE,
+          options = list(scrollX = TRUE),
+          filter = list(position = 'top', 
+                        clear = FALSE))
+
+
+## ----import, message = FALSE, echo = TRUE--------------------------------------------------------------------
+
+### --- IMPORT --- ###
+
 load(here("data", "population", "t0.RData")); t0 = pop_output
 load(here("data", "population", "t1.RData")); t1 = pop_output
 load(here("data", "population", "t2.RData")); t2 = pop_output
@@ -10,8 +22,8 @@ load(here("data", "population", "t6.RData")); t6 = pop_output
 load(here("data", "population", "t7.RData")); t7 = pop_output
 rm(pop_output)
 
+### --- TIDY --- ###
 
-## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #Column: time
 t0$time = NA
 t1$time = NA
@@ -105,22 +117,27 @@ ds_biomass = ds_biomass %>%
          day,
          metaecosystem, 
          system_nr, 
-         eco_metaeco_type)
+         eco_metaeco_type) %>%
+  relocate(culture_ID,
+           system_nr,
+           disturbance,
+           time_point,
+           day,
+           patch_size,
+           metaecosystem,
+           metaecosystem_type,
+           eco_metaeco_type,
+           replicate_video,
+           bioarea_per_volume)
 
-ds_biomass = ds_biomass[, c("culture_ID", 
-            "system_nr", 
-            "disturbance", 
-            "time_point",
-            "day", 
-            "patch_size", 
-            "metaecosystem", 
-            "metaecosystem_type", 
-            "eco_metaeco_type", 
-            "replicate_video",
-            "bioarea_per_volume")]
+datatable(ds_biomass,
+          rownames = FALSE,
+          options = list(scrollX = TRUE),
+          filter = list(position = 'top', 
+                        clear = FALSE))
 
 
-## ----regional-biomass-------------------------------------------------------------------------------------------------------------------------------------------------------
+## ----regional-biomass----------------------------------------------------------------------------------------
 ds_regional = ds_biomass %>%
   filter(metaecosystem == "yes") %>%
   group_by(culture_ID, 
@@ -137,4 +154,10 @@ ds_regional = ds_biomass %>%
 metaecosystems_to_take_off = 40 #System 40 was the system of culture 60 that I spilled
 ds_regional = ds_regional %>%
   filter(! system_nr %in% metaecosystems_to_take_off)
+
+datatable(ds_regional,
+          rownames = FALSE,
+          options = list(scrollX = TRUE),
+          filter = list(position = 'top', 
+                        clear = FALSE))
 
