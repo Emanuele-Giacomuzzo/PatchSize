@@ -1,4 +1,4 @@
-## ----message=FALSE, results='hide'---------------------------------------------------------------------------
+## ----message=FALSE, results='hide'-------------------------------------------------------------------------------------------------------------------------------------------------------
 isolated_S = ds_biomass %>%
   filter(eco_metaeco_type == "S") %>%
   group_by(system_nr, disturbance, time_point, day, patch_size) %>%
@@ -39,7 +39,73 @@ SL_from_isolated = isolated_S_and_L %>%
 ds_regional_with_SL_from_isolated = rbind(SL_from_isolated, ds_regional)
 
 
-## ----message=FALSE-------------------------------------------------------------------------------------------
+## ----message=FALSE-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ds_regional_with_SL_from_isolated %>%
+    filter ( disturbance == "low") %>%
+    filter (metaecosystem_type == "S_L" | metaecosystem_type == "S_L_from_isolated") %>%
+    ggplot (aes(x = day,
+                y = regional_mean_bioarea,
+                group = system_nr,
+                fill = system_nr,
+                color = system_nr,
+                linetype = metaecosystem_type)) +
+    geom_line () +
+    labs(x = "Day", 
+         y = "Regional bioarea (something/µl)",
+         title = "Disturbance = low",
+         fill = "System nr",
+         color = "System nr",
+         linetype = "") +
+    scale_y_continuous(limits = c(0, 6250)) +
+    scale_x_continuous(limits = c(-2, 30)) +
+    scale_linetype_discrete(labels = c("small-large",
+                                     "small-large \n from isolated")) + 
+    theme_bw() +
+    theme(panel.grid.major = element_blank(), 
+          panel.grid.minor = element_blank(),
+          legend.position = c(.95, .95),
+          legend.justification = c("right", "top"),
+          legend.box.just = "right",
+          legend.margin = margin(6, 6, 6, 6)) +
+  geom_vline(xintercept = first_perturbation_day, 
+             linetype="dotdash", 
+             color = "grey", 
+             size=0.7) +
+  labs(caption = "Vertical grey line: first perturbation")
+
+ds_regional_with_SL_from_isolated %>%
+    filter ( disturbance == "high") %>%
+    filter (metaecosystem_type == "S_L" | metaecosystem_type == "S_L_from_isolated") %>%
+    ggplot (aes(x = day,
+                y = regional_mean_bioarea,
+                group = system_nr,
+                fill = system_nr,
+                color = system_nr,
+                linetype = metaecosystem_type)) +
+    geom_line () +
+    labs(title = "Disturbance = high",
+         x = "Day", 
+         y = "Regional bioarea (something/µl)",
+         fill = "System nr",
+         color = "System nr",
+         linetype = "") +
+    scale_y_continuous(limits = c(0, 6250)) +
+    scale_x_continuous(limits = c(-2, 30)) +
+    scale_linetype_discrete(labels = c("small-large",
+                                     "small-large \n from isolated")) + 
+    theme_bw() +
+    theme(panel.grid.major = element_blank(), 
+          panel.grid.minor = element_blank(),
+          legend.position = c(.95, .95),
+          legend.justification = c("right", "top"),
+          legend.box.just = "right",
+          legend.margin = margin(6, 6, 6, 6)) +
+  geom_vline(xintercept = first_perturbation_day, 
+             linetype="dotdash", 
+             color = "grey", 
+             size=0.7) +
+  labs(caption = "Vertical grey line: first perturbation")
+
 ds_regional_with_SL_from_isolated %>%
   filter(disturbance == "low") %>%
   filter(metaecosystem_type == "S_L" | metaecosystem_type == "S_L_from_isolated") %>%
@@ -93,7 +159,7 @@ ds_regional_with_SL_from_isolated %>%
   labs(caption = "Vertical grey line: first perturbation")
 
 
-## ----message=FALSE-------------------------------------------------------------------------------------------
+## ----message=FALSE-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 mixed_model = lmer(log10(regional_mean_bioarea +1) ~ 
                      day * metaecosystem_type * disturbance +
                      (day | system_nr),
@@ -114,4 +180,37 @@ null_model = lmer(log10(regional_mean_bioarea +1) ~
                    REML = FALSE,
                    control = lmerControl (optimizer = "Nelder_Mead"))
 anova(mixed_model, null_model)
+
+
+## ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+system_nr_S_low = unique(isolated_S$system_nr)[1:5]
+system_nr_L_low = unique(isolated_L$system_nr)[1:5]
+system_nr_S_high = unique(isolated_S$system_nr)[6:9]
+system_nr_L_high = unique(isolated_L$system_nr)[6:9]
+
+low_pairs = expand.grid(system_nr_S_low,system_nr_L_low)
+high_pairs = expand.grid(system_nr_S_high, system_nr_L_high)
+pairs = rbind(low_pairs, high_pairs)
+number_of_pairs = nrow(pairs)
+
+
+SL_from_isolated_all_combinations = NULL
+for (pair in 1:number_of_pairs){
+  
+ SL_from_isolated_one_combination = ds_biomass %>%
+  filter(system_nr %in% pairs[pair,]) %>%
+  group_by(disturbance, day, time_point, system_nr) %>%
+  summarise(regional_bioarea_across_videos = mean(bioarea_per_volume)) %>%
+  group_by(disturbance, day, time_point) %>%
+  summarise(regional_mean_bioarea = mean(regional_bioarea_across_videos)) %>%
+  mutate(system_nr = 1000 + pair) %>%
+   mutate(metaecosystem_type = "S_L_from_isolated")
+ 
+ SL_from_isolated_all_combinations = rbind(SL_from_isolated_one_combination,
+                                          SL_from_isolated_all_combinations)
+ 
+  
+}
+
+ds_regional_with_SL_from_isolated = rbind(SL_from_isolated_all_combinations, ds_regional)
 

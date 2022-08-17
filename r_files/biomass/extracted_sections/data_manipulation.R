@@ -1,4 +1,4 @@
-## ------------------------------------------------------------------------------------------------------------
+## ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 culture_info = read.csv(here("data", "PatchSizePilot_culture_info.csv"), header = TRUE)
 
 datatable(culture_info[,1:10],
@@ -8,7 +8,7 @@ datatable(culture_info[,1:10],
                         clear = FALSE))
 
 
-## ----import, message = FALSE, echo = TRUE--------------------------------------------------------------------
+## ----import, message = FALSE, echo = TRUE------------------------------------------------------------------------------------------------------------------------------------------------
 
 ### --- IMPORT --- ###
 
@@ -69,6 +69,7 @@ t7 = merge(culture_info,t7, by = "culture_ID")
 ds_biomass = rbind(t0, t1, t2, t3, t4, t5, t6, t7)
 rm(elongating_t0, t0, t1, t2, t3, t4, t5, t6, t7)
 
+#Column: time_point
 ds_biomass$time_point[ds_biomass$time_point=="t0"] = 0
 ds_biomass$time_point[ds_biomass$time_point=="t1"] = 1
 ds_biomass$time_point[ds_biomass$time_point=="t2"] = 2
@@ -79,6 +80,9 @@ ds_biomass$time_point[ds_biomass$time_point=="t6"] = 6
 ds_biomass$time_point[ds_biomass$time_point=="t7"] = 7
 ds_biomass$time_point = as.character(ds_biomass$time_point)
 
+#System nr 40 still here
+
+#Column: day
 ds_biomass$day = NA
 ds_biomass$day[ds_biomass$time_point== 0] = 0
 ds_biomass$day[ds_biomass$time_point== 1] = 4
@@ -88,6 +92,15 @@ ds_biomass$day[ds_biomass$time_point== 4] = 16
 ds_biomass$day[ds_biomass$time_point== 5] = 20
 ds_biomass$day[ds_biomass$time_point== 6] = 24
 ds_biomass$day[ds_biomass$time_point== 7] = 28
+
+#Column: size_of_connected_patch
+ds_biomass$size_of_connected_patch[ds_biomass$eco_metaeco_type == "S"] = "S"
+ds_biomass$size_of_connected_patch[ds_biomass$eco_metaeco_type == "S (S_S)"] = "S"
+ds_biomass$size_of_connected_patch[ds_biomass$eco_metaeco_type == "S (S_L)"] = "L"
+ds_biomass$size_of_connected_patch[ds_biomass$eco_metaeco_type == "M (M_M)"] = "M"
+ds_biomass$size_of_connected_patch[ds_biomass$eco_metaeco_type == "L"] = "L"
+ds_biomass$size_of_connected_patch[ds_biomass$eco_metaeco_type == "L (L_L)"] = "L"
+ds_biomass$size_of_connected_patch[ds_biomass$eco_metaeco_type == "L (S_L)"] = "S"
 
 #Column: eco_metaeco_type
 ds_biomass$eco_metaeco_type = factor(ds_biomass$eco_metaeco_type, 
@@ -100,7 +113,7 @@ ds_biomass$eco_metaeco_type = factor(ds_biomass$eco_metaeco_type,
                                         'L (L_L)', 
                                         'L (S_L)'))
 
-ecosystems_to_take_off = 60 #Culture number 60 because it was spilled
+ecosystems_to_take_off = 60 #Culture number 60 because it was spilled (isolated large patch, high disturbance, system nr = 40)
 ds_biomass = ds_biomass %>%
   filter(! culture_ID %in% ecosystems_to_take_off)
 
@@ -117,7 +130,8 @@ ds_biomass = ds_biomass %>%
          day,
          metaecosystem, 
          system_nr, 
-         eco_metaeco_type) %>%
+         eco_metaeco_type,
+         size_of_connected_patch) %>%
   relocate(culture_ID,
            system_nr,
            disturbance,
@@ -127,6 +141,7 @@ ds_biomass = ds_biomass %>%
            metaecosystem,
            metaecosystem_type,
            eco_metaeco_type,
+           size_of_connected_patch,
            replicate_video,
            bioarea_per_volume)
 
@@ -137,7 +152,7 @@ datatable(ds_biomass,
                         clear = FALSE))
 
 
-## ----regional-biomass----------------------------------------------------------------------------------------
+## ----regional-biomass--------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ds_regional = ds_biomass %>%
   filter(metaecosystem == "yes") %>%
   group_by(culture_ID, 
@@ -160,4 +175,9 @@ datatable(ds_regional,
           options = list(scrollX = TRUE),
           filter = list(position = 'top', 
                         clear = FALSE))
+
+
+## ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ggpairs(ds_biomass %>%
+          select(disturbance, day, patch_size, metaecosystem_type, eco_metaeco_type, bioarea_per_volume))                          
 

@@ -135,7 +135,7 @@ ds_biomass %>%
   labs(caption = "Vertical grey line: first perturbation")
 ```
 
-##### Model
+##### Time series
 
 Now I'll:
 
@@ -183,6 +183,10 @@ for (time_point_input in 0:7) {
 ds_biomass = ds_biomass %>%
   mutate(isolated_control = as.numeric(isolated_control)) %>%
   mutate(RR_bioarea_per_volume = bioarea_per_volume / isolated_control)
+```
+
+```{r}
+### --- REPLOT THE SMALL PATCHES BUT AS RESPONSE RATIO --- ###
 
 ds_biomass %>%
   filter(disturbance == "low") %>%
@@ -273,7 +277,7 @@ small_patches_figure = ds_biomass %>%
   labs(caption = "Vertical grey line: first perturbation, Response ratio bioarea: Bioarea/Mean bioarea small isolated")
 ```
 
-##### Model selection
+###### Model selection
 
 Let's start from the full model:
 
@@ -281,12 +285,22 @@ $$
 RR (bioarea) = t + M + D + t*M + t*D + M*D + t*M+D + (t | system \: nr)
 $$
 
+And let's consider all data points from the second to the seventh.
+
+```{r}
+first_time_point = 2
+last_time_point = 7
+```
+
 ```{r}
 full_model = lmer(RR_bioarea_per_volume ~
                     day * eco_metaeco_type * disturbance +
                     (day | system_nr),
                   data = ds_biomass %>%
-                         filter(eco_metaeco_type== "S (S_S)" | eco_metaeco_type == "S (S_L)"),
+                         filter(time_point >= first_time_point) %>%
+                         filter(time_point <= last_time_point) %>%
+                         filter(eco_metaeco_type== "S (S_S)" | 
+                                eco_metaeco_type == "S (S_L)"),
                   REML = FALSE
                   )
 ```
@@ -298,14 +312,17 @@ no_interaction = lmer(RR_bioarea_per_volume ~
                     day * eco_metaeco_type * disturbance +
                     (day || system_nr),
                   data = ds_biomass %>%
-                         filter(eco_metaeco_type== "S (S_S)" | eco_metaeco_type == "S (S_L)"),
+                         filter(time_point >= first_time_point) %>%
+                         filter(time_point <= last_time_point) %>%
+                         filter(eco_metaeco_type== "S (S_S)" | 
+                                eco_metaeco_type == "S (S_L)"),
                   REML = FALSE
                   )
 
 anova(full_model, no_interaction)
 ```
 
-No.
+Yes.
 
 *Should we keep the effects on the slope?*
 
@@ -314,11 +331,14 @@ no_slope = lmer(RR_bioarea_per_volume ~
                     day * eco_metaeco_type * disturbance +
                     (1 | system_nr),
                   data = ds_biomass %>%
-                         filter(eco_metaeco_type== "S (S_S)" | eco_metaeco_type == "S (S_L)"),
+                         filter(time_point >= first_time_point) %>%
+                         filter(time_point <= last_time_point) %>%
+                         filter(eco_metaeco_type== "S (S_S)" | 
+                                eco_metaeco_type == "S (S_L)"),
                   REML = FALSE
                   )
 
-anova(no_interaction, no_slope)
+anova(full_model, no_slope)
 ```
 
 Yes.
@@ -333,13 +353,16 @@ no_three_way = lmer(RR_bioarea_per_volume ~
                     day : eco_metaeco_type + 
                     day : disturbance + 
                     eco_metaeco_type : disturbance + 
-                    (day || system_nr),
+                    (day | system_nr),
                   data = ds_biomass %>%
-                         filter(eco_metaeco_type== "S (S_S)" | eco_metaeco_type == "S (S_L)"),
+                         filter(time_point >= first_time_point) %>%
+                         filter(time_point <= last_time_point) %>%
+                         filter(eco_metaeco_type== "S (S_S)" | 
+                                eco_metaeco_type == "S (S_L)"),
                   REML = FALSE
                   )
 
-anova(no_interaction, no_three_way)
+anova(full_model, no_three_way)
 ```
 
 No.
@@ -353,16 +376,19 @@ no_TM = lmer(RR_bioarea_per_volume ~
                     disturbance +
                     day : disturbance + 
                     eco_metaeco_type : disturbance + 
-                    (day || system_nr),
+                    (day | system_nr),
                   data = ds_biomass %>%
-                         filter(eco_metaeco_type== "S (S_S)" | eco_metaeco_type == "S (S_L)"),
+                         filter(time_point >= first_time_point) %>%
+                         filter(time_point <= last_time_point) %>%
+                         filter(eco_metaeco_type== "S (S_S)" | 
+                                eco_metaeco_type == "S (S_L)"),
                   REML = FALSE
                   )
 
 anova(no_three_way, no_TM)
 ```
 
-No.
+Yes.
 
 *Should we keep t \* D?*
 
@@ -371,14 +397,18 @@ no_TD = lmer(RR_bioarea_per_volume ~
                     day +
                     eco_metaeco_type +
                     disturbance +
+                    day : eco_metaeco_type + 
                     eco_metaeco_type : disturbance + 
-                    (day || system_nr),
+                    (day | system_nr),
                   data = ds_biomass %>%
-                         filter(eco_metaeco_type== "S (S_S)" | eco_metaeco_type == "S (S_L)"),
+                         filter(time_point >= first_time_point) %>%
+                         filter(time_point <= last_time_point) %>%
+                         filter(eco_metaeco_type== "S (S_S)" | 
+                                eco_metaeco_type == "S (S_L)"),
                   REML = FALSE
                   )
 
-anova(no_TM, no_TD)
+anova(no_three_way, no_TD)
 ```
 
 Yes.
@@ -390,22 +420,301 @@ no_MD = lmer(RR_bioarea_per_volume ~
                     day +
                     eco_metaeco_type +
                     disturbance +
+                    day : eco_metaeco_type + 
                     day : disturbance + 
-                    (day || system_nr),
+                    (day | system_nr),
                   data = ds_biomass %>%
-                         filter(eco_metaeco_type== "S (S_S)" | eco_metaeco_type == "S (S_L)"),
+                         filter(time_point >= first_time_point) %>%
+                         filter(time_point <= last_time_point) %>%
+                         filter(eco_metaeco_type== "S (S_S)" | 
+                                eco_metaeco_type == "S (S_L)"),
                   REML = FALSE
                   )
 
-anova(no_TM, no_MD)
+anova(no_three_way, no_MD)
 ```
 
 No.
 
+*Should we keep D?*
+
+```{r}
+no_D = lmer(RR_bioarea_per_volume ~
+                    day +
+                    eco_metaeco_type +
+                    day : eco_metaeco_type +
+                    day : disturbance + 
+                    (day | system_nr),
+            data = ds_biomass %>%
+                         filter(time_point >= first_time_point) %>%
+                         filter(time_point <= last_time_point) %>%
+                         filter(eco_metaeco_type== "S (S_S)" | 
+                                eco_metaeco_type == "S (S_L)"),
+            REML = FALSE,
+            control = lmerControl (optimizer = "Nelder_Mead")
+            )
+
+anova(no_MD, no_D)
+```
+
+Wired, AIC tells us that we should not. Let's then compute how more likely is the first model to be true than the second one. I will compute it using a relative likelihood (see @Burnham2011):
+
+$$
+e^{0.5 (AIC_{min} - AIC_{max})}
+$$
+
+```{r}
+AIC_min = 2172.4
+AIC_max = 2174.3
+exp(0.5 * (AIC_min - AIC_max))
+```
+
+The probability that the model without disturbance is better is only 40% more. I will then keep the disturbance.
+
 Then our best model is:
 
 $$
-RR (bioarea) = t + M + D + t*D + (t || system \: nr)
+RR (bioarea) = t + M + D + t*D + (t | system \: nr)
 $$
 
 Let's then calculate the R squared and stuff.
+
+```{r}
+#Create a table in which the regional biomass has been log transformed. 
+
+### --- INITIALISE TABLE --- ###
+
+columns = c("model", "time_point", "AIC", "BIC", "R2_mixed", "R2_fixed", "R2_mixed_M", "R2_fixed_M")
+small_patches_matrix = matrix(ncol = length(columns), nrow = 0)
+small_patches_table = data.frame(small_patches_matrix)
+colnames(small_patches_table) = columns
+
+### --- POPULATE THE TABLE --- ###
+
+for (last_point in 4:7) {
+  
+  full_model = lmer(RR_bioarea_per_volume ~
+                    day +
+                    eco_metaeco_type +
+                    disturbance +
+                    day : disturbance + 
+                    day : eco_metaeco_type +
+                    (day | system_nr),
+                  data = ds_biomass %>%
+                              filter(time_point >= 2) %>%
+                              filter(time_point <= last_point) %>%
+                              filter(eco_metaeco_type== "S (S_S)" | 
+                                     eco_metaeco_type == "S (S_L)"),
+                  REML = FALSE,
+                  control = lmerControl(optimizer = 'optimx', 
+                                        optCtrl = list(method = 'L-BFGS-B')))
+  
+  r.squaredGLMM(full_model)
+
+  
+  null_model = lm(RR_bioarea_per_volume ~
+                    1,
+                  data = ds_biomass %>%
+                              filter(time_point >= 2) %>%
+                              filter(time_point <= last_point) %>%
+                              filter(eco_metaeco_type== "S (S_S)" | 
+                                     eco_metaeco_type == "S (S_L)"))
+  
+  metaeco_null = lmer(RR_bioarea_per_volume ~
+                        day +
+                        disturbance +
+                        day : disturbance +
+                        day : eco_metaeco_type + 
+                        (day | system_nr),
+                      data = ds_biomass %>%
+                        filter(time_point >= 2) %>%
+                        filter(time_point <= last_point) %>%
+                        filter(eco_metaeco_type== "S (S_S)" | 
+                               eco_metaeco_type == "S (S_L)"),
+                      REML = FALSE,
+                      control = lmerControl(optimizer = "Nelder_Mead"))
+  r.squaredGLMM(metaeco_null)
+  
+  small_patches_table = update_all_models_table("t + M + D + t*M + t*D + (t | ID)",
+                                             small_patches_table, 
+                                             full_model, 
+                                             null_model,
+                                             metaeco_null,
+                                             "mixed")
+}
+
+datatable(small_patches_table, 
+          rownames = FALSE,
+          options = list(pageLength = 100,
+                         scrollX = TRUE,
+                         autoWidth = TRUE,
+                         columnDefs = list(list(targets=c(0),visible=TRUE, width='160'),
+                                           list(targets=c(1), visible=TRUE, width='10'),
+                                           list(targets=c(2), visible=TRUE, width='10'),
+                                           list(targets=c(3), visible=TRUE, width='10'),
+                                           list(targets=c(4), visible=TRUE, width='10'),
+                                           list(targets=c(5), visible=TRUE, width='10'),
+                                           list(targets=c(6), visible=TRUE, width='10'),
+                                           list(targets=c(7), visible=TRUE, width='10'),
+                                           list(targets='_all', visible=FALSE))),
+          caption = "
+          M = Meta-ecosystem type, 
+          D = disturbance, 
+          (1 | t) = random effect of time on the intercept,
+          (1 | ID) = random effect of meta-ecosystem ID on the intercept, 
+          || = no correlation between intercept and slope,
+          | = correlation between intercept and slope,
+          R2 = r squared of the whole model,
+          R2_fixed = fixed part of the mixed model,
+          mixed_R2 = r squared when considering both fixed and random effects (conditional r squared), 
+          fixed_R2 = r squared when considering only the fixed effects (marginal r squared)")
+```
+
+##### Single time points
+
+I'll show model selection only on time point number 3 (however, I will do it also for the other time points). Let's start from the full model.
+
+```{r}
+time_point_input = 4
+```
+
+```{r}
+full = lmer(RR_bioarea_per_volume ~
+              metaecosystem_type +
+              disturbance +
+              disturbance : metaecosystem_type +
+              (1 | system_nr),
+            data = ds_biomass %>%
+              filter(time_point == time_point_input) %>%
+              filter(eco_metaeco_type== "S (S_S)" | 
+                     eco_metaeco_type == "S (S_L)"),
+          REML = FALSE)
+```
+
+*Should we keep the random effect?*
+
+```{r}
+no_random = lm(RR_bioarea_per_volume ~
+              metaecosystem_type +
+              disturbance +
+              disturbance : metaecosystem_type,
+            data = ds_biomass %>%
+              filter(time_point == time_point_input) %>%
+              filter(eco_metaeco_type== "S (S_S)" | 
+                     eco_metaeco_type == "S (S_L)"))
+
+anova(full, no_random)
+```
+
+No. But wired. I'll keep it anyway.
+
+*Should we keep D \* M?*
+
+```{r}
+no_MD = lmer(RR_bioarea_per_volume ~
+              metaecosystem_type +
+              disturbance +
+              (1 | system_nr),
+            data = ds_biomass %>%
+              filter(time_point == time_point_input) %>%
+              filter(eco_metaeco_type== "S (S_S)" | 
+                     eco_metaeco_type == "S (S_L)"),
+          REML = FALSE)
+
+anova(full, no_MD)
+```
+
+No.
+
+**Best model**
+
+Therefore, our best model is
+
+$$
+Regional \: Bioarea = M + D + (1 | ID)
+$$
+
+```{r}
+
+### --- SINGLE TIME POINTS --- ###
+
+columns = c("time_point", 
+            "R2_full_marginal", 
+            "R2_full_conditional", 
+            "R2_patch_type_marginal", 
+            "R2_patch_type_conditional")
+single_points_matrix = matrix(ncol = length(columns), 
+                              nrow = 7)
+single_points = as.data.frame(single_points_matrix)
+colnames(single_points) = columns
+
+for (t in 2:7) {
+  
+  modified_ds = ds_biomass %>%
+                      filter(time_point == t) %>%
+                      filter(eco_metaeco_type== "S (S_S)" | 
+                             eco_metaeco_type == "S (S_L)")
+  
+  full_model = lmer(RR_bioarea_per_volume ~
+                      metaecosystem_type +
+                      disturbance +
+                      metaecosystem_type : disturbance +
+                      (1 | system_nr),
+                    data = modified_ds,
+                    REML = FALSE)
+  
+  no_M_model = lmer(RR_bioarea_per_volume ~
+                      disturbance +
+                      (1 | system_nr),
+                    data = modified_ds,
+                    REML = FALSE)
+  
+  R2_full_model = r.squaredGLMM(full_model)
+  R2_no_M_model = r.squaredGLMM(no_M_model)
+  R2_patch_type = R2_full_model - R2_no_M_model
+  
+  single_points$time_point[t] = t
+  single_points$R2_full_marginal[t] = R2_full_model[1]
+  single_points$R2_full_conditional[t] = R2_full_model[2]
+  single_points$R2_patch_type_marginal[t] = R2_patch_type[1]
+  single_points$R2_patch_type_conditional[t] = R2_patch_type[2]
+  
+}
+
+single_points = round(single_points, digits = 3)
+single_points = single_points[2:nrow(single_points),]
+datatable(single_points,
+          rownames = FALSE,
+          colnames = c("Time point", "R2 marginal \n full model", "R2 conditional \n full model", "R2 marginal \n patch type", "R2 conditional \n patch type"))
+```
+
+Let's now use the new package called `partR2`. For that, see @stoffel2021.
+
+```{r}
+modified_ds = ds_biomass %>%
+                      filter(time_point == 3) %>%
+                      filter(eco_metaeco_type== "S (S_S)" | 
+                             eco_metaeco_type == "S (S_L)")
+
+full_model = lmer(RR_bioarea_per_volume ~
+                      metaecosystem_type +
+                      disturbance +
+                      metaecosystem_type : disturbance +
+                      (1 | system_nr),
+                    data = modified_ds,
+                    REML = FALSE)
+
+marginal_R2 = partR2(full_model,
+       partvars = c("metaecosystem_type", "disturbance"),
+       R2_type = "marginal", 
+       nboot = 1000,
+       CI = 0.95)
+marginal_R2
+
+conditional_R2 = partR2(full_model,
+       partvars = c("metaecosystem_type", "disturbance"),
+       R2_type = "conditional", 
+       nboot = 1000,
+       CI = 0.95)
+conditional_R2
+```

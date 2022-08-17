@@ -51,6 +51,7 @@ library("GGally")
 library("strengejacke")
 library("sjPlot")
 library("sjstats")
+library("partR2")
 
 conflict_prefer("load", "base")
 conflict_prefer("filter", "dplyr")

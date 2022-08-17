@@ -1,4 +1,4 @@
-## ----fig.align='center', eval = FALSE------------------------------------------------------------------------
+## ----fig.align='center', eval = FALSE----------------------------------------------------------------------------------------------------------------------------------------------------
 ## #Trying out gganimate, but I can't seem to manage to install transformr packaget
 ## p = list()
 ## n = 0
@@ -44,7 +44,7 @@
 ## 
 ##   animate(p[[n]],
 ##         duration = 10,
-##         fps = 10,
+##         fps = 25,
 ##         width = 500,
 ##         height = 500,
 ##         renderer = gifski_renderer())
@@ -58,7 +58,7 @@
 ## }
 
 
-## ----echo = FALSE--------------------------------------------------------------------------------------------
+## ----echo = FALSE------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 knitr::include_graphics(here("gifs", "transition_day_S_low.gif"))
 knitr::include_graphics(here("gifs", "transition_day_S_high.gif"))
 knitr::include_graphics(here("gifs", "transition_day_L_low.gif"))

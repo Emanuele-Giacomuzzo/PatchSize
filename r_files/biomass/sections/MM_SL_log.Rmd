@@ -304,9 +304,3 @@ datatable(log_time_table,
 Notice that I did not include the t3-t4 time series, as when running the model it gives me the following error:
 
 -   *Error: number of observations (=40) \<= number of random effects (=40) for term (day \| system_nr); the random-effects parameters and the residual variance (or scale parameter) are probably unidentifiable*
-
-Another way of looking at the model is using the function `tab_model` of the packages `sjPlot` and `sjstats`. However, I'm not sure about how reliable their table is.
-
-```{r}
-tab_model(no_MD)
-```
