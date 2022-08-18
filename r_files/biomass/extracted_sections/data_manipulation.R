@@ -176,8 +176,3 @@ datatable(ds_regional,
           filter = list(position = 'top', 
                         clear = FALSE))
 
-
-## ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-ggpairs(ds_biomass %>%
-          select(disturbance, day, patch_size, metaecosystem_type, eco_metaeco_type, bioarea_per_volume))                          
-

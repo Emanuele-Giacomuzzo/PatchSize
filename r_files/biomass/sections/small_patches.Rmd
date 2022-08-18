@@ -7,12 +7,41 @@ editor_options:
   chunk_output_type: console
 ---
 
+##### Tidy
+
+Now I'll:
+
+1.  Calculate the average biomass for each time point for all the isolated small patches, one for the low disturbance, and one for the high disturbance.
+2.  For the small connected to small and small connected to large patches, calculate their response ratio.
+
+```{r tidy-small-patches}
+for (disturbance_input in c("low", "high")){
+  for (eco_metaeco_input in c("S", "M", "L")){
+    for (time_point_input in 0:7){
+      
+      ds_biomass$isolated_control[ds_biomass$patch_size == eco_metaeco_input & 
+                              ds_biomass$disturbance == disturbance_input &
+                              ds_biomass$time_point == time_point_input] = 
+        
+        ds_biomass %>%
+        filter(disturbance == disturbance_input) %>%
+        filter(eco_metaeco_type == eco_metaeco_input) %>%
+        filter(time_point == time_point_input) %>%        
+        group_by(culture_ID) %>%
+        summarise(bioarea_per_volume_across_videos = mean(bioarea_per_volume)) %>%
+        summarise(mean_bioarea_per_volume = mean(bioarea_per_volume_across_videos))
+      
+    }
+  }
+}
+
+ds_biomass = ds_biomass %>%
+  mutate(isolated_control = as.numeric(isolated_control))
+```
+
 ##### Plots
 
-```{r}
-
-### --- SINGLE ECOSYSTEMS --- ###
-
+```{r small-patches-single-ecosystems-plots}
 ds_biomass %>%
   filter(disturbance == "low") %>%
   #filter(eco_metaeco_type == "S (S_S)" | eco_metaeco_type == "S (S_L)") %>%
@@ -74,9 +103,9 @@ ds_biomass %>%
              color = "grey",
              size=0.7) +
   labs(caption = "Vertical grey line: first perturbation")
+```
 
-### --- BOXPLOTS --- ###
-
+```{r small-patches-boxplots}
 local_small_low_plot = ds_biomass %>%
   filter(disturbance == "low") %>%
   filter(patch_size == "S") %>%
@@ -135,66 +164,16 @@ ds_biomass %>%
   labs(caption = "Vertical grey line: first perturbation")
 ```
 
-##### Time series
-
-Now I'll:
-
-1.  Calculate the average biomass for each time point for all the isolated small patches, one for the low disturbance, and one for the high disturbance.
-2.  For the small connected to small and small connected to large patches, calculate their response ratio.
-
-```{r}
-average_biomass_S_isolated_low = ds_biomass %>%
-  filter(disturbance == "low") %>%
-  filter(eco_metaeco_type == "S") %>%
-  group_by(culture_ID, time_point, day) %>%
-  summarise(bioarea_per_volume_across_videos = mean(bioarea_per_volume)) %>% #Across videos
-  group_by(time_point, day) %>%
-  summarise(mean_bioarea_per_volume = mean(bioarea_per_volume_across_videos)) #Across cultures
-
-average_biomass_S_isolated_high = ds_biomass %>%
-  filter(disturbance == "high") %>%
-  filter(eco_metaeco_type == "S") %>%
-  group_by(culture_ID, time_point, day) %>%
-  summarise(bioarea_per_volume_across_videos = mean(bioarea_per_volume)) %>%
-  group_by(time_point, day) %>%
-  summarise(mean_bioarea_per_volume = mean(bioarea_per_volume_across_videos))
-
-
-for (time_point_input in 0:7) {
- 
-  ds_biomass$isolated_control[ds_biomass$patch_size == "S" & 
-                              ds_biomass$disturbance == "low" &
-                              ds_biomass$time_point == time_point_input] =
-  subset(average_biomass_S_isolated_low,
-         time_point == time_point_input)$mean_bioarea_per_volume
-  
-}
-
-for (time_point_input in 0:7) {
- 
-  ds_biomass$isolated_control[ds_biomass$patch_size == "S" & 
-                              ds_biomass$disturbance == "high" &
-                              ds_biomass$time_point == time_point_input] =
-  subset(average_biomass_S_isolated_high,
-         time_point == time_point_input)$mean_bioarea_per_volume
-  
-}
-
-ds_biomass = ds_biomass %>%
-  mutate(isolated_control = as.numeric(isolated_control)) %>%
-  mutate(RR_bioarea_per_volume = bioarea_per_volume / isolated_control)
-```
-
-```{r}
-### --- REPLOT THE SMALL PATCHES BUT AS RESPONSE RATIO --- ###
-
+```{r small-patches-lnRR-plots}
 ds_biomass %>%
   filter(disturbance == "low") %>%
-  filter(patch_size == "S") %>%
-  group_by(system_nr, day, eco_metaeco_type) %>%
-  summarise(RR_bioarea_per_volume = mean(RR_bioarea_per_volume)) %>% #Across videos
+  filter(eco_metaeco_type == "S (S_L)" | eco_metaeco_type == "S (S_S)") %>%
+  group_by(culture_ID, day, eco_metaeco_type, isolated_control) %>%
+  summarise(bioarea_per_volume_across_videos = mean(bioarea_per_volume)) %>% #Across videos
+  mutate(RR_bioarea_per_volume = (bioarea_per_volume_across_videos+1) /isolated_control) %>%
+  mutate(lnRR_bioarea_per_volume = ln(RR_bioarea_per_volume)) %>%
   ggplot(aes(x = day,
-             y = RR_bioarea_per_volume,
+             y = lnRR_bioarea_per_volume,
              group = interaction(day, eco_metaeco_type),
              fill = eco_metaeco_type)) +
   geom_boxplot() +
@@ -205,12 +184,11 @@ ds_biomass %>%
   theme_bw() +
   theme(panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
-        legend.position = c(.2, .95),
+        legend.position = c(.3, .95),
         legend.justification = c("right", "top"),
         legend.box.just = "right",
         legend.margin = margin(6, 6, 6, 6)) +
-  scale_fill_discrete(labels = c("small isolated",
-                                 "small connected to small",
+  scale_fill_discrete(labels = c("small connected to small",
                                  "small connected to large")) +
   geom_vline(xintercept = first_perturbation_day + 0.7,
              linetype="dotdash",
@@ -220,11 +198,13 @@ ds_biomass %>%
 
 ds_biomass %>%
   filter(disturbance == "high") %>%
-  filter(patch_size == "S") %>%
-  group_by(system_nr, day, eco_metaeco_type) %>%
-  summarise(RR_bioarea_per_volume = mean(RR_bioarea_per_volume)) %>% #Across videos
+  filter(eco_metaeco_type == "S (S_L)" | eco_metaeco_type == "S (S_S)") %>%
+  group_by(culture_ID, day, eco_metaeco_type, isolated_control) %>%
+  summarise(bioarea_per_volume_across_videos = mean(bioarea_per_volume)) %>% #Across videos
+  mutate(RR_bioarea_per_volume = (bioarea_per_volume_across_videos+1) /isolated_control) %>%
+  mutate(lnRR_bioarea_per_volume = ln(RR_bioarea_per_volume)) %>%
   ggplot(aes(x = day,
-             y = RR_bioarea_per_volume,
+             y = lnRR_bioarea_per_volume,
              group = interaction(day, eco_metaeco_type),
              fill = eco_metaeco_type)) +
   geom_boxplot() +
@@ -235,36 +215,7 @@ ds_biomass %>%
   theme_bw() +
   theme(panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
-        legend.position = c(.2, .95),
-        legend.justification = c("right", "top"),
-        legend.box.just = "right",
-        legend.margin = margin(6, 6, 6, 6)) +
-  scale_fill_discrete(labels = c("small isolated",
-                                 "small connected to small",
-                                 "small connected to large")) +
-  geom_vline(xintercept = first_perturbation_day + 0.7,
-             linetype="dotdash",
-             color = "grey",
-             size=0.7) +
-  labs(caption = "Vertical grey line: first perturbation, Response ratio bioarea: Bioarea/Mean bioarea small isolated")
-
-small_patches_figure = ds_biomass %>%
-  filter(disturbance == "low") %>%
-  filter(eco_metaeco_type == "S (S_S)" | eco_metaeco_type == "S (S_L)") %>%
-  group_by(system_nr, day, eco_metaeco_type) %>%
-  summarise(RR_bioarea_per_volume = mean(RR_bioarea_per_volume)) %>% #Across videos
-  ggplot(aes(x = day,
-             y = RR_bioarea_per_volume,
-             group = interaction(day, eco_metaeco_type),
-             fill = eco_metaeco_type)) +
-  geom_boxplot() +
-  labs(x = "Day",
-       y = "Response ratio bioarea (something/μl)",
-       fill = "") +
-  theme_bw() +
-  theme(panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(),
-        legend.position = c(.2, .95),
+        legend.position = c(.3, .95),
         legend.justification = c("right", "top"),
         legend.box.just = "right",
         legend.margin = margin(6, 6, 6, 6)) +
@@ -276,6 +227,35 @@ small_patches_figure = ds_biomass %>%
              size=0.7) +
   labs(caption = "Vertical grey line: first perturbation, Response ratio bioarea: Bioarea/Mean bioarea small isolated")
 ```
+
+```{r small-patches-lnRR-plots-fixing}
+eco_metaeco_input = "S"
+disturbance_input = "high"
+time_point_input = 7
+
+ds_biomass$isolated_control[ds_biomass$patch_size == eco_metaeco_input & 
+                              ds_biomass$disturbance == disturbance_input &
+                              ds_biomass$time_point == time_point_input] = 
+        
+        ds_biomass %>%
+        filter(disturbance == disturbance_input) %>%
+        filter(eco_metaeco_type == eco_metaeco_input) %>%
+        filter(time_point == time_point_input) %>%        
+        group_by(culture_ID) %>%
+        summarise(bioarea_per_volume_across_videos = mean(bioarea_per_volume)) %>%
+        summarise(mean_bioarea_per_volume = mean(bioarea_per_volume_across_videos))
+
+#Average biomass across small isolated time point 7 = 16.5
+
+ds_biomass %>%
+        filter(disturbance == disturbance_input) %>%
+        filter(eco_metaeco_type == eco_metaeco_input) %>%
+        filter(time_point == time_point_input)
+
+#I need to first average the two biomasses and then get the logarithm of their response ratio 
+```
+
+##### Time series
 
 ###### Model selection
 
@@ -633,88 +613,3 @@ Therefore, our best model is
 $$
 Regional \: Bioarea = M + D + (1 | ID)
 $$
-
-```{r}
-
-### --- SINGLE TIME POINTS --- ###
-
-columns = c("time_point", 
-            "R2_full_marginal", 
-            "R2_full_conditional", 
-            "R2_patch_type_marginal", 
-            "R2_patch_type_conditional")
-single_points_matrix = matrix(ncol = length(columns), 
-                              nrow = 7)
-single_points = as.data.frame(single_points_matrix)
-colnames(single_points) = columns
-
-for (t in 2:7) {
-  
-  modified_ds = ds_biomass %>%
-                      filter(time_point == t) %>%
-                      filter(eco_metaeco_type== "S (S_S)" | 
-                             eco_metaeco_type == "S (S_L)")
-  
-  full_model = lmer(RR_bioarea_per_volume ~
-                      metaecosystem_type +
-                      disturbance +
-                      metaecosystem_type : disturbance +
-                      (1 | system_nr),
-                    data = modified_ds,
-                    REML = FALSE)
-  
-  no_M_model = lmer(RR_bioarea_per_volume ~
-                      disturbance +
-                      (1 | system_nr),
-                    data = modified_ds,
-                    REML = FALSE)
-  
-  R2_full_model = r.squaredGLMM(full_model)
-  R2_no_M_model = r.squaredGLMM(no_M_model)
-  R2_patch_type = R2_full_model - R2_no_M_model
-  
-  single_points$time_point[t] = t
-  single_points$R2_full_marginal[t] = R2_full_model[1]
-  single_points$R2_full_conditional[t] = R2_full_model[2]
-  single_points$R2_patch_type_marginal[t] = R2_patch_type[1]
-  single_points$R2_patch_type_conditional[t] = R2_patch_type[2]
-  
-}
-
-single_points = round(single_points, digits = 3)
-single_points = single_points[2:nrow(single_points),]
-datatable(single_points,
-          rownames = FALSE,
-          colnames = c("Time point", "R2 marginal \n full model", "R2 conditional \n full model", "R2 marginal \n patch type", "R2 conditional \n patch type"))
-```
-
-Let's now use the new package called `partR2`. For that, see @stoffel2021.
-
-```{r}
-modified_ds = ds_biomass %>%
-                      filter(time_point == 3) %>%
-                      filter(eco_metaeco_type== "S (S_S)" | 
-                             eco_metaeco_type == "S (S_L)")
-
-full_model = lmer(RR_bioarea_per_volume ~
-                      metaecosystem_type +
-                      disturbance +
-                      metaecosystem_type : disturbance +
-                      (1 | system_nr),
-                    data = modified_ds,
-                    REML = FALSE)
-
-marginal_R2 = partR2(full_model,
-       partvars = c("metaecosystem_type", "disturbance"),
-       R2_type = "marginal", 
-       nboot = 1000,
-       CI = 0.95)
-marginal_R2
-
-conditional_R2 = partR2(full_model,
-       partvars = c("metaecosystem_type", "disturbance"),
-       R2_type = "conditional", 
-       nboot = 1000,
-       CI = 0.95)
-conditional_R2
-```

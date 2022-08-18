@@ -21,8 +21,6 @@ datatable(culture_info[,1:10],
 
 #### Single patches dataset
 
-Why did system number 40 disappear????
-
 ```{r import, message = FALSE, echo = TRUE}
 
 ### --- IMPORT --- ###
@@ -192,11 +190,4 @@ datatable(ds_regional,
           options = list(scrollX = TRUE),
           filter = list(position = 'top', 
                         clear = FALSE))
-```
-
-#### Pairs
-
-```{r}
-ggpairs(ds_biomass %>%
-          select(disturbance, day, patch_size, metaecosystem_type, eco_metaeco_type, bioarea_per_volume))                          
 ```

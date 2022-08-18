@@ -26,7 +26,7 @@ source(here("r_files", "biomass", "extracted_sections", "data_manipulation.R"))
 
 #### Medium-Medium vs Small-Large {.tabset .tabset-pills}
 
-We want to understand if the regional biomass produced by an ecosystem with a small and a large patch (metaecosystem_type = S_L) is lower than the regional biomass produced by an ecosystem with two medium patches (metaecosystem_type = M_M).
+We want to understand if the regional biomass produced by an ecosystem with a small and a large patch (`metaecosystem_type = S_L`) is lower than the regional biomass produced by an ecosystem with two medium patches (`metaecosystem_type = M_M`).
 
 ##### Plots
 
@@ -40,32 +40,8 @@ We can see that the regional biomass was higher for meta-ecosystems with the sam
 
 ##### Model time series {.tabset .tabset-pills}
 
-###### Time as random effect
-
-```{r child = here("r_files", "biomass", "sections", "MM_SL_time_random.Rmd"), echo = TRUE, eval = TRUE}
-source(here("r_files", "biomass", "extracted_sections", "MM_SL_time_random.R"))
-```
-
-###### Time as fixed effect
-
-```{r child = here("r_files", "biomass", "sections", "MM_SL_log.Rmd")}
-source(here("r_files", "biomass", "extracted_sections", "MM_SL_log.R"))
-```
-
-###### Fitted time function
-
-```{r child = here("r_files", "biomass", "sections", "MM_SL_time_fitting.Rmd"), echo = TRUE, eval = TRUE}
-source(here("r_files", "biomass", "extracted_sections", "MM_SL_time_fitting.R"))
-```
-
-```{r child = here("r_files", "biomass", "sections", "MM_SL_time_fitted.Rmd"), echo = TRUE, eval = TRUE}
-source(here("r_files", "biomass", "extracted_sections", "MM_SL_time_fitted.R"))
-```
-
-###### Models table
-
-```{r child = here("r_files", "biomass", "sections", "MM_SL_model_table.Rmd"), echo = TRUE, eval = TRUE}
-source(here("r_files", "biomass", "extracted_sections", "MM_SL_model_table.R"))
+```{r child = here("r_files", "biomass", "sections", "MM_SL_time_series.Rmd")}
+source(here("r_files", "biomass", "extracted_sections", "MM_SL_time_series.R"))
 ```
 
 ##### Model single points

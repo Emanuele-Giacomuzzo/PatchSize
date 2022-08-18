@@ -201,5 +201,3 @@ datatable(ds_classes,
           filter = list(position = 'top', 
                         clear = FALSE))
 ```
-
-### 

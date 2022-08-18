@@ -52,6 +52,8 @@ library("strengejacke")
 library("sjPlot")
 library("sjstats")
 library("partR2")
+library("SciViews")
+
 
 conflict_prefer("load", "base")
 conflict_prefer("filter", "dplyr")
