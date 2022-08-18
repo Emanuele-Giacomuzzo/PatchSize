@@ -75,7 +75,7 @@ ds_regional %>%
              size=0.7) +
   labs(caption = "Vertical grey line: first perturbation")
 
-p_regional_low_mean = ds_regional %>%
+regional_publication = ds_regional %>%
   filter(disturbance == "low") %>%
   filter (metaecosystem_type == "S_L" | metaecosystem_type == "M_M") %>%
   ggplot (aes(x = day,
@@ -102,7 +102,7 @@ p_regional_low_mean = ds_regional %>%
              color = "grey", 
              size=0.7) +
   labs(caption = "Vertical grey line: first perturbation")
-p_regional_low_mean
+regional_publication
 
 ds_regional %>%
   filter(disturbance == "high") %>%

@@ -9,44 +9,19 @@ editor_options:
 
 **Model selection**
 
-I'll do model selection only on time point number 3 (however, I have done it also with time point 4,5,6,7 and they all give me the same result). Let's start from the full model.
+Let's start from the full model:
 
-*I can't construct it from a mixed model because the following error pops up:*
-
--   *Error: number of levels of each grouping factor must be \< number of observations (problems: system_nr)*
-
-```{r}
-full = lm(regional_mean_bioarea ~
-              metaecosystem_type +
-              disturbance +
-              disturbance : metaecosystem_type,
+```{r eval = FALSE}
+full = lmer(log10(regional_mean_bioarea + 1) ~
+            metaecosystem_type +
+            disturbance +
+            metaecosystem_type : disturbance +
+            (1 | system_nr),
             data = ds_regional %>%
               filter(time_point == 3) %>%
               filter(metaecosystem_type == "M_M" |
-                     metaecosystem_type == "S_L"))
+                     metaecosystem_type == "S_L"),
+            REML = FALSE)
 ```
 
-*Should we keep D \* M?*
-
-```{r}
-no_MD = lm(regional_mean_bioarea ~
-              metaecosystem_type +
-              disturbance,
-            data = ds_regional %>%
-              filter(time_point == 3) %>%
-              filter(metaecosystem_type == "M_M" |
-                     metaecosystem_type == "S_L"))
-
-anova(full, no_MD)
-AIC(full, no_MD)
-```
-
-No.
-
-**Best model**
-
-Therefore, our best model is
-
-$$
-Regional \: Bioarea = M + D
-$$
+[Next step: understanding what is a grouping factor. I need to understand what a grouping factor because I cannot run the full model, as it gives me the following problem: *"Error: number of levels of each grouping factor must be \< number of observations (problems: system_nr)."*]{.underline}

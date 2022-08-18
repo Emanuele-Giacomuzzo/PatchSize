@@ -215,9 +215,24 @@ $$
 log_{10}(regional \: bioarea + 1) = t + M + D + t*D + (t| system \: nr) 
 $$
 
-This model is the best model when looking at all time points coming after the first disturbance event (t2-\>t7). Assuming that this model holds for also other sections of the time series, the r squared of the model and of meta-ecosystem type is as follows.
+The R squared of this model are:
 
 ```{r}
+best_model = no_MD
+
+R2_marginal = r.squaredGLMM(best_model)[1]
+R2_marginal = round(R2_marginal, digits = 2)
+R2_conditional = r.squaredGLMM(best_model)[2]
+R2_conditional = round(R2_conditional, digits = 2)
+```
+
+-   Marginal R2 = `r R2_marginal`
+
+-   Conditional R2 = `r R2`
+
+[Next step: understanding how to partition the variance when we have random slopes (you can't do it using `partR2`)]{.underline}
+
+```{r eval = FALSE}
 #Create a table in which the regional biomass has been log transformed. 
 
 ### --- INITIALISE TABLE --- ###
@@ -299,8 +314,9 @@ datatable(log_time_table,
           R2_fixed = fixed part of the mixed model,
           mixed_R2 = r squared when considering both fixed and random effects (conditional r squared), 
           fixed_R2 = r squared when considering only the fixed effects (marginal r squared)")
+
+# Notice that I did not include the t3-t4 time series, as when running the model it gives me the following error:
+# 
+# -   *Error: number of observations (=40) \<= number of random effects (=40) for term (day \| system_nr); the random-effects parameters and the residual variance (or scale parameter) are probably unidentifiable*
+
 ```
-
-Notice that I did not include the t3-t4 time series, as when running the model it gives me the following error:
-
--   *Error: number of observations (=40) \<= number of random effects (=40) for term (day \| system_nr); the random-effects parameters and the residual variance (or scale parameter) are probably unidentifiable*

@@ -7,50 +7,17 @@ editor_options:
   chunk_output_type: console
 ---
 
-##### Tidy
-
-Now I'll:
-
-1.  Calculate the average biomass for each time point for all the isolated small patches, one for the low disturbance, and one for the high disturbance.
-2.  For the small connected to small and small connected to large patches, calculate their response ratio.
-
-```{r tidy-small-patches}
-for (disturbance_input in c("low", "high")){
-  for (eco_metaeco_input in c("S", "M", "L")){
-    for (time_point_input in 0:7){
-      
-      ds_biomass$isolated_control[ds_biomass$patch_size == eco_metaeco_input & 
-                              ds_biomass$disturbance == disturbance_input &
-                              ds_biomass$time_point == time_point_input] = 
-        
-        ds_biomass %>%
-        filter(disturbance == disturbance_input) %>%
-        filter(eco_metaeco_type == eco_metaeco_input) %>%
-        filter(time_point == time_point_input) %>%        
-        group_by(culture_ID) %>%
-        summarise(bioarea_per_volume_across_videos = mean(bioarea_per_volume)) %>%
-        summarise(mean_bioarea_per_volume = mean(bioarea_per_volume_across_videos))
-      
-    }
-  }
-}
-
-ds_biomass = ds_biomass %>%
-  mutate(isolated_control = as.numeric(isolated_control))
-```
-
 ##### Plots
 
 ```{r small-patches-single-ecosystems-plots}
 ds_biomass %>%
   filter(disturbance == "low") %>%
-  #filter(eco_metaeco_type == "S (S_S)" | eco_metaeco_type == "S (S_L)") %>%
   filter(patch_size == "S") %>%
   ggplot(aes(x = day,
              y = bioarea_per_volume,
-             group = system_nr,
-             fill = system_nr,
-             color = system_nr,
+             group = culture_ID,
+             fill = culture_ID,
+             color = culture_ID,
              linetype = eco_metaeco_type)) +
   geom_line(stat = "summary", fun = "mean") +
   labs(x = "Day",
@@ -75,11 +42,10 @@ ds_biomass %>%
 
 ds_biomass %>%
   filter(disturbance == "high") %>%
-  #filter(eco_metaeco_type == "S (S_S)" | eco_metaeco_type == "S (S_L)") %>%
   filter(patch_size == "S") %>%
   ggplot(aes(x = day,
              y = bioarea_per_volume,
-             group = system_nr,
+             group = culture_ID,
              fill = system_nr,
              color = system_nr,
              linetype = eco_metaeco_type)) +
@@ -106,7 +72,7 @@ ds_biomass %>%
 ```
 
 ```{r small-patches-boxplots}
-local_small_low_plot = ds_biomass %>%
+ds_biomass %>%
   filter(disturbance == "low") %>%
   filter(patch_size == "S") %>%
   ggplot(aes(x = day,
@@ -133,7 +99,6 @@ local_small_low_plot = ds_biomass %>%
              color = "grey",
              size=0.7) +
   labs(caption = "Vertical grey line: first perturbation")
-local_small_low_plot
 
 ds_biomass %>%
   filter(disturbance == "high") %>%
@@ -165,13 +130,9 @@ ds_biomass %>%
 ```
 
 ```{r small-patches-lnRR-plots}
-ds_biomass %>%
+small_patches_publication = ds_biomass_averaged_across_videos %>%
   filter(disturbance == "low") %>%
   filter(eco_metaeco_type == "S (S_L)" | eco_metaeco_type == "S (S_S)") %>%
-  group_by(culture_ID, day, eco_metaeco_type, isolated_control) %>%
-  summarise(bioarea_per_volume_across_videos = mean(bioarea_per_volume)) %>% #Across videos
-  mutate(RR_bioarea_per_volume = (bioarea_per_volume_across_videos+1) /isolated_control) %>%
-  mutate(lnRR_bioarea_per_volume = ln(RR_bioarea_per_volume)) %>%
   ggplot(aes(x = day,
              y = lnRR_bioarea_per_volume,
              group = interaction(day, eco_metaeco_type),
@@ -179,7 +140,7 @@ ds_biomass %>%
   geom_boxplot() +
   labs(title = "Disturbance = low",
        x = "Day",
-       y = "Response ratio bioarea (something/μl)",
+       y = "LnRR Local Bioarea (something/μl)",
        fill = "") +
   theme_bw() +
   theme(panel.grid.major = element_blank(),
@@ -194,15 +155,12 @@ ds_biomass %>%
              linetype="dotdash",
              color = "grey",
              size=0.7) +
-  labs(caption = "Vertical grey line: first perturbation, Response ratio bioarea: Bioarea/Mean bioarea small isolated")
+  labs(caption = "Vertical grey line: first perturbation, LnRR Local Bioarea: Bioarea + 1 / Mean bioarea small isolated")
+small_patches_publication
 
-ds_biomass %>%
+ds_biomass_averaged_across_videos %>%
   filter(disturbance == "high") %>%
   filter(eco_metaeco_type == "S (S_L)" | eco_metaeco_type == "S (S_S)") %>%
-  group_by(culture_ID, day, eco_metaeco_type, isolated_control) %>%
-  summarise(bioarea_per_volume_across_videos = mean(bioarea_per_volume)) %>% #Across videos
-  mutate(RR_bioarea_per_volume = (bioarea_per_volume_across_videos+1) /isolated_control) %>%
-  mutate(lnRR_bioarea_per_volume = ln(RR_bioarea_per_volume)) %>%
   ggplot(aes(x = day,
              y = lnRR_bioarea_per_volume,
              group = interaction(day, eco_metaeco_type),
@@ -210,7 +168,7 @@ ds_biomass %>%
   geom_boxplot() +
   labs(title = "Disturbance = high",
        x = "Day",
-       y = "Response ratio bioarea (something/μl)",
+       y = "LnRR Local Bioarea (something/μl)",
        fill = "") +
   theme_bw() +
   theme(panel.grid.major = element_blank(),
@@ -225,34 +183,7 @@ ds_biomass %>%
              linetype="dotdash",
              color = "grey",
              size=0.7) +
-  labs(caption = "Vertical grey line: first perturbation, Response ratio bioarea: Bioarea/Mean bioarea small isolated")
-```
-
-```{r small-patches-lnRR-plots-fixing}
-eco_metaeco_input = "S"
-disturbance_input = "high"
-time_point_input = 7
-
-ds_biomass$isolated_control[ds_biomass$patch_size == eco_metaeco_input & 
-                              ds_biomass$disturbance == disturbance_input &
-                              ds_biomass$time_point == time_point_input] = 
-        
-        ds_biomass %>%
-        filter(disturbance == disturbance_input) %>%
-        filter(eco_metaeco_type == eco_metaeco_input) %>%
-        filter(time_point == time_point_input) %>%        
-        group_by(culture_ID) %>%
-        summarise(bioarea_per_volume_across_videos = mean(bioarea_per_volume)) %>%
-        summarise(mean_bioarea_per_volume = mean(bioarea_per_volume_across_videos))
-
-#Average biomass across small isolated time point 7 = 16.5
-
-ds_biomass %>%
-        filter(disturbance == disturbance_input) %>%
-        filter(eco_metaeco_type == eco_metaeco_input) %>%
-        filter(time_point == time_point_input)
-
-#I need to first average the two biomasses and then get the logarithm of their response ratio 
+  labs(caption = "Vertical grey line: first perturbation, LnRR Local Bioarea: Bioarea/Mean bioarea small isolated")
 ```
 
 ##### Time series
@@ -262,42 +193,40 @@ ds_biomass %>%
 Let's start from the full model:
 
 $$
-RR (bioarea) = t + M + D + t*M + t*D + M*D + t*M+D + (t | system \: nr)
+ln \: RR (bioarea) = t + M + D + t*M + t*D + M*D + t*M+D + (t | system \: nr)
 $$
 
 And let's consider all data points from the second to the seventh.
 
-```{r}
+```{r choose-time-points}
 first_time_point = 2
 last_time_point = 7
 ```
 
-```{r}
-full_model = lmer(RR_bioarea_per_volume ~
+```{r small-patches-full-model}
+full_model = lmer(lnRR_bioarea_per_volume ~
                     day * eco_metaeco_type * disturbance +
-                    (day | system_nr),
-                  data = ds_biomass %>%
+                    (day | culture_ID),
+                  data = ds_biomass_averaged_across_videos %>%
                          filter(time_point >= first_time_point) %>%
                          filter(time_point <= last_time_point) %>%
                          filter(eco_metaeco_type== "S (S_S)" | 
                                 eco_metaeco_type == "S (S_L)"),
-                  REML = FALSE
-                  )
+                  REML = FALSE)
 ```
 
-*Should we keep the interaction between the intercept and slope in (day \| system_nr)?*
+*Should we keep the interaction between the intercept and slope in (day \| culture_ID)?*
 
-```{r}
-no_interaction = lmer(RR_bioarea_per_volume ~
+```{r small-patches-no-interaction}
+no_interaction = lmer(lnRR_bioarea_per_volume ~
                     day * eco_metaeco_type * disturbance +
-                    (day || system_nr),
-                  data = ds_biomass %>%
+                    (day || culture_ID),
+                  data = ds_biomass_averaged_across_videos %>%
                          filter(time_point >= first_time_point) %>%
                          filter(time_point <= last_time_point) %>%
                          filter(eco_metaeco_type== "S (S_S)" | 
                                 eco_metaeco_type == "S (S_L)"),
-                  REML = FALSE
-                  )
+                  REML = FALSE)
 
 anova(full_model, no_interaction)
 ```
@@ -306,17 +235,16 @@ Yes.
 
 *Should we keep the effects on the slope?*
 
-```{r}
-no_slope = lmer(RR_bioarea_per_volume ~
+```{r small-patches-no-slope}
+no_slope = lmer(lnRR_bioarea_per_volume ~
                     day * eco_metaeco_type * disturbance +
-                    (1 | system_nr),
-                  data = ds_biomass %>%
+                    (1 | culture_ID),
+                  data = ds_biomass_averaged_across_videos %>%
                          filter(time_point >= first_time_point) %>%
                          filter(time_point <= last_time_point) %>%
                          filter(eco_metaeco_type== "S (S_S)" | 
                                 eco_metaeco_type == "S (S_L)"),
-                  REML = FALSE
-                  )
+                  REML = FALSE)
 
 anova(full_model, no_slope)
 ```
@@ -325,22 +253,21 @@ Yes.
 
 *Should we keep t \* M \* D?*
 
-```{r}
-no_three_way = lmer(RR_bioarea_per_volume ~
+```{r small-patches-no-three-way}
+no_three_way = lmer(lnRR_bioarea_per_volume ~
                     day +
                     eco_metaeco_type +
                     disturbance +
                     day : eco_metaeco_type + 
                     day : disturbance + 
                     eco_metaeco_type : disturbance + 
-                    (day | system_nr),
-                  data = ds_biomass %>%
+                    (day | culture_ID),
+                  data = ds_biomass_averaged_across_videos %>%
                          filter(time_point >= first_time_point) %>%
                          filter(time_point <= last_time_point) %>%
                          filter(eco_metaeco_type== "S (S_S)" | 
                                 eco_metaeco_type == "S (S_L)"),
-                  REML = FALSE
-                  )
+                  REML = FALSE)
 
 anova(full_model, no_three_way)
 ```
@@ -349,21 +276,20 @@ No.
 
 *Should we keep t \* M?*
 
-```{r}
-no_TM = lmer(RR_bioarea_per_volume ~
+```{r small-patches-no-TM}
+no_TM = lmer(lnRR_bioarea_per_volume ~
                     day +
                     eco_metaeco_type +
                     disturbance +
                     day : disturbance + 
                     eco_metaeco_type : disturbance + 
-                    (day | system_nr),
-                  data = ds_biomass %>%
+                    (day | culture_ID),
+                  data = ds_biomass_averaged_across_videos %>%
                          filter(time_point >= first_time_point) %>%
                          filter(time_point <= last_time_point) %>%
                          filter(eco_metaeco_type== "S (S_S)" | 
                                 eco_metaeco_type == "S (S_L)"),
-                  REML = FALSE
-                  )
+                  REML = FALSE)
 
 anova(no_three_way, no_TM)
 ```
@@ -372,60 +298,57 @@ Yes.
 
 *Should we keep t \* D?*
 
-```{r}
-no_TD = lmer(RR_bioarea_per_volume ~
+```{r small-patches-no-TD}
+no_TD = lmer(lnRR_bioarea_per_volume ~
                     day +
                     eco_metaeco_type +
                     disturbance +
                     day : eco_metaeco_type + 
                     eco_metaeco_type : disturbance + 
-                    (day | system_nr),
-                  data = ds_biomass %>%
+                    (day | culture_ID),
+                  data = ds_biomass_averaged_across_videos %>%
                          filter(time_point >= first_time_point) %>%
                          filter(time_point <= last_time_point) %>%
                          filter(eco_metaeco_type== "S (S_S)" | 
                                 eco_metaeco_type == "S (S_L)"),
-                  REML = FALSE
-                  )
+                  REML = FALSE)
 
 anova(no_three_way, no_TD)
 ```
 
-Yes.
+No.
 
 Should we keep M \* D?
 
-```{r}
-no_MD = lmer(RR_bioarea_per_volume ~
+```{r small-patches-no-MD}
+no_MD = lmer(lnRR_bioarea_per_volume ~
                     day +
                     eco_metaeco_type +
                     disturbance +
                     day : eco_metaeco_type + 
-                    day : disturbance + 
-                    (day | system_nr),
-                  data = ds_biomass %>%
+                    (day | culture_ID),
+                  data = ds_biomass_averaged_across_videos %>%
                          filter(time_point >= first_time_point) %>%
                          filter(time_point <= last_time_point) %>%
                          filter(eco_metaeco_type== "S (S_S)" | 
                                 eco_metaeco_type == "S (S_L)"),
-                  REML = FALSE
-                  )
+             REML = FALSE,
+             control = lmerControl (optimizer = "Nelder_Mead"))
 
-anova(no_three_way, no_MD)
+anova(no_TD, no_MD)
 ```
 
 No.
 
 *Should we keep D?*
 
-```{r}
-no_D = lmer(RR_bioarea_per_volume ~
+```{r small-patches-no-D}
+no_D = lmer(lnRR_bioarea_per_volume ~
                     day +
                     eco_metaeco_type +
                     day : eco_metaeco_type +
-                    day : disturbance + 
-                    (day | system_nr),
-            data = ds_biomass %>%
+                    (day | culture_ID),
+            data = ds_biomass_averaged_across_videos %>%
                          filter(time_point >= first_time_point) %>%
                          filter(time_point <= last_time_point) %>%
                          filter(eco_metaeco_type== "S (S_S)" | 
@@ -437,29 +360,30 @@ no_D = lmer(RR_bioarea_per_volume ~
 anova(no_MD, no_D)
 ```
 
-Wired, AIC tells us that we should not. Let's then compute how more likely is the first model to be true than the second one. I will compute it using a relative likelihood (see @Burnham2011):
+Yes.
 
-$$
-e^{0.5 (AIC_{min} - AIC_{max})}
-$$
-
-```{r}
-AIC_min = 2172.4
-AIC_max = 2174.3
-exp(0.5 * (AIC_min - AIC_max))
-```
-
-The probability that the model without disturbance is better is only 40% more. I will then keep the disturbance.
+###### Best model
 
 Then our best model is:
 
 $$
-RR (bioarea) = t + M + D + t*D + (t | system \: nr)
+RR (bioarea) = t + M + D + t*M + (t | ID)
 $$
 
-Let's then calculate the R squared and stuff.
+Let's then calculate the R squared and stuff for t2-t7.
 
-```{r}
+```{r small-t2-t7-best-model, eval = FALSE}
+best_model = no_MD
+
+#Model diagnostics
+plot(best_model)
+qqnorm(resid(best_model))
+
+#R2
+r.squaredGLMM(no_MD)
+```
+
+```{r small-data-table}
 #Create a table in which the regional biomass has been log transformed. 
 
 ### --- INITIALISE TABLE --- ###
@@ -473,14 +397,14 @@ colnames(small_patches_table) = columns
 
 for (last_point in 4:7) {
   
-  full_model = lmer(RR_bioarea_per_volume ~
+  full_model = lmer(lnRR_bioarea_per_volume ~
                     day +
                     eco_metaeco_type +
                     disturbance +
                     day : disturbance + 
                     day : eco_metaeco_type +
-                    (day | system_nr),
-                  data = ds_biomass %>%
+                    (day | culture_ID),
+                  data = ds_biomass_averaged_across_videos %>%
                               filter(time_point >= 2) %>%
                               filter(time_point <= last_point) %>%
                               filter(eco_metaeco_type== "S (S_S)" | 
@@ -492,21 +416,21 @@ for (last_point in 4:7) {
   r.squaredGLMM(full_model)
 
   
-  null_model = lm(RR_bioarea_per_volume ~
+  null_model = lm(lnRR_bioarea_per_volume ~
                     1,
-                  data = ds_biomass %>%
-                              filter(time_point >= 2) %>%
-                              filter(time_point <= last_point) %>%
-                              filter(eco_metaeco_type== "S (S_S)" | 
-                                     eco_metaeco_type == "S (S_L)"))
+                  data = ds_biomass_averaged_across_videos %>%
+                    filter(time_point >= 2) %>%
+                    filter(time_point <= last_point) %>%
+                    filter(eco_metaeco_type== "S (S_S)" | 
+                           eco_metaeco_type == "S (S_L)"))
   
-  metaeco_null = lmer(RR_bioarea_per_volume ~
+  metaeco_null = lmer(lnRR_bioarea_per_volume ~
                         day +
                         disturbance +
                         day : disturbance +
                         day : eco_metaeco_type + 
-                        (day | system_nr),
-                      data = ds_biomass %>%
+                        (day | culture_ID),
+                      data = ds_biomass_averaged_across_videos %>%
                         filter(time_point >= 2) %>%
                         filter(time_point <= last_point) %>%
                         filter(eco_metaeco_type== "S (S_S)" | 
@@ -552,19 +476,21 @@ datatable(small_patches_table,
 
 ##### Single time points
 
+###### Model selection
+
 I'll show model selection only on time point number 3 (however, I will do it also for the other time points). Let's start from the full model.
 
-```{r}
+```{r small-time-point-input}
 time_point_input = 4
 ```
 
-```{r}
-full = lmer(RR_bioarea_per_volume ~
-              metaecosystem_type +
+```{r small-full-model-single-point, eval = FALSE}
+full = lmer(lnRR_bioarea_per_volume ~
+              eco_metaeco_type +
               disturbance +
-              disturbance : metaecosystem_type +
-              (1 | system_nr),
-            data = ds_biomass %>%
+              disturbance : eco_metaeco_type +
+              (1 | culture_ID),
+            data = ds_biomass_averaged_across_videos %>%
               filter(time_point == time_point_input) %>%
               filter(eco_metaeco_type== "S (S_S)" | 
                      eco_metaeco_type == "S (S_L)"),
@@ -573,12 +499,12 @@ full = lmer(RR_bioarea_per_volume ~
 
 *Should we keep the random effect?*
 
-```{r}
-no_random = lm(RR_bioarea_per_volume ~
-              metaecosystem_type +
+```{r small-no-random-effects-single-point, eval = FALSE}
+no_random = lm(lnRR_bioarea_per_volume ~
+              eco_metaeco_type +
               disturbance +
-              disturbance : metaecosystem_type,
-            data = ds_biomass %>%
+              disturbance : eco_metaeco_type,
+            data = ds_biomass_averaged_across_videos %>%
               filter(time_point == time_point_input) %>%
               filter(eco_metaeco_type== "S (S_S)" | 
                      eco_metaeco_type == "S (S_L)"))
@@ -590,12 +516,12 @@ No. But wired. I'll keep it anyway.
 
 *Should we keep D \* M?*
 
-```{r}
-no_MD = lmer(RR_bioarea_per_volume ~
-              metaecosystem_type +
+```{r small-no-DM-single-point, eval = FALSE}
+no_MD = lmer(lnRR_bioarea_per_volume ~
+              eco_metaeco_type +
               disturbance +
-              (1 | system_nr),
-            data = ds_biomass %>%
+              (1 | culture_ID),
+            data = ds_biomass_averaged_across_videos %>%
               filter(time_point == time_point_input) %>%
               filter(eco_metaeco_type== "S (S_S)" | 
                      eco_metaeco_type == "S (S_L)"),

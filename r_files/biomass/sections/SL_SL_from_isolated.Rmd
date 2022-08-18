@@ -9,7 +9,7 @@ editor_options:
 
 ##### Tidy
 
-To make the data-set, I'm going through the following steps:
+To create the combinations of small and large isolated patches to be compared to the small-large meta-ecosystems, I'm going through the following steps.
 
 1.  Take isolated small and large patches.
 2.  Because I had to take out the last

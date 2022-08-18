@@ -53,8 +53,6 @@ library("sjPlot")
 library("sjstats")
 library("partR2")
 library("SciViews")
-
-
 conflict_prefer("load", "base")
 conflict_prefer("filter", "dplyr")
 
@@ -79,6 +77,11 @@ first_perturbation_day = 5
 
 # PatchSizePilot {.tabset}
 
+## Overview
+
+```{r child = here("r_files", "overview.Rmd")}
+```
+
 ## Biomass {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "biomass", "main_biomass.Rmd")}
@@ -91,38 +94,34 @@ first_perturbation_day = 5
 
 ## Figures
 
-```{r, echo = FALSE, fig.align='center', fig.cap = "Regional biomass production (mean bioarea density between two patches) in meta-ecosystems of the same total area, but whose two patches have either the same size or that have a smaller and larger patch. For clarity, only the low disturbance treatment is shown here. See the Appendix for equivalent the figure of the high disturbance treatment."}
-p_regional_low_mean + labs(title = "")
+```{r, echo = FALSE, fig.align='center', fig.cap = "Regional biomass under low disturbance in meta-ecosystems of the same total area, but exhibiting two local patches of the same size (red, medium-medium meta-ecosystem) or different size (blue, small-large meta-ecosystem). Points represent the mean, error bars represent the standard deviation. See the Appendix for equivalent figure of the high disturbance treatment."}
+regional_publication + labs(title = "")
 
-ggsave(here("results", "biomass", "publication_regional_low_mean.jpg"), 
-       p_regional_low_mean + labs(title = ""), 
+ggsave(here("results", "biomass", "regional_publication.jpg"), 
+       regional_publication + labs(title = ""), 
        units = publication_unit,
        width = publication_width, 
        height = publication_height)
 ```
 
-```{r, echo = FALSE, fig.align = 'center', fig.cap = "Local biomass production (bioarea density) in patches that are either isolated, connnected to a patch of the same size or to a patch of a larger size. For clarity, only the low disturbance treatment is shown here. See the Appendix for equivalent the figure of the high disturbance treatment."}
-local_small_low_plot + labs(title = "")
+```{r, echo = FALSE, fig.align = 'center', fig.cap = "Local biomass under low disturbance in patches connected to a patch of the same size (red, small patches of small-small meta-ecosystems) or to a patch of larger size (blue, small patches of small-large meta-ecosystems). The local biomass has been transformed as the natural logarithm of the reponse ratio as follows: ln(RR) = ln((bioarea + 1) / mean bioarea small isolated patches under low disturbance)."}
+small_patches_publication + labs(title = "")
 
-ggsave(here("results", "biomass", "publication_local_small_low_plot.jpg"), 
-       local_small_low_plot + labs(title = ""), 
+ggsave(here("results", "biomass", "small_patches_publication.jpg"), 
+       small_patches_publication + labs(title = ""), 
        units = publication_unit,
        width = publication_width, 
        height = publication_height)
 ```
 
-```{r, echo = FALSE, fig.align = 'center', fig.cap = "Local biomass production in patches that are either isolated, connected to the same size, or connected to a smaller size. For clarity, only the high disturbance treatment is shown here. See the Appendix for equivalent the figure of the low disturbance treatment."}
-local_large_high_plot + labs(title = "")
+```{r, echo = FALSE, fig.align = 'center', fig.cap = "Local biomass under low disturbance in patches connected to a patch of the same size (red, large patches of large-large meta-ecosystems) or to a patch of larger size (blue, large patches of small-large meta-ecosystems). The local biomass has been transformed as the natural logarithm of the reponse ratio as follows: ln(RR) = ln((bioarea + 1) / mean bioarea large isolated patches under low disturbance)."}
+large_patches_publication + labs(title = "")
 
-ggsave(here("results", "biomass", "publication_local_small_low_plot.jpg"), 
-       local_large_high_plot + labs(title = ""), 
+ggsave(here("results", "biomass", "large_patches_publication.jpg"), 
+       large_patches_publication + labs(title = ""), 
        units = publication_unit,
        width = publication_width, 
        height = publication_height)
-```
-
-```{r, fig.align = 'center', fig.cap="Small patches this time in logRR"}
-small_patches_figure + labs(title = "")
 ```
 
 ## Tests
@@ -141,23 +140,23 @@ end_time - start_time
 
 ### Mixed effects models
 
--   To build the mixed effect models we will use the R package lme4. See page 6 of [this PDF](https://cran.r-project.org/web/packages/lme4/vignettes/lmer.pdf) to know more about the syntaxis of this package.
+-   To build the mixed effect models we will use the R package lme4. See page 6 of [this PDF](https://cran.r-project.org/web/packages/lme4/vignettes/lmer.pdf) to know more about the syntaxis of this package and [this link](https://mspeekenbrink.github.io/sdam-r-companion/linear-mixed-effects-models.html) for the interaction syntaxis.
 
 -   To do model diagnostics of mixed effect models, I'm going to look at the following two plots (as suggested by @Zuur2009, page 487):
 
-    -   Quantile-quantile plots
+    -   Quantile-quantile plots (`plot(mixed_model)`)
 
-    -   Partial residual plots
+    -   Partial residual plots (`qqnorm(resid(mixed_model))`)
 
 -   The effect size of the explaining variables is calculated in the mixed effect models as marginal and conditional r squared. The marginal r squared is how much variance is explained by the fixed effects. The conditional r squared is how much variance is explained by the fixed and the random effects. The marginal and conditional r squared are calculated using the package `MuMIn`. The computation is based on the methods of @Nakagawa2017. For the coding and interpretation of these r squared check the [documentation for the r.squaredGLMM function](https://rdrr.io/cran/MuMIn/man/r.squaredGLMM.html)
 
--   See for the interaction syntaxis [this link.](https://mspeekenbrink.github.io/sdam-r-companion/linear-mixed-effects-models.html)
-
 ### Model selection
 
--   I am starting from the largest model and then simplifying because ... (see statistical modelling course at ETH).
+-   I am going to select the best model according to AIC. @Halsey2019 suggests this approach instead of p values. P-values are not a reliable way of choosing a model because:
 
--   I am going to select the best model according to AIC. BIC is better for understanding and AIC for predicting. @Halsey2019 also suggests this approach instead of p values. I'm going to use AIC because I'm interested in knowing how much meta-ecosystem type contributed to the overall regional biomass.
+    -   My sample size is small, producing larger p-values
+
+    -   P-values are really variable, creating many false positives and negatives (e.g., if p=0.05 there is a 1 in 3 chance that it's a false positive)
 
 ## Bibliography
 
