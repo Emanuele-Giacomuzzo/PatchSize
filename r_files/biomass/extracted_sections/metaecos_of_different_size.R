@@ -1,4 +1,4 @@
-## ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## -----------------------------------------------------------------------------------------------------------------------------------------------------------
 ds_regional %>%
   filter(!metaecosystem_type == "S_L") %>%
   filter ( disturbance == "low") %>%
@@ -77,7 +77,7 @@ ds_regional %>%
   geom_boxplot() + 
   labs(title = "Disturbance = low",
        x = "Day",
-       y = "Local bioarea (something/μl)",
+       y = "Regional bioarea (something/μl)",
        fill = "") + 
   #scale_fill_discrete(labels = c("isolated large", "isolated medium", "isolated small")) +
   theme_bw() + 
@@ -107,7 +107,7 @@ ds_regional %>%
   geom_boxplot() + 
   labs(title = "Disturbance = high",
        x = "Day",
-       y = "Local bioarea (something/μl)",
+       y = "Regional bioarea (something/μl)",
        fill = "") + 
   #scale_fill_discrete(labels = c("isolated large", "isolated medium", "isolated small")) +
   theme_bw() + 

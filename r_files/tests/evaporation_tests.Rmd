@@ -34,5 +34,5 @@ evaporation.test %>%
   geom_boxplot() +
   labs(x = "Water in the other 10 tubes" , 
   y = "Evaporation (g)", 
-  caption = "When all tubes were filled, they were filled with 6.75 ml of deionised water (I think, but I need to check in my lab book.")
+  caption = "When all tubes were filled, they were filled with 6.75 ml of deionised water.")
 ```

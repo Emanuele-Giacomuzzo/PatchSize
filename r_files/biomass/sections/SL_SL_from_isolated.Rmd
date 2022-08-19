@@ -61,7 +61,7 @@ SL_from_isolated = rbind(isolated_S_low,
   mutate(metaecosystem_type = "S_L_from_isolated") %>%
   rename(regional_mean_bioarea = bioarea_per_volume_across_videos)
 
-ds_regional_with_SL_from_isolated = rbind(SL_from_isolated, ds_regional)
+ds_regional_with_SL_from_isolated = rbind(SL_from_isolated, ds_regional_biomass)
 ```
 
 ```{r eval = FALSE}
@@ -95,7 +95,7 @@ for (pair in 1:number_of_pairs){
   
 }
 
-ds_regional_with_SL_from_isolated = rbind(SL_from_isolated_all_combinations, ds_regional)
+ds_regional_with_SL_from_isolated = rbind(SL_from_isolated_all_combinations, ds_regional_biomass)
 ```
 
 [Next step: bootstrap 5 isolated small patches and 5 isolated large patches]{.underline}

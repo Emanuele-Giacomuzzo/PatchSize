@@ -12,7 +12,7 @@ Let's see how linear is the time trend of bioarea and if we can make it more lin
 **Linearity of regional bioarea \~ time**
 
 ```{r}
-ds_regional %>%
+ds_regional_biomass %>%
   filter(time_point >= 2) %>%
   ggplot(aes(x = day,
              y = regional_mean_bioarea,
@@ -26,7 +26,7 @@ ds_regional %>%
 ```{r}
 linear_model = lm(regional_mean_bioarea ~ 
                     day, 
-                  data = ds_regional %>% 
+                  data = ds_regional_biomass %>% 
                             filter(time_point >= 2) %>%
                             filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L"))
 
@@ -39,7 +39,7 @@ When we don't transform it, the time trend of bioarea is not that linear, as we 
 **Linearity of Log10(Regional bioarea +1) \~ time**
 
 ```{r}
-ds_regional %>%
+ds_regional_biomass %>%
   filter(time_point >= 2) %>%
   ggplot(aes(x = day,
              y = log(regional_mean_bioarea + 1),
@@ -53,7 +53,7 @@ ds_regional %>%
 ```{r}
 log_linear_model = lm(log10(regional_mean_bioarea + 1) ~ 
                     day, 
-                  data = ds_regional %>% 
+                  data = ds_regional_biomass %>% 
                             filter(time_point >= 2) %>%
                             filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L"))
 
@@ -76,7 +76,7 @@ $$
 full = lmer(log10(regional_mean_bioarea + 1) ~
                      day * metaecosystem_type * disturbance +
                      (day | system_nr),
-                     data = ds_regional %>%
+                     data = ds_regional_biomass %>%
                             filter(time_point >= 2) %>%
                             filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L"),
                    REML = FALSE,
@@ -89,7 +89,7 @@ full = lmer(log10(regional_mean_bioarea + 1) ~
 no_correlation = lmer(log10(regional_mean_bioarea + 1) ~
                      day * metaecosystem_type * disturbance +
                      (day | system_nr),
-                     data = ds_regional %>%
+                     data = ds_regional_biomass %>%
                             filter(time_point >= 2) %>%
                             filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L"),
                    REML = FALSE,
@@ -111,7 +111,7 @@ no_threeway = lmer(log10(regional_mean_bioarea + 1) ~
                      day : disturbance +
                      metaecosystem_type : disturbance + 
                      (day | system_nr),
-                     data = ds_regional %>%
+                     data = ds_regional_biomass %>%
                             filter(time_point >= 2) %>%
                             filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L"),
                    REML = FALSE,
@@ -133,7 +133,7 @@ no_TM = lmer(log10(regional_mean_bioarea + 1) ~
                      day : disturbance +
                      metaecosystem_type : disturbance + 
                      (day | system_nr),
-                     data = ds_regional %>%
+                     data = ds_regional_biomass %>%
                             filter(time_point >= 2) %>%
                             filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L"),
                    REML = FALSE,
@@ -153,7 +153,7 @@ no_TD = lmer(log10(regional_mean_bioarea + 1) ~
                      disturbance +
                      metaecosystem_type : disturbance + 
                      (day | system_nr),
-                     data = ds_regional %>%
+                     data = ds_regional_biomass %>%
                             filter(time_point >= 2) %>%
                             filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L"),
                    REML = FALSE,
@@ -172,7 +172,7 @@ no_MD = lmer(log10(regional_mean_bioarea + 1) ~
                      disturbance +
                      day : disturbance +
                      (day | system_nr),
-                     data = ds_regional %>%
+                     data = ds_regional_biomass %>%
                             filter(time_point >= 2) %>%
                             filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L"),
                    REML = FALSE,
@@ -192,7 +192,7 @@ no_random_slopes = lmer(log10(regional_mean_bioarea + 1) ~
                      disturbance +
                      day : disturbance +
                      (1 | system_nr),
-                     data = ds_regional %>%
+                     data = ds_regional_biomass %>%
                             filter(time_point >= 2) %>%
                             filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L"),
                    REML = FALSE,
@@ -235,7 +235,7 @@ t2_t5 = lmer(log10(regional_mean_bioarea + 1) ~
                      disturbance +
                      day : disturbance +
                      (day | system_nr),
-                     data = ds_regional %>%
+                     data = ds_regional_biomass %>%
                             filter(time_point >= 2) %>%
                             filter(time_point <= 5) %>%
                             filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L"),

@@ -75,3 +75,5 @@ knitr::include_graphics(here("gifs", "transition_day_S_high.gif"))
 knitr::include_graphics(here("gifs", "transition_day_L_low.gif"))
 knitr::include_graphics(here("gifs", "transition_day_L_high.gif"))
 ```
+
+-   [Next step: making plots slower (the package stopped working because I broke some dependencies)]{.underline}

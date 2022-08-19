@@ -1,7 +1,4 @@
-## ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-### --- SINGLE PATCHES --- ###
-
+## ----large-single-patches-plots-----------------------------------------------------------------------------------------------------------------------------
 ds_biomass %>%
   filter(disturbance == "low") %>%
   filter(patch_size == "L") %>%
@@ -62,8 +59,8 @@ ds_biomass %>%
              size=0.7) +
   labs(caption = "Vertical grey line: first perturbation")
 
-### --- BOXPLOTS --- ###
 
+## ----large-boxplots-----------------------------------------------------------------------------------------------------------------------------------------
 ds_biomass %>%
   filter(disturbance == "low") %>%
   filter(patch_size == "L") %>%
@@ -122,7 +119,66 @@ local_large_high_plot = ds_biomass %>%
 local_large_high_plot
 
 
-## ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## ----large-patches-lnRR-plots-------------------------------------------------------------------------------------------------------------------------------
+large_patches_publication = ds_biomass_averaged_across_videos %>%
+  filter(disturbance == "low") %>%
+  filter(eco_metaeco_type == "L (L_L)" | eco_metaeco_type == "L (S_L)") %>%
+  ggplot(aes(x = day,
+             y = lnRR_bioarea_per_volume,
+             group = interaction(day, eco_metaeco_type),
+             fill = eco_metaeco_type)) +
+  geom_boxplot() +
+  labs(title = "Disturbance = low",
+       x = "Day",
+       y = "LnRR Local Bioarea (something/μl)",
+       fill = "") +
+  theme_bw() +
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        legend.position = c(.9, .95),
+        legend.justification = c("right", "top"),
+        legend.box.just = "right",
+        legend.margin = margin(6, 6, 6, 6)) +
+  scale_fill_discrete(labels = c("large connected to large",
+                                 "large connected to small")) +
+  geom_vline(xintercept = first_perturbation_day + 0.7,
+             linetype="dotdash",
+             color = "grey",
+             size=0.7) +
+  labs(caption = "Vertical grey line: first perturbation, 
+                  Response ratio bioarea: Bioarea/Mean bioarea small isolated")
+large_patches_publication
+
+ds_biomass_averaged_across_videos %>%
+  filter(disturbance == "high") %>%
+  filter(eco_metaeco_type == "L (L_L)" | eco_metaeco_type == "L (S_L)") %>%
+  ggplot(aes(x = day,
+             y = lnRR_bioarea_per_volume,
+             group = interaction(day, eco_metaeco_type),
+             fill = eco_metaeco_type)) +
+  geom_boxplot() +
+  labs(title = "Disturbance = high",
+       x = "Day",
+       y = "LnRR Local Bioarea (something/μl)",
+       fill = "") +
+  theme_bw() +
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        legend.position = c(.9, .95),
+        legend.justification = c("right", "top"),
+        legend.box.just = "right",
+        legend.margin = margin(6, 6, 6, 6)) +
+  scale_fill_discrete(labels = c("large connected to large",
+                                 "large connected to small")) +
+  geom_vline(xintercept = first_perturbation_day + 0.7,
+             linetype="dotdash",
+             color = "grey",
+             size=0.7) +
+  labs(caption = "Vertical grey line: first perturbation, 
+                  Response ratio bioarea: Bioarea/Mean bioarea small isolated")
+
+
+## -----------------------------------------------------------------------------------------------------------------------------------------------------------
 full_model = lmer(bioarea_per_volume ~
                     metaecosystem_type * disturbance  +
                     (1 | system_nr) +
@@ -146,7 +202,7 @@ no_metaeco_type_model = lmer(bioarea_per_volume ~
 anova(full_model, no_metaeco_type_model)
 
 
-## ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## -----------------------------------------------------------------------------------------------------------------------------------------------------------
 full_model = lmer(bioarea_per_volume ~
                     metaecosystem_type * disturbance  +
                     (1 | system_nr) +
@@ -170,7 +226,7 @@ no_metaeco_type_model = lmer(bioarea_per_volume ~
 anova(full_model, no_metaeco_type_model)
 
 
-## ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## -----------------------------------------------------------------------------------------------------------------------------------------------------------
 full_model = lmer(bioarea_per_volume ~
                     metaecosystem_type * disturbance  +
                     (1 | system_nr) +

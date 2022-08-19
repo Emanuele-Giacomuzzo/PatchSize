@@ -395,7 +395,7 @@ Let's just assume that this model holds also for t2-t5. Then, let's recalculate 
 
 ```{r}
 last_time_point = 5
-no_MD = lmer(lnRR_bioarea_per_volume ~
+t2_t5 = lmer(lnRR_bioarea_per_volume ~
                     day +
                     eco_metaeco_type +
                     disturbance +
@@ -410,68 +410,22 @@ no_MD = lmer(lnRR_bioarea_per_volume ~
              control = lmerControl (optimizer = "Nelder_Mead"))
 ```
 
+The R squared of this model for t2-t5 are:
+
+```{r warning=FALSE}
+R2_marginal = r.squaredGLMM(t2_t5)[1]
+R2_marginal = round(R2_marginal, digits = 2)
+R2_conditional = r.squaredGLMM(t2_t5)[2]
+R2_conditional = round(R2_conditional, digits = 2)
+```
+
+-   Marginal R2 = `r R2_marginal`
+
+-   Conditional R2 = `r R2_conditional`
+
 ##### Single time points
 
-###### Model selection
+-   [Next step: understanding how to calculate the R2 of meta-ecosystem type when there are random slopes.]{.underline}
 
-I'll show model selection only on time point number 3 (however, I will do it also for the other time points). Let's start from the full model.
-
-```{r small-time-point-input}
-time_point_input = 4
+```{r child = here("r_files", "biomass", "sections", "small_patches_single_points.Rmd"), eval = FALSE}
 ```
-
-```{r small-full-model-single-point, eval = FALSE}
-full = lmer(lnRR_bioarea_per_volume ~
-              eco_metaeco_type +
-              disturbance +
-              disturbance : eco_metaeco_type +
-              (1 | culture_ID),
-            data = ds_biomass_averaged_across_videos %>%
-              filter(time_point == time_point_input) %>%
-              filter(eco_metaeco_type== "S (S_S)" | 
-                     eco_metaeco_type == "S (S_L)"),
-          REML = FALSE)
-```
-
-*Should we keep the random effect?*
-
-```{r small-no-random-effects-single-point, eval = FALSE}
-no_random = lm(lnRR_bioarea_per_volume ~
-              eco_metaeco_type +
-              disturbance +
-              disturbance : eco_metaeco_type,
-            data = ds_biomass_averaged_across_videos %>%
-              filter(time_point == time_point_input) %>%
-              filter(eco_metaeco_type== "S (S_S)" | 
-                     eco_metaeco_type == "S (S_L)"))
-
-anova(full, no_random)
-```
-
-No. But wired. I'll keep it anyway.
-
-*Should we keep D \* M?*
-
-```{r small-no-DM-single-point, eval = FALSE}
-no_MD = lmer(lnRR_bioarea_per_volume ~
-              eco_metaeco_type +
-              disturbance +
-              (1 | culture_ID),
-            data = ds_biomass_averaged_across_videos %>%
-              filter(time_point == time_point_input) %>%
-              filter(eco_metaeco_type== "S (S_S)" | 
-                     eco_metaeco_type == "S (S_L)"),
-          REML = FALSE)
-
-anova(full, no_MD)
-```
-
-No.
-
-**Best model**
-
-Therefore, our best model is
-
-$$
-Regional \: Bioarea = M + D + (1 | ID)
-$$

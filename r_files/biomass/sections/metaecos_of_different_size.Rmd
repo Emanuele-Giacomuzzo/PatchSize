@@ -8,7 +8,7 @@ editor_options:
 ---
 
 ```{r}
-ds_regional %>%
+ds_regional_biomass %>%
   filter(!metaecosystem_type == "S_L") %>%
   filter ( disturbance == "low") %>%
   ggplot (aes(x = day,
@@ -42,7 +42,7 @@ ds_regional %>%
              size=0.7) +
   labs(caption = "Vertical grey line: first perturbation")
 
-ds_regional %>%
+ds_regional_biomass %>%
   filter(!metaecosystem_type == "S_L") %>%
   filter ( disturbance == "high") %>%
   ggplot (aes(x = day,
@@ -76,7 +76,7 @@ ds_regional %>%
              size=0.7) +
   labs(caption = "Vertical grey line: first perturbation")
 
-ds_regional %>%
+ds_regional_biomass %>%
   filter(disturbance == "low") %>%
   filter(!metaecosystem_type == "S_L") %>%
   ggplot(aes(x = day,
@@ -106,7 +106,7 @@ ds_regional %>%
   labs(caption = "Vertical grey line: first perturbation")
 
 
-ds_regional %>%
+ds_regional_biomass %>%
   filter(disturbance == "high") %>%
   filter(!metaecosystem_type == "S_L") %>%
   ggplot(aes(x = day,
