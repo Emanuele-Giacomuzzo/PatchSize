@@ -7,9 +7,7 @@ editor_options:
   chunk_output_type: console
 ---
 
-**Model selection**
-
-Let's start from the full model:
+[Need to wait until I understand how to calculate R2 for models with random slopes, so then I can look at the R2 of meta-ecosystem type across time points.]{.underline}
 
 ```{r eval = FALSE}
 full = lmer(log10(regional_mean_bioarea + 1) ~
@@ -22,6 +20,6 @@ full = lmer(log10(regional_mean_bioarea + 1) ~
               filter(metaecosystem_type == "M_M" |
                      metaecosystem_type == "S_L"),
             REML = FALSE)
-```
 
-[Next step: understanding what is a grouping factor. I need to understand what a grouping factor because I cannot run the full model, as it gives me the following problem: *"Error: number of levels of each grouping factor must be \< number of observations (problems: system_nr)."*]{.underline}
+# Next step: understanding what is a grouping factor. I need to understand what a grouping factor because I cannot run the full model, as it gives me the following problem: "Error: number of levels of each grouping factor must be < number of observations (problems: system_nr)."
+```

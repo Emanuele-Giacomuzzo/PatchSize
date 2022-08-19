@@ -7,7 +7,7 @@ editor_options:
   chunk_output_type: console
 ---
 
-Here we want to see whether we can include time as a fixed effect by transforming the bioarea into its logarithm with base 10. As we are not considering the first two time points because they were before the first disturbance (we want to see the effects of meta-ecosystem type under disturbance), we are lucky that there is a better chance that the biomass will look like goes down in a linear fashion.
+Let's see how linear is the time trend of bioarea and if we can make it more linear with a log10 transformation. We are lucky that during the modelling process we need to drop the first two time points because they were before the first perturbation.
 
 **Linearity of regional bioarea \~ time**
 
@@ -23,8 +23,6 @@ ds_regional %>%
        y = "Regional bioarea (something/µl)")
 ```
 
-Let's check how linear the relationship is.
-
 ```{r}
 linear_model = lm(regional_mean_bioarea ~ 
                     day, 
@@ -36,7 +34,7 @@ par(mfrow=c(2,3))
 plot(linear_model, which = 1:5)
 ```
 
-I'm not 100% convinced, as the residuals vs fitted has a bit of a banana shape line.
+When we don't transform it, the time trend of bioarea is not that linear, as we can see in the problematic banana shape of the line in the residuals vs fitted plot.
 
 **Linearity of Log10(Regional bioarea +1) \~ time**
 
@@ -52,8 +50,6 @@ ds_regional %>%
        y = "Log (regional bioarea + 1) (something/µl)")
 ```
 
-Let's now check how linear these two relationships are.
-
 ```{r}
 log_linear_model = lm(log10(regional_mean_bioarea + 1) ~ 
                     day, 
@@ -66,7 +62,7 @@ plot(log_linear_model, which = 1:5)
 par(mfrow=c(1,1))
 ```
 
-Way better. Especially the residuals vs fitted values plot doesn't have a banana shape anymore. This seems to be a good model. Let's then keep the log transformed bioarea.
+The log transformed bioarea is linear.
 
 **Model selection**
 
@@ -215,9 +211,9 @@ $$
 log_{10}(regional \: bioarea + 1) = t + M + D + t*D + (t| system \: nr) 
 $$
 
-The R squared of this model are:
+The R squared of this model for t2-t7 are:
 
-```{r}
+```{r warning=FALSE}
 best_model = no_MD
 
 R2_marginal = r.squaredGLMM(best_model)[1]
@@ -228,24 +224,12 @@ R2_conditional = round(R2_conditional, digits = 2)
 
 -   Marginal R2 = `r R2_marginal`
 
--   Conditional R2 = `r R2`
+-   Conditional R2 = `r R2_conditional`
 
-[Next step: understanding how to partition the variance when we have random slopes (you can't do it using `partR2`)]{.underline}
+Let's just assume that this model holds also for t2-t5. Then, let's recalculate the R squared.
 
-```{r eval = FALSE}
-#Create a table in which the regional biomass has been log transformed. 
-
-### --- INITIALISE TABLE --- ###
-
-columns = c("model", "time_point", "AIC", "BIC", "R2_mixed", "R2_fixed", "R2_mixed_M", "R2_fixed_M")
-log_time_table = data.frame(matrix(ncol = length(columns), nrow = 0))
-colnames(log_time_table) = columns
-
-### --- POPULATE THE TABLE --- ###
-
-for (last_point in 4:7) {
-  
-  full_model = lmer(log10(regional_mean_bioarea + 1) ~
+```{r}
+t2_t5 = lmer(log10(regional_mean_bioarea + 1) ~
                      day +
                      metaecosystem_type +
                      disturbance +
@@ -253,70 +237,23 @@ for (last_point in 4:7) {
                      (day | system_nr),
                      data = ds_regional %>%
                             filter(time_point >= 2) %>%
-                            filter(time_point <= last_point) %>%
-                            filter(metaecosystem_type == "M_M" | 
-                                   metaecosystem_type == "S_L"),
-                    REML = FALSE,
-                    control = lmerControl(optimizer = "Nelder_Mead"))
+                            filter(time_point <= 5) %>%
+                            filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L"),
+                   REML = FALSE,
+                   control = lmerControl(optimizer = "Nelder_Mead"))
 
-  
-  null_model = lm(regional_mean_bioarea ~ 
-                    1 , 
-                  data = ds_regional %>%
-                            filter(time_point >= 2) %>%
-                            filter(time_point <= last_point) %>%
-                            filter(metaecosystem_type == "M_M" | 
-                                   metaecosystem_type == "S_L"))
-  
-  metaeco_null_model = lmer(log10(regional_mean_bioarea + 1) ~
-                              day +
-                              disturbance +
-                              day : disturbance +
-                              (day | system_nr),
-                            data = ds_regional %>%
-                              filter(time_point >= 2) %>%
-                              filter(time_point <= last_point) %>%
-                              filter(metaecosystem_type == "M_M" | 
-                                     metaecosystem_type == "S_L"),
-                            REML = FALSE,
-                            control = lmerControl(optimizer = "Nelder_Mead"))
-  
-  log_time_table = update_all_models_table("t + M + D + t * M * D + (t || system_nr)",
-                                             log_time_table, 
-                                             full_model, 
-                                             null_model,
-                                             metaeco_null_model,
-                                             "mixed")
-}
-
-datatable(log_time_table, 
-          rownames = FALSE,
-          options = list(pageLength = 100,
-                         scrollX = TRUE,
-                         autoWidth = TRUE,
-                         columnDefs = list(list(targets=c(0),visible=TRUE, width='160'),
-                                           list(targets=c(1), visible=TRUE, width='10'),
-                                           list(targets=c(2), visible=TRUE, width='10'),
-                                           list(targets=c(3), visible=TRUE, width='10'),
-                                           list(targets=c(4), visible=TRUE, width='10'),
-                                           list(targets=c(5), visible=TRUE, width='10'),
-                                           list(targets=c(6), visible=TRUE, width='10'),
-                                           list(targets=c(7), visible=TRUE, width='10'),
-                                           list(targets='_all', visible=FALSE))),
-          caption = "
-          M = Meta-ecosystem type, 
-          D = disturbance, 
-          (1 | t) = random effect of time on the intercept,
-          (1 | ID) = random effect of meta-ecosystem ID on the intercept, 
-          || = no correlation between intercept and slope,
-          | = correlation between intercept and slope,
-          R2 = r squared of the whole model,
-          R2_fixed = fixed part of the mixed model,
-          mixed_R2 = r squared when considering both fixed and random effects (conditional r squared), 
-          fixed_R2 = r squared when considering only the fixed effects (marginal r squared)")
-
-# Notice that I did not include the t3-t4 time series, as when running the model it gives me the following error:
-# 
-# -   *Error: number of observations (=40) \<= number of random effects (=40) for term (day \| system_nr); the random-effects parameters and the residual variance (or scale parameter) are probably unidentifiable*
-
+R2_marginal = r.squaredGLMM(t2_t5)[1]
+R2_marginal = round(R2_marginal, digits = 2)
+R2_conditional = r.squaredGLMM(t2_t5)[2]
+R2_conditional = round(R2_conditional, digits = 2)
 ```
+
+The R squared of this model for t2-t5 are:
+
+-   Marginal R2 = `r R2_marginal`
+
+-   Conditional R2 = `r R2_conditional`
+
+[Next steps:]{.underline}
+
+-   [calculating the R2 of the meta-ecosystem type. I was thinking I could do it with]{.underline} `part2`[but it can't do it when the model has a random slope. -\> evaluating whether meta-ecosystem type R2 is high enough -\> if it's not, redo model selection with t2-t5 to see if you can increase R2 of meta-ecosystem type.]{.underline}
