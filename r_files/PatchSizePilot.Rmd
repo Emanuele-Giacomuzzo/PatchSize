@@ -97,6 +97,8 @@ publication_height = 12
 publication_unit = "cm"
 
 first_perturbation_day = 5
+ecosystems_to_take_off = 60 #Culture number 60 because it was spilled (isolated large patch, high disturbance, system nr = 40)
+metaecosystems_to_take_off = 40 #System 40 was the system of culture 60 that I spilled
 ```
 
 # PatchSizePilot {.tabset}
@@ -130,7 +132,7 @@ ggsave(here("results", "biomass", "regional_publication.jpg"),
        height = publication_height)
 ```
 
-```{r, echo = FALSE, fig.align = 'center', fig.cap = "Local biomass under low disturbance in patches connected to a patch of the same size (red, small patches of small-small meta-ecosystems) or to a patch of larger size (blue, small patches of small-large meta-ecosystems). The local biomass has been transformed as the natural logarithm of the reponse ratio as follows: ln(RR) = ln((bioarea + 1) / mean bioarea small isolated patches under low disturbance)."}
+```{r, echo = FALSE, fig.align = 'center', fig.cap = "Local biomass under low disturbance in patches connected to a patch of the same size (red, small patches of small-small meta-ecosystems) or to a patch of larger size (blue, small patches of small-large meta-ecosystems). The local biomass has been transformed as the natural logarithm of the reponse ratio as follows: ln(RR) = ln((bioarea + 1) / mean bioarea small isolated patches under low disturbance).", eval = FALSE}
 small_patches_publication + labs(title = "")
 
 ggsave(here("results", "biomass", "small_patches_publication.jpg"), 
@@ -140,7 +142,7 @@ ggsave(here("results", "biomass", "small_patches_publication.jpg"),
        height = publication_height)
 ```
 
-```{r, echo = FALSE, fig.align = 'center', fig.cap = "Local biomass under low disturbance in patches connected to a patch of the same size (red, large patches of large-large meta-ecosystems) or to a patch of larger size (blue, large patches of small-large meta-ecosystems). The local biomass has been transformed as the natural logarithm of the reponse ratio as follows: ln(RR) = ln((bioarea + 1) / mean bioarea large isolated patches under low disturbance)."}
+```{r, echo = FALSE, fig.align = 'center', fig.cap = "Local biomass under low disturbance in patches connected to a patch of the same size (red, large patches of large-large meta-ecosystems) or to a patch of larger size (blue, large patches of small-large meta-ecosystems). The local biomass has been transformed as the natural logarithm of the reponse ratio as follows: ln(RR) = ln((bioarea + 1) / mean bioarea large isolated patches under low disturbance).", eval = FALSE}
 large_patches_publication + labs(title = "")
 
 ggsave(here("results", "biomass", "large_patches_publication.jpg"), 

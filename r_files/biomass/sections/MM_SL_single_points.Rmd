@@ -10,7 +10,7 @@ editor_options:
 [Need to wait until I understand how to calculate R2 for models with random slopes, so then I can look at the R2 of meta-ecosystem type across time points.]{.underline}
 
 ```{r eval = FALSE}
-full = lmer(log10(regional_mean_bioarea + 1) ~
+full = lmer(log10(total_regional_bioarea + 1) ~
             metaecosystem_type +
             disturbance +
             metaecosystem_type : disturbance +

@@ -124,7 +124,6 @@ ds_biomass$eco_metaeco_type = factor(ds_biomass$eco_metaeco_type,
                                         'L (L_L)', 
                                         'L (S_L)'))
 
-ecosystems_to_take_off = 60 #Culture number 60 because it was spilled (isolated large patch, high disturbance, system nr = 40)
 ds_biomass = ds_biomass %>%
   filter(! culture_ID %in% ecosystems_to_take_off)
 
@@ -170,6 +169,7 @@ datatable(ds_biomass,
 ```{r regional-biomass}
 ds_regional_biomass = ds_biomass %>%
   filter(metaecosystem == "yes") %>%
+  filter(! system_nr %in% metaecosystems_to_take_off) %>%
   group_by(culture_ID, 
            system_nr, 
            disturbance, 
@@ -179,23 +179,15 @@ ds_regional_biomass = ds_biomass %>%
            patch_size_volume,
            metaecosystem_type) %>%
   summarise(bioarea_per_volume_video_averaged = mean(bioarea_per_volume)) %>%
-  mutate(total_bioarea = bioarea_per_volume_video_averaged * patch_size_volume) %>%
+  mutate(total_patch_bioarea = bioarea_per_volume_video_averaged * patch_size_volume) %>%
   group_by(system_nr, 
            disturbance, 
            time_point,
-           day, 
-           patch_size,
-           patch_size_volume,
+           day,
            metaecosystem_type) %>%
-  summarise(total_regional_bioarea = sum(total_bioarea))
-  
-  #%>%
-  #group_by(system_nr, disturbance, time_point, day, metaecosystem_type) %>%
-  #summarise(regional_mean_bioarea = mean(bioarea_per_volume_video_averaged))
+  summarise(total_regional_bioarea = sum(total_patch_bioarea))
 
-metaecosystems_to_take_off = 40 #System 40 was the system of culture 60 that I spilled
-ds_regional_biomass = ds_regional_biomass %>%
-  filter(! system_nr %in% metaecosystems_to_take_off)
+### --- TABLE --- ###
 
 datatable(ds_regional_biomass,
           rownames = FALSE,
@@ -203,9 +195,6 @@ datatable(ds_regional_biomass,
           filter = list(position = 'top', 
                         clear = FALSE))
 ```
-
-\
-\
 
 #### Local biomass lnRR data-set
 
@@ -241,7 +230,6 @@ ds_biomass_averaged_across_videos =  ds_biomass %>%
   summarise(bioarea_per_volume = mean(bioarea_per_volume))
 
 ds_biomass_averaged_across_videos %>%
-  
   mutate(RR_bioarea_per_volume = (bioarea_per_volume_across_videos+1) /isolated_control) %>%
   mutate(lnRR_bioarea_per_volume = ln(RR_bioarea_per_volume))
 
