@@ -1,4 +1,4 @@
-## ----small-time-point-input---------------------------------------------------------------------------------------------------------------------------------
+## ----small-time-point-input----------------------------------------------------------------------------------------
 time_point_input = 4
 
 full = lmer(lnRR_bioarea_per_volume ~
@@ -13,7 +13,7 @@ full = lmer(lnRR_bioarea_per_volume ~
           REML = FALSE)
 
 
-## ----small-no-random-effects-single-point, eval = FALSE-----------------------------------------------------------------------------------------------------
+## ----small-no-random-effects-single-point, eval = FALSE------------------------------------------------------------
 ## no_random = lm(lnRR_bioarea_per_volume ~
 ##               eco_metaeco_type +
 ##               disturbance +
@@ -26,7 +26,7 @@ full = lmer(lnRR_bioarea_per_volume ~
 ## anova(full, no_random)
 
 
-## ----small-no-DM-single-point, eval = FALSE-----------------------------------------------------------------------------------------------------------------
+## ----small-no-DM-single-point, eval = FALSE------------------------------------------------------------------------
 ## no_MD = lmer(lnRR_bioarea_per_volume ~
 ##               eco_metaeco_type +
 ##               disturbance +

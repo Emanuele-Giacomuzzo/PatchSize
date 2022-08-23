@@ -7,102 +7,9 @@ editor_options:
   chunk_output_type: console
 ---
 
-##### Tidy
-
-To create the combinations of small and large isolated patches to be compared to the small-large meta-ecosystems, I'm going through the following steps.
-
-1.  Take isolated small and large patches.
-2.  Because I had to take out the last
-3.  Add them together randomly (here following numeric order, e.g., small isolated 1 with large isolated 11, small isolated 2 with large isolated 12 and so on). Doing this, we make sure that we are matching their disturbances.
-
-```{r message=FALSE, results='hide'}
-system_nr_to_take_off = 50
-n_time_points = 8
-
-isolated_S_and_L = ds_biomass %>%
-  filter(!system_nr == system_nr_to_take_off) %>%
-  filter(eco_metaeco_type == "S" | eco_metaeco_type == "L") %>%
-  group_by(system_nr, disturbance, time_point, day, eco_metaeco_type) %>%
-  summarise(bioarea_per_volume_across_videos = mean(bioarea_per_volume))
-
-### --- Low disturbance --- ###
-
-isolated_S_low = isolated_S_and_L %>%
-  filter(eco_metaeco_type == "S") %>%
-  filter(disturbance == "low")
-isolated_L_low = isolated_S_and_L %>%
-  filter(eco_metaeco_type == "L") %>%
-  filter(disturbance == "low")
-  
-n_isolated_patches = (nrow(isolated_S_low)) / n_time_points
-
-number_for_pairing_v = rep(1:n_isolated_patches, each = n_time_points)
-isolated_S_low$number_for_pairing = number_for_pairing_v  
-isolated_L_low$number_for_pairing = number_for_pairing_v 
-
-### --- High disturbance --- ###
-
-isolated_S_high = isolated_S_and_L %>%
-  filter(eco_metaeco_type == "S") %>%
-  filter(disturbance == "high")
-isolated_L_high = isolated_S_and_L %>%
-  filter(eco_metaeco_type == "L") %>%
-  filter(disturbance == "high")
-  
-n_isolated_patches = (nrow(isolated_S_high)) / n_time_points
-number_for_pairing_v = rep(1:n_isolated_patches, each = n_time_points)
-isolated_S_high$number_for_pairing = number_for_pairing_v + 100
-isolated_L_high$number_for_pairing = number_for_pairing_v + 100
-
-SL_from_isolated = rbind(isolated_S_low,
-                         isolated_L_low,
-                         isolated_S_high,
-                         isolated_L_high) %>%
-  mutate(metaecosystem_type = "S_L_from_isolated") %>%
-  rename(total_regional_bioarea = bioarea_per_volume_across_videos)
-
-ds_regional_with_SL_from_isolated = rbind(SL_from_isolated, ds_regional_biomass)
-```
-
-```{r eval = FALSE}
-#This would be another way of doing it
-system_nr_S_low = unique(isolated_S$system_nr)[1:5]
-system_nr_L_low = unique(isolated_L$system_nr)[1:5]
-system_nr_S_high = unique(isolated_S$system_nr)[6:9]
-system_nr_L_high = unique(isolated_L$system_nr)[6:9]
-
-low_pairs = expand.grid(system_nr_S_low,system_nr_L_low)
-high_pairs = expand.grid(system_nr_S_high, system_nr_L_high)
-pairs = rbind(low_pairs, high_pairs)
-number_of_pairs = nrow(pairs)
-
-
-SL_from_isolated_all_combinations = NULL
-for (pair in 1:number_of_pairs){
-  
- SL_from_isolated_one_combination = ds_biomass %>%
-  filter(system_nr %in% pairs[pair,]) %>%
-  group_by(disturbance, day, time_point, system_nr) %>%
-  summarise(regional_bioarea_across_videos = mean(bioarea_per_volume)) %>%
-  group_by(disturbance, day, time_point) %>%
-  summarise(total_regional_bioarea = mean(regional_bioarea_across_videos)) %>%
-  mutate(system_nr = 1000 + pair) %>%
-   mutate(metaecosystem_type = "S_L_from_isolated")
- 
- SL_from_isolated_all_combinations = rbind(SL_from_isolated_one_combination,
-                                          SL_from_isolated_all_combinations)
- 
-  
-}
-
-ds_regional_with_SL_from_isolated = rbind(SL_from_isolated_all_combinations, ds_regional_biomass)
-```
-
-[Next step: bootstrap 5 isolated small patches and 5 isolated large patches]{.underline}
-
 ##### Plots
 
-```{r message=FALSE, eval = FALSE}
+```{r message=FALSE}
 ds_regional_with_SL_from_isolated %>%
     filter ( disturbance == "low") %>%
     filter (metaecosystem_type == "S_L" | metaecosystem_type == "S_L_from_isolated") %>%
@@ -114,7 +21,7 @@ ds_regional_with_SL_from_isolated %>%
                 linetype = metaecosystem_type)) +
     geom_line () +
     labs(x = "Day", 
-         y = "Regional bioarea (µm²?)",
+         y = "Regional bioarea (µm²)",
          title = "Disturbance = low",
          fill = "System nr",
          color = "System nr",
@@ -179,7 +86,7 @@ ds_regional_with_SL_from_isolated %>%
   geom_boxplot() +
   labs(title = "Disturbance = low",
        x = "Day",
-       y = "Regional bioarea (µm²?)",
+       y = "Regional bioarea (µm²)",
        fill = "") +
   scale_fill_discrete(labels = c("small-large", "isolated small & \n isolated large")) + 
   theme_bw() +
@@ -205,7 +112,7 @@ ds_regional_with_SL_from_isolated %>%
   geom_boxplot() +
   labs(title = "Disturbance = high",
        x = "Day",
-       y = "Regional bioarea (µm²?)",
+       y = "Regional bioarea (µm²)",
        fill = "") +
   scale_fill_discrete(labels = c("small-large", "isolated small & \n isolated large")) + 
   theme_bw() +
@@ -222,31 +129,4 @@ ds_regional_with_SL_from_isolated %>%
   labs(caption = "Vertical grey line: first perturbation")
 ```
 
-[The plots broke when I tried to do the bootstrapping.]{.underline}
-
 ##### Modelling
-
-[The model broke when I tried to do the bootstrapping.]{.underline}
-
-```{r message = FALSE, eval = FALSE}
-mixed_model = lmer(log10(total_regional_bioarea +1) ~ 
-                     day * metaecosystem_type * disturbance +
-                     (day | system_nr),
-                   data = ds_regional_with_SL_from_isolated %>%
-                     filter(metaecosystem_type == "S_L" | 
-                              metaecosystem_type == "S_L_from_isolated") %>%
-                     filter(time_point >= 2),
-                   REML = FALSE,
-                   control = lmerControl (optimizer = "Nelder_Mead"))
-
-null_model = lmer(log10(total_regional_bioarea +1) ~ 
-                     day * disturbance +
-                     (day | system_nr),
-                   data = ds_regional_with_SL_from_isolated %>%
-                     filter(metaecosystem_type == "S_L" | 
-                              metaecosystem_type == "S_L_from_isolated") %>%
-                     filter(time_point >= 2),
-                   REML = FALSE,
-                   control = lmerControl (optimizer = "Nelder_Mead"))
-anova(mixed_model, null_model)
-```

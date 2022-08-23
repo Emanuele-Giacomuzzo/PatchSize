@@ -1,22 +1,21 @@
-## -----------------------------------------------------------------------------------------------------------------------------------------------------------
-ds_regional %>%
+## ------------------------------------------------------------------------------------------------------------------
+ds_regional_biomass %>%
     filter ( disturbance == "low") %>%
     filter (metaecosystem_type == "S_L" | 
               metaecosystem_type == "M_M") %>%
     ggplot (aes(x = day,
-                y = regional_mean_bioarea,
+                y = total_regional_bioarea,
                 group = system_nr,
                 fill = system_nr,
                 color = system_nr,
                 linetype = metaecosystem_type)) +
     geom_line () +
     labs(x = "Day", 
-         y = "Regional bioarea (something/µl)",
+         y = "Regional bioarea (µm²)",
          title = "Disturbance = low",
          fill = "System nr",
          color = "System nr",
          linetype = "") +
-    scale_y_continuous(limits = c(0, 6250)) +
     scale_x_continuous(limits = c(-2, 30)) +
     scale_linetype_discrete(labels = c("medium-medium",
                                      "small-large")) + 
@@ -33,23 +32,22 @@ ds_regional %>%
              size=0.7) +
   labs(caption = "Vertical grey line: first perturbation")
 
-ds_regional %>%
+ds_regional_biomass %>%
     filter ( disturbance == "high") %>%
     filter (metaecosystem_type == "S_L" | metaecosystem_type == "M_M") %>%
     ggplot (aes(x = day,
-                y = regional_mean_bioarea,
+                y = total_regional_bioarea,
                 group = system_nr,
                 fill = system_nr,
                 color = system_nr,
                 linetype = metaecosystem_type)) +
     geom_line () +
     labs(x = "Day", 
-         y = "Regional bioarea (something/µl)",
+         y = "Regional bioarea (µm²)",
          title = "Disturbance = high",
          fill = "System nr",
          color = "System nr",
          linetype = "") +
-    scale_y_continuous(limits = c(0, 6250)) +
     scale_x_continuous(limits = c(-2, 30)) +
     scale_linetype_discrete(labels = c("medium-medium",
                                      "small-large")) + 
@@ -66,16 +64,16 @@ ds_regional %>%
              size=0.7) +
   labs(caption = "Vertical grey line: first perturbation")
 
-regional_publication = ds_regional %>%
+regional_publication = ds_regional_biomass %>%
   filter(disturbance == "low") %>%
   filter (metaecosystem_type == "S_L" | metaecosystem_type == "M_M") %>%
   ggplot (aes(x = day,
-              y = regional_mean_bioarea,
+              y = total_regional_bioarea,
               group = interaction(day, metaecosystem_type),
               fill = metaecosystem_type)) +
   geom_boxplot() +
   labs(x = "Day", 
-       y = "Regional bioarea (something/µl)",
+       y = "Regional bioarea (µm²)",
        title = "Disturbance = low",
        color='', 
        fill='') +
@@ -95,20 +93,21 @@ regional_publication = ds_regional %>%
   labs(caption = "Vertical grey line: first perturbation")
 regional_publication
 
-ds_regional %>%
+ds_regional_biomass %>%
   filter(disturbance == "high") %>%
   filter (metaecosystem_type == "S_L" | metaecosystem_type == "M_M") %>%
   ggplot (aes(x = day,
-              y = regional_mean_bioarea,
+              y = total_regional_bioarea,
               group = interaction (day, metaecosystem_type),
               fill = metaecosystem_type)) +
   geom_boxplot() +
   labs(x = "Day", 
-       y = "Regional bioarea (something/µl)",
+       y = "Regional bioarea (µm²)",
        title = "Disturbance = high",
        color='', 
        fill='') +
-  scale_fill_discrete(labels = c("medium-medium", "small-large")) +
+  scale_fill_discrete(labels = c("medium-medium", 
+                                 "small-large")) +
   theme_bw() +
   theme(panel.grid.major = element_blank(), 
         panel.grid.minor = element_blank(),

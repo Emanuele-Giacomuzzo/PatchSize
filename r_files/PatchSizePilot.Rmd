@@ -39,13 +39,8 @@ for (main_section in c("biomass", "body_size")){
 }
 ```
 
-```{r set-up-environment, echo = FALSE, results = FALSE, message = FALSE}
-#renv::snapshot() #Run this to save all the current packages used in this project
-rm( list = ls(  ) )
-cat( "\014" )
-
-start_time = Sys.time()
-
+```{r packages, echo = FALSE, results = FALSE, message = FALSE}
+knitr::opts_chunk$set(message = FALSE)
 library("conflicted")
 library("tidyverse")
 library("grid")
@@ -79,8 +74,15 @@ library("effsize")
 
 conflict_prefer("load", "base")
 conflict_prefer("filter", "dplyr")
+```
 
-knitr::opts_chunk$set(message = FALSE)
+
+```{r set-up-environment, echo = FALSE, results = FALSE, message = FALSE}
+#renv::snapshot() #Run this to save all the current packages used in this project
+rm( list = ls(  ) )
+cat( "\014" )
+
+start_time = Sys.time()
 
 source(here("r_files", "biomass", "functions", "biomass_plots.R"))
 source(here("r_files", "biomass", "functions", "update_all_models_table.R"))
@@ -96,6 +98,7 @@ publication_width = 12
 publication_height = 12
 publication_unit = "cm"
 
+n_time_points = 8
 first_perturbation_day = 5
 ecosystems_to_take_off = 60 #Culture number 60 because it was spilled (isolated large patch, high disturbance, system nr = 40)
 metaecosystems_to_take_off = 40 #System 40 was the system of culture 60 that I spilled
@@ -103,12 +106,10 @@ metaecosystems_to_take_off = 40 #System 40 was the system of culture 60 that I s
 
 # PatchSizePilot {.tabset}
 
-## Overview
+## Overview {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "overview.Rmd")}
 ```
-
-![](images/Chapter%201.png)
 
 ## Biomass {.tabset .tabset-pills}
 
@@ -188,7 +189,7 @@ end_time - start_time
 
     -   P-values are really variable, creating many false positives and negatives (e.g., if p=0.05 there is a 1 in 3 chance that it's a false positive)
 
--   To study the local biomass how it changes across treatments, we could have made three different models between the three combinations of small patches. However, that might be confusing to interpret the results. We decided instead to use an effect size where we control is the isolated small patch. At the beginning we thought to use the natural logarithm of the response ratio (lnRR). The problem, however, is that some bioarea values were 0. We were thinking to add 1 to all null values, but according to @Rosenberg2013, such practice inflates effect sizes. Because of this, I looked into other types of effect size. I found that the most common and preferred metric in use today is known as Hedge's d (a.k.a. Hedge's g) (@Hedges1985 ). It is calculated as the difference in mean between treatment and control divided by the standard deviation of the pooled data. Another measure would be Cohen's d, but it underperforms with sample sizes that are lower than 20 ([StatisticsHowTo)](https://www.statisticshowto.com/hedges-g/). I can easily calculate the Hedge's d using the r package `effsize`. \
+-   To study the local biomass how it changes across treatments, we could have made three different models between the three combinations of small patches. However, that might be confusing to interpret the results. We decided instead to use an effect size where we control is the isolated small patch. At the beginning we thought to use the natural logarithm of the response ratio (lnRR). The problem, however, is that some bioarea values were 0. We were thinking to add 1 to all null values, but according to @Rosenberg2013, such practice inflates effect sizes. Because of this, I looked into other types of effect size. I found that the most common and preferred metric in use today is known as Hedge's d (a.k.a. Hedge's g) (@Hedges1985 ). It is calculated as the difference in mean between treatment and control divided by the standard deviation of the pooled data. Another measure would be Cohen's d, but it underperforms with sample sizes that are lower than 20 ([StatisticsHowTo)](https://www.statisticshowto.com/hedges-g/). I can easily calculate the Hedge's d using the r package `effsize`.\
     Same thing for the large patches.
 
 ## Bibliography

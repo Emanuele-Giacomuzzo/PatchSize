@@ -19,7 +19,7 @@ ds_regional_biomass %>%
                 linetype = metaecosystem_type)) +
     geom_line () +
     labs(x = "Day", 
-         y = "Regional bioarea (µm²?)",
+         y = "Regional bioarea (µm²)",
          title = "Disturbance = low",
          fill = "System nr",
          linetype = "") +
@@ -53,7 +53,7 @@ ds_regional_biomass %>%
                 linetype = metaecosystem_type)) +
     geom_line () +
     labs(x = "Day", 
-         y = "Regional bioarea (µm²?)",
+         y = "Regional bioarea (µm²)",
          title = "Disturbance = high",
          fill = "System nr",
          linetype = "") +
@@ -86,7 +86,7 @@ ds_regional_biomass %>%
   geom_boxplot() + 
   labs(title = "Disturbance = low",
        x = "Day",
-       y = "Regional bioarea (µm²?)",
+       y = "Regional bioarea (µm²)",
        fill = "") + 
   #scale_fill_discrete(labels = c("isolated large", "isolated medium", "isolated small")) +
   theme_bw() + 
@@ -116,7 +116,7 @@ ds_regional_biomass %>%
   geom_boxplot() + 
   labs(title = "Disturbance = high",
        x = "Day",
-       y = "Regional bioarea (µm²?)",
+       y = "Regional bioarea (µm²)",
        fill = "") + 
   #scale_fill_discrete(labels = c("isolated large", "isolated medium", "isolated small")) +
   theme_bw() + 

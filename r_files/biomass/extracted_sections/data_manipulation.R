@@ -1,4 +1,4 @@
-## -----------------------------------------------------------------------------------------------------------------------------------------------------------
+## ------------------------------------------------------------------------------------------------------------------
 culture_info = read.csv(here("data", "PatchSizePilot_culture_info.csv"), header = TRUE)
 
 datatable(culture_info[,1:10],
@@ -8,7 +8,7 @@ datatable(culture_info[,1:10],
                         clear = FALSE))
 
 
-## ----import, message = FALSE, echo = TRUE-------------------------------------------------------------------------------------------------------------------
+## ----import, message = FALSE, echo = TRUE--------------------------------------------------------------------------
 
 ### --- IMPORT --- ###
 
@@ -80,8 +80,6 @@ ds_biomass$time_point[ds_biomass$time_point=="t6"] = 6
 ds_biomass$time_point[ds_biomass$time_point=="t7"] = 7
 ds_biomass$time_point = as.character(ds_biomass$time_point)
 
-#System nr 40 still here
-
 #Column: day
 ds_biomass$day = NA
 ds_biomass$day[ds_biomass$time_point== 0] = 0
@@ -113,7 +111,6 @@ ds_biomass$eco_metaeco_type = factor(ds_biomass$eco_metaeco_type,
                                         'L (L_L)', 
                                         'L (S_L)'))
 
-ecosystems_to_take_off = 60 #Culture number 60 because it was spilled (isolated large patch, high disturbance, system nr = 40)
 ds_biomass = ds_biomass %>%
   filter(! culture_ID %in% ecosystems_to_take_off)
 
@@ -121,7 +118,8 @@ ds_for_evaporation = ds_biomass
 
 ds_biomass = ds_biomass %>% 
   select(culture_ID, 
-         patch_size, 
+         patch_size,
+         patch_size_volume,
          disturbance, 
          metaecosystem_type, 
          bioarea_per_volume, 
@@ -138,6 +136,7 @@ ds_biomass = ds_biomass %>%
            time_point,
            day,
            patch_size,
+           patch_size_volume,
            metaecosystem,
            metaecosystem_type,
            eco_metaeco_type,
@@ -152,65 +151,95 @@ datatable(ds_biomass,
                         clear = FALSE))
 
 
-## ----regional-biomass---------------------------------------------------------------------------------------------------------------------------------------
-ds_regional = ds_biomass %>%
+## ----regional-biomass----------------------------------------------------------------------------------------------
+ds_regional_biomass = ds_biomass %>%
   filter(metaecosystem == "yes") %>%
+  filter(! system_nr %in% metaecosystems_to_take_off) %>%
   group_by(culture_ID, 
            system_nr, 
            disturbance, 
+           time_point,
            day, 
-           time_point, 
-           patch_size, 
+           patch_size,
+           patch_size_volume,
            metaecosystem_type) %>%
-  summarise(patch_mean_bioarea_across_videos = mean(bioarea_per_volume)) %>%
-  group_by(system_nr, disturbance, day, time_point, metaecosystem_type) %>%
-  summarise(regional_mean_bioarea = mean(patch_mean_bioarea_across_videos))
+  summarise(bioarea_per_volume_video_averaged = mean(bioarea_per_volume)) %>%
+  mutate(total_patch_bioarea = bioarea_per_volume_video_averaged * patch_size_volume) %>%
+  group_by(system_nr, 
+           disturbance, 
+           time_point,
+           day,
+           metaecosystem_type) %>%
+  summarise(total_regional_bioarea = sum(total_patch_bioarea))
 
-metaecosystems_to_take_off = 40 #System 40 was the system of culture 60 that I spilled
-ds_regional = ds_regional %>%
-  filter(! system_nr %in% metaecosystems_to_take_off)
+### --- TABLE --- ###
 
-datatable(ds_regional,
+datatable(ds_regional_biomass,
           rownames = FALSE,
           options = list(scrollX = TRUE),
           filter = list(position = 'top', 
                         clear = FALSE))
 
 
-## ----created-averaged-lnRR-ds-------------------------------------------------------------------------------------------------------------------------------
+## ------------------------------------------------------------------------------------------------------------------
+
+
+
+## ----created-averaged-lnRR-ds--------------------------------------------------------------------------------------
+ds_biomass_averaged_treatments = data.frame(eco_metaeco_type = character(),
+                                         disturbance = character(),
+                                         time_point = integer(),
+                                         mean_bioarea_per_volume = double())
+
+eco_metaeco_types = unique(ds_biomass$eco_metaeco_type)
+
 for (disturbance_input in c("low", "high")){
-  for (eco_metaeco_input in c("S", "M", "L")){
+  for (eco_metaeco_input in eco_metaeco_types){
     for (time_point_input in 0:7){
       
-      ds_biomass$isolated_control[ds_biomass$patch_size == eco_metaeco_input & 
-                              ds_biomass$disturbance == disturbance_input &
-                              ds_biomass$time_point == time_point_input] = 
-        
-        ds_biomass %>%
-        filter(disturbance == disturbance_input) %>%
+      temporary = ds_biomass %>%
         filter(eco_metaeco_type == eco_metaeco_input) %>%
-        filter(time_point == time_point_input) %>%        
-        group_by(culture_ID) %>%
+        filter(disturbance == disturbance_input) %>%
+        filter(time_point == time_point_input) %>% 
+        group_by(culture_ID, eco_metaeco_type, patch_size, disturbance, time_point, day) %>%
         summarise(bioarea_per_volume_across_videos = mean(bioarea_per_volume)) %>%
+        group_by(eco_metaeco_type, patch_size, disturbance, time_point, day) %>%
         summarise(mean_bioarea_per_volume = mean(bioarea_per_volume_across_videos))
+      
+      ds_biomass_averaged_treatments = rbind(ds_biomass_averaged_treatments, temporary)
       
     }
   }
 }
 
-ds_biomass_averaged_across_videos =  ds_biomass %>%
-  mutate(isolated_control = as.numeric(isolated_control)) %>%
-  group_by(disturbance, 
-           eco_metaeco_type, 
-           culture_ID, 
-           day,
-           time_point,
-           isolated_control) %>%
-  summarise(bioarea_per_volume_across_videos = mean(bioarea_per_volume)) %>% #Across videos
-  mutate(RR_bioarea_per_volume = (bioarea_per_volume_across_videos+1) /isolated_control) %>%
-  mutate(lnRR_bioarea_per_volume = ln(RR_bioarea_per_volume))
+ds_biomass_averaged_treatments$isolated_control = NA
+for (patch_size_input in c("S", "L")){
+  for (disturbance_input in c("low", "high")){
+    for (time_point_input in 0:7){
+      
+      averaged_value_isolated_control = ds_biomass_averaged_treatments %>%
+        filter(eco_metaeco_type == patch_size_input) %>%
+        filter(disturbance == disturbance_input) %>%
+        filter(time_point == time_point_input) %>%
+        ungroup() %>%
+        select(mean_bioarea_per_volume)
+      
+      ds_biomass_averaged_treatments$isolated_control[
+        ds_biomass_averaged_treatments$patch_size == patch_size_input & 
+        ds_biomass_averaged_treatments$disturbance == disturbance_input &
+        ds_biomass_averaged_treatments$time_point == time_point_input] = 
+        averaged_value_isolated_control
+    
+    }
+  }
+}
 
-datatable(ds_biomass_averaged_across_videos,
+ds_biomass_averaged_treatments = ds_biomass_averaged_treatments %>%
+  filter(!patch_size == "M") %>%
+  mutate(isolated_control = as.numeric(isolated_control)) %>%
+  mutate(lnRR_biomass = ln(mean_bioarea_per_volume / isolated_control))
+
+datatable(ds_biomass_averaged_treatments,
           rownames = FALSE,
           options = list(scrollX = TRUE),
           filter = list(position = 'top', 

@@ -1,10 +1,10 @@
-## ----eval = FALSE-------------------------------------------------------------------------------------------------------------------------------------------
-## full = lmer(log10(regional_mean_bioarea + 1) ~
+## ----eval = FALSE--------------------------------------------------------------------------------------------------
+## full = lmer(log10(total_regional_bioarea + 1) ~
 ##             metaecosystem_type +
 ##             disturbance +
 ##             metaecosystem_type : disturbance +
 ##             (1 | system_nr),
-##             data = ds_regional %>%
+##             data = ds_regional_biomass %>%
 ##               filter(time_point == 3) %>%
 ##               filter(metaecosystem_type == "M_M" |
 ##                      metaecosystem_type == "S_L"),

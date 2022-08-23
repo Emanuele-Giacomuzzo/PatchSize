@@ -79,7 +79,7 @@ source(here("r_files", "biomass", "extracted_sections", "metaecos_of_different_s
 
 How does biomass density change according to the size to which the patch is connected? *(Does a small patch connected to a small patch have the same biomass density than a small patch connected to a large patch?)*
 
-```{r child = here("r_files", "biomass", "sections", "small_patches.Rmd"), eval = FALSE}
+```{r child = here("r_files", "biomass", "sections", "small_patches.Rmd")}
 source(here("r_files", "biomass", "extracted_sections", "small_patches.R"))
 ```
 
@@ -87,7 +87,7 @@ source(here("r_files", "biomass", "extracted_sections", "small_patches.R"))
 
 How does biomass density change according to the size to which the patch is connected? *(Does a large patch connected to a large patch have the same biomass density than a large patch connected to a small patch?)*
 
-```{r child = here("r_files", "biomass", "sections", "large_patches.Rmd"), eval = FALSE}
+```{r child = here("r_files", "biomass", "sections", "large_patches.Rmd")}
 source(here("r_files", "biomass", "extracted_sections", "large_patches.R"))
 ```
 

@@ -1,4 +1,4 @@
-## -----------------------------------------------------------------------------------------------------------------------------------------------------------
+## ------------------------------------------------------------------------------------------------------------------
 ds_biomass %>%
   filter ( disturbance == "low") %>%
   filter(metaecosystem == "no") %>%
@@ -12,7 +12,7 @@ ds_biomass %>%
                 linetype = patch_size)) +
     geom_line () +
     labs(x = "Day", 
-         y = "Regional bioarea (something/µl)",
+         y = "Regional bioarea (µm²/µl)",
          title = "Disturbance = low",
          fill = "System nr",
          linetype = "") +
@@ -43,7 +43,7 @@ ds_biomass %>%
                 linetype = patch_size)) +
     geom_line () +
     labs(x = "Day", 
-         y = "Regional bioarea (something/µl)",
+         y = "Regional bioarea (µm²/µl)",
          title = "Disturbance = low",
          fill = "System nr",
          linetype = "") +
@@ -62,7 +62,7 @@ ds_biomass %>%
                                      "small isolated"))
 
 
-## -----------------------------------------------------------------------------------------------------------------------------------------------------------
+## ------------------------------------------------------------------------------------------------------------------
 ds_biomass %>%
   filter(disturbance == "low") %>%
   filter(metaecosystem == "no") %>%
@@ -73,7 +73,7 @@ ds_biomass %>%
   geom_boxplot() + 
   labs(title = "Disturbance = low",
        x = "Day",
-       y = "Local bioarea (something/μl)",
+       y = "Local bioarea (µm²/μl)",
        fill = "") + 
   scale_fill_discrete(labels = c("isolated large", "isolated medium", "isolated small")) +
   theme_bw() + 
@@ -94,7 +94,7 @@ ds_biomass %>%
   geom_boxplot() + 
   labs(title = "Disturbance = high",
        x = "Day",
-       y = "Local bioarea (something/μl)",
+       y = "Local bioarea (µm²/μl)",
        fill = "") + 
   scale_fill_discrete(labels = c("isolated large", "isolated medium", "isolated small")) +
   theme_bw() + 

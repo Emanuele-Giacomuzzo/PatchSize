@@ -1,4 +1,4 @@
-## ----small-patches-single-ecosystems-plots------------------------------------------------------------------------------------------------------------------
+## ----small-patches-single-ecosystems-plots-------------------------------------------------------------------------
 ds_biomass %>%
   filter(disturbance == "low") %>%
   filter(patch_size == "S") %>%
@@ -10,7 +10,7 @@ ds_biomass %>%
              linetype = eco_metaeco_type)) +
   geom_line(stat = "summary", fun = "mean") +
   labs(x = "Day",
-       y = "Local bioarea (something/μl)",
+       y = "Local bioarea (µm²/μl)",
        title = "Disturbance = low",
        linetype = "") +
   theme_bw() +
@@ -41,7 +41,7 @@ ds_biomass %>%
   geom_line(stat = "summary", fun = "mean") +
   labs(title = "Disturbance = high",
        x = "Day",
-       y = "Local bioarea (something/μl)",
+       y = "Local bioarea (µm²/μl)",
        linetype = "") +
   theme_bw() +
   theme(panel.grid.major = element_blank(),
@@ -60,7 +60,7 @@ ds_biomass %>%
   labs(caption = "Vertical grey line: first perturbation")
 
 
-## ----small-patches-boxplots---------------------------------------------------------------------------------------------------------------------------------
+## ----small-patches-boxplots----------------------------------------------------------------------------------------
 ds_biomass %>%
   filter(disturbance == "low") %>%
   filter(patch_size == "S") %>%
@@ -70,7 +70,7 @@ ds_biomass %>%
              fill = eco_metaeco_type)) +
   geom_boxplot() +
   labs(x = "Day",
-       y = "Local bioarea (something/μl)",
+       y = "Local bioarea (µm²/μl)",
        title = "Disturbance = low",
        fill = "") +
   theme_bw() +
@@ -99,7 +99,7 @@ ds_biomass %>%
   geom_boxplot() +
   labs(title = "Disturbance = high",
        x = "Day",
-       y = "Local bioarea (something/μl)",
+       y = "Local bioarea (µm²/μl)",
        fill = "") +
   theme_bw() +
   theme(panel.grid.major = element_blank(),
@@ -118,19 +118,20 @@ ds_biomass %>%
   labs(caption = "Vertical grey line: first perturbation")
 
 
-## ----small-patches-lnRR-plots-------------------------------------------------------------------------------------------------------------------------------
-small_patches_publication = ds_biomass_averaged_across_videos %>%
+## ----small-patches-lnRR-plots--------------------------------------------------------------------------------------
+small_patches_publication = 
+  ds_biomass_averaged_treatments %>%
   filter(disturbance == "low") %>%
   filter(eco_metaeco_type == "S (S_L)" | eco_metaeco_type == "S (S_S)") %>%
   ggplot(aes(x = day,
-             y = lnRR_bioarea_per_volume,
-             group = interaction(day, eco_metaeco_type),
-             fill = eco_metaeco_type)) +
-  geom_boxplot() +
+             y = lnRR_biomass,
+             color = eco_metaeco_type)) +
+  geom_point() +
+  geom_line(aes(color = eco_metaeco_type)) +
   labs(title = "Disturbance = low",
        x = "Day",
-       y = "LnRR Local Bioarea (something/μl)",
-       fill = "") +
+       y = "LnRR Local Bioarea (µm²/μl)",
+       color = "") +
   theme_bw() +
   theme(panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
@@ -138,27 +139,27 @@ small_patches_publication = ds_biomass_averaged_across_videos %>%
         legend.justification = c("right", "top"),
         legend.box.just = "right",
         legend.margin = margin(6, 6, 6, 6)) +
-  scale_fill_discrete(labels = c("small connected to small",
+  scale_color_discrete(labels = c("small connected to small",
                                  "small connected to large")) +
   geom_vline(xintercept = first_perturbation_day + 0.7,
              linetype="dotdash",
              color = "grey",
              size=0.7) +
-  labs(caption = "Vertical grey line: first perturbation, LnRR Local Bioarea: Bioarea + 1 / Mean bioarea small isolated")
+  labs(caption = "Vertical grey line: first perturbation")
 small_patches_publication
 
-ds_biomass_averaged_across_videos %>%
+ds_biomass_averaged_treatments %>%
   filter(disturbance == "high") %>%
   filter(eco_metaeco_type == "S (S_L)" | eco_metaeco_type == "S (S_S)") %>%
   ggplot(aes(x = day,
-             y = lnRR_bioarea_per_volume,
-             group = interaction(day, eco_metaeco_type),
-             fill = eco_metaeco_type)) +
-  geom_boxplot() +
+             y = lnRR_biomass,
+             color = eco_metaeco_type)) +
+  geom_point() +
+  geom_line(aes(color = eco_metaeco_type)) +
   labs(title = "Disturbance = high",
        x = "Day",
-       y = "LnRR Local Bioarea (something/μl)",
-       fill = "") +
+       y = "LnRR Local Bioarea (µm²/μl)",
+       color = "") +
   theme_bw() +
   theme(panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
@@ -166,188 +167,134 @@ ds_biomass_averaged_across_videos %>%
         legend.justification = c("right", "top"),
         legend.box.just = "right",
         legend.margin = margin(6, 6, 6, 6)) +
-  scale_fill_discrete(labels = c("small connected to small",
+  scale_color_discrete(labels = c("small connected to small",
                                  "small connected to large")) +
   geom_vline(xintercept = first_perturbation_day + 0.7,
              linetype="dotdash",
              color = "grey",
              size=0.7) +
-  labs(caption = "Vertical grey line: first perturbation, LnRR Local Bioarea: Bioarea/Mean bioarea small isolated")
+  labs(caption = "Vertical grey line: first perturbation")
 
 
-## ----choose-time-points-------------------------------------------------------------------------------------------------------------------------------------
+## ----choose-time-points--------------------------------------------------------------------------------------------
 first_time_point = 2
 last_time_point = 7
 
 
-## ----small-patches-full-model-------------------------------------------------------------------------------------------------------------------------------
-full_model = lmer(lnRR_bioarea_per_volume ~
-                    day * eco_metaeco_type * disturbance +
-                    (day | culture_ID),
-                  data = ds_biomass_averaged_across_videos %>%
+## ----small-patches-full-model--------------------------------------------------------------------------------------
+full_model = lm(lnRR_biomass ~
+                  day + 
+                  eco_metaeco_type + 
+                  disturbance +
+                  day * eco_metaeco_type +
+                  day * disturbance + 
+                  eco_metaeco_type * disturbance,
+                  data = ds_biomass_averaged_treatments %>%
                          filter(time_point >= first_time_point) %>%
                          filter(time_point <= last_time_point) %>%
                          filter(eco_metaeco_type== "S (S_S)" | 
-                                eco_metaeco_type == "S (S_L)"),
-                  REML = FALSE)
+                                eco_metaeco_type == "S (S_L)"))
 
 
-## ----small-patches-no-interaction---------------------------------------------------------------------------------------------------------------------------
-no_interaction = lmer(lnRR_bioarea_per_volume ~
-                    day * eco_metaeco_type * disturbance +
-                    (day || culture_ID),
-                  data = ds_biomass_averaged_across_videos %>%
+## ----small-patches-no-TM-------------------------------------------------------------------------------------------
+no_TM = lm(lnRR_biomass ~
+                  day + 
+                  eco_metaeco_type + 
+                  disturbance +
+                  day * disturbance + 
+                  eco_metaeco_type * disturbance,
+                  data = ds_biomass_averaged_treatments %>%
                          filter(time_point >= first_time_point) %>%
                          filter(time_point <= last_time_point) %>%
                          filter(eco_metaeco_type== "S (S_S)" | 
-                                eco_metaeco_type == "S (S_L)"),
-                  REML = FALSE)
+                                eco_metaeco_type == "S (S_L)"))
 
-anova(full_model, no_interaction)
+AIC(full_model, no_TM)
 
 
-## ----small-patches-no-slope---------------------------------------------------------------------------------------------------------------------------------
-no_slope = lmer(lnRR_bioarea_per_volume ~
-                    day * eco_metaeco_type * disturbance +
-                    (1 | culture_ID),
-                  data = ds_biomass_averaged_across_videos %>%
+## ----small-patches-no-TD-------------------------------------------------------------------------------------------
+no_TD = lm(lnRR_biomass ~
+                  day + 
+                  eco_metaeco_type + 
+                  disturbance +
+                  day * eco_metaeco_type +
+                  eco_metaeco_type * disturbance,
+                  data = ds_biomass_averaged_treatments %>%
                          filter(time_point >= first_time_point) %>%
                          filter(time_point <= last_time_point) %>%
                          filter(eco_metaeco_type== "S (S_S)" | 
-                                eco_metaeco_type == "S (S_L)"),
-                  REML = FALSE)
+                                eco_metaeco_type == "S (S_L)"))
 
-anova(full_model, no_slope)
+AIC(full_model, no_TD)
 
 
-## ----small-patches-no-three-way-----------------------------------------------------------------------------------------------------------------------------
-no_three_way = lmer(lnRR_bioarea_per_volume ~
-                    day +
-                    eco_metaeco_type +
-                    disturbance +
-                    day : eco_metaeco_type + 
-                    day : disturbance + 
-                    eco_metaeco_type : disturbance + 
-                    (day | culture_ID),
-                  data = ds_biomass_averaged_across_videos %>%
+## ----small-patches-no-MD-------------------------------------------------------------------------------------------
+no_MD = lm(lnRR_biomass ~
+                  day + 
+                  eco_metaeco_type + 
+                  disturbance +
+                  day * eco_metaeco_type,
+                  data = ds_biomass_averaged_treatments %>%
                          filter(time_point >= first_time_point) %>%
                          filter(time_point <= last_time_point) %>%
                          filter(eco_metaeco_type== "S (S_S)" | 
-                                eco_metaeco_type == "S (S_L)"),
-                  REML = FALSE)
+                                eco_metaeco_type == "S (S_L)"))
 
-anova(full_model, no_three_way)
-
-
-## ----small-patches-no-TM------------------------------------------------------------------------------------------------------------------------------------
-no_TM = lmer(lnRR_bioarea_per_volume ~
-                    day +
-                    eco_metaeco_type +
-                    disturbance +
-                    day : disturbance + 
-                    eco_metaeco_type : disturbance + 
-                    (day | culture_ID),
-                  data = ds_biomass_averaged_across_videos %>%
-                         filter(time_point >= first_time_point) %>%
-                         filter(time_point <= last_time_point) %>%
-                         filter(eco_metaeco_type== "S (S_S)" | 
-                                eco_metaeco_type == "S (S_L)"),
-                  REML = FALSE)
-
-anova(no_three_way, no_TM)
+AIC(no_TD, no_MD)
 
 
-## ----small-patches-no-TD------------------------------------------------------------------------------------------------------------------------------------
-no_TD = lmer(lnRR_bioarea_per_volume ~
-                    day +
-                    eco_metaeco_type +
-                    disturbance +
-                    day : eco_metaeco_type + 
-                    eco_metaeco_type : disturbance + 
-                    (day | culture_ID),
-                  data = ds_biomass_averaged_across_videos %>%
-                         filter(time_point >= first_time_point) %>%
-                         filter(time_point <= last_time_point) %>%
-                         filter(eco_metaeco_type== "S (S_S)" | 
-                                eco_metaeco_type == "S (S_L)"),
-                  REML = FALSE)
-
-anova(no_three_way, no_TD)
-
-
-## ----small-patches-no-MD------------------------------------------------------------------------------------------------------------------------------------
-no_MD = lmer(lnRR_bioarea_per_volume ~
-                    day +
-                    eco_metaeco_type +
-                    disturbance +
-                    day : eco_metaeco_type + 
-                    (day | culture_ID),
-                  data = ds_biomass_averaged_across_videos %>%
-                         filter(time_point >= first_time_point) %>%
-                         filter(time_point <= last_time_point) %>%
-                         filter(eco_metaeco_type== "S (S_S)" | 
-                                eco_metaeco_type == "S (S_L)"),
-             REML = FALSE,
-             control = lmerControl (optimizer = "Nelder_Mead"))
-
-anova(no_TD, no_MD)
-
-
-## ----small-patches-no-D-------------------------------------------------------------------------------------------------------------------------------------
-no_D = lmer(lnRR_bioarea_per_volume ~
-                    day +
-                    eco_metaeco_type +
-                    day : eco_metaeco_type +
-                    (day | culture_ID),
-            data = ds_biomass_averaged_across_videos %>%
-                         filter(time_point >= first_time_point) %>%
-                         filter(time_point <= last_time_point) %>%
-                         filter(eco_metaeco_type== "S (S_S)" | 
-                                eco_metaeco_type == "S (S_L)"),
-            REML = FALSE,
-            control = lmerControl (optimizer = "Nelder_Mead")
-            )
-
-anova(no_MD, no_D)
-
-
-## ----small-t2-t7-best-model---------------------------------------------------------------------------------------------------------------------------------
+## ----small-t2-t7-best-model----------------------------------------------------------------------------------------
 best_model = no_MD
-plot(best_model)
-qqnorm(resid(best_model))
+par(mfrow = c(2,3))
+plot(best_model, which = 1:5)
 
 
-## ----warning=FALSE------------------------------------------------------------------------------------------------------------------------------------------
-R2_marginal = r.squaredGLMM(best_model)[1]
-R2_marginal = round(R2_marginal, digits = 2)
-R2_conditional = r.squaredGLMM(best_model)[2]
-R2_conditional = round(R2_conditional, digits = 2)
+## ------------------------------------------------------------------------------------------------------------------
+R2_full = glance(best_model)$r.squared
 
-
-## -----------------------------------------------------------------------------------------------------------------------------------------------------------
-last_time_point = 5
-t2_t5 = lmer(lnRR_bioarea_per_volume ~
-                    day +
-                    eco_metaeco_type +
-                    disturbance +
-                    day : eco_metaeco_type + 
-                    (day | culture_ID),
-                  data = ds_biomass_averaged_across_videos %>%
+no_patch_type = lm(lnRR_biomass ~
+                  day + 
+                  disturbance,
+                  data = ds_biomass_averaged_treatments %>%
                          filter(time_point >= first_time_point) %>%
                          filter(time_point <= last_time_point) %>%
                          filter(eco_metaeco_type== "S (S_S)" | 
-                                eco_metaeco_type == "S (S_L)"),
-             REML = FALSE,
-             control = lmerControl (optimizer = "Nelder_Mead"))
+                                eco_metaeco_type == "S (S_L)"))
+
+R2_no_P = glance(no_patch_type)$r.squared
+R2_P = R2_full - R2_no_P
+
+R2_full = round(R2_full, digits = 2)
+R2_P = round(R2_P, digits = 2)
 
 
-## ----warning=FALSE------------------------------------------------------------------------------------------------------------------------------------------
-R2_marginal = r.squaredGLMM(t2_t5)[1]
-R2_marginal = round(R2_marginal, digits = 2)
-R2_conditional = r.squaredGLMM(t2_t5)[2]
-R2_conditional = round(R2_conditional, digits = 2)
+## ------------------------------------------------------------------------------------------------------------------
+time_point_input = 2
 
 
-## ----child = here("r_files", "biomass", "sections", "small_patches_single_points.Rmd"), eval = FALSE--------------------------------------------------------
+## ------------------------------------------------------------------------------------------------------------------
+full_model = lm(lnRR_biomass ~
+                  eco_metaeco_type + 
+                  disturbance +
+                  eco_metaeco_type * disturbance,
+                  data = ds_biomass_averaged_treatments %>%
+                         filter(time_point == time_point_input) %>%
+                         filter(eco_metaeco_type== "S (S_S)" | 
+                                eco_metaeco_type == "S (S_L)"))
+
+
+## ------------------------------------------------------------------------------------------------------------------
+no_MD = lm(lnRR_biomass ~
+                  eco_metaeco_type + 
+                  disturbance,
+                  data = ds_biomass_averaged_treatments %>%
+                         filter(time_point == time_point_input) %>%
+                         filter(eco_metaeco_type== "S (S_S)" | 
+                                eco_metaeco_type == "S (S_L)"))
+
+AIC(full_model, no_MD)
+
+
+## ----child = here("r_files", "biomass", "sections", "small_patches_single_points.Rmd"), eval = FALSE---------------
 ## NA
 
