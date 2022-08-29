@@ -7,19 +7,314 @@ editor_options:
   chunk_output_type: console
 ---
 
-[Need to wait until I understand how to calculate R2 for models with random slopes, so then I can look at the R2 of meta-ecosystem type across time points.]{.underline}
+Let's now look at the full model and see if we should keep the interaction between meta-ecosystem type and disturbance. We are not using mixed effects because a certain system nr can't be at different perturbations or at different meta-ecosystem types.
 
-```{r eval = FALSE}
-full = lmer(log10(total_regional_bioarea + 1) ~
+$$
+Regional \: bioarea = M + D + MD
+$$
+
+**Time point = 2**
+
+```{r}
+chosen_time_point = 2
+```
+
+```{r}
+full = lm(total_regional_bioarea ~
             metaecosystem_type +
             disturbance +
-            metaecosystem_type : disturbance +
-            (1 | system_nr),
-            data = ds_regional_biomass %>%
-              filter(time_point == 3) %>%
-              filter(metaecosystem_type == "M_M" |
-                     metaecosystem_type == "S_L"),
-            REML = FALSE)
-
-# Next step: understanding what is a grouping factor. I need to understand what a grouping factor because I cannot run the full model, as it gives me the following problem: "Error: number of levels of each grouping factor must be < number of observations (problems: system_nr)."
+            metaecosystem_type * disturbance,
+          data = ds_regional_biomass %>%
+                            filter(time_point == chosen_time_point) %>%
+                            filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L"))
 ```
+
+*Should we keep M \* D?*
+
+```{r}
+no_MD = lm(total_regional_bioarea ~
+            metaecosystem_type +
+            disturbance,
+          data = ds_regional_biomass %>%
+                            filter(time_point == chosen_time_point) %>%
+                            filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L"))
+
+AIC(full,no_MD)
+```
+
+No.
+
+```{r}
+best_model = no_MD
+
+R2_full = glance(best_model)$r.squared
+
+no_M = lm(total_regional_bioarea ~
+            disturbance,
+          data = ds_regional_biomass %>%
+                            filter(time_point == chosen_time_point) %>%
+                            filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L"))
+
+R2_no_M = glance(no_M)$r.squared
+R2_M = R2_full - R2_no_M
+
+R2_full = round(R2_full, digits = 2)
+R2_M = round(R2_M, digits = 2)
+```
+
+The adjusted R squared of the model is `r R2_full` and the adjusted R squared of patch type is `r R2_M`.
+
+**Time point = 3**
+
+```{r}
+chosen_time_point = 3
+```
+
+```{r}
+full = lm(total_regional_bioarea ~
+            metaecosystem_type +
+            disturbance +
+            metaecosystem_type * disturbance,
+          data = ds_regional_biomass %>%
+                            filter(time_point == chosen_time_point) %>%
+                            filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L"))
+```
+
+*Should we keep M \* D?*
+
+```{r}
+no_MD = lm(total_regional_bioarea ~
+            metaecosystem_type +
+            disturbance,
+          data = ds_regional_biomass %>%
+                            filter(time_point == chosen_time_point) %>%
+                            filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L"))
+
+AIC(full,no_MD)
+```
+
+Yes.
+
+```{r}
+best_model = full
+
+R2_full = glance(best_model)$r.squared
+
+no_M = lm(total_regional_bioarea ~
+            disturbance,
+          data = ds_regional_biomass %>%
+                            filter(time_point == chosen_time_point) %>%
+                            filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L"))
+
+R2_no_M = glance(no_M)$r.squared
+R2_M = R2_full - R2_no_M
+
+R2_full = round(R2_full, digits = 2)
+R2_M = round(R2_M, digits = 2)
+```
+
+The adjusted R squared of the model is `r R2_full` and the adjusted R squared of patch type is `r R2_M` (which includes also the interaction with disturbance).
+
+**Time point = 4**
+
+```{r}
+chosen_time_point = 4
+```
+
+```{r}
+full = lm(total_regional_bioarea ~
+            metaecosystem_type +
+            disturbance +
+            metaecosystem_type * disturbance,
+          data = ds_regional_biomass %>%
+                            filter(time_point == chosen_time_point) %>%
+                            filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L"))
+```
+
+*Should we keep M \* D?*
+
+```{r}
+no_MD = lm(total_regional_bioarea ~
+            metaecosystem_type +
+            disturbance,
+          data = ds_regional_biomass %>%
+                            filter(time_point == chosen_time_point) %>%
+                            filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L"))
+
+AIC(full,no_MD)
+```
+
+No.
+
+```{r}
+best_model = no_MD
+
+R2_full = glance(best_model)$r.squared
+
+no_M = lm(total_regional_bioarea ~
+            disturbance,
+          data = ds_regional_biomass %>%
+                            filter(time_point == chosen_time_point) %>%
+                            filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L"))
+
+R2_no_M = glance(no_M)$r.squared
+R2_M = R2_full - R2_no_M
+
+R2_full = round(R2_full, digits = 2)
+R2_M = round(R2_M, digits = 2)
+```
+
+The adjusted R squared of the model is `r R2_full` and the adjusted R squared of patch type is `r R2_M`.
+
+**Time point = 5**
+
+```{r}
+chosen_time_point = 5
+```
+
+```{r}
+full = lm(total_regional_bioarea ~
+            metaecosystem_type +
+            disturbance +
+            metaecosystem_type * disturbance,
+          data = ds_regional_biomass %>%
+                            filter(time_point == chosen_time_point) %>%
+                            filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L"))
+```
+
+*Should we keep M \* D?*
+
+```{r}
+no_MD = lm(total_regional_bioarea ~
+            metaecosystem_type +
+            disturbance,
+          data = ds_regional_biomass %>%
+                            filter(time_point == chosen_time_point) %>%
+                            filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L"))
+
+AIC(full,no_MD)
+```
+
+No.
+
+```{r}
+best_model = no_MD
+
+R2_full = glance(best_model)$r.squared
+
+no_M = lm(total_regional_bioarea ~
+            disturbance,
+          data = ds_regional_biomass %>%
+                            filter(time_point == chosen_time_point) %>%
+                            filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L"))
+
+R2_no_M = glance(no_M)$r.squared
+R2_M = R2_full - R2_no_M
+
+R2_full = round(R2_full, digits = 2)
+R2_M = round(R2_M, digits = 2)
+```
+
+The adjusted R squared of the model is `r R2_full` and the adjusted R squared of patch type is `r R2_M`.
+
+**Time point = 6**
+
+```{r}
+chosen_time_point = 6
+```
+
+```{r}
+full = lm(total_regional_bioarea ~
+            metaecosystem_type +
+            disturbance +
+            metaecosystem_type * disturbance,
+          data = ds_regional_biomass %>%
+                            filter(time_point == chosen_time_point) %>%
+                            filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L"))
+```
+
+*Should we keep M \* D?*
+
+```{r}
+no_MD = lm(total_regional_bioarea ~
+            metaecosystem_type +
+            disturbance,
+          data = ds_regional_biomass %>%
+                            filter(time_point == chosen_time_point) %>%
+                            filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L"))
+
+AIC(full,no_MD)
+```
+
+No.
+
+```{r}
+best_model = no_MD
+
+R2_full = glance(best_model)$r.squared
+
+no_M = lm(total_regional_bioarea ~
+            disturbance,
+          data = ds_regional_biomass %>%
+                            filter(time_point == chosen_time_point) %>%
+                            filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L"))
+
+R2_no_M = glance(no_M)$r.squared
+R2_M = R2_full - R2_no_M
+
+R2_full = round(R2_full, digits = 2)
+R2_M = round(R2_M, digits = 2)
+```
+
+The adjusted R squared of the model is `r R2_full` and the adjusted R squared of patch type is `r R2_M`.
+
+**Time point = 7**
+
+```{r}
+chosen_time_point = 7
+```
+
+```{r}
+full = lm(total_regional_bioarea ~
+            metaecosystem_type +
+            disturbance +
+            metaecosystem_type * disturbance,
+          data = ds_regional_biomass %>%
+                            filter(time_point == chosen_time_point) %>%
+                            filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L"))
+```
+
+*Should we keep M \* D?*
+
+```{r}
+no_MD = lm(total_regional_bioarea ~
+            metaecosystem_type +
+            disturbance,
+          data = ds_regional_biomass %>%
+                            filter(time_point == chosen_time_point) %>%
+                            filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L"))
+
+AIC(full,no_MD)
+```
+
+No.
+
+```{r}
+best_model = no_MD
+
+R2_full = glance(best_model)$r.squared
+
+no_M = lm(total_regional_bioarea ~
+            disturbance,
+          data = ds_regional_biomass %>%
+                            filter(time_point == chosen_time_point) %>%
+                            filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L"))
+
+R2_no_M = glance(no_M)$r.squared
+R2_M = R2_full - R2_no_M
+
+R2_full = round(R2_full, digits = 2)
+R2_M = round(R2_M, digits = 2)
+```
+
+The adjusted R squared of the model is `r R2_full` and the adjusted R squared of patch type is `r R2_M`.

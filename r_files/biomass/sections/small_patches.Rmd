@@ -324,32 +324,33 @@ The adjusted R squared of the model is `r R2_full` and the adjusted R squared of
 
 ##### Single time points
 
-```{r}
-time_point_input = 2
-```
+[Next step: should I just then report the reponse ratio?]{.underline}
 
-```{r}
-full_model = lm(lnRR_biomass ~
-                  eco_metaeco_type + 
-                  disturbance +
-                  eco_metaeco_type * disturbance,
-                  data = ds_biomass_averaged_treatments %>%
-                         filter(time_point == time_point_input) %>%
-                         filter(eco_metaeco_type== "S (S_S)" | 
-                                eco_metaeco_type == "S (S_L)"))
-```
+```{r eval = FALSE}
+library("ARPobservation")
 
-```{r}
-no_MD = lm(lnRR_biomass ~
-                  eco_metaeco_type + 
-                  disturbance,
-                  data = ds_biomass_averaged_treatments %>%
-                         filter(time_point == time_point_input) %>%
-                         filter(eco_metaeco_type== "S (S_S)" | 
-                                eco_metaeco_type == "S (S_L)"))
+small_connected = ds_biomass %>%
+  filter(eco_metaeco_type == "S (S_S)" | eco_metaeco_type == "S (S_L)") %>%
+  filter(time_point == 7) %>%
+  filter(disturbance == "low") %>%
+  group_by(culture_ID, system_nr, eco_metaeco_type, disturbance,time_point,day) %>%
+  summarise(mean_bioarea_per_volume_video_averaged = mean(bioarea_per_volume))
 
-AIC(full_model, no_MD)
-```
+small_isolated = ds_biomass %>%
+  filter(eco_metaeco_type == "S") %>%
+  filter(time_point == 7) %>%
+  filter(disturbance == "low") %>%
+  group_by(culture_ID, system_nr, eco_metaeco_type, disturbance,time_point,day) %>%
+  summarise(mean_bioarea_per_volume_video_averaged = mean(bioarea_per_volume))
 
-```{r child = here("r_files", "biomass", "sections", "small_patches_single_points.Rmd"), eval = FALSE}
+small = rbind(small_connected, small_isolated)
+
+logRespRatio(
+  observations = small,
+  phase = "eco_metaeco_type",
+  base_level = "S",
+  conf_level = 0.95,
+  bias_correct = TRUE,
+  exponentiate = FALSE
+)
 ```

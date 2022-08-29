@@ -190,6 +190,13 @@ ds_biomass_averaged_treatments %>%
 
 ###### Model selection
 
+Let's consider all the data points from the number 2.
+
+```{r choose-time-points-large}
+first_time_point = 2
+last_time_point = 7
+```
+
 Let's start from the full model:
 
 $$
@@ -201,13 +208,6 @@ t = time
 P = patch type
 
 D = disturbance
-
-And let's consider all data points from the second to the seventh.
-
-```{r choose-time-points-large}
-first_time_point = 2
-last_time_point = 7
-```
 
 ```{r large-patches-full-model}
 full_model = lm(lnRR_biomass ~
@@ -227,7 +227,7 @@ full_model = lm(lnRR_biomass ~
 *Should we keep t \* P?*
 
 ```{r large-patches-no-TM}
-no_TM = lm(lnRR_biomass ~
+no_TP = lm(lnRR_biomass ~
                   day + 
                   eco_metaeco_type + 
                   disturbance +
@@ -239,10 +239,10 @@ no_TM = lm(lnRR_biomass ~
                          filter(eco_metaeco_type== "L (L_L)" | 
                                 eco_metaeco_type == "L (S_L)"))
 
-AIC(full_model, no_TM)
+AIC(full_model, no_TP)
 ```
 
-Yes.
+No.
 
 *Should we keep t \* D?*
 
@@ -251,7 +251,6 @@ no_TD = lm(lnRR_biomass ~
                   day + 
                   eco_metaeco_type + 
                   disturbance +
-                  day * eco_metaeco_type +
                   eco_metaeco_type * disturbance,
                   data = ds_biomass_averaged_treatments %>%
                          filter(time_point >= first_time_point) %>%
@@ -259,10 +258,10 @@ no_TD = lm(lnRR_biomass ~
                          filter(eco_metaeco_type== "L (L_L)" | 
                                 eco_metaeco_type == "L (S_L)"))
 
-AIC(full_model, no_TD)
+AIC(no_TP, no_TD)
 ```
 
-No.
+Yes.
 
 Should we keep P \* D?
 
@@ -271,30 +270,30 @@ no_PD = lm(lnRR_biomass ~
                   day + 
                   eco_metaeco_type + 
                   disturbance +
-                  day * eco_metaeco_type,
+                  day * disturbance,
                   data = ds_biomass_averaged_treatments %>%
                          filter(time_point >= first_time_point) %>%
                          filter(time_point <= last_time_point) %>%
                          filter(eco_metaeco_type== "L (L_L)" | 
                                 eco_metaeco_type == "L (S_L)"))
 
-AIC(no_TD, no_PD)
+AIC(no_TP, no_PD)
 ```
 
-Yes.
+No.
 
 ###### Best model
 
 Then our best model is:
 
 $$
-RR (bioarea) = t + M + D + tP + PD
+RR (bioarea) = t + M + D + tD
 $$
 
 Let's then do some model diagnostics.
 
 ```{r large-t2-t7-best-model}
-best_model = no_TD
+best_model = no_PD
 par(mfrow = c(2,3))
 plot(best_model, which = 1:5)
 ```
@@ -324,29 +323,4 @@ The adjusted R squared of the model is `r R2_full` and the adjusted R squared of
 
 ##### Single time points
 
-```{r}
-time_point_input = 2
-```
-
-```{r}
-full_model = lm(lnRR_biomass ~
-                  eco_metaeco_type + 
-                  disturbance +
-                  eco_metaeco_type * disturbance,
-                  data = ds_biomass_averaged_treatments %>%
-                         filter(time_point == time_point_input) %>%
-                         filter(eco_metaeco_type== "L (L_L)" | 
-                                eco_metaeco_type == "L (S_L)"))
-```
-
-```{r}
-no_MD = lm(lnRR_biomass ~
-                  eco_metaeco_type + 
-                  disturbance,
-                  data = ds_biomass_averaged_treatments %>%
-                         filter(time_point == time_point_input) %>%
-                         filter(eco_metaeco_type== "L (L_L)" | 
-                                eco_metaeco_type == "L (S_L)"))
-
-AIC(full_model, no_MD)
-```
+[Next step: should I just then report the reponse ratio?]{.underline}

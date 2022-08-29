@@ -39,8 +39,15 @@ for (main_section in c("biomass", "body_size")){
 }
 ```
 
-```{r packages, echo = FALSE, results = FALSE, message = FALSE}
+```{r set-up-environment, echo = FALSE}
+#renv::snapshot() #Run this to save all the current packages used in this project
 knitr::opts_chunk$set(message = FALSE)
+rm( list = ls(  ) )
+cat( "\014" )
+start_time = Sys.time()
+```
+
+```{r packages, echo = FALSE, results = FALSE, message = FALSE}
 library("conflicted")
 library("tidyverse")
 library("grid")
@@ -76,24 +83,16 @@ conflict_prefer("load", "base")
 conflict_prefer("filter", "dplyr")
 ```
 
-
-```{r set-up-environment, echo = FALSE, results = FALSE, message = FALSE}
-#renv::snapshot() #Run this to save all the current packages used in this project
-rm( list = ls(  ) )
-cat( "\014" )
-
-start_time = Sys.time()
-
+```{r import-functions, echo = FALSE, results = FALSE, message = FALSE}
 source(here("r_files", "biomass", "functions", "biomass_plots.R"))
 source(here("r_files", "biomass", "functions", "update_all_models_table.R"))
 source(here("r_files", "body_size", "functions", "plot_data_mean.R"))
 source(here("r_files", "body_size", "functions", "plot_data_raw.R"))
+```
 
+```{r various-parameters, echo = FALSE}
 gif_figures = TRUE
 
-p = NULL #To run the plotting function
-
-#Publication settings
 publication_width = 12
 publication_height = 12
 publication_unit = "cm"

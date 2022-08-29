@@ -7,11 +7,15 @@ editor_options:
   chunk_output_type: console
 ---
 
-#### Experimental cultures
+#### Experimental cultures (`culture_info`)
+
+This table contains information about the 110 cultures of the experiment.
 
 ```{r experimental-cultures}
 culture_info = read.csv(here("data", "PatchSizePilot_culture_info.csv"), header = TRUE)
+```
 
+```{r}
 datatable(culture_info[,1:10],
           rownames = FALSE,
           options = list(scrollX = TRUE),
@@ -19,9 +23,11 @@ datatable(culture_info[,1:10],
                         clear = FALSE))
 ```
 
-#### Local biomass dataset
+#### Local biomass dataset (`ds_biomass`)
 
-```{r import, message = FALSE, echo = TRUE}
+This dataset is the master dataset containing all the information about the biomass of the experiment.
+
+```{r biomass-import, message = FALSE, echo = TRUE}
 load(here("data", "population", "t0.RData")); t0 = pop_output
 load(here("data", "population", "t1.RData")); t1 = pop_output
 load(here("data", "population", "t2.RData")); t2 = pop_output
@@ -33,7 +39,7 @@ load(here("data", "population", "t7.RData")); t7 = pop_output
 rm(pop_output)
 ```
 
-```{r tidy, message = FALSE, echo = TRUE}
+```{r biomass-tidy-time-points, message = FALSE, echo = TRUE}
 #Column: time
 t0$time = NA
 t1$time = NA
@@ -49,16 +55,19 @@ t6 = t6 %>%
   rename(replicate_video = replicate)
 t7 = t7 %>%
   rename(replicate_video = replicate)
+```
 
-#Create a t0
+```{r biomass-bind-time-points, message = FALSE, echo = TRUE}
+#Elongate t0 (so that it can be merged wiht culture_info)
 number_of_columns_t0 = ncol(t0)
 nr_of_cultures = nrow(culture_info)
 nr_of_videos = nrow(t0)
+
 t0 = t0[rep(row.names(t0), nr_of_cultures), 1:number_of_columns_t0] %>%
   arrange(file) %>%
   mutate(culture_ID = rep(1:nr_of_cultures, times = nr_of_videos))
 
-#Merge previous data-sets
+#Merge time points
 t0 = merge(culture_info,t0, by="culture_ID")
 t1 = merge(culture_info,t1, by = "culture_ID")
 t2 = merge(culture_info,t2, by = "culture_ID")
@@ -69,6 +78,12 @@ t6 = merge(culture_info,t6, by = "culture_ID")
 t7 = merge(culture_info,t7, by = "culture_ID")
 ds_biomass = rbind(t0, t1, t2, t3, t4, t5, t6, t7)
 rm(t0, t1, t2, t3, t4, t5, t6, t7)
+```
+
+```{r biomass-tidy-columns, message = FALSE, echo = TRUE}
+#Take off spilled cultures
+ds_biomass = ds_biomass %>%
+  filter(! culture_ID %in% ecosystems_to_take_off)
 
 #Column: time_point
 ds_biomass$time_point[ds_biomass$time_point=="t0"] = 0
@@ -101,20 +116,7 @@ ds_biomass$size_of_connected_patch[ds_biomass$eco_metaeco_type == "L"] = "L"
 ds_biomass$size_of_connected_patch[ds_biomass$eco_metaeco_type == "L (L_L)"] = "L"
 ds_biomass$size_of_connected_patch[ds_biomass$eco_metaeco_type == "L (S_L)"] = "S"
 
-# Column: eco_metaeco_type
-# ds_biomass$eco_metaeco_type = factor(ds_biomass$eco_metaeco_type, 
-#                              levels = c('S', 
-#                                         'S (S_S)', 
-#                                         'S (S_L)', 
-#                                         'M', 
-#                                         'M (M_M)', 
-#                                         'L', 
-#                                         'L (L_L)', 
-#                                         'L (S_L)'))
-
-ds_biomass = ds_biomass %>%
-  filter(! culture_ID %in% ecosystems_to_take_off)
-
+#Keep this dataset for the evaporation effects 
 ds_for_evaporation = ds_biomass
 
 ds_biomass = ds_biomass %>% 
@@ -144,7 +146,9 @@ ds_biomass = ds_biomass %>%
            size_of_connected_patch,
            replicate_video,
            bioarea_per_volume)
+```
 
+```{r}
 datatable(ds_biomass,
           rownames = FALSE,
           options = list(scrollX = TRUE),
@@ -152,7 +156,9 @@ datatable(ds_biomass,
                         clear = FALSE))
 ```
 
-#### Regional biomass data set
+#### Regional biomass data set (`ds_regional_biomass`)
+
+This is the dataset of the regional biomass of different meta-ecosystems. It contains also the regional biomass of the combination of a small isolated and a large isolated patch (`S_L_from_isolated`).
 
 ```{r regional-biomass}
 ds_regional_biomass = ds_biomass %>%
@@ -174,14 +180,6 @@ ds_regional_biomass = ds_biomass %>%
            day,
            metaecosystem_type) %>%
   summarise(total_regional_bioarea = sum(total_patch_bioarea))
-
-### --- TABLE --- ###
-
-datatable(ds_regional_biomass,
-          rownames = FALSE,
-          options = list(scrollX = TRUE),
-          filter = list(position = 'top', 
-                        clear = FALSE))
 ```
 
 ```{r create-SL_SL_from_isolated, message=FALSE, results='hide'}
@@ -215,8 +213,8 @@ high_system_nrs_combination = expand.grid(S_high_system_nrs, L_high_system_nrs) 
 system_nr_combinations = rbind(low_system_nrs_combination, high_system_nrs_combination) %>%
   rename(S_system_nr = Var1) %>%
   rename(L_system_nr = Var2)
-number_of_combinations = nrow(system_nr_combinations)
 
+number_of_combinations = nrow(system_nr_combinations)
 SL_from_isolated_all_combinations = NULL
 for (pair in 1:number_of_combinations){
   
@@ -246,7 +244,15 @@ for (combination in 1:number_of_combinations){
 ds_regional_biomass = rbind(ds_regional_biomass, SL_from_isolated_all_combinations_together)
 ```
 
-#### Local biomass lnRR data-set
+```{r}
+datatable(ds_regional_biomass,
+          rownames = FALSE,
+          options = list(scrollX = TRUE),
+          filter = list(position = 'top', 
+                        clear = FALSE))
+```
+
+#### Local biomass lnRR data-set (`ds_biomass_averaged_treatments)`
 
 ```{r created-averaged-lnRR-ds}
 ds_biomass_averaged_treatments = data.frame(eco_metaeco_type = character(),
@@ -301,7 +307,9 @@ ds_biomass_averaged_treatments = ds_biomass_averaged_treatments %>%
   filter(!patch_size == "M") %>%
   mutate(isolated_control = as.numeric(isolated_control)) %>%
   mutate(lnRR_biomass = ln(mean_bioarea_per_volume / isolated_control))
+```
 
+```{r}
 datatable(ds_biomass_averaged_treatments,
           rownames = FALSE,
           options = list(scrollX = TRUE),
