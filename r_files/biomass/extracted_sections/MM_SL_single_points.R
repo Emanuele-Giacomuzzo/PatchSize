@@ -1,14 +1,257 @@
-## ----eval = FALSE--------------------------------------------------------------------------------------------------
-## full = lmer(log10(total_regional_bioarea + 1) ~
-##             metaecosystem_type +
-##             disturbance +
-##             metaecosystem_type : disturbance +
-##             (1 | system_nr),
-##             data = ds_regional_biomass %>%
-##               filter(time_point == 3) %>%
-##               filter(metaecosystem_type == "M_M" |
-##                      metaecosystem_type == "S_L"),
-##             REML = FALSE)
-## 
-## # Next step: understanding what is a grouping factor. I need to understand what a grouping factor because I cannot run the full model, as it gives me the following problem: "Error: number of levels of each grouping factor must be < number of observations (problems: system_nr)."
+## ----------------------------------------------------------------------------------------------------------------------------------------
+chosen_time_point = 2
+
+
+## ----------------------------------------------------------------------------------------------------------------------------------------
+full = lm(total_regional_bioarea ~
+            metaecosystem_type +
+            disturbance +
+            metaecosystem_type * disturbance,
+          data = ds_regional_biomass %>%
+                            filter(time_point == chosen_time_point) %>%
+                            filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L"))
+
+
+## ----------------------------------------------------------------------------------------------------------------------------------------
+no_MD = lm(total_regional_bioarea ~
+            metaecosystem_type +
+            disturbance,
+          data = ds_regional_biomass %>%
+                            filter(time_point == chosen_time_point) %>%
+                            filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L"))
+
+AIC(full,no_MD)
+
+
+## ----------------------------------------------------------------------------------------------------------------------------------------
+best_model = no_MD
+
+R2_full = glance(best_model)$r.squared
+
+no_M = lm(total_regional_bioarea ~
+            disturbance,
+          data = ds_regional_biomass %>%
+                            filter(time_point == chosen_time_point) %>%
+                            filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L"))
+
+R2_no_M = glance(no_M)$r.squared
+R2_M = R2_full - R2_no_M
+
+R2_full = round(R2_full, digits = 2)
+R2_M = round(R2_M, digits = 2)
+
+
+## ----------------------------------------------------------------------------------------------------------------------------------------
+chosen_time_point = 3
+
+
+## ----------------------------------------------------------------------------------------------------------------------------------------
+full = lm(total_regional_bioarea ~
+            metaecosystem_type +
+            disturbance +
+            metaecosystem_type * disturbance,
+          data = ds_regional_biomass %>%
+                            filter(time_point == chosen_time_point) %>%
+                            filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L"))
+
+
+## ----------------------------------------------------------------------------------------------------------------------------------------
+no_MD = lm(total_regional_bioarea ~
+            metaecosystem_type +
+            disturbance,
+          data = ds_regional_biomass %>%
+                            filter(time_point == chosen_time_point) %>%
+                            filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L"))
+
+AIC(full,no_MD)
+
+
+## ----------------------------------------------------------------------------------------------------------------------------------------
+best_model = full
+
+R2_full = glance(best_model)$r.squared
+
+no_M = lm(total_regional_bioarea ~
+            disturbance,
+          data = ds_regional_biomass %>%
+                            filter(time_point == chosen_time_point) %>%
+                            filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L"))
+
+R2_no_M = glance(no_M)$r.squared
+R2_M = R2_full - R2_no_M
+
+R2_full = round(R2_full, digits = 2)
+R2_M = round(R2_M, digits = 2)
+
+
+## ----------------------------------------------------------------------------------------------------------------------------------------
+chosen_time_point = 4
+
+
+## ----------------------------------------------------------------------------------------------------------------------------------------
+full = lm(total_regional_bioarea ~
+            metaecosystem_type +
+            disturbance +
+            metaecosystem_type * disturbance,
+          data = ds_regional_biomass %>%
+                            filter(time_point == chosen_time_point) %>%
+                            filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L"))
+
+
+## ----------------------------------------------------------------------------------------------------------------------------------------
+no_MD = lm(total_regional_bioarea ~
+            metaecosystem_type +
+            disturbance,
+          data = ds_regional_biomass %>%
+                            filter(time_point == chosen_time_point) %>%
+                            filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L"))
+
+AIC(full,no_MD)
+
+
+## ----------------------------------------------------------------------------------------------------------------------------------------
+best_model = no_MD
+
+R2_full = glance(best_model)$r.squared
+
+no_M = lm(total_regional_bioarea ~
+            disturbance,
+          data = ds_regional_biomass %>%
+                            filter(time_point == chosen_time_point) %>%
+                            filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L"))
+
+R2_no_M = glance(no_M)$r.squared
+R2_M = R2_full - R2_no_M
+
+R2_full = round(R2_full, digits = 2)
+R2_M = round(R2_M, digits = 2)
+
+
+## ----------------------------------------------------------------------------------------------------------------------------------------
+chosen_time_point = 5
+
+
+## ----------------------------------------------------------------------------------------------------------------------------------------
+full = lm(total_regional_bioarea ~
+            metaecosystem_type +
+            disturbance +
+            metaecosystem_type * disturbance,
+          data = ds_regional_biomass %>%
+                            filter(time_point == chosen_time_point) %>%
+                            filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L"))
+
+
+## ----------------------------------------------------------------------------------------------------------------------------------------
+no_MD = lm(total_regional_bioarea ~
+            metaecosystem_type +
+            disturbance,
+          data = ds_regional_biomass %>%
+                            filter(time_point == chosen_time_point) %>%
+                            filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L"))
+
+AIC(full,no_MD)
+
+
+## ----------------------------------------------------------------------------------------------------------------------------------------
+best_model = no_MD
+
+R2_full = glance(best_model)$r.squared
+
+no_M = lm(total_regional_bioarea ~
+            disturbance,
+          data = ds_regional_biomass %>%
+                            filter(time_point == chosen_time_point) %>%
+                            filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L"))
+
+R2_no_M = glance(no_M)$r.squared
+R2_M = R2_full - R2_no_M
+
+R2_full = round(R2_full, digits = 2)
+R2_M = round(R2_M, digits = 2)
+
+
+## ----------------------------------------------------------------------------------------------------------------------------------------
+chosen_time_point = 6
+
+
+## ----------------------------------------------------------------------------------------------------------------------------------------
+full = lm(total_regional_bioarea ~
+            metaecosystem_type +
+            disturbance +
+            metaecosystem_type * disturbance,
+          data = ds_regional_biomass %>%
+                            filter(time_point == chosen_time_point) %>%
+                            filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L"))
+
+
+## ----------------------------------------------------------------------------------------------------------------------------------------
+no_MD = lm(total_regional_bioarea ~
+            metaecosystem_type +
+            disturbance,
+          data = ds_regional_biomass %>%
+                            filter(time_point == chosen_time_point) %>%
+                            filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L"))
+
+AIC(full,no_MD)
+
+
+## ----------------------------------------------------------------------------------------------------------------------------------------
+best_model = no_MD
+
+R2_full = glance(best_model)$r.squared
+
+no_M = lm(total_regional_bioarea ~
+            disturbance,
+          data = ds_regional_biomass %>%
+                            filter(time_point == chosen_time_point) %>%
+                            filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L"))
+
+R2_no_M = glance(no_M)$r.squared
+R2_M = R2_full - R2_no_M
+
+R2_full = round(R2_full, digits = 2)
+R2_M = round(R2_M, digits = 2)
+
+
+## ----------------------------------------------------------------------------------------------------------------------------------------
+chosen_time_point = 7
+
+
+## ----------------------------------------------------------------------------------------------------------------------------------------
+full = lm(total_regional_bioarea ~
+            metaecosystem_type +
+            disturbance +
+            metaecosystem_type * disturbance,
+          data = ds_regional_biomass %>%
+                            filter(time_point == chosen_time_point) %>%
+                            filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L"))
+
+
+## ----------------------------------------------------------------------------------------------------------------------------------------
+no_MD = lm(total_regional_bioarea ~
+            metaecosystem_type +
+            disturbance,
+          data = ds_regional_biomass %>%
+                            filter(time_point == chosen_time_point) %>%
+                            filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L"))
+
+AIC(full,no_MD)
+
+
+## ----------------------------------------------------------------------------------------------------------------------------------------
+best_model = no_MD
+
+R2_full = glance(best_model)$r.squared
+
+no_M = lm(total_regional_bioarea ~
+            disturbance,
+          data = ds_regional_biomass %>%
+                            filter(time_point == chosen_time_point) %>%
+                            filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L"))
+
+R2_no_M = glance(no_M)$r.squared
+R2_M = R2_full - R2_no_M
+
+R2_full = round(R2_full, digits = 2)
+R2_M = round(R2_M, digits = 2)
 

@@ -21,14 +21,13 @@ editor_options:
 library(here)
 library(knitr)
 library(purrr)
-for (main_section in c("biomass", "body_size")){
+for (main_section in c("biomass", "body_size", "tests")){
   
  sections.path = here("r_files", main_section, "sections")
  extracted.path = here("r_files", main_section, "extracted_sections")
  
  r.files = list.files(sections.path)
  rmd.files = r.files[grepl(".Rmd", r.files)]
- 
  
  map(rmd.files, function(file.i) {
    
@@ -78,6 +77,7 @@ library("sjstats")
 library("partR2")
 library("SciViews")
 library("effsize")
+library("boot")
 
 conflict_prefer("load", "base")
 conflict_prefer("filter", "dplyr")
@@ -154,7 +154,8 @@ ggsave(here("results", "biomass", "large_patches_publication.jpg"),
 
 ## Tests
 
-```{r child = here("r_files", "tests", "evaporation_tests.Rmd")}
+```{r child = here("r_files", "tests", "sections", "evaporation_tests.Rmd")}
+source(here("r_files", "tests", "extracted_sections", "evaporation_tests.R"))
 ```
 
 ## Running time

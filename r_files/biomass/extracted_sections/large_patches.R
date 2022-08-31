@@ -1,4 +1,4 @@
-## ----large-single-patches-plots------------------------------------------------------------------------------------
+## ----large-single-patches-plots----------------------------------------------------------------------------------------------------------
 ds_biomass %>%
   filter(disturbance == "low") %>%
   filter(patch_size == "L") %>%
@@ -60,7 +60,7 @@ ds_biomass %>%
   labs(caption = "Vertical grey line: first perturbation")
 
 
-## ----large-boxplots------------------------------------------------------------------------------------------------
+## ----large-boxplots----------------------------------------------------------------------------------------------------------------------
 ds_biomass %>%
   filter(disturbance == "low") %>%
   filter(patch_size == "L") %>%
@@ -119,7 +119,7 @@ local_large_high_plot = ds_biomass %>%
 local_large_high_plot
 
 
-## ----large-patches-lnRR-plots--------------------------------------------------------------------------------------
+## ----large-patches-lnRR-plots------------------------------------------------------------------------------------------------------------
 ds_biomass_averaged_treatments %>%
   filter(disturbance == "low") %>%
   filter(eco_metaeco_type == "L (S_L)" | eco_metaeco_type == "L (L_L)") %>%
@@ -175,12 +175,12 @@ ds_biomass_averaged_treatments %>%
   labs(caption = "Vertical grey line: first perturbation")
 
 
-## ----choose-time-points-large--------------------------------------------------------------------------------------
+## ----choose-time-points-large------------------------------------------------------------------------------------------------------------
 first_time_point = 2
 last_time_point = 7
 
 
-## ----large-patches-full-model--------------------------------------------------------------------------------------
+## ----large-patches-full-model------------------------------------------------------------------------------------------------------------
 full_model = lm(lnRR_biomass ~
                   day + 
                   eco_metaeco_type + 
@@ -195,8 +195,8 @@ full_model = lm(lnRR_biomass ~
                                 eco_metaeco_type == "L (S_L)"))
 
 
-## ----large-patches-no-TM-------------------------------------------------------------------------------------------
-no_TM = lm(lnRR_biomass ~
+## ----large-patches-no-TM-----------------------------------------------------------------------------------------------------------------
+no_TP = lm(lnRR_biomass ~
                   day + 
                   eco_metaeco_type + 
                   disturbance +
@@ -208,15 +208,14 @@ no_TM = lm(lnRR_biomass ~
                          filter(eco_metaeco_type== "L (L_L)" | 
                                 eco_metaeco_type == "L (S_L)"))
 
-AIC(full_model, no_TM)
+AIC(full_model, no_TP)
 
 
-## ----large-patches-no-TD-------------------------------------------------------------------------------------------
+## ----large-patches-no-TD-----------------------------------------------------------------------------------------------------------------
 no_TD = lm(lnRR_biomass ~
                   day + 
                   eco_metaeco_type + 
                   disturbance +
-                  day * eco_metaeco_type +
                   eco_metaeco_type * disturbance,
                   data = ds_biomass_averaged_treatments %>%
                          filter(time_point >= first_time_point) %>%
@@ -224,31 +223,31 @@ no_TD = lm(lnRR_biomass ~
                          filter(eco_metaeco_type== "L (L_L)" | 
                                 eco_metaeco_type == "L (S_L)"))
 
-AIC(full_model, no_TD)
+AIC(no_TP, no_TD)
 
 
-## ----large-patches-no-PD-------------------------------------------------------------------------------------------
+## ----large-patches-no-PD-----------------------------------------------------------------------------------------------------------------
 no_PD = lm(lnRR_biomass ~
                   day + 
                   eco_metaeco_type + 
                   disturbance +
-                  day * eco_metaeco_type,
+                  day * disturbance,
                   data = ds_biomass_averaged_treatments %>%
                          filter(time_point >= first_time_point) %>%
                          filter(time_point <= last_time_point) %>%
                          filter(eco_metaeco_type== "L (L_L)" | 
                                 eco_metaeco_type == "L (S_L)"))
 
-AIC(no_TD, no_PD)
+AIC(no_TP, no_PD)
 
 
-## ----large-t2-t7-best-model----------------------------------------------------------------------------------------
-best_model = no_TD
+## ----large-t2-t7-best-model--------------------------------------------------------------------------------------------------------------
+best_model = no_PD
 par(mfrow = c(2,3))
 plot(best_model, which = 1:5)
 
 
-## ------------------------------------------------------------------------------------------------------------------
+## ----------------------------------------------------------------------------------------------------------------------------------------
 R2_full = glance(best_model)$r.squared
 
 no_patch_type = lm(lnRR_biomass ~
@@ -266,31 +265,4 @@ R2_P = R2_full - R2_no_P
 
 R2_full = round(R2_full, digits = 2)
 R2_P = round(R2_P, digits = 2)
-
-
-## ------------------------------------------------------------------------------------------------------------------
-time_point_input = 2
-
-
-## ------------------------------------------------------------------------------------------------------------------
-full_model = lm(lnRR_biomass ~
-                  eco_metaeco_type + 
-                  disturbance +
-                  eco_metaeco_type * disturbance,
-                  data = ds_biomass_averaged_treatments %>%
-                         filter(time_point == time_point_input) %>%
-                         filter(eco_metaeco_type== "L (L_L)" | 
-                                eco_metaeco_type == "L (S_L)"))
-
-
-## ------------------------------------------------------------------------------------------------------------------
-no_MD = lm(lnRR_biomass ~
-                  eco_metaeco_type + 
-                  disturbance,
-                  data = ds_biomass_averaged_treatments %>%
-                         filter(time_point == time_point_input) %>%
-                         filter(eco_metaeco_type== "L (L_L)" | 
-                                eco_metaeco_type == "L (S_L)"))
-
-AIC(full_model, no_MD)
 

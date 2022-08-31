@@ -5,7 +5,6 @@ date: '2022-07-07'
 output: html_document
 editor_options: 
   chunk_output_type: console
-bibliography: /Applications/Mendeley/library.bib
 ---
 
 ### Aim
@@ -30,6 +29,12 @@ source(here("r_files", "biomass", "extracted_sections", "data_manipulation.R"))
 ```
 
 ### Regional biomass {.tabset .tabset-dropdown}
+
+#### All meta-ecosystems {.tabset .tabset-pills}
+
+```{r child = here("r_files", "biomass", "sections", "meta-ecosystems_all.Rmd")}
+source(here("r_files", "biomass", "extracted_sections", "meta-ecosystems_all.R"))
+```
 
 #### Medium-Medium vs Small-Large {.tabset .tabset-pills}
 
@@ -74,6 +79,12 @@ source(here("r_files", "biomass", "extracted_sections", "metaecos_of_different_s
 ```
 
 ### Local biomass {.tabset .tabset-dropdown}
+
+#### All patches {.tabset .tabset-pills}
+
+```{r child = here("r_files", "biomass", "sections", "patches_all.Rmd")}
+source(here("r_files", "biomass", "extracted_sections", "patches_all.R"))
+```
 
 #### Small patches {.tabset .tabset-pills}
 

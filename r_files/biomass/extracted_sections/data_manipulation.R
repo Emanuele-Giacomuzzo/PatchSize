@@ -1,6 +1,8 @@
-## ------------------------------------------------------------------------------------------------------------------
+## ----experimental-cultures---------------------------------------------------------------------------------------------------------------
 culture_info = read.csv(here("data", "PatchSizePilot_culture_info.csv"), header = TRUE)
 
+
+## ----------------------------------------------------------------------------------------------------------------------------------------
 datatable(culture_info[,1:10],
           rownames = FALSE,
           options = list(scrollX = TRUE),
@@ -8,10 +10,7 @@ datatable(culture_info[,1:10],
                         clear = FALSE))
 
 
-## ----import, message = FALSE, echo = TRUE--------------------------------------------------------------------------
-
-### --- IMPORT --- ###
-
+## ----biomass-import, message = FALSE, echo = TRUE----------------------------------------------------------------------------------------
 load(here("data", "population", "t0.RData")); t0 = pop_output
 load(here("data", "population", "t1.RData")); t1 = pop_output
 load(here("data", "population", "t2.RData")); t2 = pop_output
@@ -22,8 +21,8 @@ load(here("data", "population", "t6.RData")); t6 = pop_output
 load(here("data", "population", "t7.RData")); t7 = pop_output
 rm(pop_output)
 
-### --- TIDY --- ###
 
+## ----biomass-tidy-time-points, message = FALSE, echo = TRUE------------------------------------------------------------------------------
 #Column: time
 t0$time = NA
 t1$time = NA
@@ -40,25 +39,19 @@ t6 = t6 %>%
 t7 = t7 %>%
   rename(replicate_video = replicate)
 
-#Create an elongated version of t0 so that each of the 110 cultures can have 12 video replicates at t0.
-elongating_t0 = NULL
-for (video in 1:nrow(t0)){
-  
-  for (ID in 1:nrow(culture_info)) {
-    
-    elongating_t0 = rbind(elongating_t0, t0[video,])
-    
-    }
 
-  }
+## ----biomass-bind-time-points, message = FALSE, echo = TRUE------------------------------------------------------------------------------
+#Elongate t0 (so that it can be merged wiht culture_info)
+number_of_columns_t0 = ncol(t0)
+nr_of_cultures = nrow(culture_info)
+nr_of_videos = nrow(t0)
 
-ID_vector = rep(1:nrow(culture_info), 
-                times = nrow(t0))
+t0 = t0[rep(row.names(t0), nr_of_cultures), 1:number_of_columns_t0] %>%
+  arrange(file) %>%
+  mutate(culture_ID = rep(1:nr_of_cultures, times = nr_of_videos))
 
-elongating_t0$culture_ID = ID_vector
-
-#Merge previous data-sets
-t0 = merge(culture_info,elongating_t0, by="culture_ID")
+#Merge time points
+t0 = merge(culture_info,t0, by="culture_ID")
 t1 = merge(culture_info,t1, by = "culture_ID")
 t2 = merge(culture_info,t2, by = "culture_ID")
 t3 = merge(culture_info,t3, by = "culture_ID")
@@ -67,7 +60,13 @@ t5 = merge(culture_info,t5, by = "culture_ID")
 t6 = merge(culture_info,t6, by = "culture_ID")
 t7 = merge(culture_info,t7, by = "culture_ID")
 ds_biomass = rbind(t0, t1, t2, t3, t4, t5, t6, t7)
-rm(elongating_t0, t0, t1, t2, t3, t4, t5, t6, t7)
+rm(t0, t1, t2, t3, t4, t5, t6, t7)
+
+
+## ----biomass-tidy-columns, message = FALSE, echo = TRUE----------------------------------------------------------------------------------
+#Take off spilled cultures
+ds_biomass = ds_biomass %>%
+  filter(! culture_ID %in% ecosystems_to_take_off)
 
 #Column: time_point
 ds_biomass$time_point[ds_biomass$time_point=="t0"] = 0
@@ -100,20 +99,7 @@ ds_biomass$size_of_connected_patch[ds_biomass$eco_metaeco_type == "L"] = "L"
 ds_biomass$size_of_connected_patch[ds_biomass$eco_metaeco_type == "L (L_L)"] = "L"
 ds_biomass$size_of_connected_patch[ds_biomass$eco_metaeco_type == "L (S_L)"] = "S"
 
-#Column: eco_metaeco_type
-ds_biomass$eco_metaeco_type = factor(ds_biomass$eco_metaeco_type, 
-                             levels = c('S', 
-                                        'S (S_S)', 
-                                        'S (S_L)', 
-                                        'M', 
-                                        'M (M_M)', 
-                                        'L', 
-                                        'L (L_L)', 
-                                        'L (S_L)'))
-
-ds_biomass = ds_biomass %>%
-  filter(! culture_ID %in% ecosystems_to_take_off)
-
+#Keep this dataset for the evaporation effects 
 ds_for_evaporation = ds_biomass
 
 ds_biomass = ds_biomass %>% 
@@ -144,6 +130,8 @@ ds_biomass = ds_biomass %>%
            replicate_video,
            bioarea_per_volume)
 
+
+## ----------------------------------------------------------------------------------------------------------------------------------------
 datatable(ds_biomass,
           rownames = FALSE,
           options = list(scrollX = TRUE),
@@ -151,7 +139,7 @@ datatable(ds_biomass,
                         clear = FALSE))
 
 
-## ----regional-biomass----------------------------------------------------------------------------------------------
+## ----regional-biomass--------------------------------------------------------------------------------------------------------------------
 ds_regional_biomass = ds_biomass %>%
   filter(metaecosystem == "yes") %>%
   filter(! system_nr %in% metaecosystems_to_take_off) %>%
@@ -172,8 +160,70 @@ ds_regional_biomass = ds_biomass %>%
            metaecosystem_type) %>%
   summarise(total_regional_bioarea = sum(total_patch_bioarea))
 
-### --- TABLE --- ###
 
+## ----create-SL_SL_from_isolated, message=FALSE, results='hide'---------------------------------------------------------------------------
+isolated_S_and_L = ds_biomass %>%
+  filter(eco_metaeco_type == "S" | eco_metaeco_type == "L") %>%
+  group_by(system_nr, disturbance, time_point, day, eco_metaeco_type) %>%
+  summarise(bioarea_per_volume_across_videos = mean(bioarea_per_volume))
+
+isolated_S_low = isolated_S_and_L %>%
+  filter(eco_metaeco_type == "S") %>%
+  filter(disturbance == "low")
+isolated_L_low = isolated_S_and_L %>%
+  filter(eco_metaeco_type == "L") %>%
+  filter(disturbance == "low")
+isolated_S_high = isolated_S_and_L %>%
+  filter(eco_metaeco_type == "S") %>%
+  filter(disturbance == "high")
+isolated_L_high = isolated_S_and_L %>%
+  filter(eco_metaeco_type == "L") %>%
+  filter(disturbance == "high")
+
+S_low_system_nrs = unique(isolated_S_low$system_nr)
+S_high_system_nrs = unique(isolated_S_high$system_nr)
+L_low_system_nrs = unique(isolated_L_low$system_nr)
+L_high_system_nrs = unique(isolated_L_high$system_nr)
+
+low_system_nrs_combination = expand.grid(S_low_system_nrs, L_low_system_nrs) %>%
+  mutate(disturbance = "low")
+high_system_nrs_combination = expand.grid(S_high_system_nrs, L_high_system_nrs) %>%
+  mutate(disturbance = "high")
+system_nr_combinations = rbind(low_system_nrs_combination, high_system_nrs_combination) %>%
+  rename(S_system_nr = Var1) %>%
+  rename(L_system_nr = Var2)
+
+number_of_combinations = nrow(system_nr_combinations)
+SL_from_isolated_all_combinations = NULL
+for (pair in 1:number_of_combinations){
+  
+  SL_from_isolated_one_combination = 
+    ds_biomass %>%
+    filter(system_nr %in% system_nr_combinations[pair,]) %>%
+    group_by(disturbance, day, time_point, system_nr) %>%
+    summarise(regional_bioarea_across_videos = mean(bioarea_per_volume)) %>%
+    group_by(disturbance, day, time_point) %>%
+    summarise(total_regional_bioarea = sum(regional_bioarea_across_videos)) %>%
+    mutate(system_nr = 1000 + pair) %>%
+    mutate(metaecosystem_type = "S_L_from_isolated")
+  
+  SL_from_isolated_all_combinations[[pair]] = SL_from_isolated_one_combination
+  
+}
+
+SL_from_isolated_all_combinations_together = NULL
+for (combination in 1:number_of_combinations){
+ 
+  SL_from_isolated_all_combinations_together = 
+    rbind(SL_from_isolated_all_combinations_together,
+          SL_from_isolated_all_combinations[[pair]])
+  
+}
+
+ds_regional_biomass = rbind(ds_regional_biomass, SL_from_isolated_all_combinations_together)
+
+
+## ----------------------------------------------------------------------------------------------------------------------------------------
 datatable(ds_regional_biomass,
           rownames = FALSE,
           options = list(scrollX = TRUE),
@@ -181,11 +231,7 @@ datatable(ds_regional_biomass,
                         clear = FALSE))
 
 
-## ------------------------------------------------------------------------------------------------------------------
-
-
-
-## ----created-averaged-lnRR-ds--------------------------------------------------------------------------------------
+## ----created-averaged-lnRR-ds------------------------------------------------------------------------------------------------------------
 ds_biomass_averaged_treatments = data.frame(eco_metaeco_type = character(),
                                          disturbance = character(),
                                          time_point = integer(),
@@ -239,6 +285,8 @@ ds_biomass_averaged_treatments = ds_biomass_averaged_treatments %>%
   mutate(isolated_control = as.numeric(isolated_control)) %>%
   mutate(lnRR_biomass = ln(mean_bioarea_per_volume / isolated_control))
 
+
+## ----------------------------------------------------------------------------------------------------------------------------------------
 datatable(ds_biomass_averaged_treatments,
           rownames = FALSE,
           options = list(scrollX = TRUE),

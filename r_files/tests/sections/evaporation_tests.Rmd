@@ -1,0 +1,38 @@
+---
+title: "evaporation_tests"
+author: "Emanuele Giacomuzzo"
+date: "2022-08-04"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+### Evaporation when microwaving 15 falcon tubes at the time
+
+```{r, class.source = 'fold-hide'}
+evaporation.test = read.csv(here("data", "evaporation_test","evaporation_test_right.csv"), header = TRUE)
+
+evaporation.test %>%
+  ggplot(aes (x = as.character(water_pipetted),
+                y = weight_water_evaporated,
+                group = interaction(water_pipetted, as.character(rack)),
+                fill = as.character(rack))) +
+  geom_boxplot() +
+  labs(x = "Water volume (ml)" , 
+       y = "Evaporation (g)", 
+       fill = "Rack replicate")
+```
+
+### Evaporation when microwaving 5 tubes with 10 filled or empty tubes
+
+```{r, class.source = 'fold-hide'}
+evaporation.test = read.csv(here("data", "evaporation_test", "evaporation_test_fill_nofill.csv"), header = TRUE)
+
+evaporation.test %>%
+  ggplot(aes (x = all_tubes_water,
+              y = weight_water_evaporated)) +
+  geom_boxplot() +
+  labs(x = "Water in the other 10 tubes" , 
+  y = "Evaporation (g)", 
+  caption = "When all tubes were filled, they were filled with 6.75 ml of deionised water.")
+```

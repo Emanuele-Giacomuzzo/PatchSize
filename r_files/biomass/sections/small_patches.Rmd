@@ -150,8 +150,8 @@ small_patches_publication =
         legend.justification = c("right", "top"),
         legend.box.just = "right",
         legend.margin = margin(6, 6, 6, 6)) +
-  scale_color_discrete(labels = c("small connected to small",
-                                 "small connected to large")) +
+  scale_color_discrete(labels = c("small connected to large",
+                                 "small connected to small")) +
   geom_vline(xintercept = first_perturbation_day + 0.7,
              linetype="dotdash",
              color = "grey",
@@ -178,8 +178,8 @@ ds_biomass_averaged_treatments %>%
         legend.justification = c("right", "top"),
         legend.box.just = "right",
         legend.margin = margin(6, 6, 6, 6)) +
-  scale_color_discrete(labels = c("small connected to small",
-                                 "small connected to large")) +
+  scale_color_discrete(labels = c("small connected to large",
+                                 "small connected to small")) +
   geom_vline(xintercept = first_perturbation_day + 0.7,
              linetype="dotdash",
              color = "grey",
@@ -322,35 +322,111 @@ R2_P = round(R2_P, digits = 2)
 \
 The adjusted R squared of the model is `r R2_full` and the adjusted R squared of patch type is `r R2_P` (which includes also its interaction with disturbance).
 
+##### Bootstrapping the CI intervals
+
+```{r bootstrapping-lnRR-small-patches, eval = FALSE}
+
+#Takes about 40 minutes to run. 
+
+ds_lnRR = data.frame()
+iterations_n = 200
+upper_bound = iterations_n * 0.05
+lower_bound = iterations_n * 0.95
+
+for (eco_metaeco_type_input in c("S (S_S)", "S (S_L)", "L (L_L)", "L (S_L)")){
+  for (disturbance_input in c("low", "high")){
+    for (time_point_input in 0:7){
+      
+      mean_bioarea_isolated = ds_biomass_averaged_treatments %>%
+                               filter(eco_metaeco_type == eco_metaeco_type_input) %>%
+                               filter(time_point == time_point_input) %>%
+                               filter(disturbance == disturbance_input) %>%
+                               ungroup() %>%
+                               select(isolated_control)
+      mean_bioarea_isolated = unlist(mean_bioarea_isolated)
+      
+      mean_bioarea_all_iterations = NULL
+      for (iteration in 1:iterations_n){
+        
+        mean_bioarea_iteration = ds_biomass %>%
+          filter(eco_metaeco_type == eco_metaeco_type_input) %>%
+          filter(time_point == time_point_input) %>%
+          filter(disturbance == disturbance_input) %>%
+          group_by(culture_ID, system_nr, eco_metaeco_type, disturbance,time_point,day) %>%
+          summarise(mean_bioarea_per_volume_video_averaged = mean(bioarea_per_volume)) %>%
+          group_by(system_nr) %>%
+          slice_sample(n = 1) %>%
+          ungroup() %>%
+          summarise(mean_bioarea_per_volume = mean(mean_bioarea_per_volume_video_averaged))
+        mean_bioarea_all_iterations[iteration] = as.numeric(unlist(mean_bioarea_iteration))
+        
+        }
+      
+      mean_bioarea_all_iterations = sort(mean_bioarea_all_iterations, decreasing = TRUE)
+      
+      mean_bioarea_lower_CI =  mean_bioarea_all_iterations[lower_bound]
+      mean_bioarea_density = mean_bioarea_all_iterations[iterations_n/2]
+      mean_bioarea_upper_CI =  mean_bioarea_all_iterations[upper_bound]
+      
+      lnRR_bioarea_lower_CI = ln(mean_bioarea_lower_CI/mean_bioarea_isolated)
+      lnRR_bioarea_density = ln(mean_bioarea_density/mean_bioarea_isolated)
+      lnRR_bioarea_upper_CI = ln(mean_bioarea_upper_CI/mean_bioarea_isolated)
+      
+      new_row = nrow(ds_lnRR) + 1 
+      ds_lnRR[new_row,] = NA
+      ds_lnRR$disturbance[new_row] = disturbance_input
+      ds_lnRR$eco_metaeco_type[new_row] = eco_metaeco_type_input
+      ds_lnRR$time_point[new_row] = time_point_input
+      ds_lnRR$day[new_row] = time_point_input*4
+      ds_lnRR$lnRR_lower[new_row] = lnRR_bioarea_lower_CI
+      ds_lnRR$lnRR[new_row] = lnRR_bioarea_density
+      ds_lnRR$lnRR_upper[new_row] = lnRR_bioarea_upper_CI
+      
+    }
+  }
+}
+
+
+write.csv(ds_lnRR, 
+          file = here("results", "biomass", "bootstrapped_lnRR_patches.csv"),
+          sep = ",",
+          col.names = TRUE)
+```
+
+```{r}
+ds_lnRR = read.csv(here("results", "biomass", "bootstrapped_lnRR_patches.csv"), header = TRUE)
+```
+
+```{r}
+ds_lnRR %>%
+  filter(disturbance == "low") %>%
+  filter(eco_metaeco_type == "S (S_S)" | eco_metaeco_type == "S (S_L)") %>%
+  ggplot(aes(x = day,
+             y = lnRR,
+             color = eco_metaeco_type)) +
+  geom_point() +
+  geom_line() + 
+  labs(title = "Disturbance = low") +
+  geom_errorbar(aes(ymin = lnRR_lower, 
+                    ymax = lnRR_upper), 
+                width = .2,
+                position = position_dodge(0.3))
+
+ds_lnRR %>%
+  filter(disturbance == "low") %>%
+  filter(eco_metaeco_type == "L (L_L)" | eco_metaeco_type == "L (S_L)") %>%
+  ggplot(aes(x = day,
+             y = lnRR,
+             color = eco_metaeco_type)) +
+  geom_point() +
+  geom_line() + 
+  labs(title = "Disturbance = low") +
+  geom_errorbar(aes(ymin = lnRR_lower, 
+                    ymax = lnRR_upper), 
+                width = .2,
+                position = position_dodge(0.3))
+```
+
 ##### Single time points
 
-[Next step: should I just then report the reponse ratio?]{.underline}
-
-```{r eval = FALSE}
-library("ARPobservation")
-
-small_connected = ds_biomass %>%
-  filter(eco_metaeco_type == "S (S_S)" | eco_metaeco_type == "S (S_L)") %>%
-  filter(time_point == 7) %>%
-  filter(disturbance == "low") %>%
-  group_by(culture_ID, system_nr, eco_metaeco_type, disturbance,time_point,day) %>%
-  summarise(mean_bioarea_per_volume_video_averaged = mean(bioarea_per_volume))
-
-small_isolated = ds_biomass %>%
-  filter(eco_metaeco_type == "S") %>%
-  filter(time_point == 7) %>%
-  filter(disturbance == "low") %>%
-  group_by(culture_ID, system_nr, eco_metaeco_type, disturbance,time_point,day) %>%
-  summarise(mean_bioarea_per_volume_video_averaged = mean(bioarea_per_volume))
-
-small = rbind(small_connected, small_isolated)
-
-logRespRatio(
-  observations = small,
-  phase = "eco_metaeco_type",
-  base_level = "S",
-  conf_level = 0.95,
-  bias_correct = TRUE,
-  exponentiate = FALSE
-)
-```
+...

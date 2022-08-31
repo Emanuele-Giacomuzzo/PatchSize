@@ -14,6 +14,7 @@ Let's see how linear is the time trend of bioarea and if we can make it more lin
 ```{r}
 ds_regional_biomass %>%
   filter(time_point >= 2) %>%
+  filter(!metaecosystem_type == "S_L_from_isolated") %>%
   ggplot(aes(x = day,
              y = total_regional_bioarea,
              group = day)) +
