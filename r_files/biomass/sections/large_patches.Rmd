@@ -10,38 +10,10 @@ editor_options:
 ##### Plots
 
 ```{r large-single-patches-plots}
-ds_biomass %>%
-  filter(disturbance == "low") %>%
-  filter(patch_size == "L") %>%
-  ggplot(aes(x = day,
-             y = bioarea_per_volume,
-             group = system_nr,
-             fill = system_nr,
-             color = system_nr,
-             linetype = eco_metaeco_type)) +
-  geom_line(stat = "summary", fun = "mean") + 
-  labs(x = "Day",
-       y = "Local bioarea (µm²/μl)",
-       title = "Disturbance = low",
-       linetype = "") +
-  theme_bw() +
-  theme(panel.grid.major = element_blank(), 
-        panel.grid.minor = element_blank(),
-        legend.position = c(.95, .95),
-        legend.justification = c("right", "top"),
-        legend.box.just = "right",
-        legend.margin = margin(6, 6, 6, 6)) +
-  scale_linetype_discrete(labels = c("large isolated",
-                                     "large connected to large",
-                                     "large connected to small")) +
-  geom_vline(xintercept = first_perturbation_day, 
-             linetype="dotdash", 
-             color = "grey", 
-             size=0.7) +
-  labs(caption = "Vertical grey line: first perturbation")
+for (disturbance_input in c("low", "high")) {
 
-ds_biomass %>%
-  filter(disturbance == "high") %>%
+  print(ds_biomass %>%
+  filter(disturbance == disturbance_input) %>%
   filter(patch_size == "L") %>%
   ggplot(aes(x = day,
              y = bioarea_per_volume,
@@ -52,7 +24,7 @@ ds_biomass %>%
   geom_line(stat = "summary", fun = "mean") + 
   labs(x = "Day",
        y = "Local bioarea (µm²/μl)",
-       title = "Disturbance = high",
+       title = paste("Disturbance =", disturbance_input),
        linetype = "") +
   theme_bw() +
   theme(panel.grid.major = element_blank(), 
@@ -68,49 +40,22 @@ ds_biomass %>%
              linetype="dotdash", 
              color = "grey", 
              size=0.7) +
-  labs(caption = "Vertical grey line: first perturbation")
+  labs(caption = "Vertical grey line: first perturbation"))}
 ```
 
 ```{r large-boxplots}
-ds_biomass %>%
-  filter(disturbance == "low") %>%
+for (disturbance_input in c("low", "high")){
+  print(ds_biomass %>%
+  filter(disturbance == disturbance_input) %>%
   filter(patch_size == "L") %>%
   ggplot(aes(x = day,
              y = bioarea_per_volume,
              group = interaction(day,eco_metaeco_type),
              fill = eco_metaeco_type)) +
   geom_boxplot() +
-  labs(x = "Day",
+  labs(title = paste("Disturbance =", disturbance_input),
+       x = "Day",
        y = "Local bioarea (µm²/μl)",
-       title = "Disturbance = low",
-       fill = "") +
-  theme_bw() +
-  theme(panel.grid.major = element_blank(), 
-        panel.grid.minor = element_blank(),
-        legend.position = c(.95, .95),
-        legend.justification = c("right", "top"),
-        legend.box.just = "right",
-        legend.margin = margin(6, 6, 6, 6)) +
-  scale_fill_discrete(labels = c("large isolated", 
-                                 "large connected to large",
-                                 "large connected to small")) +
-  geom_vline(xintercept = first_perturbation_day, 
-             linetype="dotdash", 
-             color = "grey", 
-             size=0.7) +
-  labs(caption = "Vertical grey line: first perturbation")
-
-local_large_high_plot = ds_biomass %>%
-  filter(disturbance == "high") %>%
-  filter(patch_size == "L") %>%
-  ggplot(aes(x = day,
-             y = bioarea_per_volume,
-             group = interaction(day,eco_metaeco_type),
-             fill = eco_metaeco_type)) +
-  geom_boxplot() +
-  labs(x = "Day",
-       y = "Local bioarea (µm²/μl)",
-       title = "Disturbance = high",
        fill = "") +
   theme_bw() +
   theme(panel.grid.major = element_blank(), 
@@ -126,82 +71,66 @@ local_large_high_plot = ds_biomass %>%
              linetype="dotdash", 
              color = "grey", 
              size=0.7) +
-  labs(caption = "Vertical grey line: first perturbation")
-local_large_high_plot
+  labs(caption = "Vertical grey line: first perturbation"))
+  }
 ```
 
 ```{r large-patches-lnRR-plots}
-ds_biomass_averaged_treatments %>%
-  filter(disturbance == "low") %>%
-  filter(eco_metaeco_type == "L (S_L)" | eco_metaeco_type == "L (L_L)") %>%
+for (disturbance_input in c("low", "high")){
+print(ds_lnRR %>%
+  filter(disturbance == disturbance_input) %>%
+  filter(eco_metaeco_type == "L (L_L)" | eco_metaeco_type == "L (S_L)") %>%
   ggplot(aes(x = day,
-             y = lnRR_biomass,
+             y = lnRR_bioarea_density,
              color = eco_metaeco_type)) +
-  geom_point() +
-  geom_line(aes(color = eco_metaeco_type)) +
-  labs(title = "Disturbance = low",
+  geom_point(position = position_dodge(0.5)) +
+  geom_line(position = position_dodge(0.5)) + 
+  labs(title = paste("Disturbance =", disturbance_input),
        x = "Day",
-       y = "LnRR Local Bioarea (µm²/µl)",
+       y = "lnRR local bioarea (µm²/µl)",
        color = "") +
+  geom_errorbar(aes(ymin = lnRR_lower, 
+                    ymax = lnRR_upper), 
+                width = .2,
+                position = position_dodge(0.5)) + 
+  scale_color_discrete(labels = c("large connected to large", 
+                                 "large connnected to small")) +
   theme_bw() +
-  theme(panel.grid.major = element_blank(),
+  theme(panel.grid.major = element_blank(), 
         panel.grid.minor = element_blank(),
-        legend.position = c(.95, .95),
+        legend.position = c(.90, .97),
         legend.justification = c("right", "top"),
         legend.box.just = "right",
         legend.margin = margin(6, 6, 6, 6)) +
-  scale_color_discrete(labels = c("large connected to large",
-                                 "large connected to small")) +
-  geom_vline(xintercept = first_perturbation_day + 0.7,
-             linetype="dotdash",
-             color = "grey",
-             size=0.7) +
-  labs(caption = "Vertical grey line: first perturbation")
-
-ds_biomass_averaged_treatments %>%
-  filter(disturbance == "high") %>%
-  filter(eco_metaeco_type == "L (S_L)" | eco_metaeco_type == "L (L_L)") %>%
-  ggplot(aes(x = day,
-             y = lnRR_biomass,
-             color = eco_metaeco_type)) +
-  geom_point() +
-  geom_line(aes(color = eco_metaeco_type)) +
-  labs(title = "Disturbance = high",
-       x = "Day",
-       y = "LnRR Local Bioarea (µm²/µl)",
-       color = "") +
-  theme_bw() +
-  theme(panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(),
-        legend.position = c(.95, .95),
-        legend.justification = c("right", "top"),
-        legend.box.just = "right",
-        legend.margin = margin(6, 6, 6, 6)) +
-  scale_color_discrete(labels = c("large connected to large",
-                                 "large connected to small")) +
-  geom_vline(xintercept = first_perturbation_day + 0.7,
-             linetype="dotdash",
-             color = "grey",
-             size=0.7) +
-  labs(caption = "Vertical grey line: first perturbation")
+#  geom_vline(xintercept = first_perturbation_day + 0.7, 
+#             linetype="dotdash", 
+#             color = "grey", 
+#             size=0.7) +
+  geom_hline(yintercept = 0, 
+             linetype="dotted", 
+             color = "black", 
+             size=0.7))
+}
 ```
 
 ##### Time series
 
 ###### Model selection
 
-Let's consider all the data points from the number 2.
+We will exclude in the model the time point 0 and 1. At time point 0 all cultures were the same because that's how we made them. At time point 1 no disturbance event had already taken place.
 
 ```{r choose-time-points-large}
 first_time_point = 2
 last_time_point = 7
 ```
 
-Let's start from the full model:
+Let's start from the full model (no mixed effect: meta-ecosystems have been pulled to create the lnRR):
 
 $$
-ln \: RR (bioarea) = t + P + D + t*P + t*D + P*D
+ln \: RR (bioarea \: density) = t + P + D + t*P + t*D + P*D
 $$
+
+lnRR(bioarea density) = lnRR of the bioarea density (base level is calculated at each disturbance level and time point as the mean bioarea of the small isolated patches)
 
 t = time
 
@@ -210,14 +139,14 @@ P = patch type
 D = disturbance
 
 ```{r large-patches-full-model}
-full_model = lm(lnRR_biomass ~
+full_model = lm(lnRR_bioarea_density ~
                   day + 
                   eco_metaeco_type + 
                   disturbance +
                   day * eco_metaeco_type +
                   day * disturbance + 
                   eco_metaeco_type * disturbance,
-                  data = ds_biomass_averaged_treatments %>%
+                  data = ds_lnRR %>%
                          filter(time_point >= first_time_point) %>%
                          filter(time_point <= last_time_point) %>%
                          filter(eco_metaeco_type== "L (L_L)" | 
@@ -227,13 +156,13 @@ full_model = lm(lnRR_biomass ~
 *Should we keep t \* P?*
 
 ```{r large-patches-no-TM}
-no_TP = lm(lnRR_biomass ~
+no_TP = lm(lnRR_bioarea_density ~
                   day + 
                   eco_metaeco_type + 
                   disturbance +
                   day * disturbance + 
                   eco_metaeco_type * disturbance,
-                  data = ds_biomass_averaged_treatments %>%
+                  data = ds_lnRR %>%
                          filter(time_point >= first_time_point) %>%
                          filter(time_point <= last_time_point) %>%
                          filter(eco_metaeco_type== "L (L_L)" | 
@@ -247,12 +176,12 @@ No.
 *Should we keep t \* D?*
 
 ```{r large-patches-no-TD}
-no_TD = lm(lnRR_biomass ~
+no_TD = lm(lnRR_bioarea_density ~
                   day + 
                   eco_metaeco_type + 
                   disturbance +
                   eco_metaeco_type * disturbance,
-                  data = ds_biomass_averaged_treatments %>%
+                  data = ds_lnRR %>%
                          filter(time_point >= first_time_point) %>%
                          filter(time_point <= last_time_point) %>%
                          filter(eco_metaeco_type== "L (L_L)" | 
@@ -266,12 +195,12 @@ Yes.
 Should we keep P \* D?
 
 ```{r large-patches-no-PD}
-no_PD = lm(lnRR_biomass ~
+no_PD = lm(lnRR_bioarea_density ~
                   day + 
                   eco_metaeco_type + 
                   disturbance +
                   day * disturbance,
-                  data = ds_biomass_averaged_treatments %>%
+                  data = ds_lnRR %>%
                          filter(time_point >= first_time_point) %>%
                          filter(time_point <= last_time_point) %>%
                          filter(eco_metaeco_type== "L (L_L)" | 
@@ -287,7 +216,7 @@ No.
 Then our best model is:
 
 $$
-RR (bioarea) = t + M + D + tD
+lnRR (bioarea \: density) = t + P + D + tP
 $$
 
 Let's then do some model diagnostics.
@@ -301,11 +230,11 @@ plot(best_model, which = 1:5)
 ```{r}
 R2_full = glance(best_model)$r.squared
 
-no_patch_type = lm(lnRR_biomass ~
+no_patch_type = lm(lnRR_bioarea_density ~
                   day + 
                   disturbance +
                   day * disturbance,
-                  data = ds_biomass_averaged_treatments %>%
+                  data = ds_lnRR %>%
                          filter(time_point >= first_time_point) %>%
                          filter(time_point <= last_time_point) %>%
                          filter(eco_metaeco_type== "L (L_L)" | 
@@ -322,5 +251,3 @@ R2_P = round(R2_P, digits = 2)
 The adjusted R squared of the model is `r R2_full` and the adjusted R squared of patch type is `r R2_P` (which includes also its interaction with disturbance).
 
 ##### Single time points
-
-[Next step: should I just then report the reponse ratio?]{.underline}

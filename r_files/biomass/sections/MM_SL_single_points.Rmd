@@ -10,7 +10,7 @@ editor_options:
 Let's now look at the full model and see if we should keep the interaction between meta-ecosystem type and disturbance. We are not using mixed effects because a certain system nr can't be at different perturbations or at different meta-ecosystem types.
 
 $$
-Regional \: bioarea = M + D + MD
+Total \: Regional \: Bioarea = M + D + MD
 $$
 
 **Time point = 2**
@@ -46,6 +46,9 @@ No.
 
 ```{r}
 best_model = no_MD
+
+par(mfrow=c(2,3))
+plot(best_model, which = 1:5)
 
 R2_full = glance(best_model)$r.squared
 
@@ -98,6 +101,9 @@ Yes.
 ```{r}
 best_model = full
 
+par(mfrow=c(2,3))
+plot(best_model, which = 1:5)
+
 R2_full = glance(best_model)$r.squared
 
 no_M = lm(total_regional_bioarea ~
@@ -148,6 +154,9 @@ No.
 
 ```{r}
 best_model = no_MD
+
+par(mfrow=c(2,3))
+plot(best_model, which = 1:5)
 
 R2_full = glance(best_model)$r.squared
 
@@ -200,6 +209,9 @@ No.
 ```{r}
 best_model = no_MD
 
+par(mfrow=c(2,3))
+plot(best_model, which = 1:5)
+
 R2_full = glance(best_model)$r.squared
 
 no_M = lm(total_regional_bioarea ~
@@ -251,6 +263,9 @@ No.
 ```{r}
 best_model = no_MD
 
+par(mfrow=c(2,3))
+plot(best_model, which = 1:5)
+
 R2_full = glance(best_model)$r.squared
 
 no_M = lm(total_regional_bioarea ~
@@ -301,6 +316,9 @@ No.
 
 ```{r}
 best_model = no_MD
+
+par(mfrow=c(2,3))
+plot(best_model, which = 1:5)
 
 R2_full = glance(best_model)$r.squared
 

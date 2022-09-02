@@ -7,7 +7,9 @@ editor_options:
   chunk_output_type: console
 ---
 
-Let's see how linear is the time trend of bioarea and if we can make it more linear with a log10 transformation. We are lucky that during the modelling process we need to drop the first two time points because they were before the first perturbation.
+We will exclude in the model the time point 0 and 1. At time point 0 all cultures were the same because that's how we made them. At time point 1 no disturbance event had already taken place.
+
+Let's see how linear is the time trend of bioarea and if we can make it more linear with a log10 transformation. We are lucky that during the modelling process we need to drop the first two time points, which would have made the biomass trend not linear.
 
 **Linearity of regional bioarea \~ time**
 
@@ -39,7 +41,7 @@ plot(linear_model, which = 1:5)
 Let' start from the full model.
 
 $$
-Regional \: bioarea = t + M + D + tM + tD + MD + tDM + (t | system \: nr)
+Total \: Regional \: Bioarea = t + M + D + tM + tD + MD + tDM + (t | system \: nr)
 $$
 
 ```{r}
@@ -53,7 +55,7 @@ full = lmer(total_regional_bioarea ~
                    control = lmerControl(optimizer = "Nelder_Mead"))
 ```
 
-*Should we keep the correlation in (day \| system_nr)?*
+*Should we keep the correlation in `(day | system_nr)`?*
 
 ```{r}
 no_correlation = lmer(total_regional_bioarea ~
@@ -70,6 +72,23 @@ anova(full, no_correlation)
 
 No.
 
+*Should we keep the random effect of system nr on the time slopes (`day | system_nr)`?*
+
+```{r}
+no_random_slopes = lmer(total_regional_bioarea ~
+                     day * metaecosystem_type * disturbance +
+                     (1 | system_nr),
+                     data = ds_regional_biomass %>%
+                            filter(time_point >= 2) %>%
+                            filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L"),
+                   REML = FALSE,
+                   control = lmerControl(optimizer = "Nelder_Mead"))
+
+anova(no_correlation, no_random_slopes)
+```
+
+No.
+
 *Should we keep t \* M \* D?*
 
 ```{r}
@@ -80,7 +99,7 @@ no_threeway = lmer(total_regional_bioarea ~
                      day : metaecosystem_type + 
                      day : disturbance +
                      metaecosystem_type : disturbance + 
-                     (day || system_nr),
+                     (1 | system_nr),
                      data = ds_regional_biomass %>%
                             filter(time_point >= 2) %>%
                             filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L"),
@@ -88,7 +107,7 @@ no_threeway = lmer(total_regional_bioarea ~
                    control = lmerControl(optimizer = 'optimx', 
                                          optCtrl = list(method = 'L-BFGS-B')))
 
-anova(no_correlation, no_threeway)
+anova(no_random_slopes, no_threeway)
 ```
 
 No.
@@ -102,7 +121,7 @@ no_TM = lmer(total_regional_bioarea ~
                      disturbance +
                      day : disturbance +
                      metaecosystem_type : disturbance + 
-                     (day || system_nr),
+                     (1 | system_nr),
                      data = ds_regional_biomass %>%
                             filter(time_point >= 2) %>%
                             filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L"),
@@ -123,7 +142,7 @@ no_TD = lmer(total_regional_bioarea ~
                      disturbance +
                      day : metaecosystem_type + 
                      metaecosystem_type : disturbance + 
-                     (day || system_nr),
+                     (1 | system_nr),
                      data = ds_regional_biomass %>%
                             filter(time_point >= 2) %>%
                             filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L"),
@@ -143,26 +162,6 @@ no_MD = lmer(total_regional_bioarea ~
                      metaecosystem_type +
                      disturbance +
                      day : metaecosystem_type + 
-                     (day || system_nr),
-                     data = ds_regional_biomass %>%
-                            filter(time_point >= 2) %>%
-                            filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L"),
-                   REML = FALSE,
-                   control = lmerControl(optimizer = "Nelder_Mead"))
-
-anova(no_TD, no_MD)
-```
-
-No.
-
-*Should we keep the random effect of system nr on the time slopes (`day | system_nr)`?*
-
-```{r}
-no_random_slopes = lmer(total_regional_bioarea ~
-                     day +
-                     metaecosystem_type +
-                     disturbance +
-                     day : metaecosystem_type + 
                      (1 | system_nr),
                      data = ds_regional_biomass %>%
                             filter(time_point >= 2) %>%
@@ -170,7 +169,7 @@ no_random_slopes = lmer(total_regional_bioarea ~
                    REML = FALSE,
                    control = lmerControl(optimizer = "Nelder_Mead"))
 
-anova(no_MD, no_random_slopes)
+anova(no_TD, no_MD)
 ```
 
 No.
@@ -183,11 +182,20 @@ $$
 Regional \: bioarea = t + M + D + tM + (1 | system \: nr) 
 $$
 
+```{r}
+best_model = no_MD
+```
+
+Let's do some model diagnostics:
+
+```{r}
+plot(best_model)
+qqnorm(resid(best_model))
+```
+
 The R squared of this model for t2-t7 are:
 
 ```{r warning=FALSE}
-best_model = no_random_slopes
-
 R2_marginal = r.squaredGLMM(best_model)[1]
 R2_marginal = round(R2_marginal, digits = 2)
 R2_conditional = r.squaredGLMM(best_model)[2]
@@ -205,14 +213,17 @@ t2_t5 = lmer(total_regional_bioarea ~
                      day +
                      metaecosystem_type +
                      disturbance +
-                     day : metaecosystem_type +
-                     (day | system_nr),
+                     day : metaecosystem_type + 
+                     (1 | system_nr),
                      data = ds_regional_biomass %>%
                             filter(time_point >= 2) %>%
                             filter(time_point <= 5) %>%
                             filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L"),
                    REML = FALSE,
                    control = lmerControl(optimizer = "Nelder_Mead"))
+
+plot(t2_t5)
+qqnorm(resid(t2_t5))
 
 R2_marginal = r.squaredGLMM(t2_t5)[1]
 R2_marginal = round(R2_marginal, digits = 2)
@@ -226,6 +237,20 @@ The R squared of this model for t2-t5 are:
 
 -   Conditional R2 = `r R2_conditional`
 
-[Next steps:]{.underline}
+```{r eval = FALSE}
 
--   [calculating the R2 of the meta-ecosystem type.]{.underline}
+### --- Work in progress: calculating R2 of M --- ###
+
+R2_regional = partR2(best_model,
+       partvars = c("day", 
+                    "metaecosystem_type", 
+                    "disturbance"),
+       R2_type = "marginal", 
+       nboot = 1000, 
+       CI = 0.95)
+saveRDS(R2_regional, file = here("results", "biomass", "R2_regional.RData"))
+```
+
+```{r eval = FALSE}
+readRDS(here("results", "biomass", "R2_regional.RData"))
+```

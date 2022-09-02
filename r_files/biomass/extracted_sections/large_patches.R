@@ -1,4 +1,4 @@
-## ----large-single-patches-plots----------------------------------------------------------------------------------------------------------
+## ----large-single-patches-plots-----------------------------------------------------------------------------------------------------------
 ds_biomass %>%
   filter(disturbance == "low") %>%
   filter(patch_size == "L") %>%
@@ -60,7 +60,7 @@ ds_biomass %>%
   labs(caption = "Vertical grey line: first perturbation")
 
 
-## ----large-boxplots----------------------------------------------------------------------------------------------------------------------
+## ----large-boxplots-----------------------------------------------------------------------------------------------------------------------
 ds_biomass %>%
   filter(disturbance == "low") %>%
   filter(patch_size == "L") %>%
@@ -119,68 +119,84 @@ local_large_high_plot = ds_biomass %>%
 local_large_high_plot
 
 
-## ----large-patches-lnRR-plots------------------------------------------------------------------------------------------------------------
-ds_biomass_averaged_treatments %>%
+## ----large-patches-lnRR-plots-------------------------------------------------------------------------------------------------------------
+ds_lnRR %>%
   filter(disturbance == "low") %>%
-  filter(eco_metaeco_type == "L (S_L)" | eco_metaeco_type == "L (L_L)") %>%
+  filter(eco_metaeco_type == "L (L_L)" | eco_metaeco_type == "L (S_L)") %>%
   ggplot(aes(x = day,
-             y = lnRR_biomass,
+             y = lnRR,
              color = eco_metaeco_type)) +
-  geom_point() +
-  geom_line(aes(color = eco_metaeco_type)) +
+  geom_point(position = position_dodge(0.5)) +
+  geom_line(position = position_dodge(0.5)) + 
   labs(title = "Disturbance = low",
        x = "Day",
-       y = "LnRR Local Bioarea (µm²/µl)",
+       y = "lnRR local bioarea (µm²/µl)",
        color = "") +
+  geom_errorbar(aes(ymin = lnRR_lower, 
+                    ymax = lnRR_upper), 
+                width = .2,
+                position = position_dodge(0.5)) + 
+  scale_color_discrete(labels = c("large connected to large", 
+                                 "large connnected to small")) +
   theme_bw() +
-  theme(panel.grid.major = element_blank(),
+  theme(panel.grid.major = element_blank(), 
         panel.grid.minor = element_blank(),
-        legend.position = c(.95, .95),
+        legend.position = c(.90, .97),
         legend.justification = c("right", "top"),
         legend.box.just = "right",
         legend.margin = margin(6, 6, 6, 6)) +
-  scale_color_discrete(labels = c("large connected to large",
-                                 "large connected to small")) +
-  geom_vline(xintercept = first_perturbation_day + 0.7,
-             linetype="dotdash",
-             color = "grey",
+#  geom_vline(xintercept = first_perturbation_day + 0.7, 
+#             linetype="dotdash", 
+#             color = "grey", 
+#             size=0.7) +
+  geom_hline(yintercept = 0, 
+             linetype="dotted", 
+             color = "black", 
              size=0.7) +
   labs(caption = "Vertical grey line: first perturbation")
 
-ds_biomass_averaged_treatments %>%
+ds_lnRR %>%
   filter(disturbance == "high") %>%
-  filter(eco_metaeco_type == "L (S_L)" | eco_metaeco_type == "L (L_L)") %>%
+  filter(eco_metaeco_type == "L (L_L)" | eco_metaeco_type == "L (S_L)") %>%
   ggplot(aes(x = day,
-             y = lnRR_biomass,
+             y = lnRR,
              color = eco_metaeco_type)) +
-  geom_point() +
-  geom_line(aes(color = eco_metaeco_type)) +
+  geom_point(position = position_dodge(0.5)) +
+  geom_line(position = position_dodge(0.5)) + 
   labs(title = "Disturbance = high",
        x = "Day",
-       y = "LnRR Local Bioarea (µm²/µl)",
+       y = "lnRR local bioarea (µm²/µl)",
        color = "") +
+  geom_errorbar(aes(ymin = lnRR_lower, 
+                    ymax = lnRR_upper), 
+                width = .2,
+                position = position_dodge(0.5)) + 
+  scale_color_discrete(labels = c("large connected to large", 
+                                 "large connnected to small")) +
   theme_bw() +
-  theme(panel.grid.major = element_blank(),
+  theme(panel.grid.major = element_blank(), 
         panel.grid.minor = element_blank(),
-        legend.position = c(.95, .95),
+        legend.position = c(.90, .97),
         legend.justification = c("right", "top"),
         legend.box.just = "right",
         legend.margin = margin(6, 6, 6, 6)) +
-  scale_color_discrete(labels = c("large connected to large",
-                                 "large connected to small")) +
-  geom_vline(xintercept = first_perturbation_day + 0.7,
-             linetype="dotdash",
-             color = "grey",
+#  geom_vline(xintercept = first_perturbation_day + 0.7, 
+#             linetype="dotdash", 
+#             color = "grey", 
+#             size=0.7) +
+  geom_hline(yintercept = 0, 
+             linetype="dotted", 
+             color = "black", 
              size=0.7) +
   labs(caption = "Vertical grey line: first perturbation")
 
 
-## ----choose-time-points-large------------------------------------------------------------------------------------------------------------
+## ----choose-time-points-large-------------------------------------------------------------------------------------------------------------
 first_time_point = 2
 last_time_point = 7
 
 
-## ----large-patches-full-model------------------------------------------------------------------------------------------------------------
+## ----large-patches-full-model-------------------------------------------------------------------------------------------------------------
 full_model = lm(lnRR_biomass ~
                   day + 
                   eco_metaeco_type + 
@@ -195,7 +211,7 @@ full_model = lm(lnRR_biomass ~
                                 eco_metaeco_type == "L (S_L)"))
 
 
-## ----large-patches-no-TM-----------------------------------------------------------------------------------------------------------------
+## ----large-patches-no-TM------------------------------------------------------------------------------------------------------------------
 no_TP = lm(lnRR_biomass ~
                   day + 
                   eco_metaeco_type + 
@@ -211,7 +227,7 @@ no_TP = lm(lnRR_biomass ~
 AIC(full_model, no_TP)
 
 
-## ----large-patches-no-TD-----------------------------------------------------------------------------------------------------------------
+## ----large-patches-no-TD------------------------------------------------------------------------------------------------------------------
 no_TD = lm(lnRR_biomass ~
                   day + 
                   eco_metaeco_type + 
@@ -226,7 +242,7 @@ no_TD = lm(lnRR_biomass ~
 AIC(no_TP, no_TD)
 
 
-## ----large-patches-no-PD-----------------------------------------------------------------------------------------------------------------
+## ----large-patches-no-PD------------------------------------------------------------------------------------------------------------------
 no_PD = lm(lnRR_biomass ~
                   day + 
                   eco_metaeco_type + 
@@ -241,13 +257,13 @@ no_PD = lm(lnRR_biomass ~
 AIC(no_TP, no_PD)
 
 
-## ----large-t2-t7-best-model--------------------------------------------------------------------------------------------------------------
+## ----large-t2-t7-best-model---------------------------------------------------------------------------------------------------------------
 best_model = no_PD
 par(mfrow = c(2,3))
 plot(best_model, which = 1:5)
 
 
-## ----------------------------------------------------------------------------------------------------------------------------------------
+## -----------------------------------------------------------------------------------------------------------------------------------------
 R2_full = glance(best_model)$r.squared
 
 no_patch_type = lm(lnRR_biomass ~
