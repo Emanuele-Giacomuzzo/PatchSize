@@ -40,6 +40,7 @@ for (main_section in c("biomass", "body_size", "tests")){
 ```
 
 ```{r eval = FALSE}
+renv::repair()
 renv::snapshot()
 ```
 

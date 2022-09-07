@@ -1181,10 +1181,10 @@
     },
     "lpSolve": {
       "Package": "lpSolve",
-      "Version": "5.6.15",
+      "Version": "5.6.16",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "90c3bc497e7d5ec9dbb863621be15abb",
+      "Hash": "8d81b756eff69fdd22bb028b7e0f4cac",
       "Requirements": []
     },
     "lubridate": {
