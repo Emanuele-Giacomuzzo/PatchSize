@@ -1,4 +1,4 @@
-## ----message=FALSE------------------------------------------------------------------------------------------------------------------------
+## ----message=FALSE----------------------------------------------------------------------------
 ds_regional_biomass %>%
     filter ( disturbance == "low") %>%
     filter (metaecosystem_type == "S_L" | metaecosystem_type == "S_L_from_isolated") %>%

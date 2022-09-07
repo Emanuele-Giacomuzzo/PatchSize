@@ -21,6 +21,7 @@ editor_options:
 library(here)
 library(knitr)
 library(purrr)
+
 for (main_section in c("biomass", "body_size", "tests")){
   
  sections.path = here("r_files", main_section, "sections")
@@ -38,8 +39,11 @@ for (main_section in c("biomass", "body_size", "tests")){
 }
 ```
 
+```{r eval = FALSE}
+renv::snapshot()
+```
+
 ```{r set-up-environment, echo = FALSE}
-#renv::snapshot() #Run this to save all the current packages used in this project
 knitr::opts_chunk$set(message = FALSE)
 rm( list = ls(  ) )
 cat( "\014" )
@@ -68,7 +72,7 @@ library("gganimate")
 library("gapminder")
 library("gifski")
 library("av")
-#library("transformr") #Can't call it because sf package is not installed and when I try installing sf I get the error: configure: error: libproj or sqlite3 not found in standard or given locations. I'm for now not reinstalling it. I'll need it once that I update the body size gganimate plots. 
+library("transformr")
 library("gifski")
 library("GGally")
 library("strengejacke")

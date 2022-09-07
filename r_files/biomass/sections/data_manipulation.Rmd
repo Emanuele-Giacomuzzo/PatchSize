@@ -63,9 +63,9 @@ number_of_columns_t0 = ncol(t0)
 nr_of_cultures = nrow(culture_info)
 nr_of_videos = nrow(t0)
 
-t0 = t0[rep(row.names(t0), nr_of_cultures), 1:number_of_columns_t0] %>%
-  arrange(file) %>%
-  mutate(culture_ID = rep(1:nr_of_cultures, times = nr_of_videos))
+t0 = t0[rep(row.names(t0), nr_of_cultures),] %>%
+   arrange(file) %>%
+   mutate(culture_ID = rep(1:nr_of_cultures, times = nr_of_videos))
 
 #Merge time points
 t0 = merge(culture_info,t0, by="culture_ID")

@@ -1,5 +1,16 @@
-## -----------------------------------------------------------------------------------------------------------------------------------------
+## ---------------------------------------------------------------------------------------------
 culture_info = read.csv(here("data", "PatchSizePilot_culture_info.csv"), header = TRUE)
+
+
+## ---------------------------------------------------------------------------------------------
+datatable(culture_info[,1:10],
+          rownames = FALSE,
+          options = list(scrollX = TRUE),
+          filter = list(position = 'top', 
+                        clear = FALSE))
+
+
+## ---------------------------------------------------------------------------------------------
 load(here("data", "morphology", "t0.RData"));t0 = morph_mvt
 load(here("data", "morphology", "t1.RData"));t1 = morph_mvt
 load(here("data", "morphology", "t2.RData"));t2 = morph_mvt
@@ -10,17 +21,8 @@ load(here("data", "morphology", "t6.RData"));t6 = morph_mvt
 load(here("data", "morphology", "t7.RData"));t7 = morph_mvt
 rm(morph_mvt)
 
-datatable(culture_info[,1:10],
-          rownames = FALSE,
-          options = list(scrollX = TRUE),
-          filter = list(position = 'top', 
-                        clear = FALSE))
 
-
-## -----------------------------------------------------------------------------------------------------------------------------------------
-
-### --- Tidy t0 - t7 data-sets --- ###
-
+## ----body-size-tidy-time-points---------------------------------------------------------------
 #Column: time
 t0$time = NA
 t1$time = NA
@@ -47,28 +49,27 @@ t6 = t6 %>% rename(replicate_video = replicate)
 t7 = t7 %>% rename(replicate_video = replicate)
 
 
-### --- Create ds_body_size dataset --- ###
+## ----ds-body-size-creation--------------------------------------------------------------------
+cultures_n = max(culture_info$culture_ID)
+original_t0_rows = nrow(t0)
+ID_vector = rep(1:cultures_n, each = original_t0_rows)
+t0 = t0 %>%
+  slice(rep(1:n(), cultures_n)) %>%
+  mutate(culture_ID = ID_vector)
 
-long_t0 = t0 %>% slice(rep(1:n(), max(culture_info$culture_ID)))
-ID_vector = NULL
-ID_vector_elongating = NULL
-for (ID in 1:max(culture_info$culture_ID)){
-  ID_vector = rep(ID, times = nrow(t0))
-  ID_vector_elongating = c(ID_vector_elongating, ID_vector)
-}
-long_t0$culture_ID = ID_vector_elongating
-t0 = merge(culture_info,long_t0, by="culture_ID"); rm(long_t0)
-t1 = merge(culture_info,t1,by="culture_ID")
-t2 = merge(culture_info,t2,by="culture_ID")
-t3 = merge(culture_info,t3,by="culture_ID")
-t4 = merge(culture_info,t4,by="culture_ID")
-t5 = merge(culture_info,t5,by="culture_ID")
-t6 = merge(culture_info,t6,by="culture_ID")
-t7 = merge(culture_info,t7,by="culture_ID")
-ds_body_size = rbind(t0, t1, t2, t3, t4, t5, t6, t7); rm(t0, t1, t2, t3, t4, t5, t6, t7)
+t0 = merge(culture_info, t0, by="culture_ID")
+t1 = merge(culture_info, t1, by="culture_ID")
+t2 = merge(culture_info, t2, by="culture_ID")
+t3 = merge(culture_info, t3, by="culture_ID")
+t4 = merge(culture_info, t4, by="culture_ID")
+t5 = merge(culture_info, t5, by="culture_ID")
+t6 = merge(culture_info, t6, by="culture_ID")
+t7 = merge(culture_info, t7, by="culture_ID")
+ds_body_size = rbind(t0, t1, t2, t3, t4, t5, t6, t7)
+rm(t0, t1, t2, t3, t4, t5, t6, t7)
 
-### --- Tidy ds_body_size data-set --- ###
 
+## ----tidy-body-size-ds------------------------------------------------------------------------
 #Column: day
 ds_body_size$day = ds_body_size$time_point;
 ds_body_size$day[ds_body_size$day=="t0"] = "0"
@@ -92,10 +93,6 @@ ds_body_size$time_point[ds_body_size$time_point=="t6"] = 6
 ds_body_size$time_point[ds_body_size$time_point=="t7"] = 7
 ds_body_size$time_point = as.character(ds_body_size$time_point)
 
-#Column: eco_metaeco_type
-ds_body_size$eco_metaeco_type = factor(ds_body_size$eco_metaeco_type, 
-                             levels=c('S', 'S (S_S)', 'S (S_L)', 'M', 'M (M_M)', 'L', 'L (L_L)', 'L (S_L)'))
-
 #Select useful columns
 ds_body_size = ds_body_size %>% 
   select(culture_ID, 
@@ -104,6 +101,7 @@ ds_body_size = ds_body_size %>%
          metaecosystem_type, 
          mean_area, 
          replicate_video, 
+         time_point,
          day, 
          metaecosystem, 
          system_nr, 
@@ -113,6 +111,7 @@ ds_body_size = ds_body_size %>%
 ds_body_size = ds_body_size[, c("culture_ID", 
             "system_nr", 
             "disturbance", 
+            "time_point",
             "day",
             "patch_size", 
             "metaecosystem", 
@@ -121,6 +120,8 @@ ds_body_size = ds_body_size[, c("culture_ID",
             "replicate_video",
             "mean_area")]
 
+
+## ---------------------------------------------------------------------------------------------
 datatable(ds_body_size,
           rownames = FALSE,
           options = list(scrollX = TRUE),
@@ -128,7 +129,7 @@ datatable(ds_body_size,
                         clear = FALSE))
 
 
-## -----------------------------------------------------------------------------------------------------------------------------------------
+## ---------------------------------------------------------------------------------------------
 
 #### --- PARAMETERS & INITIALISATION --- ###
 
@@ -181,6 +182,29 @@ ds_classes = rbind(size_class[[1]], size_class[[2]], size_class[[3]], size_class
                   size_class[[9]], size_class[[10]], size_class[[11]], size_class[[12]],)
 
 datatable(ds_classes,
+          rownames = FALSE,
+          options = list(scrollX = TRUE),
+          filter = list(position = 'top', 
+                        clear = FALSE))
+
+
+## ----ds_median_body_size-creation-------------------------------------------------------------
+eco_metaeco_types = unique(culture_info$eco_metaeco_type)
+
+ds_median_body_size = ds_body_size %>%
+        group_by(disturbance, 
+                 metaecosystem,
+                 patch_size, 
+                 eco_metaeco_type, 
+                 culture_ID, 
+                 time_point,
+                 day, 
+                 replicate_video) %>%
+        summarise(median_body_size = median(mean_area))
+
+
+## ---------------------------------------------------------------------------------------------
+datatable(ds_median_body_size,
           rownames = FALSE,
           options = list(scrollX = TRUE),
           filter = list(position = 'top', 

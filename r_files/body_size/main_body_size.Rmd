@@ -11,12 +11,18 @@ editor_options:
 
 ### Data
 
-```{r child = here("r_files", "body_size", "sections", "data_manipulation.Rmd")}
+```{r body-size-data-manipulation, child = here("r_files", "body_size", "sections", "data_manipulation.Rmd")}
 source(here("r_files", "body_size", "extracted_sections", "data_manipulation.R"))
 ```
 
-### Plot
+### Body size distribution
 
-```{r child = here("r_files", "body_size", "sections", "plots.Rmd")}
-source(here("r_files", "body_size", "extracted_sections", "plots.R"))
+```{r body-size-distribution, child = here("r_files", "body_size", "sections", "body_size_distribution.Rmd")}
+source(here("r_files", "body_size", "extracted_sections", "body_size_distribution.R"))
+```
+
+### Mean body size
+
+```{r mean-body-size, child = here("r_files", "body_size", "sections", "mean_body_size.Rmd")}
+source(here("r_files", "body_size", "extracted_sections", "mean_body_size.R"))
 ```
