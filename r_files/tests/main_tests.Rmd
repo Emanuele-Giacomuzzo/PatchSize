@@ -1,0 +1,12 @@
+---
+title: "main_tests"
+author: "Emanuele Giacomuzzo"
+date: "2022-09-08"
+output: html_document
+---
+
+## Tests
+
+```{r child = here("r_files", "tests", "sections", "evaporation_tests.Rmd")}
+source(here("r_files", "tests", "extracted_sections", "evaporation_tests.R"))
+```

@@ -7,6 +7,8 @@ editor_options:
   chunk_output_type: console
 ---
 
+## Biomass {.tabset .tabset-pills}
+
 ### Aim
 
 Here I study how **biomass density** changes across treatments in the PatchSizePilot. In particular, my research questions are:
@@ -102,12 +104,4 @@ How does biomass density change according to the size of isolated patches? *(How
 
 ```{r child = here("r_files", "biomass", "sections", "isolated_patches.Rmd")}
 source(here("r_files", "biomass", "extracted_sections", "isolated_patches.R"))
-```
-
-### Evaporation
-
-Was the amount of evaporation different across different treatments and time points?
-
-```{r child = here("r_files", "biomass", "sections", "evaporation.Rmd"), eval= TRUE}
-source(here("r_files", "biomass", "extracted_sections", "evaporation.R"))
 ```

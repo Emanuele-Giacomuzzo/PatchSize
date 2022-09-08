@@ -7,7 +7,7 @@ editor_options:
   chunk_output_type: console
 ---
 
-#### Comparison of different ecosystem types across time
+### Body size distribution {.tabset .tabset-pills}
 
 ```{r fig.align='center', eval = FALSE}
 #Takes about 7 minutes to run 
@@ -82,9 +82,20 @@ end = Sys.time()
 running_time = end - start
 ```
 
+#### Small patches
+
 ```{r echo = FALSE}
 include_graphics(here("gifs", "transition_day_S_low.gif"))
 include_graphics(here("gifs", "transition_day_S_high.gif"))
+```
+
+#### Large patches
+
+```{r}
 include_graphics(here("gifs", "transition_day_L_low.gif"))
 include_graphics(here("gifs", "transition_day_L_high.gif"))
 ```
+
+#### Isolated patches
+
+...

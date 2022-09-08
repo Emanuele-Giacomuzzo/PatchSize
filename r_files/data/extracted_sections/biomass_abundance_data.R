@@ -1,15 +1,3 @@
-## ----experimental-cultures----------------------------------------------------------------------------------------------------------------
-culture_info = read.csv(here("data", "PatchSizePilot_culture_info.csv"), header = TRUE)
-
-
-## -----------------------------------------------------------------------------------------------------------------------------------------
-datatable(culture_info[,1:10],
-          rownames = FALSE,
-          options = list(scrollX = TRUE),
-          filter = list(position = 'top', 
-                        clear = FALSE))
-
-
 ## ----biomass-import, message = FALSE, echo = TRUE-----------------------------------------------------------------------------------------
 load(here("data", "population", "t0.RData")); t0 = pop_output
 load(here("data", "population", "t1.RData")); t1 = pop_output
@@ -59,50 +47,50 @@ t4 = merge(culture_info,t4, by = "culture_ID")
 t5 = merge(culture_info,t5, by = "culture_ID")
 t6 = merge(culture_info,t6, by = "culture_ID")
 t7 = merge(culture_info,t7, by = "culture_ID")
-ds_biomass = rbind(t0, t1, t2, t3, t4, t5, t6, t7)
+ds_biomass_abund = rbind(t0, t1, t2, t3, t4, t5, t6, t7)
 rm(t0, t1, t2, t3, t4, t5, t6, t7)
 
 
 ## ----biomass-tidy-columns, message = FALSE, echo = TRUE-----------------------------------------------------------------------------------
 #Take off spilled cultures
-ds_biomass = ds_biomass %>%
+ds_biomass_abund = ds_biomass_abund %>%
   filter(! culture_ID %in% ecosystems_to_take_off)
 
 #Column: time_point
-ds_biomass$time_point[ds_biomass$time_point=="t0"] = 0
-ds_biomass$time_point[ds_biomass$time_point=="t1"] = 1
-ds_biomass$time_point[ds_biomass$time_point=="t2"] = 2
-ds_biomass$time_point[ds_biomass$time_point=="t3"] = 3
-ds_biomass$time_point[ds_biomass$time_point=="t4"] = 4
-ds_biomass$time_point[ds_biomass$time_point=="t5"] = 5
-ds_biomass$time_point[ds_biomass$time_point=="t6"] = 6
-ds_biomass$time_point[ds_biomass$time_point=="t7"] = 7
-ds_biomass$time_point = as.character(ds_biomass$time_point)
+ds_biomass_abund$time_point[ds_biomass_abund$time_point=="t0"] = 0
+ds_biomass_abund$time_point[ds_biomass_abund$time_point=="t1"] = 1
+ds_biomass_abund$time_point[ds_biomass_abund$time_point=="t2"] = 2
+ds_biomass_abund$time_point[ds_biomass_abund$time_point=="t3"] = 3
+ds_biomass_abund$time_point[ds_biomass_abund$time_point=="t4"] = 4
+ds_biomass_abund$time_point[ds_biomass_abund$time_point=="t5"] = 5
+ds_biomass_abund$time_point[ds_biomass_abund$time_point=="t6"] = 6
+ds_biomass_abund$time_point[ds_biomass_abund$time_point=="t7"] = 7
+ds_biomass_abund$time_point = as.character(ds_biomass_abund$time_point)
 
 #Column: day
-ds_biomass$day = NA
-ds_biomass$day[ds_biomass$time_point== 0] = 0
-ds_biomass$day[ds_biomass$time_point== 1] = 4
-ds_biomass$day[ds_biomass$time_point== 2] = 8
-ds_biomass$day[ds_biomass$time_point== 3] = 12
-ds_biomass$day[ds_biomass$time_point== 4] = 16
-ds_biomass$day[ds_biomass$time_point== 5] = 20
-ds_biomass$day[ds_biomass$time_point== 6] = 24
-ds_biomass$day[ds_biomass$time_point== 7] = 28
+ds_biomass_abund$day = NA
+ds_biomass_abund$day[ds_biomass_abund$time_point== 0] = 0
+ds_biomass_abund$day[ds_biomass_abund$time_point== 1] = 4
+ds_biomass_abund$day[ds_biomass_abund$time_point== 2] = 8
+ds_biomass_abund$day[ds_biomass_abund$time_point== 3] = 12
+ds_biomass_abund$day[ds_biomass_abund$time_point== 4] = 16
+ds_biomass_abund$day[ds_biomass_abund$time_point== 5] = 20
+ds_biomass_abund$day[ds_biomass_abund$time_point== 6] = 24
+ds_biomass_abund$day[ds_biomass_abund$time_point== 7] = 28
 
 #Column: size_of_connected_patch
-ds_biomass$size_of_connected_patch[ds_biomass$eco_metaeco_type == "S"] = "S"
-ds_biomass$size_of_connected_patch[ds_biomass$eco_metaeco_type == "S (S_S)"] = "S"
-ds_biomass$size_of_connected_patch[ds_biomass$eco_metaeco_type == "S (S_L)"] = "L"
-ds_biomass$size_of_connected_patch[ds_biomass$eco_metaeco_type == "M (M_M)"] = "M"
-ds_biomass$size_of_connected_patch[ds_biomass$eco_metaeco_type == "L"] = "L"
-ds_biomass$size_of_connected_patch[ds_biomass$eco_metaeco_type == "L (L_L)"] = "L"
-ds_biomass$size_of_connected_patch[ds_biomass$eco_metaeco_type == "L (S_L)"] = "S"
+ds_biomass_abund$size_of_connected_patch[ds_biomass_abund$eco_metaeco_type == "S"] = "S"
+ds_biomass_abund$size_of_connected_patch[ds_biomass_abund$eco_metaeco_type == "S (S_S)"] = "S"
+ds_biomass_abund$size_of_connected_patch[ds_biomass_abund$eco_metaeco_type == "S (S_L)"] = "L"
+ds_biomass_abund$size_of_connected_patch[ds_biomass_abund$eco_metaeco_type == "M (M_M)"] = "M"
+ds_biomass_abund$size_of_connected_patch[ds_biomass_abund$eco_metaeco_type == "L"] = "L"
+ds_biomass_abund$size_of_connected_patch[ds_biomass_abund$eco_metaeco_type == "L (L_L)"] = "L"
+ds_biomass_abund$size_of_connected_patch[ds_biomass_abund$eco_metaeco_type == "L (S_L)"] = "S"
 
 #Keep this dataset for the evaporation effects 
-ds_for_evaporation = ds_biomass
+ds_for_evaporation = ds_biomass_abund
 
-ds_biomass = ds_biomass %>% 
+ds_biomass_abund = ds_biomass_abund %>% 
   select(culture_ID, 
          patch_size,
          patch_size_volume,
@@ -134,7 +122,7 @@ ds_biomass = ds_biomass %>%
 
 
 ## -----------------------------------------------------------------------------------------------------------------------------------------
-datatable(ds_biomass,
+datatable(ds_biomass_abund,
           rownames = FALSE,
           options = list(scrollX = TRUE),
           filter = list(position = 'top', 
@@ -142,7 +130,7 @@ datatable(ds_biomass,
 
 
 ## ----regional-biomass---------------------------------------------------------------------------------------------------------------------
-ds_regional_biomass = ds_biomass %>%
+ds_regional_biomass = ds_biomass_abund %>%
   filter(metaecosystem == "yes") %>%
   filter(! system_nr %in% metaecosystems_to_take_off) %>%
   group_by(culture_ID, 
@@ -164,7 +152,7 @@ ds_regional_biomass = ds_biomass %>%
 
 
 ## ----create-SL_SL_from_isolated, message=FALSE, results='hide'----------------------------------------------------------------------------
-isolated_S_and_L = ds_biomass %>%
+isolated_S_and_L = ds_biomass_abund %>%
   filter(eco_metaeco_type == "S" | eco_metaeco_type == "L") %>%
   group_by(system_nr, disturbance, time_point, day, eco_metaeco_type) %>%
   summarise(bioarea_per_volume_across_videos = mean(bioarea_per_volume))
@@ -200,7 +188,7 @@ SL_from_isolated_all_combinations = NULL
 for (pair in 1:number_of_combinations){
   
   SL_from_isolated_one_combination = 
-    ds_biomass %>%
+    ds_biomass_abund %>%
     filter(system_nr %in% system_nr_combinations[pair,]) %>%
     group_by(disturbance, day, time_point, system_nr) %>%
     summarise(regional_bioarea_across_videos = mean(bioarea_per_volume)) %>%
@@ -234,7 +222,7 @@ datatable(ds_regional_biomass,
 
 
 ## ----create-ds_lnRR_bioarea_density-------------------------------------------------------------------------------------------------------
-eco_metaeco_types = unique(ds_biomass$eco_metaeco_type)
+eco_metaeco_types = unique(ds_biomass_abund$eco_metaeco_type)
 single_row = NULL
 row_n = 0
 
@@ -244,7 +232,7 @@ for (disturbance_input in c("low", "high")){
       
       row_n = row_n + 1
       
-      single_row[[row_n]] = ds_biomass %>%
+      single_row[[row_n]] = ds_biomass_abund %>%
         filter(eco_metaeco_type == eco_metaeco_input) %>%
         filter(disturbance == disturbance_input) %>%
         filter(time_point == time_point_input) %>% 

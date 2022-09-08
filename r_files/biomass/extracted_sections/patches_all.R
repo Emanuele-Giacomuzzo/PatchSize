@@ -1,6 +1,6 @@
 ## -----------------------------------------------------------------------------------------------------------------------------------------
 for (disturbance_input in c("low", "high")) {
-print(ds_biomass %>%
+print(ds_biomass_abund %>%
   group_by(culture_ID, disturbance, day, eco_metaeco_type) %>%
   summarise(bioarea_per_volume = mean(bioarea_per_volume)) %>% #Average across videos
   filter(disturbance == disturbance_input) %>%
@@ -37,7 +37,7 @@ print(ds_biomass %>%
 
 
 ## -----------------------------------------------------------------------------------------------------------------------------------------
-ds_biomass_total = ds_biomass %>%
+ds_biomass_total = ds_biomass_abund %>%
   filter(!culture_ID %in% ecosystems_to_take_off) %>%
   group_by(culture_ID, 
            system_nr, 

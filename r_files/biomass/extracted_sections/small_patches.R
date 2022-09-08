@@ -1,7 +1,7 @@
 ## ----small-patches-single-ecosystems-plots------------------------------------------------------------------------------------------------
 for (disturbance_input in c("low", "high")) {
 
-  print(ds_biomass %>%
+  print(ds_biomass_abund %>%
   filter(disturbance == disturbance_input) %>%
   filter(patch_size == "S") %>%
   ggplot(aes(x = day,
@@ -36,7 +36,7 @@ for (disturbance_input in c("low", "high")) {
 ## ----small-patches-boxplots---------------------------------------------------------------------------------------------------------------
 for (disturbance_input in c("low", "high")) {
   
-print(ds_biomass %>%
+print(ds_biomass_abund %>%
   filter(disturbance == disturbance_input) %>%
   filter(patch_size == "S") %>%
   ggplot(aes(x = day,

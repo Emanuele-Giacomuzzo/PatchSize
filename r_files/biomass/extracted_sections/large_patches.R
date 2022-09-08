@@ -1,7 +1,7 @@
 ## ----large-single-patches-plots-----------------------------------------------------------------------------------------------------------
 for (disturbance_input in c("low", "high")) {
 
-  print(ds_biomass %>%
+  print(ds_biomass_abund %>%
   filter(disturbance == disturbance_input) %>%
   filter(patch_size == "L") %>%
   ggplot(aes(x = day,
@@ -34,7 +34,7 @@ for (disturbance_input in c("low", "high")) {
 
 ## ----large-boxplots-----------------------------------------------------------------------------------------------------------------------
 for (disturbance_input in c("low", "high")){
-  print(ds_biomass %>%
+  print(ds_biomass_abund %>%
   filter(disturbance == disturbance_input) %>%
   filter(patch_size == "L") %>%
   ggplot(aes(x = day,
