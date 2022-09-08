@@ -1,4 +1,4 @@
-## ----small-patches-single-ecosystems-plots----------------------------------------------------
+## ----small-patches-single-ecosystems-plots------------------------------------------------------------------------------------------------
 for (disturbance_input in c("low", "high")) {
 
   print(ds_biomass %>%
@@ -33,7 +33,7 @@ for (disturbance_input in c("low", "high")) {
 }
 
 
-## ----small-patches-boxplots-------------------------------------------------------------------
+## ----small-patches-boxplots---------------------------------------------------------------------------------------------------------------
 for (disturbance_input in c("low", "high")) {
   
 print(ds_biomass %>%
@@ -66,10 +66,10 @@ print(ds_biomass %>%
 }
 
 
-## ----small-patches-lnRR-plots-----------------------------------------------------------------
+## ----small-patches-lnRR-plots-------------------------------------------------------------------------------------------------------------
 for (disturbance_input in c("low", "high")) {
   
-print(ds_lnRR %>%
+print(ds_lnRR_bioarea_density %>%
   filter(disturbance == disturbance_input) %>%
   filter(eco_metaeco_type == "S (S_S)" | eco_metaeco_type == "S (S_L)") %>%
   ggplot(aes(x = day,
@@ -81,10 +81,10 @@ print(ds_lnRR %>%
        x = "Day",
        y = "lnRR local bioarea (µm²/µl)",
        color = "") +
-  geom_errorbar(aes(ymin = lnRR_lower, 
-                    ymax = lnRR_upper), 
-                width = .2,
-                position = position_dodge(0.5)) + 
+  #geom_errorbar(aes(ymin = lnRR_lower, 
+  #                  ymax = lnRR_upper), 
+  #              width = .2,
+  #              position = position_dodge(0.5)) + 
   scale_color_discrete(labels = c("small connected to large", 
                                  "small connnected to small")) +
   theme_bw() +
@@ -105,33 +105,34 @@ print(ds_lnRR %>%
 }
 
 
-## ----choose-time-points-----------------------------------------------------------------------
+## ----choose-time-points-------------------------------------------------------------------------------------------------------------------
 first_time_point = 2
 last_time_point = 7
 
 
-## ----small-patches-full-model-----------------------------------------------------------------
-full_model = lm(lnRR_bioarea_density ~                  day + 
+## ----small-patches-full-model-------------------------------------------------------------------------------------------------------------
+full_model = lm(lnRR_bioarea_density ~                  
+                  day + 
                   eco_metaeco_type + 
                   disturbance +
                   day * eco_metaeco_type +
                   day * disturbance + 
                   eco_metaeco_type * disturbance,
-                  data = ds_lnRR %>%
+                  data = ds_lnRR_bioarea_density %>%
                          filter(time_point >= first_time_point) %>%
                          filter(time_point <= last_time_point) %>%
                          filter(eco_metaeco_type== "S (S_S)" | 
                                 eco_metaeco_type == "S (S_L)"))
 
 
-## ----small-patches-no-TM----------------------------------------------------------------------
+## ----small-patches-no-TM------------------------------------------------------------------------------------------------------------------
 no_TP = lm(lnRR_bioarea_density ~
                   day + 
                   eco_metaeco_type + 
                   disturbance +
                   day * disturbance + 
                   eco_metaeco_type * disturbance,
-                  data = ds_lnRR %>%
+                  data = ds_lnRR_bioarea_density %>%
                          filter(time_point >= first_time_point) %>%
                          filter(time_point <= last_time_point) %>%
                          filter(eco_metaeco_type== "S (S_S)" | 
@@ -140,14 +141,14 @@ no_TP = lm(lnRR_bioarea_density ~
 AIC(full_model, no_TP)
 
 
-## ----small-patches-no-TD----------------------------------------------------------------------
+## ----small-patches-no-TD------------------------------------------------------------------------------------------------------------------
 no_TD = lm(lnRR_bioarea_density ~
                   day + 
                   eco_metaeco_type + 
                   disturbance +
                   day * eco_metaeco_type +
                   eco_metaeco_type * disturbance,
-                  data = ds_lnRR %>%
+                  data = ds_lnRR_bioarea_density %>%
                          filter(time_point >= first_time_point) %>%
                          filter(time_point <= last_time_point) %>%
                          filter(eco_metaeco_type== "S (S_S)" | 
@@ -156,13 +157,13 @@ no_TD = lm(lnRR_bioarea_density ~
 AIC(full_model, no_TD)
 
 
-## ----small-patches-no-MD----------------------------------------------------------------------
+## ----small-patches-no-MD------------------------------------------------------------------------------------------------------------------
 no_PD = lm(lnRR_bioarea_density ~
                   day + 
                   eco_metaeco_type + 
                   disturbance +
                   day * eco_metaeco_type,
-                  data = ds_lnRR %>%
+                  data = ds_lnRR_bioarea_density %>%
                          filter(time_point >= first_time_point) %>%
                          filter(time_point <= last_time_point) %>%
                          filter(eco_metaeco_type== "S (S_S)" | 
@@ -171,18 +172,18 @@ no_PD = lm(lnRR_bioarea_density ~
 AIC(no_TD, no_PD)
 
 
-## ----small-t2-t7-best-model-------------------------------------------------------------------
+## ----small-t2-t7-best-model---------------------------------------------------------------------------------------------------------------
 best_model = no_PD
 par(mfrow = c(2,3))
 plot(best_model, which = 1:5)
 
 
-## ---------------------------------------------------------------------------------------------
+## -----------------------------------------------------------------------------------------------------------------------------------------
 R2_full = glance(best_model)$r.squared
 no_patch_type = lm(lnRR_bioarea_density ~
                   day + 
                   disturbance,
-                  data = ds_lnRR %>%
+                  data = ds_lnRR_bioarea_density %>%
                          filter(time_point >= first_time_point) %>%
                          filter(time_point <= last_time_point) %>%
                          filter(eco_metaeco_type== "S (S_S)" | 

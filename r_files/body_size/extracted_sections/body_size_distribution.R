@@ -1,20 +1,32 @@
-## ----fig.align='center', eval = FALSE---------------------------------------------------------
-## #Trying out gganimate, but I can't seem to manage to install transformr packaget
+## ----fig.align='center', eval = FALSE-----------------------------------------------------------------------------------------------------
+## #Takes about 7 minutes to run
+## 
+## start = Sys.time()
 ## p = list()
 ## n = 0
-## first_level = c("isolated small", "isolated small", "isolated large", "isolated large")
-## second_level = c("small connected to small", "small connected to small", "large connected to large", "large connected to large")
-## third_level = c("small connected to large", "small connected to large", "large connected to small", "large connected to small")
+## first_level = c("isolated small",
+##                 "isolated small",
+##                 "isolated large",
+##                 "isolated large")
+## second_level = c("small connected to small",
+##                  "small connected to small",
+##                  "large connected to large",
+##                  "large connected to large")
+## third_level = c("small connected to large",
+##                 "small connected to large",
+##                 "large connected to small",
+##                 "large connected to small")
+## 
 ## for (patch_size_input in c("S", "L")){
 ## 
 ##   for(disturbance_input in c("low", "high")){
 ## 
 ##     n = n + 1
 ## 
-##   title = paste0(patch_size_input,
-##               ' patches, Disturbance = ',
-##               disturbance_input,
-##               ', Day: {round(frame_time, digits = 0)}')
+##   title = paste(patch_size_input,
+##                 "patches, Disturbance =",
+##                 disturbance_input,
+##                 ", Day: {round(frame_time, digits = 0)}")
 ## 
 ##   p[[n]] <- ds_classes %>%
 ##   filter(disturbance == disturbance_input) %>%
@@ -43,24 +55,25 @@
 ##   ease_aes('linear')
 ## 
 ##   animate(p[[n]],
-##         duration = 10,
+##         duration = 20,
 ##         fps = 25,
 ##         width = 500,
 ##         height = 500,
 ##         renderer = gifski_renderer())
 ## 
-##   anim_save(here("gifs",
-##                  paste0("transition_day_",
-##                         patch_size_input,"_",
-##                         disturbance_input,
-##                         ".gif")))
+##   file_name = paste0("transition_day_",patch_size_input,"_",disturbance_input,".gif")
+##   anim_save(here("gifs", file_name))
+## 
 ## }
 ## }
+## 
+## end = Sys.time()
+## running_time = end - start
 
 
-## ----echo = FALSE-----------------------------------------------------------------------------
-knitr::include_graphics(here("gifs", "transition_day_S_low.gif"))
-knitr::include_graphics(here("gifs", "transition_day_S_high.gif"))
-knitr::include_graphics(here("gifs", "transition_day_L_low.gif"))
-knitr::include_graphics(here("gifs", "transition_day_L_high.gif"))
+## ----echo = FALSE-------------------------------------------------------------------------------------------------------------------------
+include_graphics(here("gifs", "transition_day_S_low.gif"))
+include_graphics(here("gifs", "transition_day_S_high.gif"))
+include_graphics(here("gifs", "transition_day_L_low.gif"))
+include_graphics(here("gifs", "transition_day_L_high.gif"))
 

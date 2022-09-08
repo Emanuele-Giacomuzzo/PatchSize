@@ -12,7 +12,7 @@ editor_options:
 ```{r large-single-patches-plots}
 for (disturbance_input in c("low", "high")) {
 
-  print(ds_biomass %>%
+  print(ds_biomass_abund %>%
   filter(disturbance == disturbance_input) %>%
   filter(patch_size == "L") %>%
   ggplot(aes(x = day,
@@ -45,7 +45,7 @@ for (disturbance_input in c("low", "high")) {
 
 ```{r large-boxplots}
 for (disturbance_input in c("low", "high")){
-  print(ds_biomass %>%
+  print(ds_biomass_abund %>%
   filter(disturbance == disturbance_input) %>%
   filter(patch_size == "L") %>%
   ggplot(aes(x = day,
@@ -77,7 +77,7 @@ for (disturbance_input in c("low", "high")){
 
 ```{r large-patches-lnRR-plots}
 for (disturbance_input in c("low", "high")){
-print(ds_lnRR %>%
+print(ds_lnRR_bioarea_density %>%
   filter(disturbance == disturbance_input) %>%
   filter(eco_metaeco_type == "L (L_L)" | eco_metaeco_type == "L (S_L)") %>%
   ggplot(aes(x = day,
@@ -89,10 +89,10 @@ print(ds_lnRR %>%
        x = "Day",
        y = "lnRR local bioarea (µm²/µl)",
        color = "") +
-  geom_errorbar(aes(ymin = lnRR_lower, 
-                    ymax = lnRR_upper), 
-                width = .2,
-                position = position_dodge(0.5)) + 
+  #geom_errorbar(aes(ymin = lnRR_lower, 
+  #                  ymax = lnRR_upper), 
+  #              width = .2,
+  #              position = position_dodge(0.5)) + 
   scale_color_discrete(labels = c("large connected to large", 
                                  "large connnected to small")) +
   theme_bw() +
@@ -146,7 +146,7 @@ full_model = lm(lnRR_bioarea_density ~
                   day * eco_metaeco_type +
                   day * disturbance + 
                   eco_metaeco_type * disturbance,
-                  data = ds_lnRR %>%
+                  data = ds_lnRR_bioarea_density %>%
                          filter(time_point >= first_time_point) %>%
                          filter(time_point <= last_time_point) %>%
                          filter(eco_metaeco_type== "L (L_L)" | 
@@ -162,7 +162,7 @@ no_TP = lm(lnRR_bioarea_density ~
                   disturbance +
                   day * disturbance + 
                   eco_metaeco_type * disturbance,
-                  data = ds_lnRR %>%
+                  data = ds_lnRR_bioarea_density %>%
                          filter(time_point >= first_time_point) %>%
                          filter(time_point <= last_time_point) %>%
                          filter(eco_metaeco_type== "L (L_L)" | 
@@ -181,7 +181,7 @@ no_TD = lm(lnRR_bioarea_density ~
                   eco_metaeco_type + 
                   disturbance +
                   eco_metaeco_type * disturbance,
-                  data = ds_lnRR %>%
+                  data = ds_lnRR_bioarea_density %>%
                          filter(time_point >= first_time_point) %>%
                          filter(time_point <= last_time_point) %>%
                          filter(eco_metaeco_type== "L (L_L)" | 
@@ -200,7 +200,7 @@ no_PD = lm(lnRR_bioarea_density ~
                   eco_metaeco_type + 
                   disturbance +
                   day * disturbance,
-                  data = ds_lnRR %>%
+                  data = ds_lnRR_bioarea_density %>%
                          filter(time_point >= first_time_point) %>%
                          filter(time_point <= last_time_point) %>%
                          filter(eco_metaeco_type== "L (L_L)" | 
@@ -234,7 +234,7 @@ no_patch_type = lm(lnRR_bioarea_density ~
                   day + 
                   disturbance +
                   day * disturbance,
-                  data = ds_lnRR %>%
+                  data = ds_lnRR_bioarea_density %>%
                          filter(time_point >= first_time_point) %>%
                          filter(time_point <= last_time_point) %>%
                          filter(eco_metaeco_type== "L (L_L)" | 

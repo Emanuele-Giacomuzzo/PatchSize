@@ -22,12 +22,6 @@ Here I study how **biomass density** changes across treatments in the PatchSizeP
 -   How does biomass density change **locally**?
     -   How does biomass density change according to the size to which the patch is connected? *(Does a small patch connected to a small patch have the same biomass density than a small patch connected to a large patch? And does a large patch connected to a large patch have the same biomass density than a large patch connected to a small patch?)*
 
-### Data
-
-```{r child = here("r_files", "biomass", "sections", "data_manipulation.Rmd")}
-source(here("r_files", "biomass", "extracted_sections", "data_manipulation.R"))
-```
-
 ### Regional biomass {.tabset .tabset-dropdown}
 
 #### All meta-ecosystems {.tabset .tabset-pills}

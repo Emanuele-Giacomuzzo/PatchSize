@@ -22,7 +22,7 @@ library(here)
 library(knitr)
 library(purrr)
 
-for (main_section in c("biomass", "body_size", "tests")){
+for (main_section in c("data", "biomass", "body_size", "tests")){
   
  sections.path = here("r_files", main_section, "sections")
  extracted.path = here("r_files", main_section, "extracted_sections")
@@ -113,6 +113,12 @@ metaecosystems_to_take_off = 40 #System 40 was the system of culture 60 that I s
 ## Overview {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "overview.Rmd")}
+```
+
+## Data {.tabset .tabset-pills}
+
+```{r child = here("r_files", "data", "sections", "biomass_abundance_data.Rmd")}
+source(here("r_files", "data", "extracted_sections", "biomass_abundance_data.R"))
 ```
 
 ## Biomass {.tabset .tabset-pills}
