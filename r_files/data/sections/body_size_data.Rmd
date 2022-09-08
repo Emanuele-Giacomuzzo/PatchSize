@@ -5,7 +5,7 @@ date: "2022-08-07"
 output: html_document
 ---
 
-#### Body size data-set
+### Body size
 
 ```{r}
 culture_info = read.csv(here("data", "PatchSizePilot_culture_info.csv"), header = TRUE)

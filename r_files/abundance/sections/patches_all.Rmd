@@ -7,7 +7,9 @@ editor_options:
   chunk_output_type: console
 ---
 
-##### Community density
+### All patches {.tabset .tabset-pills}
+
+#### Community density
 
 ```{r}
 for (disturbance_input in c("low", "high")) {
@@ -47,7 +49,7 @@ print(ds_biomass_abund %>%
 }
 ```
 
-##### Total community abundance
+#### Total community abundance
 
 ```{r}
 ds_abundance_total = ds_biomass_abund %>%

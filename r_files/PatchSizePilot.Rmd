@@ -88,13 +88,6 @@ conflict_prefer("load", "base")
 conflict_prefer("filter", "dplyr")
 ```
 
-```{r import-functions, echo = FALSE, results = FALSE, message = FALSE}
-source(here("r_files", "biomass", "functions", "biomass_plots.R"))
-source(here("r_files", "biomass", "functions", "update_all_models_table.R"))
-source(here("r_files", "body_size", "functions", "plot_data_mean.R"))
-source(here("r_files", "body_size", "functions", "plot_data_raw.R"))
-```
-
 ```{r various-parameters, echo = FALSE}
 gif_figures = TRUE
 
@@ -116,18 +109,20 @@ metaecosystems_to_take_off = 40 #System 40 was the system of culture 60 that I s
 ```{r child = here("r_files", "data", "main_data.Rmd")}
 ```
 
-```{r child = here("r_files", "biomass", "main_biomass.Rmd")}
+```{r child = here("r_files", "biomass_regional", "main_biomass_regional.Rmd")}
+```
+
+```{r child = here("r_files", "biomass_local", "main_biomass_local.Rmd")}
 ```
 
 ```{r child = here("r_files", "abundance", "main_abundance.Rmd")}
 ```
 
-```{r child = here("r_files", "body_size", "main_body_size.Rmd")}
+```{r child = here("r_files", "body_size_distribution", "main_body_size_distribution.Rmd")}
 ```
 
 ```{r child = here("r_files", "evaporation", "sections", "evaporation.Rmd")}
 ```
-
 
 ## Figures
 

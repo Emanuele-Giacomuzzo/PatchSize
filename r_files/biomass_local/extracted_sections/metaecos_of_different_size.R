@@ -1,0 +1,128 @@
+## -----------------------------------------------------------------------------------------------------------------------------------------
+ds_regional_biomass %>%
+  filter(!metaecosystem_type == "S_L") %>%
+  filter ( disturbance == "low") %>%
+  ggplot (aes(x = day,
+                y = total_regional_bioarea,
+                group = system_nr,
+                fill = system_nr,
+              color = system_nr,
+                linetype = metaecosystem_type)) +
+    geom_line () +
+    labs(x = "Day", 
+         y = "Regional bioarea (µm²)",
+         title = "Disturbance = low",
+         fill = "System nr",
+         linetype = "") +
+    scale_y_continuous(limits = c(0, 6250)) +
+    scale_x_continuous(limits = c(-2, 30)) +
+  scale_colour_continuous(guide = "none") +
+    theme_bw() +
+    theme(panel.grid.major = element_blank(), 
+          panel.grid.minor = element_blank(),
+          legend.position = c(.95, .95),
+          legend.justification = c("right", "top"),
+          legend.box.just = "right",
+          legend.margin = margin(6, 6, 6, 6)) +
+  scale_linetype_discrete(labels = c("large-large",
+                                     "medium-medium",
+                                     "small-small"))  +
+  geom_vline(xintercept = first_perturbation_day, 
+             linetype="dotdash", 
+             color = "grey", 
+             size=0.7) +
+  labs(caption = "Vertical grey line: first perturbation")
+
+ds_regional_biomass %>%
+  filter(!metaecosystem_type == "S_L") %>%
+  filter ( disturbance == "high") %>%
+  ggplot (aes(x = day,
+                y = total_regional_bioarea,
+                group = system_nr,
+                fill = system_nr,
+              color = system_nr,
+                linetype = metaecosystem_type)) +
+    geom_line () +
+    labs(x = "Day", 
+         y = "Regional bioarea (µm²)",
+         title = "Disturbance = high",
+         fill = "System nr",
+         linetype = "") +
+    scale_y_continuous(limits = c(0, 6250)) +
+    scale_x_continuous(limits = c(-2, 30)) +
+    scale_colour_continuous(guide = "none") +
+    theme_bw() +
+    theme(panel.grid.major = element_blank(), 
+          panel.grid.minor = element_blank(),
+          legend.position = c(.95, .95),
+          legend.justification = c("right", "top"),
+          legend.box.just = "right",
+          legend.margin = margin(6, 6, 6, 6)) +
+  scale_linetype_discrete(labels = c("large-large",
+                                     "medium-medium",
+                                     "small-small"))  +
+  geom_vline(xintercept = first_perturbation_day, 
+             linetype="dotdash", 
+             color = "grey", 
+             size=0.7) +
+  labs(caption = "Vertical grey line: first perturbation")
+
+ds_regional_biomass %>%
+  filter(disturbance == "low") %>%
+  filter(!metaecosystem_type == "S_L") %>%
+  ggplot(aes(x = day,
+             y = total_regional_bioarea,
+             group = interaction(day, metaecosystem_type),
+             fill = metaecosystem_type)) +
+  geom_boxplot() + 
+  labs(title = "Disturbance = low",
+       x = "Day",
+       y = "Regional bioarea (µm²)",
+       fill = "") + 
+  #scale_fill_discrete(labels = c("isolated large", "isolated medium", "isolated small")) +
+  theme_bw() + 
+  theme(panel.grid.major = element_blank(), 
+          panel.grid.minor = element_blank(),
+          legend.position = c(.95, .95),
+          legend.justification = c("right", "top"),
+          legend.box.just = "right",
+          legend.margin = margin(6, 6, 6, 6)) +
+  scale_fill_discrete(labels = c("large-large",
+                                 "medium-medium",
+                                 "small-small")) +
+  geom_vline(xintercept = first_perturbation_day + 0.7, 
+             linetype="dotdash", 
+             color = "grey", 
+             size=0.7) +
+  labs(caption = "Vertical grey line: first perturbation")
+
+
+ds_regional_biomass %>%
+  filter(disturbance == "high") %>%
+  filter(!metaecosystem_type == "S_L") %>%
+  ggplot(aes(x = day,
+             y = total_regional_bioarea,
+             group = interaction(day, metaecosystem_type),
+             fill = metaecosystem_type)) +
+  geom_boxplot() + 
+  labs(title = "Disturbance = high",
+       x = "Day",
+       y = "Regional bioarea (µm²)",
+       fill = "") + 
+  #scale_fill_discrete(labels = c("isolated large", "isolated medium", "isolated small")) +
+  theme_bw() + 
+  theme(panel.grid.major = element_blank(), 
+          panel.grid.minor = element_blank(),
+          legend.position = c(.95, .95),
+          legend.justification = c("right", "top"),
+          legend.box.just = "right",
+          legend.margin = margin(6, 6, 6, 6)) +
+  scale_fill_discrete(labels = c("large-large",
+                                 "medium-medium",
+                                 "small-small")) +
+  geom_vline(xintercept = first_perturbation_day + 0.7, 
+             linetype="dotdash", 
+             color = "grey", 
+             size=0.7) +
+  labs(caption = "Vertical grey line: first perturbation")
+

@@ -1,0 +1,16 @@
+---
+title: "main_body_size"
+author: "Emanuele Giacomuzzo"
+date: "2022-08-03"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r body-size-distribution, child = here("r_files", "body_size_distribution", "sections", "body_size_distribution.Rmd")}
+source(here("r_files", "body_size_distribution", "extracted_sections", "body_size_distribution.R"))
+```
+
+```{r mean-body-size, child = here("r_files", "body_size_distribution", "sections", "mean_body_size.Rmd")}
+source(here("r_files", "body_size_distribution", "extracted_sections", "mean_body_size.R"))
+```

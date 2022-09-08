@@ -1,0 +1,66 @@
+---
+title: "regional_biomass_model"
+author: "Emanuele Giacomuzzo"
+date: '2022-07-22'
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r child = "model_t3-t7_time_fitted.Rmd", echo = TRUE, eval = TRUE}
+```
+
+## Regional biomass - t3 (strongest time point)
+
+I can't include system_nr as random variable as I have only one data point per system_nr.
+
+```{r dropping-time-points-3}
+
+ds_regional_predicted_shrunk_type_day_12 = ds_regional_predicted_shrunk_type %>%
+  filter(day == 12)
+
+#Fixed effect model with fitted time 
+fixed_fitted = lm(regional_mean_bioarea ~ 
+                          metaecosystem_type  + 
+                          disturbance +
+                          metaecosystem_type * disturbance,
+                        data = ds_regional_predicted_shrunk_type_day_12)
+
+fixed_fitted_2 = lm(regional_mean_bioarea ~ 
+                          metaecosystem_type  + 
+                          disturbance,
+                        data = ds_regional_predicted_shrunk_type_day_12)
+anova(fixed_fitted, fixed_fitted_2)
+```
+
+Let's get rid of the interaction.
+
+```{r}
+
+summary(fixed_fitted_2)
+
+fixed_fitted_2_no_metaecosystem_type = lm(regional_mean_bioarea ~ 
+                          disturbance,
+                        data = ds_regional_predicted_shrunk_type_day_12)
+summary(fixed_fitted_2_no_metaecosystem_type)
+```
+
+**R squared (adjusted)**
+
+Fixed_fittted_2: 0.75
+
+fixed_fitted_2\_no_metaecosystem_type: 0.23
+
+Great! So, if we just keep this data point, the effect size of meta-ecosystem type would be 0.52.
+
+Model diagnostics:
+
+```{r}
+
+par(mfrow=c(2,3))
+plot(fixed_fitted_2, which = 1:5)
+plot(fixed_fitted_2_no_metaecosystem_type, which = 1:5)
+par(mfrow=c(1,1))
+```
+
+Okay, next thing to do, I think, is to 

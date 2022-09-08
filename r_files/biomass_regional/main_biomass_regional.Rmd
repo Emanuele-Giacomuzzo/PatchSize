@@ -1,0 +1,54 @@
+---
+title: "Biomass analysis (PatchSizePilot)"
+author: "Emanuele Giacomuzzo"
+date: '2022-07-07'
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+## Regional Biomass {.tabset .tabset-dropdown}
+
+### All meta-ecosystems {.tabset .tabset-pills}
+
+```{r child = here("r_files", "biomass_regional", "sections", "metaeco_all.Rmd")}
+source(here("r_files", "biomass_regional", "extracted_sections", "metaeco_all.R"))
+```
+
+### Medium-Medium vs Small-Large {.tabset .tabset-pills}
+
+Do meta-ecosystems with the same total size but with patches that are either the same size or of different size have a different biomass density? *(Do the medium-medium and small-large meta-ecosystems have different biomass density?)*
+
+#### Plots
+
+```{r child = here("r_files", "biomass_regional", "sections", "MM_SL_plots.Rmd")}
+source(here("r_files", "biomass_regional", "extracted_sections", "MM_SL_plots.R"))
+```
+
+#### Model time series {.tabset .tabset-pills}
+
+How does the biomass density of medium-medium and small-large meta-ecosystems differ across the time series? *(The first two points before the first disturbance are taken off).*
+
+```{r child = here("r_files", "biomass_regional", "sections", "MM_SL_time_series.Rmd")}
+source(here("r_files", "biomass_regional", "extracted_sections", "MM_SL_time_series.R"))
+```
+
+#### Model single points
+
+How does the biomass density of medium-medium and small-large meta-ecosystems differ for each time point? *(The first two points before the first disturbance are taken off).*
+
+```{r MM_SL_time_fitted, child = here("r_files", "biomass_regional", "sections", "MM_SL_single_points.Rmd"), echo = TRUE, eval = TRUE}
+source(here("r_files", "biomass_regional", "extracted_sections", "MM_SL_single_points.R"))
+```
+
+```{r child = here("r_files", "biomass_regional", "sections", "SL_SL_from_isolated.Rmd"), eval = FALSE}
+source(here("r_files", "biomass_regional", "extracted_sections", "SL_SL_from_isolated.R"))
+```
+
+### Meta-ecosystems of different total size
+
+How does the biomass density of meta-ecosystems change according to the size of their patches?
+
+```{r child = here("r_files", "biomass_regional", "sections", "metaeco_different_size.Rmd")}
+source(here("r_files", "biomass_regional", "extracted_sections", "metaeco_different_size.R"))
+```

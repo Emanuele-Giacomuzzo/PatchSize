@@ -1,0 +1,107 @@
+biomass_plots = function(disturbance_input){
+  
+  p = NULL
+  
+  p[[1]] <<- ds_regional %>%
+    filter (disturbance == disturbance_input) %>%
+    filter (metaecosystem_type == "S_L" | metaecosystem_type == "M_M") %>%
+    ggplot (aes(x = day,
+                y = regional_mean_bioarea,
+                group = interaction(day, metaecosystem_type),
+                fill = metaecosystem_type,
+                color = metaecosystem_type)) +
+    geom_boxplot() +
+    labs(x = "Day", y = "Regional biomass (average bioarea between 2 patches/µl)", color='Meta-ecosystem type', fill='Meta-ecosystem type') +
+    scale_y_continuous(limits = c(0, 6250)) +
+    scale_x_continuous(limits = c(-2, 30)) +
+    scale_fill_discrete(labels = c("Patches of same size", "Patches of different size")) +
+    scale_color_discrete(labels = c("Patches of same size", "Patches of different size")) +
+    theme_bw() +
+    theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())
+  
+  p[[2]] <<- ds_regional %>%
+    filter ( disturbance == disturbance_input) %>%
+    filter (metaecosystem_type == "S_L" | metaecosystem_type == "M_M") %>%
+    ggplot (aes(x = day,
+                y = regional_mean_bioarea,
+                fill = metaecosystem_type,
+                color = metaecosystem_type)) +
+    geom_point(stat = "summary", fun = "mean") +
+    geom_line (stat = "summary", fun = "mean") +
+    labs(x = "Day", y = "Regional biomass (average bioarea between 2 patches/µl)", color='Meta-ecosystem type', fill='Meta-ecosystem type') +
+    scale_y_continuous(limits = c(0, 6250)) +
+    scale_x_continuous(limits = c(-2, 30)) +
+    scale_fill_discrete(labels = c("Patches of same size", "Patches of different size")) +
+    scale_color_discrete(labels = c("Patches of same size", "Patches of different size")) +
+    theme_bw() +
+    theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())
+  
+  p[[3]] <<- ds %>%
+    filter(disturbance == disturbance_input)%>%
+    filter(metaecosystem == "no") %>%
+    ggplot(aes(x = day,
+               y = bioarea_per_volume,
+               group = interaction(day, eco_metaeco_type),
+               fill = eco_metaeco_type,
+               color = eco_metaeco_type)) +
+    geom_boxplot() +
+    labs(x = "Day", y = "Local biomass (bioarea/µl)", color='Closed ecosystem size', fill='Closed ecosystem size') +
+    scale_y_continuous(limits=c(0, 6250)) +
+    scale_x_continuous(limits = c(-2, 30)) +
+    scale_fill_discrete(labels = c("Small", "Medium", "Large")) +
+    scale_color_discrete(labels = c("Small", "Medium", "Large")) +
+    theme_bw() +
+    theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())
+  
+  p[[4]] <<- ds %>%
+    filter(disturbance == disturbance_input)%>%
+    filter(metaecosystem == "no") %>%
+    ggplot(aes(x = day,
+               y = bioarea_per_volume,
+               fill = eco_metaeco_type,
+               color = eco_metaeco_type)) +
+    geom_point(stat = "summary", fun = "mean") +
+    geom_line(stat = "summary", fun = "mean") +
+    labs(x = "Day", y = "Local biomass (bioarea/µl)", color='Closed ecosystem size', fill='Closed ecosystem size') +
+    scale_y_continuous(limits=c(0, 6250)) +
+    scale_x_continuous(limits = c(-2, 30)) +
+    scale_fill_discrete(labels = c("Small", "Medium", "Large")) +
+    scale_color_discrete(labels = c("Small", "Medium", "Large")) +
+    theme_bw() +
+    theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())
+  
+  p[[5]] <<- ds %>%
+    filter(disturbance == disturbance_input)%>%
+    filter (eco_metaeco_type == "S" | eco_metaeco_type == "S (S_S)" | eco_metaeco_type == "S (S_L)") %>%
+    ggplot(aes(x = day,
+               y = bioarea_per_volume,
+               group = interaction(day, eco_metaeco_type),
+               fill = eco_metaeco_type,
+               color = eco_metaeco_type)) +
+    geom_boxplot() +
+    labs(x = "Day", y = "Local biomass (bioarea/µl)", color='Patch type', fill='Patch type') +
+    scale_y_continuous(limits=c(0, 6250)) +
+    scale_x_continuous(limits = c(-2, 30)) +
+    scale_fill_discrete(labels = c("Connected to same sized patch", "Connected to larger patch")) +
+    scale_color_discrete(labels = c("Connected to same sized patch", "Connected to larger patch")) +
+    theme_bw() +
+    theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())
+  
+  p[[6]] <<- ds %>%
+    filter(disturbance == disturbance_input)%>%
+    filter (eco_metaeco_type == "S" | eco_metaeco_type == "S (S_S)" | eco_metaeco_type == "S (S_L)") %>%
+    ggplot(aes(x = day,
+               y = bioarea_per_volume,
+               fill = eco_metaeco_type,
+               color = eco_metaeco_type)) +
+    geom_point(stat = "summary", fun = "mean") +
+    geom_line(stat = "summary", fun = "mean") +
+    labs(x = "Day", y = "Local biomass (bioarea/µl)", color='Patch type', fill='Patch type') +
+    scale_y_continuous(limits=c(0, 6250)) +
+    scale_x_continuous(limits = c(-2, 30)) +
+    scale_fill_discrete(labels = c("Connected to same sized patch", "Connected to larger patch")) +
+    scale_color_discrete(labels = c("Connected to same sized patch", "Connected to larger patch")) +
+    theme_bw() +
+    theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())
+  
+}

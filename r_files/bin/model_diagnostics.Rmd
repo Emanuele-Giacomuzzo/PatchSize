@@ -1,0 +1,36 @@
+---
+title: "model_diagnostics"
+author: "Emanuele Giacomuzzo"
+date: '2022-07-19'
+output: html_document
+---
+
+# Appendix: model diagnostics
+
+```{r model-diagnostics, echo = FALSE, eval = FALSE}
+
+plot(full_model) 
+qqnorm(resid(full_model))
+
+plot(full_model_correlated) 
+qqnorm(resid(full_model_correlated))
+
+plot(no_system_nr_model) 
+qqnorm(resid(no_system_nr_model))
+
+par(mfrow=c(2,3))
+plot(fixed_effects_model, which = 1:5) 
+par(mfrow=c(1,1))
+
+plot(no_system_nr_model) 
+qqnorm(resid(no_system_nr_model))
+
+plot(no_slopes_model) 
+qqnorm(resid(no_slopes_model))
+
+plot(metaecosystem_type_null) 
+qqnorm(resid(metaecosystem_type_null))
+
+plot(disturbance_null) 
+qqnorm(resid(disturbance_null))
+```

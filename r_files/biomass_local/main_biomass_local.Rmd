@@ -1,0 +1,40 @@
+---
+title: "Biomass analysis (PatchSizePilot)"
+author: "Emanuele Giacomuzzo"
+date: '2022-07-07'
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+## Local biomass {.tabset .tabset-dropdown}
+
+### All patches {.tabset .tabset-pills}
+
+```{r child = here("r_files", "biomass_local", "sections", "all_patches.Rmd")}
+source(here("r_files", "biomass_local", "extracted_sections", "all_patches.R"))
+```
+
+### Small patches {.tabset .tabset-pills}
+
+How does biomass density change according to the size to which the patch is connected? *(Does a small patch connected to a small patch have the same biomass density than a small patch connected to a large patch?)*
+
+```{r child = here("r_files", "biomass_local", "sections", "small_patches.Rmd")}
+source(here("r_files", "biomass_local", "extracted_sections", "small_patches.R"))
+```
+
+### Large patches {.tabset .tabset-pills}
+
+How does biomass density change according to the size to which the patch is connected? *(Does a large patch connected to a large patch have the same biomass density than a large patch connected to a small patch?)*
+
+```{r child = here("r_files", "biomass_local", "sections", "large_patches.Rmd")}
+source(here("r_files", "biomass_local", "extracted_sections", "large_patches.R"))
+```
+
+### Isolated patches {.tabset .tabset-pills}
+
+How does biomass density change according to the size of isolated patches? *(How does the biomass of small, medium, and large patches change?)*
+
+```{r child = here("r_files", "biomass_local", "sections", "isolated_patches.Rmd")}
+source(here("r_files", "biomass_local", "extracted_sections", "isolated_patches.R"))
+```
