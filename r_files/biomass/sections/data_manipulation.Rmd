@@ -426,8 +426,22 @@ for (combination in 1:combinations_n){
   }
 }
 
-ds_lnRR_bioarea_density = single_iteration %>%
+all_iterations = single_iteration %>%
   bind_rows()
+
+##Explore
+all_iterations %>%
+  filter(time_point == 1) %>%
+  filter(lnRR_bioarea_density == "NaN")
+  
+
+low_small_to_small_t7_iterations = all_iterations %>%
+  filter(eco_metaeco_type == "S (S_L)") %>%
+  filter(time_point == 7) %>%
+  ungroup() %>%
+  select(lnRR_bioarea_density)
+
+low_small_to_small_t7_iterations = sort(low_small_to_small_t7_iterations, decreasing = TRUE)
 ```
 
 ```{r}
