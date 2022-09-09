@@ -7,6 +7,8 @@ editor_options:
   chunk_output_type: console
 ---
 
+### All meta-ecosystems {.tabset .tabset-pills}
+
 ```{r}
 for (disturbance_input in c("low", "high")){
   

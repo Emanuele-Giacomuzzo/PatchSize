@@ -5,7 +5,7 @@ date: "2022-09-08"
 output: html_document
 ---
 
-### Isolated patches {.tabset .tabest-pills}
+### Isolated patches {.tabset .tabset-pills}
 
 #### Plots
 

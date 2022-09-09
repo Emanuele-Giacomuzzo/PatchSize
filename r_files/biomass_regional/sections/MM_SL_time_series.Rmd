@@ -206,6 +206,26 @@ R2_conditional = round(R2_conditional, digits = 2)
 
 -   Conditional R2 = `r R2_conditional`
 
+To calculate the R of the single explaining variables, let's consider its inclusive R squares (\@Stoffel2021). These contain the variance of a variable including its collinearity with other variables. I chose them because there is no collinearity between meta-ecosystem type, disturbance, and day (they were experimentally crossed). The inclusive R squares of this model are:
+
+```{r eval = FALSE}
+R2_regional = partR2(best_model,
+       partvars = c("day", 
+                    "metaecosystem_type", 
+                    "disturbance"),
+       R2_type = "conditional", 
+       nboot = 1000, 
+       CI = 0.95)
+saveRDS(R2_regional, file = here("results", "biomass", "R2_regional_t2t7.RData"))
+```
+
+```{r}
+R2_regional = readRDS(here("results", "biomass", "R2_regional_t2t7.RData"))
+R2_regional$IR2
+```
+
+**t2 - t5**
+
 Let's just assume that this model holds also for t2-t5. Then, let's recalculate the R squared.
 
 ```{r}
@@ -237,20 +257,20 @@ The R squared of this model for t2-t5 are:
 
 -   Conditional R2 = `r R2_conditional`
 
+The inclusive R squares of this model are:
+
 ```{r eval = FALSE}
-
-### --- Work in progress: calculating R2 of M --- ###
-
-R2_regional = partR2(best_model,
+R2_regional = partR2(t2_t5,
        partvars = c("day", 
                     "metaecosystem_type", 
                     "disturbance"),
-       R2_type = "marginal", 
+       R2_type = "conditional", 
        nboot = 1000, 
        CI = 0.95)
-saveRDS(R2_regional, file = here("results", "biomass", "R2_regional.RData"))
+saveRDS(R2_regional, file = here("results", "biomass", "R2_regional_t2t5.RData"))
 ```
 
-```{r eval = FALSE}
-readRDS(here("results", "biomass", "R2_regional.RData"))
+```{r}
+R2_regional = readRDS(here("results", "biomass", "R2_regional_t2t5.RData"))
+R2_regional$IR2
 ```

@@ -255,3 +255,5 @@ R2_P = round(R2_P, digits = 2)
 The adjusted R squared of the model is `r R2_full` and the adjusted R squared of patch type is `r R2_P` (which includes also its interaction with disturbance).
 
 #### Single time points
+
+[Single time points cannot be computed just because I have a single data point as response variable (e.g., one for S (S_S) at low disturbance at time point = 2). Therefore, if I want to see if the lnRR of different treatments differs, I need to compute the confidence intervals.]{.underline}

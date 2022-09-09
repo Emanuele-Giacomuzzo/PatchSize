@@ -22,7 +22,9 @@ library(here)
 library(knitr)
 library(purrr)
 
-for (main_section in c("data", "biomass", "body_size", "tests")){
+list_of_main_sections = c("abundance", "biomass_local", "biomass_regional", "body_size_distribution", "body_size_median", "data", "evaporation", "tests")
+
+for (main_section in list_of_main_sections){
   
  sections.path = here("r_files", main_section, "sections")
  extracted.path = here("r_files", main_section, "extracted_sections")
@@ -107,6 +109,9 @@ metaecosystems_to_take_off = 40 #System 40 was the system of culture 60 that I s
 ```
 
 ```{r child = here("r_files", "data", "main_data.Rmd")}
+source(here("r_files", "data", "extracted_sections", "experimental_treatments.R"))
+source(here("r_files", "data", "extracted_sections", "biomass_abundance_data.R"))
+source(here("r_files", "data", "extracted_sections", "body_size_data.R"))
 ```
 
 ```{r child = here("r_files", "biomass_regional", "main_biomass_regional.Rmd")}
@@ -119,6 +124,9 @@ metaecosystems_to_take_off = 40 #System 40 was the system of culture 60 that I s
 ```
 
 ```{r child = here("r_files", "body_size_distribution", "main_body_size_distribution.Rmd")}
+```
+
+```{r child = here("r_files", "body_size_median", "main_body_size_median.Rmd")}
 ```
 
 ```{r child = here("r_files", "evaporation", "sections", "evaporation.Rmd")}

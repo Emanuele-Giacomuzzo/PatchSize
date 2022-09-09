@@ -80,8 +80,7 @@ for (disturbance_input in c("low", "high")) {
   
   print(ds_lnRR_bioarea_density %>%
           filter(disturbance == disturbance_input) %>%
-          filter(eco_metaeco_type == "S (S_S)" | 
-                 eco_metaeco_type == "S (S_L)") %>%
+          filter(eco_metaeco_type == "S (S_S)" | eco_metaeco_type == "S (S_L)") %>%
           ggplot(aes(x = day,
                      y = lnRR_bioarea_density,
                      color = eco_metaeco_type)) +
@@ -114,7 +113,7 @@ for (disturbance_input in c("low", "high")) {
                      size = 0.7))}
 ```
 
-#### Time series
+#### Model Time Series
 
 ##### Model selection
 
@@ -150,8 +149,7 @@ full_model = lm(lnRR_bioarea_density ~
                   data = ds_lnRR_bioarea_density %>%
                          filter(time_point >= first_time_point) %>%
                          filter(time_point <= last_time_point) %>%
-                         filter(eco_metaeco_type== "S (S_S)" | 
-                                eco_metaeco_type == "S (S_L)"))
+                         filter(eco_metaeco_type== "S (S_S)" | eco_metaeco_type == "S (S_L)"))
 ```
 
 *Should we keep t \* P?*
@@ -166,8 +164,7 @@ no_TP = lm(lnRR_bioarea_density ~
                   data = ds_lnRR_bioarea_density %>%
                          filter(time_point >= first_time_point) %>%
                          filter(time_point <= last_time_point) %>%
-                         filter(eco_metaeco_type== "S (S_S)" | 
-                                eco_metaeco_type == "S (S_L)"))
+                         filter(eco_metaeco_type== "S (S_S)" | eco_metaeco_type == "S (S_L)"))
 
 AIC(full_model, no_TP)
 ```
@@ -186,8 +183,7 @@ no_TD = lm(lnRR_bioarea_density ~
                   data = ds_lnRR_bioarea_density %>%
                          filter(time_point >= first_time_point) %>%
                          filter(time_point <= last_time_point) %>%
-                         filter(eco_metaeco_type== "S (S_S)" | 
-                                eco_metaeco_type == "S (S_L)"))
+                         filter(eco_metaeco_type== "S (S_S)" | eco_metaeco_type == "S (S_L)"))
 
 AIC(full_model, no_TD)
 ```
@@ -205,8 +201,7 @@ no_PD = lm(lnRR_bioarea_density ~
                   data = ds_lnRR_bioarea_density %>%
                          filter(time_point >= first_time_point) %>%
                          filter(time_point <= last_time_point) %>%
-                         filter(eco_metaeco_type== "S (S_S)" | 
-                                eco_metaeco_type == "S (S_L)"))
+                         filter(eco_metaeco_type== "S (S_S)" | eco_metaeco_type == "S (S_L)"))
 
 AIC(no_TD, no_PD)
 ```
@@ -237,8 +232,7 @@ no_patch_type = lm(lnRR_bioarea_density ~
                   data = ds_lnRR_bioarea_density %>%
                          filter(time_point >= first_time_point) %>%
                          filter(time_point <= last_time_point) %>%
-                         filter(eco_metaeco_type== "S (S_S)" | 
-                                eco_metaeco_type == "S (S_L)"))
+                         filter(eco_metaeco_type== "S (S_S)" | eco_metaeco_type == "S (S_L)"))
 
 R2_no_P = glance(no_patch_type)$r.squared
 R2_P = R2_full - R2_no_P
@@ -250,4 +244,6 @@ R2_P = round(R2_P, digits = 2)
 \
 The adjusted R squared of the model is `r R2_full` and the adjusted R squared of patch type is `r R2_P` (which includes also its interaction with disturbance).
 
-#### Single time points
+#### Model Time Points
+
+[Single time points cannot be computed just because I have a single data point as response variable (e.g., one for S (S_S) at low disturbance at time point = 2). Therefore, if I want to see if the lnRR of different treatments differs, I need to compute the confidence intervals.]{.underline}

@@ -156,7 +156,7 @@ full_model = lm(lnRR_community_density ~
                          filter(eco_metaeco_type== "S (S_S)" | eco_metaeco_type == "S (S_L)"))
 ```
 
-*Should we keep t \* P?*
+*Should we keep t \* P `(day * eco_metaeco_type)`?*
 
 ```{r abundance-small-patches-no-TM}
 no_TP = lm(lnRR_community_density ~
@@ -175,7 +175,7 @@ AIC(full_model, no_TP)
 
 No.
 
-*Should we keep t \* D?*
+*Should we keep t \* D `(day * disturbance)`?*
 
 ```{r abundance-small-patches-no-TD}
 no_TD = lm(lnRR_community_density ~
@@ -193,14 +193,13 @@ AIC(no_TP, no_TD)
 
 No.
 
-Should we keep P \* D?
+Should we keep P \* D *`(eco_metaeco_type * disturbance)`*?
 
 ```{r abundance-small-patches-no-MD}
 no_PD = lm(lnRR_community_density ~
              day + 
              eco_metaeco_type + 
-             disturbance +
-             eco_metaeco_type * disturbance,
+             disturbance,
            data = ds_lnRR_community_density %>%
                          filter(time_point >= first_time_point) %>%
                          filter(time_point <= last_time_point) %>%
@@ -249,3 +248,5 @@ R2_P = round(R2_P, digits = 2)
 The adjusted R squared of the model is `r R2_full` and the adjusted R squared of patch type is `r R2_P` (which includes also its interaction with disturbance).
 
 #### Single time points
+
+[Single time points cannot be computed just because I have a single data point as response variable (e.g., one for S (S_S) at low disturbance at time point = 2). Therefore, if I want to see if the lnRR of different treatments differs, I need to compute the confidence intervals.]{.underline}

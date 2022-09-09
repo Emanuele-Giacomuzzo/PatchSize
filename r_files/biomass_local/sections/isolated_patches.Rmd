@@ -73,7 +73,6 @@ ds_biomass_abund %>%
                                      "small isolated"))
 ```
 
-
 ```{r}
 ds_biomass_abund %>%
   filter(disturbance == "low") %>%
@@ -118,4 +117,255 @@ ds_biomass_abund %>%
           legend.margin = margin(6, 6, 6, 6))
 ```
 
-#### Time series
+#### Model Time Series
+
+We will exclude in the model the time point 0 and 1. At time point 0 all cultures were the same because that's how we made them. At time point 1 no disturbance event had already taken place.
+
+Let's see how linear is the time trend of bioarea and if we can make it more linear with a log10 transformation. We are lucky that during the modelling process we need to drop the first two time points, which would have made the biomass trend not linear.
+
+**Linearity of regional bioarea \~ time**
+
+```{r}
+ds_biomass_abund %>%
+  filter(time_point >= 2) %>%
+  ggplot(aes(x = day,
+             y = bioarea_per_volume,
+             group = day)) +
+  geom_boxplot() +
+  labs(x = "Day",
+       y = "Regional bioarea (µm²)")
+```
+
+```{r}
+linear_model = lm(bioarea_per_volume ~ 
+                    day, 
+                  data = ds_biomass_abund %>% 
+                            filter(time_point >= 2) %>%
+                            filter(metaecosystem == "no"))
+
+par(mfrow=c(2,3))
+plot(linear_model, which = 1:5)
+```
+
+**Model selection**
+
+Let' start from the full model.
+
+$$
+Local \: Bioarea \: Density = t + P + D + tP + tD + PD + tDP + (t | system \: nr)
+$$
+
+```{r}
+full = lmer(bioarea_per_volume ~
+                     day * patch_size * disturbance +
+                     (day | system_nr),
+                     data = ds_biomass_abund %>%
+                            filter(time_point >= 2) %>%
+                            filter(metaecosystem == "no"),
+                   REML = FALSE,
+                   control = lmerControl(optimizer = "Nelder_Mead"))
+```
+
+*Should we keep the correlation in `(day | system_nr)`?*
+
+```{r}
+no_correlation = lmer(bioarea_per_volume ~
+                     day * patch_size * disturbance +
+                     (day || system_nr),
+                     data = ds_biomass_abund %>%
+                            filter(time_point >= 2) %>%
+                            filter(metaecosystem == "no"),
+                   REML = FALSE,
+                   control = lmerControl(optimizer = "Nelder_Mead"))
+
+anova(full, no_correlation)
+```
+
+No.
+
+*Should we keep the random effect of system nr on the time slopes (`day | system_nr)`?*
+
+```{r}
+no_random_slopes = lmer(bioarea_per_volume ~
+                     day * patch_size * disturbance +
+                     (1 | system_nr),
+                     data = ds_biomass_abund %>%
+                            filter(time_point >= 2) %>%
+                            filter(metaecosystem == "no"),
+                   REML = FALSE,
+                   control = lmerControl(optimizer = "Nelder_Mead"))
+
+anova(no_correlation, no_random_slopes)
+```
+
+No.
+
+*Should we keep t \* M \* D?*
+
+```{r}
+no_threeway = lmer(bioarea_per_volume ~
+                     day +
+                     patch_size +
+                     disturbance +
+                     day : patch_size + 
+                     day : disturbance +
+                     patch_size : disturbance + 
+                     (1 | system_nr),
+                     data = ds_biomass_abund %>%
+                            filter(time_point >= 2) %>%
+                            filter(metaecosystem == "no"),
+                   REML = FALSE,
+                   control = lmerControl(optimizer = 'optimx', 
+                                         optCtrl = list(method = 'L-BFGS-B')))
+
+anova(no_random_slopes, no_threeway)
+```
+
+No.
+
+*Should we keep t \* M?*
+
+```{r}
+no_TM = lmer(bioarea_per_volume ~
+                     day +
+                     patch_size +
+                     disturbance +
+                     day : disturbance +
+                     patch_size : disturbance + 
+                     (1 | system_nr),
+                     data = ds_biomass_abund %>%
+                            filter(time_point >= 2) %>%
+                            filter(metaecosystem == "no"),
+                   REML = FALSE,
+                   control = lmerControl(optimizer = "Nelder_Mead"))
+
+anova(no_threeway,no_TM)
+```
+
+Yes.
+
+*Should we keep t \* D?*
+
+```{r}
+no_TD = lmer(bioarea_per_volume ~
+                     day +
+                     patch_size +
+                     disturbance +
+                     day : patch_size + 
+                     patch_size : disturbance + 
+                     (1 | system_nr),
+                     data = ds_biomass_abund %>%
+                            filter(time_point >= 2) %>%
+                            filter(metaecosystem == "no"),
+                   REML = FALSE,
+                   control = lmerControl(optimizer = "Nelder_Mead"))
+
+anova(no_threeway, no_TD)
+```
+
+No.
+
+*Should we keep M \* D?*
+
+```{r}
+no_MD = lmer(bioarea_per_volume ~
+                     day +
+                     patch_size +
+                     disturbance +
+                     day : patch_size + 
+                     (1 | system_nr),
+                     data = ds_biomass_abund %>%
+                            filter(time_point >= 2) %>%
+                            filter(metaecosystem == "no"),
+                   REML = FALSE,
+                   control = lmerControl(optimizer = "Nelder_Mead"))
+
+anova(no_TD, no_MD)
+```
+
+No.
+
+**Best model**
+
+Therefore, our best model is:
+
+$$
+Regional \: bioarea = t + M + D + tM + (1 | system \: nr) 
+$$
+
+```{r}
+best_model = no_MD
+```
+
+Let's do some model diagnostics:
+
+```{r}
+plot(best_model)
+qqnorm(resid(best_model))
+```
+
+The R squared of this model for t2-t7 are:
+
+```{r warning=FALSE}
+R2_marginal = r.squaredGLMM(best_model)[1]
+R2_marginal = round(R2_marginal, digits = 2)
+R2_conditional = r.squaredGLMM(best_model)[2]
+R2_conditional = round(R2_conditional, digits = 2)
+```
+
+-   Marginal R2 = `r R2_marginal`
+
+-   Conditional R2 = `r R2_conditional`
+
+Let's just assume that this model holds also for t2-t5. Then, let's recalculate the R squared.
+
+```{r}
+t2_t5 = lmer(bioarea_per_volume ~
+                     day +
+                     patch_size +
+                     disturbance +
+                     day : patch_size + 
+                     (1 | system_nr),
+                     data = ds_biomass_abund %>%
+                            filter(time_point >= 2) %>%
+                            filter(time_point <= 5) %>%
+                            filter(metaecosystem == "no"),
+                   REML = FALSE,
+                   control = lmerControl(optimizer = "Nelder_Mead"))
+
+plot(t2_t5)
+qqnorm(resid(t2_t5))
+
+R2_marginal = r.squaredGLMM(t2_t5)[1]
+R2_marginal = round(R2_marginal, digits = 2)
+R2_conditional = r.squaredGLMM(t2_t5)[2]
+R2_conditional = round(R2_conditional, digits = 2)
+```
+
+The R squared of this model for t2-t5 are:
+
+-   Marginal R2 = `r R2_marginal`
+
+-   Conditional R2 = `r R2_conditional`
+
+```{r eval = FALSE}
+
+### --- Work in progress: calculating R2 of M --- ###
+
+R2_regional = partR2(best_model,
+       partvars = c("day", 
+                    "patch_size", 
+                    "disturbance"),
+       R2_type = "marginal", 
+       nboot = 1000, 
+       CI = 0.95)
+saveRDS(R2_regional, file = here("results", "biomass", "R2_regional.RData"))
+```
+
+```{r eval = FALSE}
+readRDS(here("results", "biomass", "R2_regional.RData"))
+```
+
+#### Model Time Points
+
+[I could compute the single time points but I don't see the reason why I should do that.]{.underline}

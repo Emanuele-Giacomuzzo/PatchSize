@@ -13,6 +13,53 @@ $$
 Total \: Regional \: Bioarea = M + D + MD
 $$
 
+**Time point = 1**
+
+Let's start by looking at whether meta-ecosystem type and disturbance had an effect at time point = 1. At this time point, no disturbance event had yet occurred. Therefore, we would not expect an effect of disturbance. In regards to meta-ecosystem type, there might be an effect if it comes from just the sizes of the two ecosystems.
+
+```{r}
+chosen_time_point = 1
+```
+
+```{r}
+full = lm(total_regional_bioarea ~
+            metaecosystem_type +
+            disturbance +
+            metaecosystem_type * disturbance,
+          data = ds_regional_biomass %>%
+                            filter(time_point == chosen_time_point) %>%
+                            filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L"))
+```
+
+*Does disturbance have an effect?*
+
+```{r}
+no_D = lm(total_regional_bioarea ~
+            metaecosystem_type +
+            metaecosystem_type * disturbance,
+          data = ds_regional_biomass %>%
+                            filter(time_point == chosen_time_point) %>%
+                            filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L"))
+
+AIC(full,no_D)
+```
+
+No.
+
+*Does meta-ecosystem type have an effect?*
+
+```{r}
+no_M = lm(total_regional_bioarea ~
+            disturbance,
+          data = ds_regional_biomass %>%
+                            filter(time_point == chosen_time_point) %>%
+                            filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L"))
+
+AIC(full,no_M)
+```
+
+*No.*
+
 **Time point = 2**
 
 ```{r}
@@ -336,3 +383,5 @@ R2_M = round(R2_M, digits = 2)
 ```
 
 The adjusted R squared of the model is `r R2_full` and the adjusted R squared of patch type is `r R2_M`.
+
+**Model Time Points**

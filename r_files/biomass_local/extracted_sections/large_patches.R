@@ -1,113 +1,113 @@
-## ----large-single-patches-plots-----------------------------------------------------------------------------------------------------------
+## ----large-single-patches-plots-----------------------------------------------------------------------------------------------------------------------------------
 for (disturbance_input in c("low", "high")) {
 
   print(ds_biomass_abund %>%
-  filter(disturbance == disturbance_input) %>%
-  filter(patch_size == "L") %>%
-  ggplot(aes(x = day,
-             y = bioarea_per_volume,
-             group = system_nr,
-             fill = system_nr,
-             color = system_nr,
-             linetype = eco_metaeco_type)) +
-  geom_line(stat = "summary", fun = "mean") + 
-  labs(x = "Day",
-       y = "Local bioarea (µm²/μl)",
-       title = paste("Disturbance =", disturbance_input),
-       linetype = "") +
-  theme_bw() +
-  theme(panel.grid.major = element_blank(), 
-        panel.grid.minor = element_blank(),
-        legend.position = c(.95, .95),
-        legend.justification = c("right", "top"),
-        legend.box.just = "right",
-        legend.margin = margin(6, 6, 6, 6)) +
-  scale_linetype_discrete(labels = c("large isolated",
-                                     "large connected to large",
-                                     "large connected to small")) +
-  geom_vline(xintercept = first_perturbation_day, 
-             linetype="dotdash", 
-             color = "grey", 
-             size=0.7) +
-  labs(caption = "Vertical grey line: first perturbation"))}
+          filter(disturbance == disturbance_input) %>%
+          filter(patch_size == "L") %>%
+          ggplot(aes(x = day,
+                     y = bioarea_per_volume,
+                     group = system_nr,
+                     fill = system_nr,
+                     color = system_nr,
+                     linetype = eco_metaeco_type)) +
+          geom_line(stat = "summary", fun = "mean") + 
+          labs(x = "Day",
+               y = "Local bioarea (µm²/μl)",
+               title = paste("Disturbance =", disturbance_input),
+               linetype = "") +
+          theme_bw() +
+          theme(panel.grid.major = element_blank(), 
+                panel.grid.minor = element_blank(),
+                legend.position = c(.95, .95),
+                legend.justification = c("right", "top"),
+                legend.box.just = "right",
+                legend.margin = margin(6, 6, 6, 6)) +
+          scale_linetype_discrete(labels = c("large isolated",
+                                             "large connected to large",
+                                             "large connected to small")) +
+          geom_vline(xintercept = first_perturbation_day, 
+                     linetype="dotdash", 
+                     color = "grey", 
+                     size = 0.7) +
+          labs(caption = "Vertical grey line: first perturbation"))}
 
 
-## ----large-boxplots-----------------------------------------------------------------------------------------------------------------------
+## ----large-patches-boxplots---------------------------------------------------------------------------------------------------------------------------------------
 for (disturbance_input in c("low", "high")){
+  
   print(ds_biomass_abund %>%
-  filter(disturbance == disturbance_input) %>%
-  filter(patch_size == "L") %>%
-  ggplot(aes(x = day,
-             y = bioarea_per_volume,
-             group = interaction(day,eco_metaeco_type),
-             fill = eco_metaeco_type)) +
-  geom_boxplot() +
-  labs(title = paste("Disturbance =", disturbance_input),
-       x = "Day",
-       y = "Local bioarea (µm²/μl)",
-       fill = "") +
-  theme_bw() +
-  theme(panel.grid.major = element_blank(), 
-        panel.grid.minor = element_blank(),
-        legend.position = c(.95, .95),
-        legend.justification = c("right", "top"),
-        legend.box.just = "right",
-        legend.margin = margin(6, 6, 6, 6)) +
-  scale_fill_discrete(labels = c("large isolated", 
-                                 "large connected to large",
-                                 "large connected to small")) +
-  geom_vline(xintercept = first_perturbation_day + 0.7, 
-             linetype="dotdash", 
-             color = "grey", 
-             size=0.7) +
-  labs(caption = "Vertical grey line: first perturbation"))
-  }
+          filter(disturbance == disturbance_input) %>%
+          filter(patch_size == "L") %>%
+          ggplot(aes(x = day,
+                     y = bioarea_per_volume,
+                     group = interaction(day,eco_metaeco_type),
+                     fill = eco_metaeco_type)) +
+          geom_boxplot() +
+          labs(title = paste("Disturbance =", disturbance_input),
+               x = "Day",
+               y = "Local bioarea (µm²/μl)",
+               fill = "") +
+          theme_bw() +
+          theme(panel.grid.major = element_blank(), 
+                panel.grid.minor = element_blank(),
+                legend.position = c(.95, .95),
+                legend.justification = c("right", "top"),
+                legend.box.just = "right",
+                legend.margin = margin(6, 6, 6, 6)) +
+          scale_fill_discrete(labels = c("large isolated", 
+                                         "large connected to large",
+                                         "large connected to small")) +
+          geom_vline(xintercept = first_perturbation_day + 0.7, 
+                     linetype="dotdash", 
+                     color = "grey", 
+                     size=0.7) +
+          labs(caption = "Vertical grey line: first perturbation"))}
 
 
-## ----large-patches-lnRR-plots-------------------------------------------------------------------------------------------------------------
+## ----large-patches-lnRR-plots-------------------------------------------------------------------------------------------------------------------------------------
 for (disturbance_input in c("low", "high")){
-print(ds_lnRR_bioarea_density %>%
-  filter(disturbance == disturbance_input) %>%
-  filter(eco_metaeco_type == "L (L_L)" | eco_metaeco_type == "L (S_L)") %>%
-  ggplot(aes(x = day,
-             y = lnRR_bioarea_density,
-             color = eco_metaeco_type)) +
-  geom_point(position = position_dodge(0.5)) +
-  geom_line(position = position_dodge(0.5)) + 
-  labs(title = paste("Disturbance =", disturbance_input),
-       x = "Day",
-       y = "lnRR local bioarea (µm²/µl)",
-       color = "") +
-  #geom_errorbar(aes(ymin = lnRR_lower, 
-  #                  ymax = lnRR_upper), 
-  #              width = .2,
-  #              position = position_dodge(0.5)) + 
-  scale_color_discrete(labels = c("large connected to large", 
-                                 "large connnected to small")) +
-  theme_bw() +
-  theme(panel.grid.major = element_blank(), 
-        panel.grid.minor = element_blank(),
-        legend.position = c(.90, .97),
-        legend.justification = c("right", "top"),
-        legend.box.just = "right",
-        legend.margin = margin(6, 6, 6, 6)) +
-#  geom_vline(xintercept = first_perturbation_day + 0.7, 
-#             linetype="dotdash", 
-#             color = "grey", 
-#             size=0.7) +
-  geom_hline(yintercept = 0, 
-             linetype="dotted", 
-             color = "black", 
-             size=0.7))
-}
+
+  print(ds_lnRR_bioarea_density %>%
+          filter(disturbance == disturbance_input) %>%
+          filter(eco_metaeco_type == "L (L_L)" | eco_metaeco_type == "L (S_L)") %>%
+          ggplot(aes(x = day,
+                     y = lnRR_bioarea_density,
+                     color = eco_metaeco_type)) +
+          geom_point(position = position_dodge(0.5)) +
+          geom_line(position = position_dodge(0.5)) + 
+          labs(title = paste("Disturbance =", disturbance_input),
+               x = "Day",
+               y = "lnRR local bioarea (µm²/µl)",
+               color = "") +
+          #geom_errorbar(aes(ymin = lnRR_lower, 
+          #                  ymax = lnRR_upper), 
+          #              width = .2,
+          #              position = position_dodge(0.5)) + 
+          scale_color_discrete(labels = c("large connected to large", 
+                                          "large connnected to small")) +
+          theme_bw() +
+          theme(panel.grid.major = element_blank(), 
+                panel.grid.minor = element_blank(),
+                legend.position = c(.90, .97),
+                legend.justification = c("right", "top"),
+                legend.box.just = "right",
+                legend.margin = margin(6, 6, 6, 6)) +
+          #  geom_vline(xintercept = first_perturbation_day + 0.7,
+          #             linetype="dotdash", 
+          #             color = "grey", 
+          #             size=0.7) +
+          geom_hline(yintercept = 0, 
+                     linetype = "dotted", 
+                     color = "black", 
+                     size = 0.7))}
 
 
-## ----choose-time-points-large-------------------------------------------------------------------------------------------------------------
+## ----choose-time-points-large-------------------------------------------------------------------------------------------------------------------------------------
 first_time_point = 2
 last_time_point = 7
 
 
-## ----large-patches-full-model-------------------------------------------------------------------------------------------------------------
+## ----large-patches-full-model-------------------------------------------------------------------------------------------------------------------------------------
 full_model = lm(lnRR_bioarea_density ~
                   day + 
                   eco_metaeco_type + 
@@ -122,7 +122,7 @@ full_model = lm(lnRR_bioarea_density ~
                                 eco_metaeco_type == "L (S_L)"))
 
 
-## ----large-patches-no-TM------------------------------------------------------------------------------------------------------------------
+## ----large-patches-no-TM------------------------------------------------------------------------------------------------------------------------------------------
 no_TP = lm(lnRR_bioarea_density ~
                   day + 
                   eco_metaeco_type + 
@@ -138,7 +138,7 @@ no_TP = lm(lnRR_bioarea_density ~
 AIC(full_model, no_TP)
 
 
-## ----large-patches-no-TD------------------------------------------------------------------------------------------------------------------
+## ----large-patches-no-TD------------------------------------------------------------------------------------------------------------------------------------------
 no_TD = lm(lnRR_bioarea_density ~
                   day + 
                   eco_metaeco_type + 
@@ -153,7 +153,7 @@ no_TD = lm(lnRR_bioarea_density ~
 AIC(no_TP, no_TD)
 
 
-## ----large-patches-no-PD------------------------------------------------------------------------------------------------------------------
+## ----large-patches-no-PD------------------------------------------------------------------------------------------------------------------------------------------
 no_PD = lm(lnRR_bioarea_density ~
                   day + 
                   eco_metaeco_type + 
@@ -168,13 +168,13 @@ no_PD = lm(lnRR_bioarea_density ~
 AIC(no_TP, no_PD)
 
 
-## ----large-t2-t7-best-model---------------------------------------------------------------------------------------------------------------
+## ----large-t2-t7-best-model---------------------------------------------------------------------------------------------------------------------------------------
 best_model = no_PD
 par(mfrow = c(2,3))
 plot(best_model, which = 1:5)
 
 
-## -----------------------------------------------------------------------------------------------------------------------------------------
+## -----------------------------------------------------------------------------------------------------------------------------------------------------------------
 R2_full = glance(best_model)$r.squared
 
 no_patch_type = lm(lnRR_bioarea_density ~

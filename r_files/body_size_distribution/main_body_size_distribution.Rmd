@@ -7,10 +7,20 @@ editor_options:
   chunk_output_type: console
 ---
 
-```{r body-size-distribution, child = here("r_files", "body_size_distribution", "sections", "body_size_distribution.Rmd")}
-source(here("r_files", "body_size_distribution", "extracted_sections", "body_size_distribution.R"))
+## Body size distribution {.tabset .tabset-dropdown}
+
+```{r child = here("r_files", "body_size_distribution", "sections", "gifs.Rmd"), eval = FALSE}
+source(here("r_files", "body_size_distribution", "extracted_sections", "gifs.R"))
 ```
 
-```{r mean-body-size, child = here("r_files", "body_size_distribution", "sections", "mean_body_size.Rmd")}
-source(here("r_files", "body_size_distribution", "extracted_sections", "mean_body_size.R"))
+```{r child = here("r_files", "body_size_distribution", "sections", "small_patches.Rmd")}
+source(here("r_files", "body_size_distribution", "extracted_sections", "small_patches.R"))
+```
+
+```{r child = here("r_files", "body_size_distribution", "sections", "large_patches.Rmd")}
+source(here("r_files", "body_size_distribution", "extracted_sections", "large_patches.R"))
+```
+
+```{r child = here("r_files", "body_size_distribution", "sections", "isolated_patches.Rmd")}
+source(here("r_files", "body_size_distribution", "extracted_sections", "isolated_patches.R"))
 ```

@@ -3,6 +3,8 @@ title: "main_data"
 author: "Emanuele Giacomuzzo"
 date: "2022-09-08"
 output: html_document
+editor_options: 
+  chunk_output_type: console
 ---
 
 ## Data {.tabset .tabset-pills}

@@ -7,6 +7,12 @@ editor_options:
   chunk_output_type: console
 ---
 
+### Medium-Medium vs Small-Large {.tabset .tabset-pills}
+
+Do meta-ecosystems with the same total size but with patches that are either the same size or of different size have a different biomass density? *(Do the medium-medium and small-large meta-ecosystems have different biomass density?)*
+
+#### Plots
+
 ```{r}
 for (disturbance_input in c("low", "high")){
   

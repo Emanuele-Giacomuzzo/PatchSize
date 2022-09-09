@@ -3,9 +3,11 @@ title: "large_patches"
 author: "Emanuele Giacomuzzo"
 date: "2022-09-08"
 output: html_document
+editor_options: 
+  chunk_output_type: console
 ---
 
-### Large patches  {.tabset .tabest-pills}
+### Large patches {.tabset .tabset-pills}
 
 #### Plots
 
@@ -50,4 +52,140 @@ print(ds_median_body_size %>%
 
 #### Time series
 
+##### Model selection
+
+Let's start from the full model (no mixed effect: meta-ecosystems have been pulled to create the lnRR):
+
+$$
+ln \: RR (median \: body \: size) = t + P + D + t*P + t*D + P*D
+$$
+
+lnRR(bioarea density) = lnRR of the bioarea density (base level is calculated at each disturbance level and time point as the mean bioarea of the small isolated patches)
+
+t = time
+
+P = patch type
+
+D = disturbance
+
+We will exclude in the model the time point 0 and 1. At time point 0 all cultures were the same because that's how we made them. At time point 1 no disturbance event had already taken place.
+
+```{r body-size-median-large-patches-choose-time-points}
+first_time_point = 2
+last_time_point = 7
+```
+
+```{r body-size-median-large-patches-full-model}
+full_model = lm(lnRR_median_body_size ~                  
+                  day + 
+                  eco_metaeco_type + 
+                  disturbance +
+                  day * eco_metaeco_type +
+                  day * disturbance + 
+                  eco_metaeco_type * disturbance,
+                  data = ds_lnRR_median_body_size %>%
+                         filter(time_point >= first_time_point) %>%
+                         filter(time_point <= last_time_point) %>%
+                         filter(eco_metaeco_type== "L (L_L)" | 
+                                eco_metaeco_type == "L (S_L)"))
+```
+
+*Should we keep t \* P `(day * eco_metaeco_type)`?*
+
+```{r body-size-median-large-patches-no-TM}
+no_TP = lm(lnRR_median_body_size ~
+                  day + 
+                  eco_metaeco_type + 
+                  disturbance +
+                  day * disturbance + 
+                  eco_metaeco_type * disturbance,
+                  data = ds_lnRR_median_body_size %>%
+                         filter(time_point >= first_time_point) %>%
+                         filter(time_point <= last_time_point) %>%
+                         filter(eco_metaeco_type== "L (L_L)" | 
+                                eco_metaeco_type == "L (S_L)"))
+
+AIC(full_model, no_TP)
+```
+
+No.
+
+*Should we keep t \* D `(day * disturbance)`?*
+
+```{r body-size-median-large-patches-no-TD}
+no_TD = lm(lnRR_median_body_size ~
+                  day + 
+                  eco_metaeco_type + 
+                  disturbance +
+                  eco_metaeco_type * disturbance,
+                  data = ds_lnRR_median_body_size %>%
+                         filter(time_point >= first_time_point) %>%
+                         filter(time_point <= last_time_point) %>%
+                         filter(eco_metaeco_type== "L (L_L)" | 
+                                eco_metaeco_type == "L (S_L)"))
+
+AIC(no_TP, no_TD)
+```
+
+Yes.
+
+Should we keep P \* D *`(eco_metaeco_type * disturbance)`*?
+
+```{r body-size-median-large-patches-no-MD}
+no_PD = lm(lnRR_median_body_size ~
+                  day + 
+                  eco_metaeco_type + 
+                  disturbance +
+                  day * disturbance,
+                  data = ds_lnRR_median_body_size %>%
+                         filter(time_point >= first_time_point) %>%
+                         filter(time_point <= last_time_point) %>%
+                         filter(eco_metaeco_type== "L (L_L)" | 
+                                eco_metaeco_type == "L (S_L)"))
+
+AIC(no_TD, no_PD)
+```
+
+No.
+
+##### Best model
+
+Then our best model is:
+
+$$
+lnRR (bioarea \: density) = t + P + D + t*D
+$$
+
+Let's then do some model diagnostics.
+
+```{r body-size-median-large-t2-t7-best-model}
+best_model = no_PD
+par(mfrow = c(2,3))
+plot(best_model, which = 1:5)
+```
+
+```{r}
+R2_full = glance(best_model)$r.squared
+no_patch_type = lm(lnRR_median_body_size ~
+                  day + 
+                  disturbance +
+                  day * disturbance,
+                  data = ds_lnRR_median_body_size %>%
+                         filter(time_point >= first_time_point) %>%
+                         filter(time_point <= last_time_point) %>%
+                         filter(eco_metaeco_type== "L (L_L)" | 
+                                eco_metaeco_type == "L (S_L)"))
+
+R2_no_P = glance(no_patch_type)$r.squared
+R2_P = R2_full - R2_no_P
+
+R2_full = round(R2_full, digits = 2)
+R2_P = round(R2_P, digits = 2)
+```
+
+\
+The adjusted R squared of the model is `r R2_full` and the adjusted R squared of patch type is `r R2_P` (which includes also its interaction with disturbance).
+
 #### Time points
+
+[Single time points cannot be computed just because I have a single data point as response variable (e.g., one for L (L_L) at low disturbance at time point = 2). Therefore, if I want to see if the lnRR of different treatments differs, I need to compute the confidence intervals.]{.underline}

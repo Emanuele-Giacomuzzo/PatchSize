@@ -1,0 +1,13 @@
+---
+title: "small_patches"
+author: "Emanuele Giacomuzzo"
+date: "2022-09-08"
+output: html_document
+---
+
+### Small patches
+
+```{r echo = FALSE}
+include_graphics(here("gifs", "transition_day_S_low.gif"))
+include_graphics(here("gifs", "transition_day_S_high.gif"))
+```
