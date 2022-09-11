@@ -7,13 +7,17 @@ editor_options:
   chunk_output_type: console
 ---
 
+#### Model Time Points {.tabset}
+
+How does the biomass density of medium-medium and small-large meta-ecosystems differ for each time point? *(The first two points before the first disturbance are taken off).*
+
 Let's now look at the full model and see if we should keep the interaction between meta-ecosystem type and disturbance. We are not using mixed effects because a certain system nr can't be at different perturbations or at different meta-ecosystem types.
 
 $$
 Total \: Regional \: Bioarea = M + D + MD
 $$
 
-**Time point = 1**
+##### Time point 1
 
 Let's start by looking at whether meta-ecosystem type and disturbance had an effect at time point = 1. At this time point, no disturbance event had yet occurred. Therefore, we would not expect an effect of disturbance. In regards to meta-ecosystem type, there might be an effect if it comes from just the sizes of the two ecosystems.
 
@@ -60,7 +64,7 @@ AIC(full,no_M)
 
 *No.*
 
-**Time point = 2**
+##### Time point 2
 
 ```{r}
 chosen_time_point = 2
@@ -114,7 +118,7 @@ R2_M = round(R2_M, digits = 2)
 
 The adjusted R squared of the model is `r R2_full` and the adjusted R squared of patch type is `r R2_M`.
 
-**Time point = 3**
+##### Time point 3
 
 ```{r}
 chosen_time_point = 3
@@ -168,7 +172,7 @@ R2_M = round(R2_M, digits = 2)
 
 The adjusted R squared of the model is `r R2_full` and the adjusted R squared of patch type is `r R2_M` (which includes also the interaction with disturbance).
 
-**Time point = 4**
+##### Time point 4
 
 ```{r}
 chosen_time_point = 4
@@ -222,7 +226,7 @@ R2_M = round(R2_M, digits = 2)
 
 The adjusted R squared of the model is `r R2_full` and the adjusted R squared of patch type is `r R2_M`.
 
-**Time point = 5**
+##### Time point 5
 
 ```{r}
 chosen_time_point = 5
@@ -276,7 +280,7 @@ R2_M = round(R2_M, digits = 2)
 
 The adjusted R squared of the model is `r R2_full` and the adjusted R squared of patch type is `r R2_M`.
 
-**Time point = 6**
+##### Time point 6
 
 ```{r}
 chosen_time_point = 6
@@ -330,7 +334,7 @@ R2_M = round(R2_M, digits = 2)
 
 The adjusted R squared of the model is `r R2_full` and the adjusted R squared of patch type is `r R2_M`.
 
-**Time point = 7**
+##### Time point 7
 
 ```{r}
 chosen_time_point = 7
@@ -383,5 +387,3 @@ R2_M = round(R2_M, digits = 2)
 ```
 
 The adjusted R squared of the model is `r R2_full` and the adjusted R squared of patch type is `r R2_M`.
-
-**Model Time Points**

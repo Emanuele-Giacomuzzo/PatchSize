@@ -7,6 +7,10 @@ editor_options:
   chunk_output_type: console
 ---
 
+### Large patches {.tabset .tabset-pills}
+
+How does biomass density change according to the size to which the patch is connected? *(Does a large patch connected to a large patch have the same biomass density than a large patch connected to a small patch?)*
+
 #### Plots
 
 ```{r large-single-patches-plots}
@@ -250,6 +254,4 @@ R2_P = round(R2_P, digits = 2)
 \
 The adjusted R squared of the model is `r R2_full` and the adjusted R squared of patch type is `r R2_P` (which includes also its interaction with disturbance).
 
-#### Single time points
-
-[Single time points cannot be computed just because I have a single data point as response variable (e.g., one for L (L_L) at low disturbance at time point = 2). Therefore, if I want to see if the lnRR of different treatments differs, I need to compute the confidence intervals.]{.underline}
+[Note: single time points cannot be computed just because I have a single data point as response variable (e.g., one for L (L_L) at low disturbance at time point = 2). Therefore, if I want to see if the lnRR of different treatments differs, I need to compute the confidence intervals.]{.underline}

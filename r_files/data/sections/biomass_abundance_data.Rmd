@@ -179,7 +179,7 @@ ds_regional_biomass = ds_biomass_abund %>%
   summarise(total_regional_bioarea = sum(total_patch_bioarea))
 ```
 
-```{r create-SL_SL_from_isolated, message=FALSE, results='hide'}
+```{r create-SL_SL_from_isolated, message=FALSE, results='hide', eval = recompute_analyses}
 isolated_S_and_L = ds_biomass_abund %>%
   filter(eco_metaeco_type == "S" | eco_metaeco_type == "L") %>%
   group_by(system_nr, disturbance, time_point, day, eco_metaeco_type) %>%
@@ -236,7 +236,14 @@ for (combination in 1:number_of_combinations){
           SL_from_isolated_all_combinations[[pair]])}
 
 ds_regional_biomass = rbind(ds_regional_biomass, SL_from_isolated_all_combinations_together)
+
+saveRDS(ds_regional_biomass, file = here("results", "ds_regional_biomass.RData"))
 ```
+
+```{r}
+ds_regional_biomass = readRDS(here("results", "ds_regional_biomass.RData"))
+```
+
 
 ```{r}
 datatable(ds_regional_biomass,
@@ -248,7 +255,7 @@ datatable(ds_regional_biomass,
 
 #### Local biomass lnRR data-set (`ds_lnRR_bioarea_density)`
 
-```{r create-ds_lnRR_bioarea_density}
+```{r create-ds_lnRR_bioarea_density, eval = recompute_analyses}
 eco_metaeco_types = unique(ds_biomass_abund$eco_metaeco_type)
 single_row = NULL
 row_n = 0
@@ -291,9 +298,13 @@ for (patch_size_input in c("S", "M", "L")){
 ds_lnRR_bioarea_density = ds_lnRR_bioarea_density %>%
   mutate(isolated_control = as.numeric(isolated_control)) %>%
   mutate(lnRR_bioarea_density = ln(mean_bioarea_density / isolated_control))
+
+saveRDS(ds_lnRR_bioarea_density, file = here("results", "biomass", "ds_lnRR_bioarea_density.RData"))
 ```
 
 ```{r}
+ds_lnRR_bioarea_density = readRDS(here("results", "biomass", "ds_lnRR_bioarea_density.RData"))
+
 datatable(ds_lnRR_bioarea_density,
           rownames = FALSE,
           options = list(scrollX = TRUE),
@@ -303,7 +314,7 @@ datatable(ds_lnRR_bioarea_density,
 
 #### lnRR community density data-set (`ds_lnRR_community_density)`
 
-```{r create-ds_lnRR_community_density}
+```{r create-ds_lnRR_community_density, eval = recompute_analyses}
 eco_metaeco_types = unique(ds_biomass_abund$eco_metaeco_type)
 single_row = NULL
 row_n = 0
@@ -346,9 +357,13 @@ for (patch_size_input in c("S", "M", "L")){
 ds_lnRR_community_density = ds_lnRR_community_density %>%
   mutate(isolated_control = as.numeric(isolated_control)) %>%
   mutate(lnRR_community_density = ln(mean_community_density / isolated_control))
+
+saveRDS(ds_lnRR_community_density, file = here("results", "ds_lnRR_community_density.RData"))
 ```
 
 ```{r}
+ds_lnRR_community_density = readRDS(here("results", "ds_lnRR_community_density.RData"))
+
 datatable(ds_lnRR_community_density,
           rownames = FALSE,
           options = list(scrollX = TRUE),

@@ -17,17 +17,9 @@ source(here("r_files", "biomass_regional", "extracted_sections", "metaeco_all.R"
 source(here("r_files", "biomass_regional", "extracted_sections", "MM_SL_plots.R"))
 ```
 
-#### Model time series {.tabset .tabset-pills}
-
-How does the biomass density of medium-medium and small-large meta-ecosystems differ across the time series? *(The first two points before the first disturbance are taken off).*
-
 ```{r child = here("r_files", "biomass_regional", "sections", "MM_SL_time_series.Rmd")}
 source(here("r_files", "biomass_regional", "extracted_sections", "MM_SL_time_series.R"))
 ```
-
-#### Model single points
-
-How does the biomass density of medium-medium and small-large meta-ecosystems differ for each time point? *(The first two points before the first disturbance are taken off).*
 
 ```{r MM_SL_time_fitted, child = here("r_files", "biomass_regional", "sections", "MM_SL_single_points.Rmd"), echo = TRUE, eval = TRUE}
 source(here("r_files", "biomass_regional", "extracted_sections", "MM_SL_single_points.R"))
@@ -37,6 +29,6 @@ source(here("r_files", "biomass_regional", "extracted_sections", "MM_SL_single_p
 source(here("r_files", "biomass_regional", "extracted_sections", "SL_SL_from_isolated.R"))
 ```
 
-```{r child = here("r_files", "biomass_regional", "sections", "metaeco_different_size.Rmd")}
-source(here("r_files", "biomass_regional", "extracted_sections", "metaeco_different_size.R"))
+```{r child = here("r_files", "biomass_regional", "sections", "metaeco_equally_sized_patches.Rmd")}
+source(here("r_files", "biomass_regional", "extracted_sections", "metaeco_equally_sized_patches.R"))
 ```

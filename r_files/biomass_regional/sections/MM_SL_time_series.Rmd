@@ -7,6 +7,10 @@ editor_options:
   chunk_output_type: console
 ---
 
+#### Model Time Series {.tabset .tabset-pills}
+
+How does the biomass density of medium-medium and small-large meta-ecosystems differ across the time series? *(The first two points before the first disturbance are taken off).*
+
 We will exclude in the model the time point 0 and 1. At time point 0 all cultures were the same because that's how we made them. At time point 1 no disturbance event had already taken place.
 
 Let's see how linear is the time trend of bioarea and if we can make it more linear with a log10 transformation. We are lucky that during the modelling process we need to drop the first two time points, which would have made the biomass trend not linear.

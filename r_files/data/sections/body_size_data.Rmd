@@ -97,6 +97,7 @@ ds_body_size$time_point = as.character(ds_body_size$time_point)
 ds_body_size = ds_body_size %>% 
   select(culture_ID, 
          patch_size, 
+         patch_size_volume,
          disturbance, 
          metaecosystem_type, 
          mean_area, 
@@ -114,6 +115,7 @@ ds_body_size = ds_body_size[, c("culture_ID",
             "time_point",
             "day",
             "patch_size", 
+            "patch_size_volume",
             "metaecosystem", 
             "metaecosystem_type", 
             "eco_metaeco_type", 
@@ -201,6 +203,7 @@ ds_median_body_size = ds_body_size %>%
         group_by(disturbance, 
                  metaecosystem,
                  patch_size, 
+                 patch_size_volume,
                  eco_metaeco_type, 
                  culture_ID, 
                  time_point,
@@ -219,7 +222,7 @@ datatable(ds_median_body_size,
 
 #### lnRR median body size data-set (`ds_lnRR_median_body_size)`
 
-```{r create-ds_lnRR_median_body_size}
+```{r create-ds_lnRR_median_body_size, eval = recompute_analyses}
 eco_metaeco_types = unique(culture_info$eco_metaeco_type)
 single_row = NULL
 row_n = 0
@@ -262,12 +265,37 @@ for (patch_size_input in c("S", "M", "L")){
 ds_lnRR_median_body_size = ds_lnRR_median_body_size %>%
   mutate(isolated_control = as.numeric(isolated_control)) %>%
   mutate(lnRR_median_body_size = ln(mean_median_body_size / isolated_control))
+
+saveRDS(ds_lnRR_median_body_size, file = here("results", "ds_lnRR_median_body_size.RData"))
 ```
 
 ```{r}
+ds_lnRR_median_body_size = readRDS(here("results", "ds_lnRR_median_body_size.RData"))
+
 datatable(ds_lnRR_median_body_size,
           rownames = FALSE,
           options = list(scrollX = TRUE),
           filter = list(position = 'top', 
                         clear = FALSE))
 ```
+
+I need to assemble a dataset with the 75% and 95% IQR abundances. 
+
+```{r}
+
+#How do you calculate the quantiles in dplyr?
+
+disturbance_input = "low"
+eco_metaeco_input = "S (S_S)"
+time_point_input = 4
+
+ds_body_size %>%
+  filter(disturbance == disturbance_input) %>%
+  filter(eco_metaeco_type == eco_metaeco_input) %>%
+  filter(time_point == time_point_input) %>%
+  filter(culture_ID == 16) %>%
+  filter(replicate_video == 1) #%>%
+  #filter(mean_area > quantile(mean_area, 0.125), mean_area < quantile(x, 0.125))
+
+```
+

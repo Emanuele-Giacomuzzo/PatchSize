@@ -11,6 +11,40 @@ editor_options:
 
 #### Plots
 
+```{r median-body-size-large-patches-single-ecosystem-plots}
+for (disturbance_input in c("low", "high")) {
+
+  print(ds_median_body_size %>%
+          filter(disturbance == disturbance_input) %>%
+          filter(patch_size == "L") %>%
+          ggplot(aes(x = day,
+                     y = median_body_size,
+                     group = culture_ID,
+                     fill = culture_ID,
+                     color = culture_ID,
+                     linetype = eco_metaeco_type)) +
+          geom_line(stat = "summary", fun = "mean") +
+          labs(title = paste("Disturbance =", disturbance_input),
+               x = "Day",
+               y = "Median body size (µm²)",
+               linetype = "") +
+          theme_bw() +
+          theme(panel.grid.major = element_blank(),
+                panel.grid.minor = element_blank(),
+                legend.position = c(.35, .95),
+                legend.justification = c("right", "top"),
+                legend.box.just = "right",
+                legend.margin = margin(6, 6, 6, 6)) +
+          scale_linetype_discrete(labels = c("large isolated",
+                                             "large connected to large",
+                                             "large connected to small"))  +
+          geom_vline(xintercept = first_perturbation_day,
+                     linetype = "dotdash",
+                     color = "grey",
+                     size = 0.7) +
+          labs(caption = "Vertical grey line: first perturbation"))}
+```
+
 ```{r}
 for (disturbance_input in c("low", "high")){
 
@@ -48,6 +82,45 @@ print(ds_median_body_size %>%
              color = "grey", 
              size=0.7) +
   labs(caption = "Vertical grey line: first perturbation"))}
+```
+
+```{r median-body-size-large-patches-lnRR-plots}
+for (disturbance_input in c("low", "high")) {
+  
+  print(ds_lnRR_median_body_size %>%
+          filter(disturbance == disturbance_input) %>%
+          filter(eco_metaeco_type == "L (L_L)" | eco_metaeco_type == "L (S_L)") %>%
+          ggplot(aes(x = day,
+                     y = lnRR_median_body_size,
+                     color = eco_metaeco_type)) +
+          geom_point(position = position_dodge(0.5)) +
+          geom_line(position = position_dodge(0.5)) + 
+          labs(title = paste("Disturbance =", disturbance_input),
+               x = "Day",
+               y = "lnRR medain body size (µm²)",
+               color = "") +
+          #geom_errorbar(aes(ymin = lnRR_lower, 
+          #                  ymax = lnRR_upper), 
+          #              width = .2,
+          #              position = position_dodge(0.5)) + 
+          scale_color_discrete(labels = c("small connected to large", 
+                                          "small connnected to small")) +
+          theme_bw() +
+          theme(panel.grid.major = element_blank(), 
+                panel.grid.minor = element_blank(),
+                legend.position = c(.40, .95),
+                legend.justification = c("right", "top"),
+                legend.box.just = "right",
+                legend.margin = margin(6, 6, 6, 6)) +
+          geom_vline(xintercept = first_perturbation_day + 0.7, 
+                     linetype="dotdash", 
+                     color = "grey", 
+                     size=0.7) +
+          geom_hline(yintercept = 0, 
+                     linetype = "dotted", 
+                     color = "black", 
+                     size = 0.7) +
+          labs(caption = "Vertical grey line: first perturbation"))}
 ```
 
 #### Time series
@@ -186,6 +259,4 @@ R2_P = round(R2_P, digits = 2)
 \
 The adjusted R squared of the model is `r R2_full` and the adjusted R squared of patch type is `r R2_P` (which includes also its interaction with disturbance).
 
-#### Time points
-
-[Single time points cannot be computed just because I have a single data point as response variable (e.g., one for L (L_L) at low disturbance at time point = 2). Therefore, if I want to see if the lnRR of different treatments differs, I need to compute the confidence intervals.]{.underline}
+[Note: single time points cannot be computed just because I have a single data point as response variable (e.g., one for L (L_L) at low disturbance at time point = 2). Therefore, if I want to see if the lnRR of different treatments differs, I need to compute the confidence intervals.]{.underline}
