@@ -179,7 +179,7 @@ small_patches_presentation = ds_biomass_abund %>%
                      fill = eco_metaeco_type)) +
           geom_boxplot() +
           labs(x = "Day",
-               y = "Bioarea (µm²/μl)",
+               y = "Local Bioarea (µm²/μl)",
                fill = "") +
           theme_bw() +
           theme(panel.grid.major = element_blank(),
@@ -189,9 +189,9 @@ small_patches_presentation = ds_biomass_abund %>%
         legend.box.just = "right",
         legend.margin = margin(6, 6, 6, 6),
         text = element_text(size = 15)) +
-          scale_fill_discrete(labels = c("small isolated",
-                                         "small connected to large",
-                                         "small connected to small")) +
+          scale_fill_discrete(labels = c("Small isolated",
+                                         "Small connected to large",
+                                         "Small connected to small")) +
           geom_vline(xintercept = first_perturbation_day + 0.7,
                      linetype = "dotdash",
                      color = "grey",
@@ -214,11 +214,11 @@ metaecos_presentation = ds_regional_biomass %>%
                       fill = metaecosystem_type)) +
           geom_boxplot() +
           labs(x = "Day", 
-               y = "Bioarea (µm²)",
+               y = "Regional Bioarea (µm²)",
                color = '', 
                fill = '') +
-          scale_fill_discrete(labels = c("medium-medium", 
-                                         "small-large")) +
+          scale_fill_discrete(labels = c("Medium-Medium", 
+                                         "Small-Large")) +
           theme_bw() +
           theme(panel.grid.major = element_blank(), 
                 panel.grid.minor = element_blank(),
