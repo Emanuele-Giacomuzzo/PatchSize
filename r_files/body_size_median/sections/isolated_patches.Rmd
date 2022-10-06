@@ -9,6 +9,8 @@ editor_options:
 
 ### Isolated patches {.tabset .tabset-pills}
 
+*Research question: how does the median body size changes across isolated patches that have different size?*
+
 #### Plots
 
 ```{r}
@@ -98,6 +100,14 @@ full = lmer(median_body_size ~
             REML = FALSE,
             control = lmerControl(optimizer = "Nelder_Mead"))
 ```
+
+*Should we keep P `(patch_size_volume`?*
+
+[Need to figure this out.]{.underline}
+
+*Should we keep D `(disturbance)`?*
+
+[Need to figure this out.]{.underline}
 
 *Should we keep the correlation in `(day | culture_ID)`?*
 
@@ -317,4 +327,4 @@ R2_isolated_patches = readRDS(here("results", "R2_median_body_size_isolated_patc
 R2_isolated_patches$IR2
 ```
 
-[Note: I could compute the single time points but I don't see the reason why I should do that.]{.underline}
+I could compute the single time points but I don't see the reason why I should do that.

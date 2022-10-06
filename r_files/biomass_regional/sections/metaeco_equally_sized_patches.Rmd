@@ -9,9 +9,9 @@ editor_options:
 
 ### Meta-ecosystems with equally sized patches {.tabset .tabset-pills}
 
-#### Plots
+*Research question: how does the biomass density of meta-ecosystems change according to the size of their patches?*
 
-How does the biomass density of meta-ecosystems change according to the size of their patches?
+#### Plots
 
 ```{r metaecosystem-different-size-single-systems}
 for (disturbance_input in c("low", "high")){

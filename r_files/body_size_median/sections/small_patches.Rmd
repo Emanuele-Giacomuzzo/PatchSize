@@ -9,6 +9,8 @@ editor_options:
 
 ### Small patches {.tabset .tabset-pills}
 
+*Research question:* *do small patches that are connected to small or large patches have different median body size?*
+
 #### Plots
 
 ```{r median-body-size-small-patches-single-ecosystem-plots}
@@ -88,6 +90,7 @@ for (disturbance_input in c("low", "high")){
 for (disturbance_input in c("low", "high")) {
   
   print(ds_lnRR_median_body_size %>%
+          filter(!time_point == 0) %>% #At time point 0 all cultures were the same 
           filter(disturbance == disturbance_input) %>%
           filter(eco_metaeco_type == "S (S_S)" | eco_metaeco_type == "S (S_L)") %>%
           ggplot(aes(x = day,
@@ -162,6 +165,14 @@ full_model = lm(lnRR_median_body_size ~
                          filter(eco_metaeco_type== "S (S_S)" | 
                                 eco_metaeco_type == "S (S_L)"))
 ```
+
+*Should we keep P `(eco_metaeco_type)`?*
+
+[Need to figure this out.]{.underline}
+
+*Should we keep D `(disturbance)`?*
+
+[Need to figure this out.]{.underline}
 
 *Should we keep t \* P?*
 
@@ -259,4 +270,4 @@ R2_P = round(R2_P, digits = 2)
 \
 The adjusted R squared of the model is `r R2_full` and the adjusted R squared of patch type is `r R2_P` (which includes also its interaction with disturbance).
 
-[Note: single time points cannot be computed just because I have a single data point as response variable (e.g., one for S (S_S) at low disturbance at time point = 2). Therefore, if I want to see if the lnRR of different treatments differs, I need to compute the confidence intervals.]{.underline}
+Single time points: see modeling choices.

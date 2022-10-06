@@ -62,7 +62,7 @@ no_M = lm(total_regional_bioarea ~
 AIC(full,no_M)
 ```
 
-*No.*
+No.
 
 ##### Time point 2
 
@@ -78,6 +78,32 @@ full = lm(total_regional_bioarea ~
           data = ds_regional_biomass %>%
                             filter(time_point == chosen_time_point) %>%
                             filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L"))
+```
+
+*Should we keep M?*
+
+```{r}
+no_M = lm(total_regional_bioarea ~
+            disturbance +
+            metaecosystem_type * disturbance,
+          data = ds_regional_biomass %>%
+                            filter(time_point == chosen_time_point) %>%
+                            filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L"))
+
+AIC(full,no_M)
+```
+
+*Should we keep D?*
+
+```{r}
+no_D = lm(total_regional_bioarea ~
+            metaecosystem_type +
+            metaecosystem_type * disturbance,
+          data = ds_regional_biomass %>%
+                            filter(time_point == chosen_time_point) %>%
+                            filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L"))
+
+AIC(full,no_D)
 ```
 
 *Should we keep M \* D?*
@@ -134,6 +160,32 @@ full = lm(total_regional_bioarea ~
                             filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L"))
 ```
 
+*Should we keep M?*
+
+```{r}
+no_M = lm(total_regional_bioarea ~
+            disturbance +
+            metaecosystem_type * disturbance,
+          data = ds_regional_biomass %>%
+                            filter(time_point == chosen_time_point) %>%
+                            filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L"))
+
+AIC(full,no_M)
+```
+
+*Should we keep D?*
+
+```{r}
+no_D = lm(total_regional_bioarea ~
+            metaecosystem_type +
+            metaecosystem_type * disturbance,
+          data = ds_regional_biomass %>%
+                            filter(time_point == chosen_time_point) %>%
+                            filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L"))
+
+AIC(full,no_D)
+```
+
 *Should we keep M \* D?*
 
 ```{r}
@@ -186,6 +238,32 @@ full = lm(total_regional_bioarea ~
           data = ds_regional_biomass %>%
                             filter(time_point == chosen_time_point) %>%
                             filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L"))
+```
+
+*Should we keep M?*
+
+```{r}
+no_M = lm(total_regional_bioarea ~
+            disturbance +
+            metaecosystem_type * disturbance,
+          data = ds_regional_biomass %>%
+                            filter(time_point == chosen_time_point) %>%
+                            filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L"))
+
+AIC(full,no_M)
+```
+
+*Should we keep D?*
+
+```{r}
+no_D = lm(total_regional_bioarea ~
+            metaecosystem_type +
+            metaecosystem_type * disturbance,
+          data = ds_regional_biomass %>%
+                            filter(time_point == chosen_time_point) %>%
+                            filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L"))
+
+AIC(full,no_D)
 ```
 
 *Should we keep M \* D?*
@@ -242,6 +320,32 @@ full = lm(total_regional_bioarea ~
                             filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L"))
 ```
 
+*Should we keep M?*
+
+```{r}
+no_M = lm(total_regional_bioarea ~
+            disturbance +
+            metaecosystem_type * disturbance,
+          data = ds_regional_biomass %>%
+                            filter(time_point == chosen_time_point) %>%
+                            filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L"))
+
+AIC(full,no_M)
+```
+
+*Should we keep D?*
+
+```{r}
+no_D = lm(total_regional_bioarea ~
+            metaecosystem_type +
+            metaecosystem_type * disturbance,
+          data = ds_regional_biomass %>%
+                            filter(time_point == chosen_time_point) %>%
+                            filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L"))
+
+AIC(full,no_D)
+```
+
 *Should we keep M \* D?*
 
 ```{r}
@@ -294,6 +398,32 @@ full = lm(total_regional_bioarea ~
           data = ds_regional_biomass %>%
                             filter(time_point == chosen_time_point) %>%
                             filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L"))
+```
+
+*Should we keep M?*
+
+```{r}
+no_M = lm(total_regional_bioarea ~
+            disturbance +
+            metaecosystem_type * disturbance,
+          data = ds_regional_biomass %>%
+                            filter(time_point == chosen_time_point) %>%
+                            filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L"))
+
+AIC(full,no_M)
+```
+
+*Should we keep D?*
+
+```{r}
+no_D = lm(total_regional_bioarea ~
+            metaecosystem_type +
+            metaecosystem_type * disturbance,
+          data = ds_regional_biomass %>%
+                            filter(time_point == chosen_time_point) %>%
+                            filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L"))
+
+AIC(full,no_D)
 ```
 
 *Should we keep M \* D?*
@@ -349,6 +479,33 @@ full = lm(total_regional_bioarea ~
                             filter(time_point == chosen_time_point) %>%
                             filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L"))
 ```
+
+*Should we keep M?*
+
+```{r}
+no_M = lm(total_regional_bioarea ~
+            disturbance +
+            metaecosystem_type * disturbance,
+          data = ds_regional_biomass %>%
+                            filter(time_point == chosen_time_point) %>%
+                            filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L"))
+
+AIC(full,no_M)
+```
+
+*Should we keep D?*
+
+```{r}
+no_D = lm(total_regional_bioarea ~
+            metaecosystem_type +
+            metaecosystem_type * disturbance,
+          data = ds_regional_biomass %>%
+                            filter(time_point == chosen_time_point) %>%
+                            filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L"))
+
+AIC(full,no_D)
+```
+
 
 *Should we keep M \* D?*
 

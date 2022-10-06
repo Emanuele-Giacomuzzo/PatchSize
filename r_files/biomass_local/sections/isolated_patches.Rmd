@@ -9,7 +9,7 @@ editor_options:
 
 ### Isolated patches {.tabset .tabset-pills}
 
-How does biomass density change according to the size of isolated patches? *(How does the biomass of small, medium, and large patches change?)*
+*Research question: how does biomass density change according to the size of isolated patches? (How does the biomass of small, medium, and large patches change?)*
 
 #### Plots
 
@@ -123,6 +123,14 @@ full = lmer(bioarea_per_volume ~
                    REML = FALSE,
                    control = lmerControl(optimizer = "Nelder_Mead"))
 ```
+
+Should we keep P (`patch_size_volume`)?
+
+[Need to figure this out.]{.underline}
+
+Should we keep D (`disturbance`)?
+
+[Need to figure this out.]{.underline}
 
 *Should we keep the correlation in `(day | system_nr)`?*
 
@@ -342,4 +350,4 @@ R2_regional = readRDS(here("results", "R2_isolated_patches_t2t5.RData"))
 R2_regional$IR2
 ```
 
-[Note: I could compute the single time points but I don't see the reason why I should do that.]{.underline}
+I could compute the single time points but I don't see the reason why I should do that.

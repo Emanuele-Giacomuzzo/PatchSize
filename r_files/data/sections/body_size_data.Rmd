@@ -152,7 +152,7 @@ for (class in 1:nr_of_size_classes){
   
   bin_lower_limit = size_class_boundaries[class]
   bin_upper_limit = size_class_boundaries[class+1]
-  size_input = (size_class_boundaries[class] + size_class_boundaries[class + 1])/2
+  mean_size = (size_class_boundaries[class] + size_class_boundaries[class + 1])/2
   
   size_class[[class]] = ds_body_size%>%
     filter(bin_lower_limit <= mean_area) %>%
@@ -178,7 +178,7 @@ for (class in 1:nr_of_size_classes){
     summarise(abundance = mean(mean_abundance_across_videos)) %>%
     mutate(log_abundance = log(abundance)) %>%
     mutate(size_class = class) %>%
-    mutate(size = size_input) %>%
+    mutate(size = mean_size) %>%
     mutate(log_size = log(size))
   
 }
@@ -279,7 +279,7 @@ datatable(ds_lnRR_median_body_size,
                         clear = FALSE))
 ```
 
-I need to assemble a dataset with the 75% and 95% IQR abundances. 
+I need to assemble a dataset with the 75% and 95% IQR abundances.
 
 ```{r}
 
@@ -298,4 +298,3 @@ ds_body_size %>%
   #filter(mean_area > quantile(mean_area, 0.125), mean_area < quantile(x, 0.125))
 
 ```
-

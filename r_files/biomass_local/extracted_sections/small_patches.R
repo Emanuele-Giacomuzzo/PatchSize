@@ -1,4 +1,4 @@
-## ----small-patches-single-ecosystems-plots-------------------------------------------------------------------------------------------------------------
+## ----small-patches-single-ecosystems-plots-------------------------------------------------------------------------------------------------------------------------
 for (disturbance_input in c("low", "high")) {
 
   print(ds_biomass_abund %>%
@@ -32,7 +32,7 @@ for (disturbance_input in c("low", "high")) {
           labs(caption = "Vertical grey line: first perturbation"))}
 
 
-## ----small-patches-boxplots----------------------------------------------------------------------------------------------------------------------------
+## ----small-patches-boxplots----------------------------------------------------------------------------------------------------------------------------------------
 for (disturbance_input in c("low", "high")) {
   
   print(ds_biomass_abund %>%
@@ -64,20 +64,21 @@ for (disturbance_input in c("low", "high")) {
           labs(caption = "Vertical grey line: first perturbation"))}
 
 
-## ----small-patches-lnRR-plots--------------------------------------------------------------------------------------------------------------------------
+## ----small-patches-effect-size-plots-------------------------------------------------------------------------------------------------------------------------------
 for (disturbance_input in c("low", "high")) {
   
-  print(ds_lnRR_bioarea_density %>%
+  print(ds_effect_size_bioarea_density %>%
+          filter(!time_point == 0) %>% #At time point 0 all cultures were the same 
           filter(disturbance == disturbance_input) %>%
           filter(eco_metaeco_type == "S (S_S)" | eco_metaeco_type == "S (S_L)") %>%
           ggplot(aes(x = day,
-                     y = lnRR_bioarea_density,
+                     y = bioarea_density_hedges_d,
                      color = eco_metaeco_type)) +
           geom_point(position = position_dodge(0.5)) +
           geom_line(position = position_dodge(0.5)) + 
           labs(title = paste("Disturbance =", disturbance_input),
                x = "Day",
-               y = "lnRR local bioarea (µm²/µl)",
+               y = "Local bioarea effect size",
                color = "") +
           #geom_errorbar(aes(ymin = lnRR_lower, 
           #                  ymax = lnRR_upper), 
@@ -102,33 +103,33 @@ for (disturbance_input in c("low", "high")) {
                      size = 0.7))}
 
 
-## ----choose-time-points--------------------------------------------------------------------------------------------------------------------------------
+## ----choose-time-points--------------------------------------------------------------------------------------------------------------------------------------------
 first_time_point = 2
 last_time_point = 7
 
 
-## ----small-patches-full-model--------------------------------------------------------------------------------------------------------------------------
-full_model = lm(lnRR_bioarea_density ~                  
+## ----small-patches-full-model--------------------------------------------------------------------------------------------------------------------------------------
+full_model = lm(bioarea_density_hedges_d ~                  
                   day + 
                   eco_metaeco_type + 
                   disturbance +
                   day * eco_metaeco_type +
                   day * disturbance + 
                   eco_metaeco_type * disturbance,
-                  data = ds_lnRR_bioarea_density %>%
+                  data = ds_effect_size_bioarea_density %>%
                          filter(time_point >= first_time_point) %>%
                          filter(time_point <= last_time_point) %>%
                          filter(eco_metaeco_type== "S (S_S)" | eco_metaeco_type == "S (S_L)"))
 
 
-## ----small-patches-no-TM-------------------------------------------------------------------------------------------------------------------------------
-no_TP = lm(lnRR_bioarea_density ~
+## ----small-patches-no-TM-------------------------------------------------------------------------------------------------------------------------------------------
+no_TP = lm(bioarea_density_hedges_d ~
                   day + 
                   eco_metaeco_type + 
                   disturbance +
                   day * disturbance + 
                   eco_metaeco_type * disturbance,
-                  data = ds_lnRR_bioarea_density %>%
+                  data = ds_effect_size_bioarea_density %>%
                          filter(time_point >= first_time_point) %>%
                          filter(time_point <= last_time_point) %>%
                          filter(eco_metaeco_type== "S (S_S)" | eco_metaeco_type == "S (S_L)"))
@@ -136,14 +137,14 @@ no_TP = lm(lnRR_bioarea_density ~
 AIC(full_model, no_TP)
 
 
-## ----small-patches-no-TD-------------------------------------------------------------------------------------------------------------------------------
-no_TD = lm(lnRR_bioarea_density ~
+## ----small-patches-no-TD-------------------------------------------------------------------------------------------------------------------------------------------
+no_TD = lm(bioarea_density_hedges_d ~
                   day + 
                   eco_metaeco_type + 
                   disturbance +
                   day * eco_metaeco_type +
                   eco_metaeco_type * disturbance,
-                  data = ds_lnRR_bioarea_density %>%
+                  data = ds_effect_size_bioarea_density %>%
                          filter(time_point >= first_time_point) %>%
                          filter(time_point <= last_time_point) %>%
                          filter(eco_metaeco_type== "S (S_S)" | eco_metaeco_type == "S (S_L)"))
@@ -151,13 +152,13 @@ no_TD = lm(lnRR_bioarea_density ~
 AIC(full_model, no_TD)
 
 
-## ----small-patches-no-MD-------------------------------------------------------------------------------------------------------------------------------
-no_PD = lm(lnRR_bioarea_density ~
+## ----small-patches-no-MD-------------------------------------------------------------------------------------------------------------------------------------------
+no_PD = lm(bioarea_density_hedges_d ~
                   day + 
                   eco_metaeco_type + 
                   disturbance +
                   day * eco_metaeco_type,
-                  data = ds_lnRR_bioarea_density %>%
+                  data = ds_effect_size_bioarea_density %>%
                          filter(time_point >= first_time_point) %>%
                          filter(time_point <= last_time_point) %>%
                          filter(eco_metaeco_type== "S (S_S)" | eco_metaeco_type == "S (S_L)"))
@@ -165,18 +166,18 @@ no_PD = lm(lnRR_bioarea_density ~
 AIC(no_TD, no_PD)
 
 
-## ----small-t2-t7-best-model----------------------------------------------------------------------------------------------------------------------------
+## ----small-t2-t7-best-model----------------------------------------------------------------------------------------------------------------------------------------
 best_model = no_PD
 par(mfrow = c(2,3))
 plot(best_model, which = 1:5)
 
 
-## ------------------------------------------------------------------------------------------------------------------------------------------------------
+## ------------------------------------------------------------------------------------------------------------------------------------------------------------------
 R2_full = glance(best_model)$r.squared
-no_patch_type = lm(lnRR_bioarea_density ~
+no_patch_type = lm(bioarea_density_hedges_d ~
                   day + 
                   disturbance,
-                  data = ds_lnRR_bioarea_density %>%
+                  data = ds_effect_size_bioarea_density %>%
                          filter(time_point >= first_time_point) %>%
                          filter(time_point <= last_time_point) %>%
                          filter(eco_metaeco_type== "S (S_S)" | eco_metaeco_type == "S (S_L)"))

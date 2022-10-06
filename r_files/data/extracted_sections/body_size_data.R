@@ -1,4 +1,4 @@
-## ------------------------------------------------------------------------------------------------------------------------------------------------------
+## ------------------------------------------------------------------------------------------------------------------------------------------------------------------
 culture_info = read.csv(here("data", "PatchSizePilot_culture_info.csv"), header = TRUE)
 load(here("data", "morphology", "t0.RData"));t0 = morph_mvt
 load(here("data", "morphology", "t1.RData"));t1 = morph_mvt
@@ -11,7 +11,7 @@ load(here("data", "morphology", "t7.RData"));t7 = morph_mvt
 rm(morph_mvt)
 
 
-## ----body-size-tidy-time-points------------------------------------------------------------------------------------------------------------------------
+## ----body-size-tidy-time-points------------------------------------------------------------------------------------------------------------------------------------
 #Column: time
 t0$time = NA
 t1$time = NA
@@ -38,7 +38,7 @@ t6 = t6 %>% rename(replicate_video = replicate)
 t7 = t7 %>% rename(replicate_video = replicate)
 
 
-## ----ds-body-size-creation-----------------------------------------------------------------------------------------------------------------------------
+## ----ds-body-size-creation-----------------------------------------------------------------------------------------------------------------------------------------
 cultures_n = max(culture_info$culture_ID)
 original_t0_rows = nrow(t0)
 ID_vector = rep(1:cultures_n, each = original_t0_rows)
@@ -58,7 +58,7 @@ ds_body_size = rbind(t0, t1, t2, t3, t4, t5, t6, t7)
 rm(t0, t1, t2, t3, t4, t5, t6, t7)
 
 
-## ----tidy-body-size-ds---------------------------------------------------------------------------------------------------------------------------------
+## ----tidy-body-size-ds---------------------------------------------------------------------------------------------------------------------------------------------
 #Column: day
 ds_body_size$day = ds_body_size$time_point;
 ds_body_size$day[ds_body_size$day=="t0"] = "0"
@@ -112,7 +112,7 @@ ds_body_size = ds_body_size[, c("culture_ID",
             "mean_area")]
 
 
-## ------------------------------------------------------------------------------------------------------------------------------------------------------
+## ------------------------------------------------------------------------------------------------------------------------------------------------------------------
 datatable(ds_body_size,
           rownames = FALSE,
           options = list(scrollX = TRUE),
@@ -120,7 +120,7 @@ datatable(ds_body_size,
                         clear = FALSE))
 
 
-## ------------------------------------------------------------------------------------------------------------------------------------------------------
+## ------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 #### --- PARAMETERS & INITIALISATION --- ###
 
@@ -179,7 +179,7 @@ datatable(ds_classes,
                         clear = FALSE))
 
 
-## ----ds_median_body_size-creation----------------------------------------------------------------------------------------------------------------------
+## ----ds_median_body_size-creation----------------------------------------------------------------------------------------------------------------------------------
 eco_metaeco_types = unique(culture_info$eco_metaeco_type)
 
 ds_median_body_size = ds_body_size %>%
@@ -195,7 +195,7 @@ ds_median_body_size = ds_body_size %>%
         summarise(median_body_size = median(mean_area))
 
 
-## ------------------------------------------------------------------------------------------------------------------------------------------------------
+## ------------------------------------------------------------------------------------------------------------------------------------------------------------------
 datatable(ds_median_body_size,
           rownames = FALSE,
           options = list(scrollX = TRUE),
@@ -203,55 +203,77 @@ datatable(ds_median_body_size,
                         clear = FALSE))
 
 
-## ----create-ds_lnRR_median_body_size-------------------------------------------------------------------------------------------------------------------
-eco_metaeco_types = unique(culture_info$eco_metaeco_type)
-single_row = NULL
-row_n = 0
+## ----create-ds_lnRR_median_body_size, eval = recompute_analyses----------------------------------------------------------------------------------------------------
+## eco_metaeco_types = unique(culture_info$eco_metaeco_type)
+## single_row = NULL
+## row_n = 0
+## 
+## for (disturbance_input in c("low", "high")){
+##   for (eco_metaeco_input in eco_metaeco_types){
+##     for (time_point_input in 0:7){
+## 
+##       row_n = row_n + 1
+## 
+##       single_row[[row_n]] = ds_median_body_size %>%
+##         filter(eco_metaeco_type == eco_metaeco_input) %>%
+##         filter(disturbance == disturbance_input) %>%
+##         filter(time_point == time_point_input) %>%
+##         group_by(culture_ID, eco_metaeco_type, patch_size, disturbance, time_point, day) %>%
+##         summarise(median_body_size_across_videos = mean(median_body_size)) %>%
+##         group_by(eco_metaeco_type, patch_size, disturbance, time_point, day) %>%
+##         summarise(mean_median_body_size = mean(median_body_size_across_videos))}}}
+## 
+## ds_lnRR_median_body_size = single_row %>%
+##   bind_rows()
+## 
+## for (patch_size_input in c("S", "M", "L")){
+##   for (disturbance_input in c("low", "high")){
+##     for (time_point_input in 0:7){
+## 
+##       averaged_value_isolated_control = ds_lnRR_median_body_size %>%
+##         filter(eco_metaeco_type == patch_size_input) %>%
+##         filter(disturbance == disturbance_input) %>%
+##         filter(time_point == time_point_input) %>%
+##         ungroup() %>%
+##         select(mean_median_body_size)
+## 
+##       ds_lnRR_median_body_size$isolated_control[
+##         ds_lnRR_median_body_size$patch_size == patch_size_input &
+##           ds_lnRR_median_body_size$disturbance == disturbance_input &
+##           ds_lnRR_median_body_size$time_point == time_point_input] =
+##         averaged_value_isolated_control}}}
+## 
+## ds_lnRR_median_body_size = ds_lnRR_median_body_size %>%
+##   mutate(isolated_control = as.numeric(isolated_control)) %>%
+##   mutate(lnRR_median_body_size = ln(mean_median_body_size / isolated_control))
+## 
+## saveRDS(ds_lnRR_median_body_size, file = here("results", "ds_lnRR_median_body_size.RData"))
 
-for (disturbance_input in c("low", "high")){
-  for (eco_metaeco_input in eco_metaeco_types){
-    for (time_point_input in 0:7){
-      
-      row_n = row_n + 1
-      
-      single_row[[row_n]] = ds_median_body_size %>%
-        filter(eco_metaeco_type == eco_metaeco_input) %>%
-        filter(disturbance == disturbance_input) %>%
-        filter(time_point == time_point_input) %>% 
-        group_by(culture_ID, eco_metaeco_type, patch_size, disturbance, time_point, day) %>%
-        summarise(median_body_size_across_videos = mean(median_body_size)) %>%
-        group_by(eco_metaeco_type, patch_size, disturbance, time_point, day) %>%
-        summarise(mean_median_body_size = mean(median_body_size_across_videos))}}}
 
-ds_lnRR_median_body_size = single_row %>%
-  bind_rows()
+## ------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ds_lnRR_median_body_size = readRDS(here("results", "ds_lnRR_median_body_size.RData"))
 
-for (patch_size_input in c("S", "M", "L")){
-  for (disturbance_input in c("low", "high")){
-    for (time_point_input in 0:7){
-      
-      averaged_value_isolated_control = ds_lnRR_median_body_size %>%
-        filter(eco_metaeco_type == patch_size_input) %>%
-        filter(disturbance == disturbance_input) %>%
-        filter(time_point == time_point_input) %>%
-        ungroup() %>%
-        select(mean_median_body_size)
-      
-      ds_lnRR_median_body_size$isolated_control[
-        ds_lnRR_median_body_size$patch_size == patch_size_input & 
-          ds_lnRR_median_body_size$disturbance == disturbance_input &
-          ds_lnRR_median_body_size$time_point == time_point_input] = 
-        averaged_value_isolated_control}}}
-
-ds_lnRR_median_body_size = ds_lnRR_median_body_size %>%
-  mutate(isolated_control = as.numeric(isolated_control)) %>%
-  mutate(lnRR_median_body_size = ln(mean_median_body_size / isolated_control))
-
-
-## ------------------------------------------------------------------------------------------------------------------------------------------------------
 datatable(ds_lnRR_median_body_size,
           rownames = FALSE,
           options = list(scrollX = TRUE),
           filter = list(position = 'top', 
                         clear = FALSE))
+
+
+## ------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+#How do you calculate the quantiles in dplyr?
+
+disturbance_input = "low"
+eco_metaeco_input = "S (S_S)"
+time_point_input = 4
+
+ds_body_size %>%
+  filter(disturbance == disturbance_input) %>%
+  filter(eco_metaeco_type == eco_metaeco_input) %>%
+  filter(time_point == time_point_input) %>%
+  filter(culture_ID == 16) %>%
+  filter(replicate_video == 1) #%>%
+  #filter(mean_area > quantile(mean_area, 0.125), mean_area < quantile(x, 0.125))
+
 

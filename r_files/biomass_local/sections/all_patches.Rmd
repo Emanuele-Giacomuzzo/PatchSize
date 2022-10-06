@@ -11,6 +11,8 @@ editor_options:
 
 #### Bioarea density
 
+*Research question: how does the density of bioarea changes across patch types?*
+
 ```{r}
 for (disturbance_input in c("low", "high")) {
   
@@ -50,6 +52,8 @@ for (disturbance_input in c("low", "high")) {
 ```
 
 #### Total bioarea
+
+*Research question: how does total bioarea changes across patch types?*
 
 ```{r}
 for (disturbance_input in c("low", "high")) {

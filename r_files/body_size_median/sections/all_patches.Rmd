@@ -9,6 +9,8 @@ editor_options:
 
 ### All patches
 
+*Research question: how does the median body size changes across patches?*
+
 ```{r}
 for (disturbance_input in c("low", "high")){
   

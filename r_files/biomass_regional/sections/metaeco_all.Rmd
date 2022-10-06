@@ -9,6 +9,8 @@ editor_options:
 
 ### All meta-ecosystems {.tabset .tabset-pills}
 
+*Research question:* *how does the total biomass of meta-ecosystem changes across meta-ecosystems with different patch sizes?*
+
 ```{r}
 for (disturbance_input in c("low", "high")){
   

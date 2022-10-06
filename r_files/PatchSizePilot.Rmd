@@ -44,7 +44,7 @@ for (main_section in list_of_main_sections){
 }
 ```
 
-```{r eval = FALSE, echo = FALSE}
+```{r ren-seetings, eval = FALSE, echo = FALSE}
 renv::repair()
 renv::snapshot()
 ```
@@ -56,9 +56,8 @@ cat( "\014" )
 start_time = Sys.time()
 ```
 
-```{r, echo = FALSE}
-#Lengthy analyses have been suppresed. However, if you set recompute_analyses = TRUE it redoes them. 
-
+```{r recompute-analyses, echo = FALSE}
+#Lengthy analyses have been suppressed. However, if you set recompute_analyses = TRUE it redoes them. 
 recompute_analyses = FALSE
 ```
 
@@ -99,10 +98,9 @@ conflict_prefer("load", "base")
 conflict_prefer("filter", "dplyr")
 ```
 
-```{r functions}
-source(here("r_files", "functions", "calculate.cohens_d.R"))
+```{r functions, echo = FALSE}
+source(here("r_files", "functions", "calculate.hedges_d.R"))
 ```
-
 
 ```{r various-parameters, echo = FALSE}
 gif_figures = TRUE
@@ -119,10 +117,10 @@ metaecosystems_to_take_off = 40 #System 40 was the system of culture 60 that I s
 
 # PatchSizePilot {.tabset}
 
-```{r child = here("r_files", "overview.Rmd")}
+```{r overview-experiment, child = here("r_files", "overview.Rmd")}
 ```
 
-```{r child = here("r_files", "data", "main_data.Rmd")}
+```{r manipulate-data, child = here("r_files", "data", "main_data.Rmd")}
 source(here("r_files", "data", "extracted_sections", "experimental_treatments.R"))
 source(here("r_files", "data", "extracted_sections", "biomass_abundance_data.R"))
 source(here("r_files", "data", "extracted_sections", "body_size_data.R"))
@@ -170,6 +168,79 @@ ggsave(here("results", "biomass", "small_patches_publication.jpg"),
 
 ```{r child = here("r_files", "tests", "main_tests.Rmd")}
 ```
+
+```{r save-figures}
+small_patches_presentation = ds_biomass_abund %>%
+          filter(disturbance == disturbance_input) %>%
+          filter(patch_size == "S") %>%
+          ggplot(aes(x = day,
+                     y = bioarea_per_volume,
+                     group = interaction(day,eco_metaeco_type),
+                     fill = eco_metaeco_type)) +
+          geom_boxplot() +
+          labs(x = "Day",
+               y = "Bioarea (µm²/μl)",
+               fill = "") +
+          theme_bw() +
+          theme(panel.grid.major = element_blank(),
+                panel.grid.minor = element_blank(),
+                legend.position = c(.95, .95),
+                legend.justification = c("right", "top"),
+        legend.box.just = "right",
+        legend.margin = margin(6, 6, 6, 6),
+        text = element_text(size = 15)) +
+          scale_fill_discrete(labels = c("small isolated",
+                                         "small connected to large",
+                                         "small connected to small")) +
+          geom_vline(xintercept = first_perturbation_day + 0.7,
+                     linetype = "dotdash",
+                     color = "grey",
+                     size = 0.7) +
+  scale_x_continuous(breaks = c(0, 4, 8, 12, 16, 20, 24, 28))
+
+ggsave(here("results", "biomass", "presentation_small_patches.jpg"), 
+       small_patches_presentation + labs(title = ""), 
+       units = publication_unit,
+       width = 17, 
+       height = publication_height)
+
+metaecos_presentation = ds_regional_biomass %>%
+          filter(disturbance == disturbance_input) %>%
+          filter (metaecosystem_type == "S_L" |
+                  metaecosystem_type == "M_M") %>%
+          ggplot (aes(x = day,
+                      y = total_regional_bioarea,
+                      group = interaction(day, metaecosystem_type),
+                      fill = metaecosystem_type)) +
+          geom_boxplot() +
+          labs(x = "Day", 
+               y = "Bioarea (µm²)",
+               color = '', 
+               fill = '') +
+          scale_fill_discrete(labels = c("medium-medium", 
+                                         "small-large")) +
+          theme_bw() +
+          theme(panel.grid.major = element_blank(), 
+                panel.grid.minor = element_blank(),
+                legend.position = c(.95, .95),
+                legend.justification = c("right", "top"),
+                legend.box.just = "right",
+                legend.margin = margin(6, 6, 6, 6),
+                text = element_text(size = 15))  +
+          geom_vline(xintercept = first_perturbation_day + 0.7, 
+                     linetype = "dotdash", 
+                     color = "grey", 
+                     size = 0.7) +
+  scale_x_continuous(breaks = c(0, 4, 8, 12, 16, 20, 24, 28))
+  
+
+ggsave(here("results", "biomass", "presentation_metaecos.jpg"), 
+       metaecos_presentation + labs(title = ""), 
+       units = publication_unit,
+       width = 17, 
+       height = publication_height)
+```
+
 
 ## Running time
 

@@ -9,7 +9,7 @@ editor_options:
 
 ### Small patches {.tabset .tabset-pills}
 
-How does biomass density change according to the size to which the patch is connected? *(Does a small patch connected to a small patch have the same biomass density than a small patch connected to a large patch?)*
+*Research question: how does biomass density change according to the size to which the patch is connected? (Does a small patch connected to a small patch have the same biomass density than a small patch connected to a large patch?)*
 
 #### Plots
 
@@ -82,22 +82,19 @@ for (disturbance_input in c("low", "high")) {
 ```{r small-patches-lnRR-plots}
 for (disturbance_input in c("low", "high")) {
   
-  print(ds_lnRR_bioarea_density %>%
+  print(ds_effect_size_bioarea_density %>%
+          filter(!time_point == 0) %>% #At time point 0 all cultures were the same 
           filter(disturbance == disturbance_input) %>%
           filter(eco_metaeco_type == "S (S_S)" | eco_metaeco_type == "S (S_L)") %>%
           ggplot(aes(x = day,
-                     y = lnRR_bioarea_density,
+                     y = bioarea_density_lnRR,
                      color = eco_metaeco_type)) +
           geom_point(position = position_dodge(0.5)) +
           geom_line(position = position_dodge(0.5)) + 
           labs(title = paste("Disturbance =", disturbance_input),
                x = "Day",
-               y = "lnRR local bioarea (µm²/µl)",
+               y = "LnRR bioarea density",
                color = "") +
-          #geom_errorbar(aes(ymin = lnRR_lower, 
-          #                  ymax = lnRR_upper), 
-          #              width = .2,
-          #              position = position_dodge(0.5)) + 
           scale_color_discrete(labels = c("small connected to large", 
                                           "small connnected to small")) +
           theme_bw() +
@@ -114,7 +111,8 @@ for (disturbance_input in c("low", "high")) {
           geom_hline(yintercept = 0, 
                      linetype = "dotted", 
                      color = "black", 
-                     size = 0.7))}
+                     size = 0.7))
+  }
 ```
 
 #### Model Time Series
@@ -143,29 +141,67 @@ last_time_point = 7
 ```
 
 ```{r small-patches-full-model}
-full_model = lm(lnRR_bioarea_density ~                  
+full_model = lm(bioarea_density_hedges_d ~                  
                   day + 
                   eco_metaeco_type + 
                   disturbance +
                   day * eco_metaeco_type +
                   day * disturbance + 
                   eco_metaeco_type * disturbance,
-                  data = ds_lnRR_bioarea_density %>%
+                  data = ds_effect_size_bioarea_density %>%
                          filter(time_point >= first_time_point) %>%
                          filter(time_point <= last_time_point) %>%
                          filter(eco_metaeco_type== "S (S_S)" | eco_metaeco_type == "S (S_L)"))
 ```
 
+*Should we keep P?*
+
+```{r small-patches-no_P}
+no_P = lm(bioarea_density_hedges_d ~               
+                  day + 
+                  disturbance +
+                  day * eco_metaeco_type +
+                  day * disturbance + 
+                  eco_metaeco_type * disturbance,
+                  data = ds_effect_size_bioarea_density %>%
+                         filter(time_point >= first_time_point) %>%
+                         filter(time_point <= last_time_point) %>%
+                         filter(eco_metaeco_type== "S (S_S)" | eco_metaeco_type == "S (S_L)"))
+
+AIC(full_model, no_P)
+```
+
+Yes.
+
+*Should we keep D?*
+
+```{r}
+no_D = lm(bioarea_density_hedges_d ~                  
+                  day + 
+                  eco_metaeco_type + 
+                  day * eco_metaeco_type +
+                  day * disturbance + 
+                  eco_metaeco_type * disturbance,
+                  data = ds_effect_size_bioarea_density %>%
+                         filter(time_point >= first_time_point) %>%
+                         filter(time_point <= last_time_point) %>%
+                         filter(eco_metaeco_type== "S (S_S)" | eco_metaeco_type == "S (S_L)"))
+
+AIC(full_model, no_D)
+```
+
+Yes.
+
 *Should we keep t \* P?*
 
 ```{r small-patches-no-TM}
-no_TP = lm(lnRR_bioarea_density ~
+no_TP = lm(bioarea_density_hedges_d ~
                   day + 
                   eco_metaeco_type + 
                   disturbance +
                   day * disturbance + 
                   eco_metaeco_type * disturbance,
-                  data = ds_lnRR_bioarea_density %>%
+                  data = ds_effect_size_bioarea_density %>%
                          filter(time_point >= first_time_point) %>%
                          filter(time_point <= last_time_point) %>%
                          filter(eco_metaeco_type== "S (S_S)" | eco_metaeco_type == "S (S_L)"))
@@ -178,13 +214,13 @@ Yes.
 *Should we keep t \* D?*
 
 ```{r small-patches-no-TD}
-no_TD = lm(lnRR_bioarea_density ~
+no_TD = lm(bioarea_density_hedges_d ~
                   day + 
                   eco_metaeco_type + 
                   disturbance +
                   day * eco_metaeco_type +
                   eco_metaeco_type * disturbance,
-                  data = ds_lnRR_bioarea_density %>%
+                  data = ds_effect_size_bioarea_density %>%
                          filter(time_point >= first_time_point) %>%
                          filter(time_point <= last_time_point) %>%
                          filter(eco_metaeco_type== "S (S_S)" | eco_metaeco_type == "S (S_L)"))
@@ -197,12 +233,12 @@ No.
 Should we keep P \* D?
 
 ```{r small-patches-no-MD}
-no_PD = lm(lnRR_bioarea_density ~
+no_PD = lm(bioarea_density_hedges_d ~
                   day + 
                   eco_metaeco_type + 
                   disturbance +
                   day * eco_metaeco_type,
-                  data = ds_lnRR_bioarea_density %>%
+                  data = ds_effect_size_bioarea_density %>%
                          filter(time_point >= first_time_point) %>%
                          filter(time_point <= last_time_point) %>%
                          filter(eco_metaeco_type== "S (S_S)" | eco_metaeco_type == "S (S_L)"))
@@ -230,10 +266,10 @@ plot(best_model, which = 1:5)
 
 ```{r}
 R2_full = glance(best_model)$r.squared
-no_patch_type = lm(lnRR_bioarea_density ~
+no_patch_type = lm(bioarea_density_hedges_d ~
                   day + 
                   disturbance,
-                  data = ds_lnRR_bioarea_density %>%
+                  data = ds_effect_size_bioarea_density %>%
                          filter(time_point >= first_time_point) %>%
                          filter(time_point <= last_time_point) %>%
                          filter(eco_metaeco_type== "S (S_S)" | eco_metaeco_type == "S (S_L)"))
@@ -248,4 +284,4 @@ R2_P = round(R2_P, digits = 2)
 \
 The adjusted R squared of the model is `r R2_full` and the adjusted R squared of patch type is `r R2_P` (which includes also its interaction with disturbance).
 
-[Note: single time points cannot be computed just because I have a single data point as response variable (e.g., one for S (S_S) at low disturbance at time point = 2). Therefore, if I want to see if the lnRR of different treatments differs, I need to compute the confidence intervals.]{.underline}
+Single time points: see modelling choices.

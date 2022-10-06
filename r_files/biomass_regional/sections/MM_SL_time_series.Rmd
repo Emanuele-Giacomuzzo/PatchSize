@@ -59,6 +59,40 @@ full = lmer(total_regional_bioarea ~
                    control = lmerControl(optimizer = "Nelder_Mead"))
 ```
 
+*Should we keep M `(metaecosystem_type)`?*
+
+```{r}
+no_M = lmer(total_regional_bioarea ~
+                     day * disturbance +
+                     (day | system_nr),
+                     data = ds_regional_biomass %>%
+                            filter(time_point >= 2) %>%
+                            filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L"),
+                   REML = FALSE,
+                   control = lmerControl(optimizer = "Nelder_Mead"))
+
+anova(full, no_M)
+```
+
+Yes.
+
+*Should we keep D `(disturbance)`?*
+
+```{r}
+no_D = lmer(total_regional_bioarea ~
+                     day * metaecosystem_type +
+                     (day | system_nr),
+                     data = ds_regional_biomass %>%
+                            filter(time_point >= 2) %>%
+                            filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L"),
+                   REML = FALSE,
+                   control = lmerControl(optimizer = "Nelder_Mead"))
+
+anova(full, no_D)
+```
+
+Yes.
+
 *Should we keep the correlation in `(day | system_nr)`?*
 
 ```{r}
@@ -210,7 +244,7 @@ R2_conditional = round(R2_conditional, digits = 2)
 
 -   Conditional R2 = `r R2_conditional`
 
-To calculate the R of the single explaining variables, let's consider its inclusive R squares (\@Stoffel2021). These contain the variance of a variable including its collinearity with other variables. I chose them because there is no collinearity between meta-ecosystem type, disturbance, and day (they were experimentally crossed). The inclusive R squares of this model are:
+To calculate the R of the single explaining variables, let's consider its inclusive R squares (see @Stoffel2021 ). These contain the variance of a variable including its collinearity with other variables. I chose them because there is no collinearity between meta-ecosystem type, disturbance, and day (they were experimentally crossed). [Check the other type of R squared you can calculate and whether you should check if they give you the same result.]{.underline} The inclusive R squares of this model are:
 
 ```{r eval = FALSE}
 R2_regional = partR2(best_model,
