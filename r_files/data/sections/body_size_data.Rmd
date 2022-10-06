@@ -9,6 +9,8 @@ editor_options:
 
 ### Body size
 
+I'm in the new branch.
+
 ```{r}
 culture_info = read.csv(here("data", "PatchSizePilot_culture_info.csv"), header = TRUE)
 load(here("data", "morphology", "t0.RData"));t0 = morph_mvt
