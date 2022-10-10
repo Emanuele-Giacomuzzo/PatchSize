@@ -149,6 +149,7 @@ size_class = NULL
 ### --- CREATE DATASET --- ###
 
 size_class_boundaries = seq(0, largest_size, by = size_class_width)
+alpha = 0.05
 
 for (class in 1:nr_of_size_classes){
   
@@ -177,12 +178,20 @@ for (class in 1:nr_of_size_classes){
              metaecosystem, 
              metaecosystem_type, 
              eco_metaeco_type) %>% #Group by ID
-    summarise(abundance = mean(mean_abundance_across_videos)) %>%
-    mutate(log_abundance = log(abundance)) %>%
-    mutate(size_class = class) %>%
-    mutate(size = mean_size) %>%
-    mutate(log_size = log(size))
-  
+    summarise(abundance = mean(mean_abundance_across_videos),
+              abundance_sd = sd(mean_abundance_across_videos),
+              sample_size = n()) %>%
+    mutate(abundance_se = abundance_sd/sqrt(sample_size),
+           df = sample_size - 1,
+           log_abundance = log(abundance),
+           size_class = class,
+           size = mean_size,
+           log_size = log(size)) %>%
+    mutate(t_score = qt(p = alpha/2, df = degrees.freedom, lower.tail = F)) %>%
+    mutate(margin_error = t_score * sample_size) %>%
+    mutate(lower_CI_abundance = abundance - margin_error,
+           higher_CI_abundance = abundance + margin_error)
+
 }
 
 ds_classes = rbind(size_class[[1]], size_class[[2]], size_class[[3]], size_class[[4]],
