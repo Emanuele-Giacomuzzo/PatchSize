@@ -139,14 +139,16 @@ I am here creating 12 size classes as in @Jacquet2020. However, for some reason 
 
 #### --- PARAMETERS & INITIALISATION --- ###
 
-nr_of_size_classes = 12
 largest_size = max(ds_body_size$mean_area)
-size_class_width = largest_size/nr_of_size_classes
+nr_of_size_classes = 12
+size_class_width = largest_size / nr_of_size_classes
+size_class_boundaries = seq(from = 0, 
+                            to = largest_size, 
+                            by = size_class_width)
 size_class = NULL
 
-### --- CREATE DATASET --- ###
 
-size_class_boundaries = seq(0, largest_size, by = size_class_width)
+### --- CREATE DATASET --- ###
 
 for (class in 1:nr_of_size_classes){
   
@@ -183,9 +185,8 @@ for (class in 1:nr_of_size_classes){
   
 }
 
-ds_classes = rbind(size_class[[1]], size_class[[2]], size_class[[3]], size_class[[4]],
-                  size_class[[5]], size_class[[6]], size_class[[7]], size_class[[8]],
-                  size_class[[9]], size_class[[10]], size_class[[11]], size_class[[12]],)
+ds_classes = size_class %>% 
+                    bind_rows()
 
 datatable(ds_classes,
           rownames = FALSE,
