@@ -145,8 +145,12 @@ size_class_width = largest_size / nr_of_size_classes
 size_class_boundaries = seq(from = 0, 
                             to = largest_size, 
                             by = size_class_width)
-size_class = NULL
+single_videos_rows = NULL
+row = 0
 
+#time_point_input=7
+#class=1
+#n_video_replicates = length(unique(ds_body_size %>% filter(time_point == time_point_input)))
 
 ### --- CREATE DATASET --- ###
 
@@ -156,37 +160,46 @@ for (class in 1:nr_of_size_classes){
   bin_upper_limit = size_class_boundaries[class+1]
   mean_size = (size_class_boundaries[class] + size_class_boundaries[class + 1])/2
   
-  size_class[[class]] = ds_body_size%>%
-    filter(bin_lower_limit <= mean_area) %>%
-    filter(mean_area <= bin_upper_limit) %>%
-    group_by(culture_ID, 
-             system_nr, 
-             disturbance, 
-             day, 
-             patch_size, 
-             metaecosystem, 
-             metaecosystem_type, 
-             eco_metaeco_type, 
-             replicate_video) %>% #Group by video
-    summarise(mean_abundance_across_videos = n()) %>%
-    group_by(culture_ID, 
-             system_nr, 
-             disturbance, 
-             day, 
-             patch_size, 
-             metaecosystem, 
-             metaecosystem_type, 
-             eco_metaeco_type) %>% #Group by ID
-    summarise(abundance = mean(mean_abundance_across_videos)) %>%
-    mutate(log_abundance = log(abundance)) %>%
-    mutate(size_class = class) %>%
-    mutate(size = mean_size) %>%
-    mutate(log_size = log(size))
   
+  for (time_point_input in 0:last_time_point){
+    for (culture_ID_input in 1:n_cultures){
+      for(replicate_video_input in 1:nr_videos[time_point_input+1]){
+        
+        row = row + 1 
+        
+        video_class_abundance = ds_body_size %>%
+                                    filter(bin_lower_limit <= mean_area,
+                                          mean_area <= bin_upper_limit,
+                                          time_point == time_point_input,
+                                          culture_ID == culture_ID_input,
+                                          replicate_video == replicate_video_input) %>%
+                                    summarise(size_class_abundance = n())
+        
+        single_videos_rows[[row]] = ds_biomass_abund %>%
+                            filter(time_point == time_point_input,
+                                   culture_ID == culture_ID_input,
+                                   replicate_video == replicate_video_input) %>%
+                            mutate(size_class_abundance = video_class_abundance,
+                                   size_class_n = class,
+                                   size_class = mean_size,
+                                   log_size_class = log(size_class),
+                                   log_size_class_abundance = log(size_class_abundance + 1))
+        
+      }
+    }
+  }
 }
 
-ds_classes = size_class %>% 
+#The number of rows should be (110 cultures * 12 videos) + (110 cultures * 1 videos * 5 time points) + (110 cultures * 2 videos * 2 time points) =  2310
+
+ds_classes = single_videos_rows %>% 
                     bind_rows()
+
+saveRDS(ds_classes, file = here("results", "ds_classes.RData"))
+```
+
+```{r}
+ds_classes = readRDS(here("results", "ds_classes.RData"))
 
 datatable(ds_classes,
           rownames = FALSE,
@@ -194,6 +207,7 @@ datatable(ds_classes,
           filter = list(position = 'top', 
                         clear = FALSE))
 ```
+
 
 #### Median data-set (`ds_median_body_size)`
 

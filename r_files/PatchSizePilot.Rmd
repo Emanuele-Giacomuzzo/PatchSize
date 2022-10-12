@@ -111,6 +111,8 @@ publication_width = 12
 publication_height = 12
 publication_unit = "cm"
 
+nr_videos = c(12,1,1,1,1,1,2,2)
+last_time_point = 7
 n_time_points = 8
 first_perturbation_day = 5
 ecosystems_to_take_off = 60 #Culture ID = 60 because it was spilled (isolated small patch, high disturbance, system nr = 40)
