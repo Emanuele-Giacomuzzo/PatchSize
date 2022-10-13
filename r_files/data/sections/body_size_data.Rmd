@@ -140,6 +140,7 @@ I am here creating 12 size classes as in @Jacquet2020. However, for some reason 
 #### --- PARAMETERS & INITIALISATION --- ###
 
 largest_size = max(ds_body_size$mean_area)
+n_cultures = 110
 nr_of_size_classes = 12
 size_class_width = largest_size / nr_of_size_classes
 size_class_boundaries = seq(from = 0, 
@@ -190,7 +191,7 @@ for (class in 1:nr_of_size_classes){
   }
 }
 
-#The number of rows should be (110 cultures * 12 videos) + (110 cultures * 1 videos * 5 time points) + (110 cultures * 2 videos * 2 time points) =  2310
+#The number of rows should be 12 classes * [(110 cultures * 12 videos) + (110 cultures * 1 videos * 5 time points) + (110 cultures * 2 videos * 2 time points)] =  12 * 2310 = 27,720
 
 ds_classes = single_videos_rows %>% 
                     bind_rows()
