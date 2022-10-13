@@ -135,7 +135,7 @@ datatable(ds_body_size,
 
 I am here creating 12 size classes as in @Jacquet2020. However, for some reason it seems like our body size classes are really different.
 
-```{r}
+```{r eval = recompute_analyses}
 
 #### --- PARAMETERS & INITIALISATION --- ###
 
@@ -175,6 +175,7 @@ for (class in 1:nr_of_size_classes){
                                           culture_ID == culture_ID_input,
                                           replicate_video == replicate_video_input) %>%
                                     summarise(size_class_abundance = n())
+        video_class_abundance = as.numeric(unlist(video_class_abundance))
         
         single_videos_rows[[row]] = ds_biomass_abund %>%
                             filter(time_point == time_point_input,
@@ -190,17 +191,28 @@ for (class in 1:nr_of_size_classes){
     }
   }
 }
-
-#The number of rows should be 12 classes * [(110 cultures * 12 videos) + (110 cultures * 1 videos * 5 time points) + (110 cultures * 2 videos * 2 time points)] =  12 * 2310 = 27,720
-
+#Watch out: it contains 27468 rows instead of 27720 because we excluded already culture_ID = 60, which I spilled during the experiment.
 ds_classes = single_videos_rows %>% 
                     bind_rows()
 
 saveRDS(ds_classes, file = here("results", "ds_classes.RData"))
+
+ds_classes = readRDS(here("results", "ds_classes.RData"))
+
+ds_classes_averaged = ds_classes %>%
+                      group_by(log_size_class, size_class_n, log_size_class_abundance, eco_metaeco_type, patch_size, disturbance, day) %>%
+                      summarise(log_size_class_abundance_mean = mean(log_size_class_abundance),
+                                log_size_class_abundance_sd = sd(log_size_class_abundance),
+                                sample_size = n()) %>%
+                      mutate(log_size_class_abundance_se = log_size_class_abundance_sd / sqrt(sample_size),
+                             log_size_class_abundance_lower_ci = log_size_class_abundance_mean - qt(1 - (0.05 / 2), sample_size - 1) * log_size_class_abundance_se,
+                             log_size_class_abundance_upper_ci = log_size_class_abundance_mean + qt(1 - (0.05 / 2), sample_size - 1) * log_size_class_abundance_se)
+
+saveRDS(ds_classes_averaged, file = here("results", "ds_classes_averaged.RData"))
 ```
 
 ```{r}
-ds_classes = readRDS(here("results", "ds_classes.RData"))
+ds_classes_averaged = readRDS(here("results", "ds_classes_averaged.RData"))
 
 datatable(ds_classes,
           rownames = FALSE,

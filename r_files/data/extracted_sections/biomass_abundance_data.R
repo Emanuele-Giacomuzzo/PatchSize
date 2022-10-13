@@ -1,4 +1,4 @@
-## ----biomass-import, message = FALSE, echo = TRUE------------------------------------------------------------------------------------------------------------------
+## ----biomass-import, message = FALSE, echo = TRUE-----------------------------------------------------------------------------------------------------------------------------
 load(here("data", "population", "t0.RData")); t0 = pop_output
 load(here("data", "population", "t1.RData")); t1 = pop_output
 load(here("data", "population", "t2.RData")); t2 = pop_output
@@ -10,7 +10,7 @@ load(here("data", "population", "t7.RData")); t7 = pop_output
 rm(pop_output)
 
 
-## ----biomass-tidy-time-points, message = FALSE, echo = TRUE--------------------------------------------------------------------------------------------------------
+## ----biomass-tidy-time-points, message = FALSE, echo = TRUE-------------------------------------------------------------------------------------------------------------------
 #Column: time
 t0$time = NA
 t1$time = NA
@@ -28,7 +28,7 @@ t7 = t7 %>%
   rename(replicate_video = replicate)
 
 
-## ----biomass-bind-time-points, message = FALSE, echo = TRUE--------------------------------------------------------------------------------------------------------
+## ----biomass-bind-time-points, message = FALSE, echo = TRUE-------------------------------------------------------------------------------------------------------------------
 #Elongate t0 (so that it can be merged wiht culture_info)
 number_of_columns_t0 = ncol(t0)
 nr_of_cultures = nrow(culture_info)
@@ -51,7 +51,7 @@ ds_biomass_abund = rbind(t0, t1, t2, t3, t4, t5, t6, t7)
 rm(t0, t1, t2, t3, t4, t5, t6, t7)
 
 
-## ----biomass-tidy-columns, message = FALSE, echo = TRUE------------------------------------------------------------------------------------------------------------
+## ----biomass-tidy-columns, message = FALSE, echo = TRUE-----------------------------------------------------------------------------------------------------------------------
 #Take off spilled cultures
 ds_biomass_abund = ds_biomass_abund %>%
   filter(! culture_ID %in% ecosystems_to_take_off)
@@ -131,7 +131,7 @@ ds_biomass_abund = ds_biomass_abund %>%
            indiv_tot)
 
 
-## ------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 datatable(ds_biomass_abund,
           rownames = FALSE,
           options = list(scrollX = TRUE),
@@ -139,7 +139,7 @@ datatable(ds_biomass_abund,
                         clear = FALSE))
 
 
-## ----create-ds_effect_size_bioarea_density-------------------------------------------------------------------------------------------------------------------------
+## ----create-ds_effect_size_bioarea_density------------------------------------------------------------------------------------------------------------------------------------
 eco_metaeco_types = unique(ds_biomass_abund$eco_metaeco_type)
 small_patches = c("S", "S (S_S)", "S (S_L)")
 medium_patches = c("M", "M (M_M)")
@@ -151,7 +151,10 @@ averaged_bioarea_density = ds_biomass_abund %>%
         group_by(disturbance, eco_metaeco_type, time_point, patch_size, day) %>%
         summarise(mean_bioarea_density = mean(bioarea_per_volume_across_videos),
                   sd_bioarea_density = sd(bioarea_per_volume_across_videos),
-                  sam_size_bioarea_density = n())
+                  sam_size_bioarea_density = n()) %>%
+        mutate(mean_bioarea_density_isolated = NA,
+               sd_bioarea_density_isolated = NA,
+               sam_size_bioarea_density_isolated = NA)
 
 for (disturbance_input in c("low", "high")){
   for (eco_metaeco_input in eco_metaeco_types){
@@ -166,19 +169,22 @@ for (disturbance_input in c("low", "high")){
         filter(disturbance == disturbance_input) %>%
         filter(time_point == time_point_input)
       
-      averaged_bioarea_density$mean_bioarea_density_isolated[averaged_bioarea_density$eco_metaeco_type == eco_metaeco_input & 
-                                                             averaged_bioarea_density$disturbance == disturbance_input &
-                                                             averaged_bioarea_density$time_point == time_point_input] = 
+      averaged_bioarea_density$mean_bioarea_density_isolated[
+        averaged_bioarea_density$eco_metaeco_type == eco_metaeco_input &
+        averaged_bioarea_density$disturbance == disturbance_input &
+        averaged_bioarea_density$time_point == time_point_input] =
       control_row$mean_bioarea_density
       
-      averaged_bioarea_density$sd_bioarea_density_isolated[averaged_bioarea_density$eco_metaeco_type == eco_metaeco_input & 
-                                                             averaged_bioarea_density$disturbance == disturbance_input &
-                                                             averaged_bioarea_density$time_point == time_point_input] = 
+      averaged_bioarea_density$sd_bioarea_density_isolated[
+        averaged_bioarea_density$eco_metaeco_type == eco_metaeco_input &
+        averaged_bioarea_density$disturbance == disturbance_input &
+        averaged_bioarea_density$time_point == time_point_input] = 
       control_row$sd_bioarea_density
       
-      averaged_bioarea_density$sam_size_bioarea_density_isolated[averaged_bioarea_density$eco_metaeco_type == eco_metaeco_input & 
-                                                             averaged_bioarea_density$disturbance == disturbance_input &
-                                                             averaged_bioarea_density$time_point == time_point_input] = 
+      averaged_bioarea_density$sam_size_bioarea_density_isolated[
+        averaged_bioarea_density$eco_metaeco_type == eco_metaeco_input & 
+        averaged_bioarea_density$disturbance == disturbance_input &
+        averaged_bioarea_density$time_point == time_point_input] = 
       control_row$sam_size_bioarea_density
       
       }}}
@@ -189,10 +195,11 @@ ds_effect_size_bioarea_density = averaged_bioarea_density %>%
                                        sam_size_bioarea_density,
                                        mean_bioarea_density_isolated,
                                        sd_bioarea_density_isolated,
-                                       sam_size_bioarea_density_isolated))
+                                       sam_size_bioarea_density_isolated)) %>%
+  mutate(bioarea_density_lnRR = ln(mean_bioarea_density / mean_bioarea_density_isolated))
 
 
-## ------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 datatable(ds_effect_size_bioarea_density,
           rownames = FALSE,
           options = list(scrollX = TRUE),
@@ -200,7 +207,7 @@ datatable(ds_effect_size_bioarea_density,
                         clear = FALSE))
 
 
-## ----regional-biomass----------------------------------------------------------------------------------------------------------------------------------------------
+## ----regional-biomass---------------------------------------------------------------------------------------------------------------------------------------------------------
 ds_regional_biomass = ds_biomass_abund %>%
   filter(metaecosystem == "yes") %>%
   filter(! system_nr %in% metaecosystems_to_take_off) %>%
@@ -222,7 +229,7 @@ ds_regional_biomass = ds_biomass_abund %>%
   summarise(total_regional_bioarea = sum(total_patch_bioarea))
 
 
-## ----create-SL_SL_from_isolated, message=FALSE, results='hide', eval = recompute_analyses--------------------------------------------------------------------------
+## ----create-SL_SL_from_isolated, message=FALSE, results='hide', eval = recompute_analyses-------------------------------------------------------------------------------------
 ## isolated_S_and_L = ds_biomass_abund %>%
 ##   filter(eco_metaeco_type == "S" | eco_metaeco_type == "L") %>%
 ##   group_by(system_nr, disturbance, time_point, day, eco_metaeco_type) %>%
@@ -283,11 +290,11 @@ ds_regional_biomass = ds_biomass_abund %>%
 ## saveRDS(ds_regional_biomass, file = here("results", "ds_regional_biomass.RData"))
 
 
-## ------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ds_regional_biomass = readRDS(here("results", "ds_regional_biomass.RData"))
 
 
-## ------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 datatable(ds_regional_biomass,
           rownames = FALSE,
           options = list(scrollX = TRUE),
@@ -295,7 +302,7 @@ datatable(ds_regional_biomass,
                         clear = FALSE))
 
 
-## ----create-ds_effect_size_community_density-----------------------------------------------------------------------------------------------------------------------
+## ----create-ds_effect_size_community_density----------------------------------------------------------------------------------------------------------------------------------
 eco_metaeco_types = unique(ds_biomass_abund$eco_metaeco_type)
 small_patches = c("S", "S (S_S)", "S (S_L)")
 medium_patches = c("M", "M (M_M)")
@@ -322,19 +329,22 @@ for (disturbance_input in c("low", "high")){
         filter(disturbance == disturbance_input) %>%
         filter(time_point == time_point_input)
       
-      averaged_community_density$mean_community_density_isolated[averaged_community_density$eco_metaeco_type == eco_metaeco_input & 
-                                                             averaged_community_density$disturbance == disturbance_input &
-                                                             averaged_community_density$time_point == time_point_input] = 
+      averaged_community_density$mean_community_density_isolated[
+        averaged_community_density$eco_metaeco_type == eco_metaeco_input &
+        averaged_community_density$disturbance == disturbance_input &
+        averaged_community_density$time_point == time_point_input] = 
       control_row$mean_community_density
       
-      averaged_community_density$sd_community_density_isolated[averaged_community_density$eco_metaeco_type == eco_metaeco_input & 
-                                                             averaged_community_density$disturbance == disturbance_input &
-                                                             averaged_community_density$time_point == time_point_input] = 
+      averaged_community_density$sd_community_density_isolated[
+        averaged_community_density$eco_metaeco_type == eco_metaeco_input & 
+        averaged_community_density$disturbance == disturbance_input &
+        averaged_community_density$time_point == time_point_input] = 
       control_row$sd_community_density
       
-      averaged_community_density$sam_size_community_density_isolated[averaged_community_density$eco_metaeco_type == eco_metaeco_input & 
-                                                             averaged_community_density$disturbance == disturbance_input &
-                                                             averaged_community_density$time_point == time_point_input] = 
+      averaged_community_density$sam_size_community_density_isolated[
+        averaged_community_density$eco_metaeco_type == eco_metaeco_input & 
+        averaged_community_density$disturbance == disturbance_input &
+        averaged_community_density$time_point == time_point_input] = 
       control_row$sam_size_community_density
       
       }}}
@@ -345,13 +355,59 @@ ds_effect_size_community_density = averaged_community_density %>%
                                        sam_size_community_density,
                                        mean_community_density_isolated,
                                        sd_community_density_isolated,
-                                       sam_size_community_density_isolated))
+                                       sam_size_community_density_isolated)) %>%
+  mutate(community_density_lnRR = ln(mean_community_density/mean_community_density_isolated))
 
 
-## ------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 datatable(ds_effect_size_community_density,
           rownames = FALSE,
           options = list(scrollX = TRUE),
           filter = list(position = 'top', 
                         clear = FALSE))
+
+
+## ----import-species-id-data-and-bind------------------------------------------------------------------------------------------------------------------------------------------
+t0_file_name = here("data", "population_species_ID", "species_ID_t0.csv")
+t0 = read.csv(t0_file_name, header = TRUE)  %>%
+  mutate(culture_ID = NA, time = NA, replicate = 1:12)
+
+t1_file_name = here("data", "population_species_ID", "species_ID_t1.csv")
+t1 = read.csv(t1_file_name, header = TRUE) %>%
+  mutate(culture_ID = NA, time = NA, replicate = 1)
+
+t2_file_name = here("data", "population_species_ID", "species_ID_t2.csv")
+t2 = read.csv(t2_file_name, header = TRUE) %>%
+  mutate(replicate = 1)
+
+t3_file_name = here("data", "population_species_ID", "species_ID_t3.csv")
+t3 = read.csv(t3_file_name, header = TRUE) %>%
+  mutate(replicate = 1)
+
+t4_file_name = here("data", "population_species_ID", "species_ID_t4.csv")
+t4 = read.csv(t4_file_name, header = TRUE) %>%
+  mutate(replicate = 1)
+
+t5_file_name = here("data", "population_species_ID", "species_ID_t5.csv")
+t5 = read.csv(t5_file_name, header = TRUE) %>%
+  mutate(replicate = 1)
+
+t6_file_name = here("data", "population_species_ID", "species_ID_t6.csv")
+t6 = read.csv(t6_file_name, header = TRUE)
+
+t7_file_name = here("data", "population_species_ID", "species_ID_t7.csv")
+t7 = read.csv(t7_file_name, header = TRUE)
+
+ds_ID = rbind(t0, t1, t2, t3, t4, t5, t6, t7) %>%
+  pivot_longer(Ble:Tet, 
+               names_to = "species", 
+               values_to = "abundance")
+
+
+## ----plot-species-ID----------------------------------------------------------------------------------------------------------------------------------------------------------
+ds_ID %>%
+  filter(time_point == "t1") %>%
+  ggplot(aes(x = species,
+             y = abundance)) +
+  geom_boxplot()
 

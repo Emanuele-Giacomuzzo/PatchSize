@@ -1,45 +1,44 @@
-## ----fig.align='center'--------------------------------------------------------------------------------------------------------------------------------------------
+## ----fig.align='center'-------------------------------------------------------------------------------------------------------------------------------------------------------
 #Takes about 7 minutes to run 
 
 start = Sys.time()
 p = list()
 n = 0
-first_level = c("isolated small", 
-                "isolated small", 
-                "isolated large", 
-                "isolated large")
-second_level = c("small connected to small", 
-                 "small connected to small", 
-                 "large connected to large", 
-                 "large connected to large")
-third_level = c("small connected to large", 
-                "small connected to large", 
-                "large connected to small", 
-                "large connected to small")
+first_level = c("Small connected to large", 
+                 "Small connected to large", 
+                 "Large connected to large", 
+                 "Large connected to large")
+second_level = c("Small connected to small", 
+                "Small connected to small", 
+                "Large connected to small", 
+                "Large connected to small")
 
 for (patch_size_input in c("S", "L")){
-  
   for(disturbance_input in c("low", "high")){
   
     n = n + 1
       
-  title = paste(patch_size_input,
-                "patches, Disturbance =", 
-                disturbance_input, 
-                ", Day: {round(frame_time, digits = 0)}")
+  title = paste0("Day: {round(frame_time, digits = 0)} ",
+                "(Disturbance = ", 
+                disturbance_input,
+                ")")
   
-  p[[n]] <- ds_classes %>%
+  p[[n]] <- ds_classes_averaged %>%
   filter(disturbance == disturbance_input) %>%
   filter(patch_size == patch_size_input) %>%
-  ggplot(aes(x = log_size,
-             y = log_abundance,
-             group = interaction(log_size, eco_metaeco_type),
+  filter(!eco_metaeco_type == patch_size_input) %>%
+  ggplot(aes(x = log_size_class,
+             y = log_size_class_abundance_mean,
+             group = interaction(log_size_class, eco_metaeco_type),
              color = eco_metaeco_type)) +
   geom_point(stat = "summary", fun = "mean") +
   geom_line(stat = "summary", fun = "mean", aes(group=eco_metaeco_type)) +
+  geom_errorbar(aes(ymax = log_size_class_abundance_upper_ci,
+                    ymin = log_size_class_abundance_lower_ci),
+                 width=.2,
+                 position=position_dodge(0.05)) +
   scale_color_discrete(labels = c(first_level[n], 
-                                 second_level[n],
-                                 third_level[n])) +
+                                 second_level[n])) +
   theme_bw() +
   theme(panel.grid.major = element_blank(), 
           panel.grid.minor = element_blank(),
@@ -56,9 +55,11 @@ for (patch_size_input in c("S", "L")){
   
   animate(p[[n]], 
         duration = 20,
-        fps = 25, 
-        width = 500, 
-        height = 500, 
+        fps = 25,
+        width = publication_width,
+        height = publication_height,
+        units = publication_unit,
+        res = 150,
         renderer = gifski_renderer())
   
   file_name = paste0("transition_day_",patch_size_input,"_",disturbance_input,".gif")

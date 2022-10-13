@@ -1,4 +1,4 @@
-## ----S_L_from_isolated-single-systems-plots, message=FALSE---------------------------------------------------------------------------------------------------------
+## ----S_L_from_isolated-single-systems-plots, message=FALSE--------------------------------------------------------------------------------------------------------------------
 for (disturbance_input in c("low", "high")){
   
   print(ds_regional_biomass %>%
@@ -34,7 +34,7 @@ for (disturbance_input in c("low", "high")){
           labs(caption = "Vertical grey line: first perturbation"))}
 
 
-## ----S_L_from_isolated-single-boxplots-----------------------------------------------------------------------------------------------------------------------------
+## ----S_L_from_isolated-single-boxplots----------------------------------------------------------------------------------------------------------------------------------------
 for (disturbance_input in c("low", "high")){
 
   print(ds_regional_biomass %>%
