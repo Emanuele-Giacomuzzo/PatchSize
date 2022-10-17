@@ -212,9 +212,10 @@ saveRDS(ds_classes_averaged, file = here("results", "ds_classes_averaged.RData")
 ```
 
 ```{r}
+ds_classes = readRDS(here("results", "ds_classes.RData"))
 ds_classes_averaged = readRDS(here("results", "ds_classes_averaged.RData"))
 
-datatable(ds_classes,
+datatable(ds_classes_averaged,
           rownames = FALSE,
           options = list(scrollX = TRUE),
           filter = list(position = 'top', 

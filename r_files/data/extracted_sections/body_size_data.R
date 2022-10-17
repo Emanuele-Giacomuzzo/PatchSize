@@ -181,24 +181,26 @@ datatable(ds_body_size,
 ##                     bind_rows()
 ## 
 ## saveRDS(ds_classes, file = here("results", "ds_classes.RData"))
+## 
+## ds_classes = readRDS(here("results", "ds_classes.RData"))
+## 
+## ds_classes_averaged = ds_classes %>%
+##                       group_by(log_size_class, size_class_n, log_size_class_abundance, eco_metaeco_type, patch_size, disturbance, day) %>%
+##                       summarise(log_size_class_abundance_mean = mean(log_size_class_abundance),
+##                                 log_size_class_abundance_sd = sd(log_size_class_abundance),
+##                                 sample_size = n()) %>%
+##                       mutate(log_size_class_abundance_se = log_size_class_abundance_sd / sqrt(sample_size),
+##                              log_size_class_abundance_lower_ci = log_size_class_abundance_mean - qt(1 - (0.05 / 2), sample_size - 1) * log_size_class_abundance_se,
+##                              log_size_class_abundance_upper_ci = log_size_class_abundance_mean + qt(1 - (0.05 / 2), sample_size - 1) * log_size_class_abundance_se)
+## 
+## saveRDS(ds_classes_averaged, file = here("results", "ds_classes_averaged.RData"))
 
 
 ## -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ds_classes = readRDS(here("results", "ds_classes.RData"))
+ds_classes_averaged = readRDS(here("results", "ds_classes_averaged.RData"))
 
-ds_classes_averaged = ds_classes %>%
-                      mutate(log_size_class_abundance = as.numeric(log_size_class_abundance)) %>%
-                      group_by(log_size_class, size_class_n, log_size_class_abundance, eco_metaeco_type, patch_size, disturbance, day) %>% #Add other columns
-                      summarise(log_size_class_abundance_mean = mean(log_size_class_abundance),
-                                log_size_class_abundance_sd = sd(log_size_class_abundance),
-                                sample_size = n()) %>%
-                      mutate(log_size_class_abundance_se = log_size_class_abundance_sd / sqrt(sample_size),
-                             log_size_class_abundance_lower_ci = log_size_class_abundance_mean - qt(1 - (0.05 / 2), sample_size - 1) * log_size_class_abundance_se,
-                             log_size_class_abundance_upper_ci = log_size_class_abundance_mean + qt(1 - (0.05 / 2), sample_size - 1) * log_size_class_abundance_se)
-
-
-## -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-datatable(ds_classes,
+datatable(ds_classes_averaged,
           rownames = FALSE,
           options = list(scrollX = TRUE),
           filter = list(position = 'top', 
