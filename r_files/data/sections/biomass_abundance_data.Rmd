@@ -25,6 +25,38 @@ load(here("data", "population", "t7.RData")); t7 = pop_output
 rm(pop_output)
 ```
 
+```{r import-species-data}
+species_ID_t0 = read.csv(here("data", "population_species_ID", "species_ID_t0.csv")) %>%
+  select(file, Ble:Tet)
+species_ID_t1 = read.csv(here("data", "population_species_ID", "species_ID_t1.csv")) %>%
+  select(file, Ble:Tet)
+species_ID_t2 = read.csv(here("data", "population_species_ID", "species_ID_t2.csv")) %>%
+  select(file, Ble:Tet)
+species_ID_t3 = read.csv(here("data", "population_species_ID", "species_ID_t3.csv")) %>%
+  select(file, Ble:Tet)
+species_ID_t4 = read.csv(here("data", "population_species_ID", "species_ID_t4.csv")) %>%
+  select(file, Ble:Tet)
+species_ID_t5 = read.csv(here("data", "population_species_ID", "species_ID_t5.csv")) %>%
+  select(file, Ble:Tet)
+species_ID_t6 = read.csv(here("data", "population_species_ID", "species_ID_t6.csv")) %>%
+  select(file, Ble:Tet)
+species_ID_t7 = read.csv(here("data", "population_species_ID", "species_ID_t7.csv")) %>%
+  select(file, Ble:Tet)
+```
+
+```{r join-datasets}
+t0 = merge(t0, species_ID_t0, by = "file")
+t1 = merge(t1, species_ID_t1, by = "file")
+t2 = merge(t2, species_ID_t2, by = "file")
+t3 = merge(t3, species_ID_t3, by = "file")
+t4 = merge(t4, species_ID_t4, by = "file")
+t5 = merge(t5, species_ID_t5, by = "file")
+t6 = merge(t6, species_ID_t6, by = "file")
+t7 = merge(t7, species_ID_t7, by = "file")
+rm(species_ID_t0, species_ID_t1, species_ID_t2, species_ID_t3, species_ID_t4, species_ID_t5, species_ID_t6, species_ID_t7)
+```
+
+
 ```{r biomass-tidy-time-points, message = FALSE, echo = TRUE}
 #Column: time
 t0$time = NA
@@ -127,7 +159,16 @@ ds_biomass_abund = ds_biomass_abund %>%
          bioarea_per_volume,
          bioarea_tot,
          indiv_per_volume,
-         indiv_tot) %>%
+         indiv_tot,
+         Ble,
+         Cep,
+         Col,
+         Eug,
+         Eup,
+         Lox,
+         Spi,
+         Spi_te,
+         Tet) %>%
   relocate(culture_ID,
            system_nr,
            disturbance,
@@ -143,7 +184,16 @@ ds_biomass_abund = ds_biomass_abund %>%
            bioarea_per_volume,
            bioarea_tot,
            indiv_per_volume,
-           indiv_tot)
+           indiv_tot,
+           Ble,
+           Cep,
+           Col,
+           Eug,
+           Eup,
+           Lox,
+           Spi,
+           Spi_te,
+           Tet)
 ```
 
 ```{r}

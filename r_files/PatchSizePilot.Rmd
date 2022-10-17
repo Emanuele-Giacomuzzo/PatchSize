@@ -17,8 +17,6 @@ editor_options:
   chunk_output_type: console
 ---
 
-master
-
 ```{r extract-sections, echo = FALSE, eval = FALSE}
 
 #This chunk is to extract the r code contained in each child. I use it so that I can run sections more easily from the console. It's not necessary for the analysis. This is why I keep it eval = FALSE.
