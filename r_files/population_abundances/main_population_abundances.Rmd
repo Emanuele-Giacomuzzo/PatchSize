@@ -1,0 +1,17 @@
+---
+title: "main_population_abudances"
+author: "Emanuele Giacomuzzo"
+date: "2022-10-17"
+output: html_document
+---
+
+## Population abundances {.tabset .tabset-dropdown}
+
+```{r child = here("r_files", "population_abundances", "sections", "isolated_patches.Rmd")}
+```
+
+```{r child = here("r_files", "population_abundances", "sections", "small_patches.Rmd")}
+```
+
+```{r child = here("r_files", "population_abundances", "sections", "large_patches.Rmd")}
+```

@@ -1,4 +1,4 @@
-## ----median-body-size-small-patches-single-ecosystem-plots--------------------------------------------------------------------------------------------------------------------
+## ----median-body-size-small-patches-single-ecosystem-plots-------------------------------------------------------------
 for (disturbance_input in c("low", "high")) {
 
   print(ds_median_body_size %>%
@@ -32,7 +32,7 @@ for (disturbance_input in c("low", "high")) {
           labs(caption = "Vertical grey line: first perturbation"))}
 
 
-## ----median-body-size-small-patches-boxplots----------------------------------------------------------------------------------------------------------------------------------
+## ----median-body-size-small-patches-boxplots---------------------------------------------------------------------------
 for (disturbance_input in c("low", "high")){
   
   print(ds_median_body_size %>%
@@ -71,7 +71,7 @@ for (disturbance_input in c("low", "high")){
         labs(caption = "Vertical grey line: first perturbation"))}
 
 
-## ----median-body-size-small-patches-lnRR-plots--------------------------------------------------------------------------------------------------------------------------------
+## ----median-body-size-small-patches-lnRR-plots-------------------------------------------------------------------------
 for (disturbance_input in c("low", "high")) {
   
   print(ds_lnRR_median_body_size %>%
@@ -111,12 +111,12 @@ for (disturbance_input in c("low", "high")) {
           labs(caption = "Vertical grey line: first perturbation"))}
 
 
-## ----body-size-median-choose-time-points--------------------------------------------------------------------------------------------------------------------------------------
+## ----body-size-median-choose-time-points-------------------------------------------------------------------------------
 first_time_point = 2
 last_time_point = 7
 
 
-## ----body-size-median-small-patches-full-model--------------------------------------------------------------------------------------------------------------------------------
+## ----body-size-median-small-patches-full-model-------------------------------------------------------------------------
 full_model = lm(lnRR_median_body_size ~                  
                   day + 
                   eco_metaeco_type + 
@@ -131,7 +131,7 @@ full_model = lm(lnRR_median_body_size ~
                                 eco_metaeco_type == "S (S_L)"))
 
 
-## ----body-size-median-small-patches-no-TM-------------------------------------------------------------------------------------------------------------------------------------
+## ----body-size-median-small-patches-no-TM------------------------------------------------------------------------------
 no_TP = lm(lnRR_median_body_size ~
                   day + 
                   eco_metaeco_type + 
@@ -147,7 +147,7 @@ no_TP = lm(lnRR_median_body_size ~
 AIC(full_model, no_TP)
 
 
-## ----body-size-median-small-patches-no-TD-------------------------------------------------------------------------------------------------------------------------------------
+## ----body-size-median-small-patches-no-TD------------------------------------------------------------------------------
 no_TD = lm(lnRR_median_body_size ~
                   day + 
                   eco_metaeco_type + 
@@ -162,7 +162,7 @@ no_TD = lm(lnRR_median_body_size ~
 AIC(no_TP, no_TD)
 
 
-## ----body-size-median-small-patches-no-MD-------------------------------------------------------------------------------------------------------------------------------------
+## ----body-size-median-small-patches-no-MD------------------------------------------------------------------------------
 no_PD = lm(lnRR_median_body_size ~
                   day + 
                   eco_metaeco_type + 
@@ -177,13 +177,13 @@ no_PD = lm(lnRR_median_body_size ~
 AIC(no_TD, no_PD)
 
 
-## ----body-size-median-small-t2-t7-best-model----------------------------------------------------------------------------------------------------------------------------------
+## ----body-size-median-small-t2-t7-best-model---------------------------------------------------------------------------
 best_model = no_PD
 par(mfrow = c(2,3))
 plot(best_model, which = 1:5)
 
 
-## -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## ----------------------------------------------------------------------------------------------------------------------
 R2_full = glance(best_model)$r.squared
 no_patch_type = lm(lnRR_median_body_size ~
                   day + 

@@ -1,4 +1,4 @@
-## ----tidy-evaporation-effects-on-biomass--------------------------------------------------------------------------------------------------------------------------------------
+## ----tidy-evaporation-effects-on-biomass-------------------------------------------------------------------------------
 
 #Columns: exchange & evaporation
 ds_for_evaporation = gather(ds_for_evaporation, 
@@ -22,7 +22,7 @@ ds_for_evaporation$nr_of_tubes_in_rack[ds_for_evaporation$exchange == 5] = 4
 ds_for_evaporation$nr_of_tubes_in_rack[ds_for_evaporation$exchange == 6] = 4
 
 
-## ----plot, warning = FALSE----------------------------------------------------------------------------------------------------------------------------------------------------
+## ----plot, warning = FALSE---------------------------------------------------------------------------------------------
 ds_for_evaporation %>%
   filter(disturbance == disturbance) %>%
   ggplot(aes(x = as.character(nr_of_tubes_in_rack),
@@ -56,7 +56,7 @@ ds_for_evaporation %>%
        y = "Evaporation (ml)")
 
 
-## ----mixed model, eval = FALSE------------------------------------------------------------------------------------------------------------------------------------------------
+## ----mixed model, eval = FALSE-----------------------------------------------------------------------------------------
 ## 
 ## mixed.model = lmer(evaporation  ~
 ##                      patch_size * disturbance  * exchange +

@@ -166,6 +166,8 @@ ds_biomass_abund = ds_biomass_abund %>%
          Eug,
          Eup,
          Lox,
+         Pau,
+         Pca,
          Spi,
          Spi_te,
          Tet) %>%
@@ -191,6 +193,8 @@ ds_biomass_abund = ds_biomass_abund %>%
            Eug,
            Eup,
            Lox,
+           Pau,
+           Pca,
            Spi,
            Spi_te,
            Tet)
