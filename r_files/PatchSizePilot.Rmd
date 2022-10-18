@@ -119,6 +119,15 @@ ecosystems_to_take_off = 60 #Culture ID = 60 because it was spilled (isolated sm
 metaecosystems_to_take_off = 40 #System 40 was the system of culture 60 that I spilled
 protist_species = c("Ble", "Cep", "Col", "Eug", "Eup", "Lox", "Pau", "Pca", "Spi", "Spi_te", "Tet")
 n_protist_species = length(protist_species)
+
+colour_isolated = "#d9cbbe"
+colour_different_size = "#4992c6"
+colour_same_size = "#bc9960"
+colour_small = "#ffff00"
+colour_medium = "#ff9933"
+colour_large = "#ff0000"
+colour_MM = "#dd7f42" #Colour of the Medium-Medium meta-ecosystem
+colour_SL = "#438cbe" #Colour of the Small-Large meta-ecosystem 
 ```
 
 # PatchSizePilot {.tabset}

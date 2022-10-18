@@ -38,7 +38,7 @@ for (disturbance_input in c("low", "high")) {
                 legend.justification = c("right", "top"),
         legend.box.just = "right",
         legend.margin = margin(6, 6, 6, 6)) +
-          scale_fill_manual(values = c("#A2A2A2", "#008B31", "#DC0000"),
+          scale_fill_manual(values = c(colour_isolated, colour_different_size, colour_same_size),
                     labels = c("Small isolated",
                                "Small connected to large",
                                "Small connected to small")) +
