@@ -1,4 +1,4 @@
-## ---- class.source = 'fold-hide'-------------------------------------------------------------------------------------------------------------------------------
+## ---- class.source = 'fold-hide'----------------------------------------------------------------------------------------------------------------------------------------------
 evaporation.test = read.csv(here("data", "evaporation_test","evaporation_test_right.csv"), header = TRUE)
 
 evaporation.test %>%
@@ -12,7 +12,7 @@ evaporation.test %>%
        fill = "Rack replicate")
 
 
-## ---- class.source = 'fold-hide'-------------------------------------------------------------------------------------------------------------------------------
+## ---- class.source = 'fold-hide'----------------------------------------------------------------------------------------------------------------------------------------------
 evaporation.test = read.csv(here("data", "evaporation_test", "evaporation_test_fill_nofill.csv"), header = TRUE)
 
 evaporation.test %>%

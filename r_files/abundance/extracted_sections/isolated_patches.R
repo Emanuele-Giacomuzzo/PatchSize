@@ -1,63 +1,89 @@
-## ----abundance-isolated-patches-single-ecosystem-plots---------------------------------------------------------------------------------------------------------
-for (disturbance_input in c("low", "high")){
-  
-  print(ds_biomass_abund %>%
-  filter ( disturbance == disturbance_input) %>%
-  filter(metaecosystem == "no") %>%
-  group_by (system_nr, day, patch_size) %>%
-  summarise(mean_indiv_per_volume_across_videos = mean(indiv_per_volume)) %>%
-  ggplot (aes(x = day,
-                y = mean_indiv_per_volume_across_videos,
-                group = system_nr,
-                fill = system_nr,
-              color = system_nr,
-                linetype = patch_size)) +
-    geom_line () +
-    labs(title = paste("Disturbance =", disturbance_input),
-         x = "Day", 
-         y = "Community density (individuals/µl)",
-         fill = "System nr",
-         linetype = "") +
-  scale_colour_continuous(guide = "none") +
-    theme_bw() +
-    theme(panel.grid.major = element_blank(), 
-          panel.grid.minor = element_blank(),
-          legend.position = c(.95, .95),
-          legend.justification = c("right", "top"),
-          legend.box.just = "right",
-          legend.margin = margin(6, 6, 6, 6)) +
-  scale_linetype_discrete(labels = c("large isolated",
-                                     "medium isolated",
-                                     "small isolated")))}
+## ----abundance-isolated-patches-single-ecosystem-plots------------------------------------------------------------------------------------------------------------------------
+for (disturbance_input in c("low", "high")) {
+  print(
+    ds_biomass_abund %>%
+      filter (disturbance == disturbance_input,
+              metaecosystem == "no") %>%
+      group_by (system_nr, day, patch_size) %>%
+      summarise(mean_indiv_per_volume_across_videos = mean(indiv_per_volume)) %>%
+      ggplot (
+        aes(
+          x = day,
+          y = mean_indiv_per_volume_across_videos,
+          group = system_nr,
+          fill = system_nr,
+          color = system_nr,
+          linetype = patch_size
+        )
+      ) +
+      geom_line () +
+      labs(
+        title = paste("Disturbance =", disturbance_input),
+        x = "Day",
+        y = "Community density (individuals/µl)",
+        fill = "System nr",
+        linetype = ""
+      ) +
+      scale_colour_continuous(guide = "none") +
+      theme_bw() +
+      theme(
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        legend.position = c(.95, .95),
+        legend.justification = c("right", "top"),
+        legend.box.just = "right",
+        legend.margin = margin(6, 6, 6, 6)
+      ) +
+      scale_linetype_discrete(
+        labels = c("large isolated",
+                   "medium isolated",
+                   "small isolated")
+      )
+  )
+}
 
 
-## ----abundance-isolated-patches-boxplots-----------------------------------------------------------------------------------------------------------------------
-for (disturbance_input in c("low", "high")){
-print(ds_biomass_abund %>%
-  filter(disturbance == disturbance_input) %>%
-  filter(metaecosystem == "no") %>%
-  ggplot(aes(x = day,
-             y = indiv_per_volume,
-             group = interaction(day, patch_size),
-             fill = patch_size)) +
-  geom_boxplot() + 
-  labs(title = paste("Disturbance =", disturbance_input),
-       x = "Day",
-       y = "Community density (individuals/μl)",
-       fill = "") + 
-  scale_fill_discrete(labels = c("isolated large", 
-                                 "isolated medium", 
-                                 "isolated small")) +
-  theme_bw() + 
-  theme(panel.grid.major = element_blank(), 
-          panel.grid.minor = element_blank(),
-          legend.position = c(.95, .95),
-          legend.justification = c("right", "top"),
-          legend.box.just = "right",
-          legend.margin = margin(6, 6, 6, 6)))}
+## ----abundance-isolated-patches-boxplots--------------------------------------------------------------------------------------------------------------------------------------
+for (disturbance_input in c("low", "high")) {
+  print(
+    ds_biomass_abund %>%
+      filter(disturbance == disturbance_input,
+             metaecosystem == "no") %>%
+      ggplot(
+        aes(
+          x = day,
+          y = indiv_per_volume,
+          group = interaction(day, patch_size),
+          fill = patch_size
+        )
+      ) +
+      geom_boxplot() +
+      labs(
+        title = paste("Disturbance =", disturbance_input),
+        x = "Day",
+        y = "Community density (individuals/μl)",
+        fill = ""
+      ) +
+      scale_fill_manual(
+        values = c(colour_large, colour_medium, colour_small),
+        labels = c("Large isolated",
+                   "Medium isolated",
+                   "Small isolated")
+      ) +
+      theme_bw() +
+      theme(
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        legend.position = c(.95, .95),
+        legend.justification = c("right", "top"),
+        legend.box.just = "right",
+        legend.margin = margin(6, 6, 6, 6)
+      )
+  )
+}
 
 
-## ----abundance-isolated-patches-plot-linearity-----------------------------------------------------------------------------------------------------------------
+## ----abundance-isolated-patches-plot-linearity--------------------------------------------------------------------------------------------------------------------------------
 ds_biomass_abund %>%
   filter(time_point >= 2) %>%
   ggplot(aes(x = day,
@@ -68,7 +94,7 @@ ds_biomass_abund %>%
        y = "Regional bioarea (µm²)")
 
 
-## ----abundance-isolated-patches-linearity-test-----------------------------------------------------------------------------------------------------------------
+## ----abundance-isolated-patches-linearity-test--------------------------------------------------------------------------------------------------------------------------------
 linear_model = lm(indiv_per_volume ~ 
                     day, 
                   data = ds_biomass_abund %>% 
@@ -79,7 +105,7 @@ par(mfrow=c(2,3))
 plot(linear_model, which = 1:5)
 
 
-## ----abundance-isolated-patches-model-full---------------------------------------------------------------------------------------------------------------------
+## ----abundance-isolated-patches-model-full------------------------------------------------------------------------------------------------------------------------------------
 full = lmer(indiv_per_volume ~
                      day * patch_size_volume * disturbance +
                      (day | system_nr),
@@ -90,7 +116,7 @@ full = lmer(indiv_per_volume ~
                    control = lmerControl(optimizer = "Nelder_Mead"))
 
 
-## ----abundance-isolated-patches-model-no-correlation-----------------------------------------------------------------------------------------------------------
+## ----abundance-isolated-patches-model-no-correlation--------------------------------------------------------------------------------------------------------------------------
 no_correlation = lmer(indiv_per_volume ~
                      day * patch_size_volume * disturbance +
                      (day || system_nr),
@@ -103,7 +129,7 @@ no_correlation = lmer(indiv_per_volume ~
 anova(full, no_correlation)
 
 
-## ----abundance-isolated-patches-model-no-random-slopes---------------------------------------------------------------------------------------------------------
+## ----abundance-isolated-patches-model-no-random-slopes------------------------------------------------------------------------------------------------------------------------
 no_random_slopes = lmer(indiv_per_volume ~
                      day * patch_size_volume * disturbance +
                      (1 | system_nr),
@@ -116,7 +142,7 @@ no_random_slopes = lmer(indiv_per_volume ~
 anova(no_correlation, no_random_slopes)
 
 
-## ----abundance-isolated-patches-model-no-threeway--------------------------------------------------------------------------------------------------------------
+## ----abundance-isolated-patches-model-no-threeway-----------------------------------------------------------------------------------------------------------------------------
 no_threeway = lmer(indiv_per_volume ~
                      day +
                      patch_size_volume +
@@ -135,7 +161,7 @@ no_threeway = lmer(indiv_per_volume ~
 anova(no_random_slopes, no_threeway)
 
 
-## ----abundance-isolated-patches-model-no-tm--------------------------------------------------------------------------------------------------------------------
+## ----abundance-isolated-patches-model-no-tm-----------------------------------------------------------------------------------------------------------------------------------
 no_TM = lmer(indiv_per_volume ~
                      day +
                      patch_size_volume +
@@ -152,7 +178,7 @@ no_TM = lmer(indiv_per_volume ~
 anova(no_threeway,no_TM)
 
 
-## ----abundance-isolated-patches-model-no-td--------------------------------------------------------------------------------------------------------------------
+## ----abundance-isolated-patches-model-no-td-----------------------------------------------------------------------------------------------------------------------------------
 no_TD = lmer(indiv_per_volume ~
                      day +
                      patch_size_volume +
@@ -169,7 +195,7 @@ no_TD = lmer(indiv_per_volume ~
 anova(no_threeway, no_TD)
 
 
-## ----abundance-isolated-patches-model-no-md--------------------------------------------------------------------------------------------------------------------
+## ----abundance-isolated-patches-model-no-md-----------------------------------------------------------------------------------------------------------------------------------
 no_MD = lmer(indiv_per_volume ~
                      day +
                      patch_size_volume +
@@ -185,23 +211,23 @@ no_MD = lmer(indiv_per_volume ~
 anova(no_TD, no_MD)
 
 
-## ----abundance-isolated-patches-best-model---------------------------------------------------------------------------------------------------------------------
+## ----abundance-isolated-patches-best-model------------------------------------------------------------------------------------------------------------------------------------
 best_model = no_MD
 
 
-## ----abundance-isolated-patches-best-model-residuals-----------------------------------------------------------------------------------------------------------
+## ----abundance-isolated-patches-best-model-residuals--------------------------------------------------------------------------------------------------------------------------
 plot(best_model)
 qqnorm(resid(best_model))
 
 
-## ----warning=FALSE---------------------------------------------------------------------------------------------------------------------------------------------
+## ----warning=FALSE------------------------------------------------------------------------------------------------------------------------------------------------------------
 R2_marginal = r.squaredGLMM(best_model)[1]
 R2_marginal = round(R2_marginal, digits = 2)
 R2_conditional = r.squaredGLMM(best_model)[2]
 R2_conditional = round(R2_conditional, digits = 2)
 
 
-## ----eval = recompute_analyses---------------------------------------------------------------------------------------------------------------------------------
+## ----eval = recompute_analyses------------------------------------------------------------------------------------------------------------------------------------------------
 ## R2_isolated_patches = partR2(best_model,
 ##                              partvars = c("day",
 ##                                           "patch_size_volume",
@@ -212,12 +238,12 @@ R2_conditional = round(R2_conditional, digits = 2)
 ## saveRDS(R2_isolated_patches, file = here("results", "biomass", "R2_isolated_patches.RData"))
 
 
-## --------------------------------------------------------------------------------------------------------------------------------------------------------------
+## -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 R2_regional = readRDS(here("results", "biomass", "R2_isolated_patches.RData"))
 R2_regional$IR2
 
 
-## --------------------------------------------------------------------------------------------------------------------------------------------------------------
+## -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 t2_t5 = lmer(indiv_per_volume ~
                      day +
                      patch_size_volume +
@@ -240,7 +266,7 @@ R2_conditional = r.squaredGLMM(t2_t5)[2]
 R2_conditional = round(R2_conditional, digits = 2)
 
 
-## ----eval = recompute_analyses---------------------------------------------------------------------------------------------------------------------------------
+## ----eval = recompute_analyses------------------------------------------------------------------------------------------------------------------------------------------------
 ## R2_isolated_patches = partR2(t2_t5,
 ##                              partvars = c("day",
 ##                                           "patch_size_volume",
@@ -251,7 +277,7 @@ R2_conditional = round(R2_conditional, digits = 2)
 ## saveRDS(R2_isolated_patches, file = here("results", "R2_isolated_patches_t2t5.RData"))
 
 
-## --------------------------------------------------------------------------------------------------------------------------------------------------------------
+## -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 R2_regional = readRDS(here("results", "R2_isolated_patches_t2t5.RData"))
 R2_regional$IR2
 

@@ -1,0 +1,25 @@
+---
+title: "main_richness"
+author: "Emanuele Giacomuzzo"
+date: "2022-10-17"
+output: html_document
+---
+
+## Biodiversity {.tabset .tabset-pills}
+
+### Alpha Diversity {.tabset .tabset-dropdown}
+
+```{r child = here("r_files", "biodiversity", "sections", "small_patches.Rmd")}
+```
+
+```{r child = here("r_files", "biodiversity", "sections", "large_patches.Rmd")}
+```
+
+```{r child = here("r_files", "biodiversity", "sections", "isolated_patches.Rmd")}
+```
+
+```{r child = here("r_files", "biodiversity", "sections", "beta_diversity.Rmd")}
+```
+
+```{r child = here("r_files", "biodiversity", "sections", "gamma_diversity.Rmd")}
+```

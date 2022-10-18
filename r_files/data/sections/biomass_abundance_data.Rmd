@@ -235,9 +235,7 @@ ds_biomass_abund = ds_biomass_abund %>%
                             Spi_presence +
                             Spi_te_presence +
                             Tet_presence)
-```
 
-```{r beta-diversity, eval = FALSE}
 ds_biomass_abund_averaged = ds_biomass_abund %>%
   group_by(system_nr,
            time_point) %>%
@@ -475,6 +473,7 @@ ds_for_beta_diversity = ds_biomass_abund %>%
   )
 
 ds_regional_biomass$beta_diversity = NA
+ds_regional_biomass$gamma_diversity = NA
 
 for (system_nr_input in 16:70) {
   for (time_point_input in 0:(n_time_points-1)) {
@@ -492,10 +491,18 @@ for (system_nr_input in 16:70) {
                                   no = 0) 
     
     distance_list = beta.pair(pres_abs_two_patches, index.family = "jaccard")
-    beta_diversity = 1 - distance_list$beta.jac
+    beta_diversity = distance_list$beta.jac
+    
+    summed_columns = colSums(pres_abs_two_patches)
+    vector_for_gamma = ifelse(test = summed_columns > 0,
+                                  yes = 1,
+                                  no = 0) 
+    gamma_diversity = sum(vector_for_gamma)
     
     ds_regional_biomass$beta_diversity[ds_regional_biomass$system_nr == system_nr_input &
                                          ds_regional_biomass$time_point == time_point_input] = beta_diversity
+    ds_regional_biomass$gamma_diversity[ds_regional_biomass$system_nr == system_nr_input &
+                                         ds_regional_biomass$time_point == time_point_input] = gamma_diversity
     
     
   }
