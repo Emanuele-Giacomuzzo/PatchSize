@@ -1,0 +1,20 @@
+---
+title: "main_richness"
+author: "Emanuele Giacomuzzo"
+date: "2022-10-17"
+output: html_document
+---
+
+## Species Richness {.tabset .tabset-dropdown}
+
+```{r child = here("r_files", "species_richness", "sections", "small_patches.Rmd")}
+source(here("r_files", "biomass_local", "extracted_sections", "small_patches.R"))
+```
+
+```{r child = here("r_files", "species_richness", "sections", "large_patches.Rmd")}
+source(here("r_files", "biomass_local", "extracted_sections", "large_patches.R"))
+```
+
+```{r child = here("r_files", "species_richness", "sections", "isolated_patches.Rmd")}
+source(here("r_files", "biomass_local", "extracted_sections", "isolated_patches.R"))
+```

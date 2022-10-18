@@ -200,6 +200,91 @@ ds_biomass_abund = ds_biomass_abund %>%
            Tet)
 ```
 
+```{r alpha-diversity}
+ds_biomass_abund = ds_biomass_abund %>%
+  mutate(Ble_presence = case_when(Ble > 0 ~ 1,
+                                  TRUE ~ 0)) %>%
+  mutate(Cep_presence = case_when(Cep > 0 ~ 1,
+                                  TRUE ~ 0)) %>%
+  mutate(Col_presence = case_when(Col > 0 ~ 1,
+                                  TRUE ~ 0)) %>%
+  mutate(Eug_presence = case_when(Eup > 0 ~ 1,
+                                  TRUE ~ 0)) %>%
+  mutate(Eup_presence = case_when(Eug > 0 ~ 1,
+                                  TRUE ~ 0)) %>%
+  mutate(Lox_presence = case_when(Lox > 0 ~ 1,
+                                  TRUE ~ 0)) %>%
+  mutate(Pau_presence = case_when(Pau > 0 ~ 1,
+                                  TRUE ~ 0)) %>%
+  mutate(Pca_presence = case_when(Pca > 0 ~ 1,
+                                  TRUE ~ 0)) %>%
+  mutate(Spi_presence = case_when(Spi > 0 ~ 1,
+                                  TRUE ~ 0)) %>%
+  mutate(Spi_te_presence = case_when(Spi_te > 0 ~ 1,
+                                  TRUE ~ 0)) %>%
+  mutate(Tet_presence = case_when(Tet > 0 ~ 1,
+                                  TRUE ~ 0)) %>%
+  mutate(species_richness = Ble_presence +
+                            Cep_presence +
+                            Col_presence +
+                            Eug_presence +
+                            Eup_presence +
+                            Lox_presence +
+                            Pau_presence +
+                            Pca_presence +
+                            Spi_presence +
+                            Spi_te_presence +
+                            Tet_presence)
+```
+
+```{r beta-diversity, eval = FALSE}
+ds_biomass_abund_averaged = ds_biomass_abund %>%
+  group_by(system_nr,
+           time_point) %>%
+  mutate(bioarea_per_volume = mean(bioarea_per_volume)) %>%
+  ungroup() %>%
+  mutate(Ble_presence = case_when(Ble > 0 ~ 1,
+                                  TRUE ~ 0)) %>%
+  mutate(Cep_presence = case_when(Cep > 0 ~ 1,
+                                  TRUE ~ 0)) %>%
+  mutate(Col_presence = case_when(Col > 0 ~ 1,
+                                  TRUE ~ 0)) %>%
+  mutate(Eug_presence = case_when(Eup > 0 ~ 1,
+                                  TRUE ~ 0)) %>%
+  mutate(Eup_presence = case_when(Eug > 0 ~ 1,
+                                  TRUE ~ 0)) %>%
+  mutate(Lox_presence = case_when(Lox > 0 ~ 1,
+                                  TRUE ~ 0)) %>%
+  mutate(Pau_presence = case_when(Pau > 0 ~ 1,
+                                  TRUE ~ 0)) %>%
+  mutate(Pca_presence = case_when(Pca > 0 ~ 1,
+                                  TRUE ~ 0)) %>%
+  mutate(Spi_presence = case_when(Spi > 0 ~ 1,
+                                  TRUE ~ 0)) %>%
+  mutate(Spi_te_presence = case_when(Spi_te > 0 ~ 1,
+                                  TRUE ~ 0)) %>%
+  mutate(Tet_presence = case_when(Tet > 0 ~ 1,
+                                  TRUE ~ 0)) %>%
+  mutate(species_richness = Ble_presence +
+                            Cep_presence +
+                            Col_presence +
+                            Eug_presence +
+                            Eup_presence +
+                            Lox_presence +
+                            Pau_presence +
+                            Pca_presence +
+                            Spi_presence +
+                            Spi_te_presence +
+                            Tet_presence)
+
+beta_diversity = ds_biomass %>%
+  group_by(system_nr, time_point) %>%
+  summarise()
+  filter(system_nr == system_nr_input, time_point == time_point_input) %>%
+  select(system_nr_input, time_point_input)
+```
+
+
 ```{r}
 datatable(ds_biomass_abund,
           rownames = FALSE,

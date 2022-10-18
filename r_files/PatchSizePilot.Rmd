@@ -93,6 +93,8 @@ library("partR2")
 library("SciViews")
 library("effsize")
 library("boot")
+library("vegan")
+library("betapart")
 
 conflict_prefer("load", "base")
 conflict_prefer("filter", "dplyr")
@@ -140,6 +142,9 @@ source(here("r_files", "data", "extracted_sections", "body_size_data.R"))
 ```
 
 ```{r child = here("r_files", "population_abundances", "main_population_abundances.Rmd")}
+```
+
+```{r child = here("r_files", "species_richness", "main_richness.Rmd")}
 ```
 
 ```{r child = here("r_files", "body_size_distribution", "main_body_size_distribution.Rmd")}
