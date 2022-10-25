@@ -35,14 +35,14 @@ for (patch_size_input in c("S", "L")) {
                    disturbance_input,
                    ")")
     
-    p[[n]] <- ds_classes_averaged %>%
+    p[[n]] <- ds_classes_video_averaged %>%
       filter(disturbance == disturbance_input) %>%
       filter(patch_size == patch_size_input) %>%
       filter(!eco_metaeco_type == patch_size_input) %>%
       ggplot(
         aes(
           x = log_size_class,
-          y = log_size_class_abundance_mean,
+          y = log_abundance,
           group = interaction(log_size_class, eco_metaeco_type),
           color = eco_metaeco_type
         )
@@ -52,8 +52,8 @@ for (patch_size_input in c("S", "L")) {
                 fun = "mean",
                 aes(group = eco_metaeco_type)) +
       geom_errorbar(
-        aes(ymax = log_size_class_abundance_upper_ci,
-            ymin = log_size_class_abundance_lower_ci),
+        aes(ymax = log_abundance_upper_ci,
+            ymin = log_abundance_lower_ci),
         width = .2,
         position = position_dodge(0.05)
       ) +
