@@ -5,7 +5,7 @@ date: "2022-08-03"
 output: 
   html_document:
      code_folding: hide
-bibliography: /Applications/Mendeley/library.bib
+bibliography: ../library.bib
 html_document:
     toc: true
     toc_float: true
@@ -18,34 +18,42 @@ editor_options:
 ---
 
 ```{r extract-sections, echo = FALSE, eval = FALSE}
-
 #This chunk is to extract the r code contained in each child. I use it so that I can run sections more easily from the console. It's not necessary for the analysis. This is why I keep it eval = FALSE.
 
 library(here)
 library(knitr)
 library(purrr)
 
-list_of_main_sections = c("abundance", "biomass_local", "biomass_regional", "body_size_distribution", "body_size_median", "data", "evaporation", "tests")
+list_of_main_sections = c(
+  "abundance",
+  "biomass_local",
+  "biomass_regional",
+  "body_size_distribution",
+  "body_size_median",
+  "data",
+  "evaporation",
+  "tests"
+)
 
-for (main_section in list_of_main_sections){
+for (main_section in list_of_main_sections) {
+  sections.path = here("r_files", main_section, "sections")
+  extracted.path = here("r_files", main_section, "extracted_sections")
   
- sections.path = here("r_files", main_section, "sections")
- extracted.path = here("r_files", main_section, "extracted_sections")
- 
- r.files = list.files(sections.path)
- rmd.files = r.files[grepl(".Rmd", r.files)]
- 
- map(rmd.files, function(file.i) {
-   
-   file.name = gsub(".Rmd", "", file.i)
-   extracted.file = paste0(file.name, ".R")
-   purl(file.path(sections.path, file.i),
-        file.path(extracted.path, extracted.file))}) 
+  r.files = list.files(sections.path)
+  rmd.files = r.files[grepl(".Rmd", r.files)]
+  
+  map(rmd.files, function(file.i) {
+    file.name = gsub(".Rmd", "", file.i)
+    extracted.file = paste0(file.name, ".R")
+    purl(file.path(sections.path, file.i),
+         file.path(extracted.path, extracted.file))
+  })
 }
 ```
 
-```{r ren-seetings, eval = FALSE, echo = FALSE}
+```{r renv-seetings, eval = FALSE, echo = FALSE}
 renv::repair()
+renv::restore()
 renv::snapshot()
 ```
 
