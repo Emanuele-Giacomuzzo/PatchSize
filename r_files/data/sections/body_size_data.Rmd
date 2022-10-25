@@ -191,30 +191,34 @@ for (class in 1:nr_of_size_classes){
     }
   }
 }
-#Watch out: it contains 27468 rows instead of 27720 because we excluded already culture_ID = 60, which I spilled during the experiment.
 ds_classes = single_videos_rows %>% 
                     bind_rows()
 
 saveRDS(ds_classes, file = here("results", "ds_classes.RData"))
-
-ds_classes = readRDS(here("results", "ds_classes.RData"))
-
-ds_classes_averaged = ds_classes %>%
-                      group_by(size_class_n, eco_metaeco_type, disturbance, day) %>%
-                      mutate(log_size_class_abundance_mean = mean(log_size_class_abundance),
-                                log_size_class_abundance_sd = sd(log_size_class_abundance),
-                                sample_size = n()) %>%
-                      ungroup() %>%
-                      mutate(log_size_class_abundance_se = log_size_class_abundance_sd / sqrt(sample_size),
-                             log_size_class_abundance_lower_ci = log_size_class_abundance_mean - qt(1 - (0.05 / 2), sample_size - 1) * log_size_class_abundance_se,
-                             log_size_class_abundance_upper_ci = log_size_class_abundance_mean + qt(1 - (0.05 / 2), sample_size - 1) * log_size_class_abundance_se)
-
-saveRDS(ds_classes_averaged, file = here("results", "ds_classes_averaged.RData"))
 ```
 
 ```{r}
-ds_classes = readRDS(here("results", "ds_classes.RData"))
-ds_classes_averaged = readRDS(here("results", "ds_classes_averaged.RData"))
+ds_classes = readRDS(here("results", "ds_classes.RData")) #Watch out: it contains 27468 rows instead of 27720 because we excluded already culture_ID = 60, which I spilled during the experiment.
+
+ds_classes_averaged = ds_classes %>%
+  group_by(culture_ID, patch_size, eco_metaeco_type, disturbance, time_point, day, log_size_class) %>%
+  summarise(
+    log_abundance = mean(log_size_class_abundance),
+    log_abundance_sd = sd(log_size_class_abundance),
+    sample_size = n()
+  ) %>%
+  mutate(
+    log_abundance_se = log_abundance_sd / sqrt(sample_size),
+    log_abundance_lower_ci = log_abundance - qt(1 - (0.05 / 2), sample_size - 1) * log_abundance_se,
+    log_abundance_upper_ci = log_abundance + qt(1 - (0.05 / 2), sample_size - 1) * log_abundance_se
+  ) #Expected number of rows: 12 size classes * 109 cultures * 8 time points = 10464
+
+saveRDS(ds_classes_averaged,
+        file = here("results", "ds_classes_averaged.RData"))
+```
+
+```{r}
+ds_classes_video_averaged = readRDS(here("results", "ds_classes_averaged.RData"))
 
 datatable(ds_classes_averaged,
           rownames = FALSE,

@@ -1,4 +1,4 @@
-## ----abundance-small-patches-single-ecosystems-plots--------------------------------------------------------------------------------------------------------------------------
+## ----abundance-small-patches-single-ecosystems-plots---------------------------------------------------------------------------------
 for (disturbance_input in c("low", "high")) {
   print(
     ds_biomass_abund %>%
@@ -48,7 +48,7 @@ for (disturbance_input in c("low", "high")) {
 }
 
 
-## ----abundance-small-patches-boxplots-----------------------------------------------------------------------------------------------------------------------------------------
+## ----abundance-small-patches-boxplots------------------------------------------------------------------------------------------------
 for (disturbance_input in c("low", "high")) {
   print(
     ds_biomass_abund %>%
@@ -97,7 +97,7 @@ for (disturbance_input in c("low", "high")) {
 }
 
 
-## ----abundance-small-patches-effect-size-plots--------------------------------------------------------------------------------------------------------------------------------
+## ----abundance-small-patches-effect-size-plots---------------------------------------------------------------------------------------
 for (disturbance_input in c("low", "high")) {
   print(
     ds_effect_size_community_density %>%
@@ -149,12 +149,12 @@ for (disturbance_input in c("low", "high")) {
 }
 
 
-## ----abundance-choose-time-points---------------------------------------------------------------------------------------------------------------------------------------------
+## ----abundance-choose-time-points----------------------------------------------------------------------------------------------------
 first_time_point = 2
 last_time_point = 7
 
 
-## ----abundance-small-patches-full-model---------------------------------------------------------------------------------------------------------------------------------------
+## ----abundance-small-patches-full-model----------------------------------------------------------------------------------------------
 full_model = lm(community_density_hedges_d ~                  
                   day + 
                   eco_metaeco_type + 
@@ -168,7 +168,7 @@ full_model = lm(community_density_hedges_d ~
                          filter(eco_metaeco_type== "S (S_S)" | eco_metaeco_type == "S (S_L)"))
 
 
-## ----abundance-small-patches-no-TM--------------------------------------------------------------------------------------------------------------------------------------------
+## ----abundance-small-patches-no-TM---------------------------------------------------------------------------------------------------
 no_TP = lm(community_density_hedges_d ~
                   day + 
                   eco_metaeco_type + 
@@ -183,7 +183,7 @@ no_TP = lm(community_density_hedges_d ~
 AIC(full_model, no_TP)
 
 
-## ----abundance-small-patches-no-TD--------------------------------------------------------------------------------------------------------------------------------------------
+## ----abundance-small-patches-no-TD---------------------------------------------------------------------------------------------------
 no_TD = lm(community_density_hedges_d ~
                   day + 
                   eco_metaeco_type + 
@@ -197,7 +197,7 @@ no_TD = lm(community_density_hedges_d ~
 AIC(no_TP, no_TD)
 
 
-## ----abundance-small-patches-no-MD--------------------------------------------------------------------------------------------------------------------------------------------
+## ----abundance-small-patches-no-MD---------------------------------------------------------------------------------------------------
 no_PD = lm(community_density_hedges_d ~
              day + 
              eco_metaeco_type + 
@@ -210,13 +210,13 @@ no_PD = lm(community_density_hedges_d ~
 AIC(no_TD, no_PD)
 
 
-## ----abundance-small-t2-t7-best-model-----------------------------------------------------------------------------------------------------------------------------------------
+## ----abundance-small-t2-t7-best-model------------------------------------------------------------------------------------------------
 best_model = no_TD
 par(mfrow = c(2,3))
 plot(best_model, which = 1:5)
 
 
-## -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## ------------------------------------------------------------------------------------------------------------------------------------
 R2_full = glance(best_model)$r.squared
 no_patch_type = lm(community_density_hedges_d ~
                   day + 

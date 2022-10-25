@@ -52,9 +52,9 @@ for (main_section in list_of_main_sections) {
 ```
 
 ```{r renv-seetings, eval = FALSE, echo = FALSE}
-renv::repair()
-renv::restore()
-renv::snapshot()
+#renv::repair()
+#renv::restore()
+#renv::snapshot()
 ```
 
 ```{r set-up-environment, echo = FALSE}
