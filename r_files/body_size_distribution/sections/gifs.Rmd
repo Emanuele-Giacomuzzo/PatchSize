@@ -35,7 +35,7 @@ for (patch_size_input in c("S", "L")) {
                    disturbance_input,
                    ")")
     
-    p[[n]] <- ds_classes_video_averaged %>%
+    p[[n]] <- ds_classes_averaged %>%
       filter(disturbance == disturbance_input) %>%
       filter(patch_size == patch_size_input) %>%
       filter(!eco_metaeco_type == patch_size_input) %>%
@@ -58,7 +58,7 @@ for (patch_size_input in c("S", "L")) {
         position = position_dodge(0.05)
       ) +
       scale_color_manual(
-        values = c(colour_large, colour_medium, colour_small),
+        values = c(colour_different_size, colour_same_size),
         labels = c(first_level[n],
                                     second_level[n])) +
       theme_bw() +

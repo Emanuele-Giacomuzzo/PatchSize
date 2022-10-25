@@ -123,7 +123,35 @@ datatable(ds_body_size,
 
 
 ## ------------------------------------------------------------------------------------------------------------------------------------
-ds_classes = readRDS(here("results", "ds_classes.RData"))
+ds_classes = readRDS(here("results", "ds_classes.RData")) #Watch out: it contains 27468 rows instead of 27720 because we excluded already culture_ID = 60, which I spilled during the experiment.
+
+ds_classes_averaged = ds_classes %>%
+  group_by(
+    culture_ID,
+    eco_metaeco_type,
+    patch_size,
+    disturbance,
+    day,
+    log_size_class
+  ) %>%
+  summarise(log_abundance = mean(log_size_class_abundance)) %>%
+  group_by(eco_metaeco_type, patch_size, disturbance, day, log_size_class) %>%
+  summarise(
+    log_abundance_sd = sd(log_abundance),
+    log_abundance = mean(log_abundance),
+    sample_size = n(),
+  ) %>%
+  mutate(
+    log_abundance_se = log_abundance_sd / sqrt(sample_size),
+    log_abundance_lower_ci = log_abundance - qt(1 - (0.05 / 2), sample_size - 1) * log_abundance_se,
+    log_abundance_upper_ci = log_abundance + qt(1 - (0.05 / 2), sample_size - 1) * log_abundance_se
+  ) #Expected number of rows: 12 size classes * 8 eco_metaeco_types * 2 disturbance types * 8 time points = 1536
+
+saveRDS(ds_classes_averaged,
+        file = here("results", "ds_classes_averaged.RData"))
+
+
+## ------------------------------------------------------------------------------------------------------------------------------------
 ds_classes_averaged = readRDS(here("results", "ds_classes_averaged.RData"))
 
 datatable(ds_classes_averaged,

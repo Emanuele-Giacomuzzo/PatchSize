@@ -33,7 +33,7 @@ for (patch_size_input in c("S", "L")) {
       ggplot(
         aes(
           x = log_size_class,
-          y = log_size_class_abundance_mean,
+          y = log_abundance,
           group = interaction(log_size_class, eco_metaeco_type),
           color = eco_metaeco_type
         )
@@ -43,13 +43,13 @@ for (patch_size_input in c("S", "L")) {
                 fun = "mean",
                 aes(group = eco_metaeco_type)) +
       geom_errorbar(
-        aes(ymax = log_size_class_abundance_upper_ci,
-            ymin = log_size_class_abundance_lower_ci),
+        aes(ymax = log_abundance_upper_ci,
+            ymin = log_abundance_lower_ci),
         width = .2,
         position = position_dodge(0.05)
       ) +
       scale_color_manual(
-        values = c(colour_large, colour_medium, colour_small),
+        values = c(colour_different_size, colour_same_size),
         labels = c(first_level[n],
                                     second_level[n])) +
       theme_bw() +
