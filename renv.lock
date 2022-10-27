@@ -704,14 +704,6 @@
         "shiny"
       ]
     },
-    "esc": {
-      "Package": "esc",
-      "Version": "0.5.1",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "10bc7b220f2f613302800776a88a6522",
-      "Requirements": []
-    },
     "estimability": {
       "Package": "estimability",
       "Version": "1.4.1",
@@ -1182,10 +1174,10 @@
     },
     "jsonlite": {
       "Package": "jsonlite",
-      "Version": "1.8.3",
+      "Version": "1.8.2",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "8b1bd0be62956f2a6b91ce84fac79a45",
+      "Hash": "2e7ed071fd6bd047fe2366d3adf4fe46",
       "Requirements": []
     },
     "kableExtra": {
@@ -1956,9 +1948,14 @@
     "sjPlot": {
       "Package": "sjPlot",
       "Version": "2.8.11",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "3e3c3da1bb25506fe379b9564a5b2ae7",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteRepo": "sjPlot",
+      "RemoteUsername": "strengejacke",
+      "RemoteRef": "HEAD",
+      "RemoteSha": "652eb9b9928aa5b6ee95a6e2757b1ae7f2a42477",
+      "Hash": "d124a850636d19864efd605bc9a988ed",
       "Requirements": [
         "MASS",
         "bayestestR",
@@ -2048,28 +2045,6 @@
       "Repository": "CRAN",
       "Hash": "947e4e02a79effa5d512473e10f41797",
       "Requirements": []
-    },
-    "strengejacke": {
-      "Package": "strengejacke",
-      "Version": "0.5.0",
-      "Source": "GitHub",
-      "RemoteType": "github",
-      "RemoteHost": "api.github.com",
-      "RemoteRepo": "strengejacke",
-      "RemoteUsername": "strengejacke",
-      "RemoteRef": "HEAD",
-      "RemoteSha": "755ccc8b861d015e8b4ce4561a39ddf27b899560",
-      "Hash": "3c7e3dc723b7a1084785eb00f8f263eb",
-      "Requirements": [
-        "esc",
-        "ggeffects",
-        "rvest",
-        "sjPlot",
-        "sjlabelled",
-        "sjmisc",
-        "sjstats",
-        "xml2"
-      ]
     },
     "stringi": {
       "Package": "stringi",
