@@ -115,6 +115,8 @@ source(here("r_files", "functions", "calculate.hedges_d.R"))
 ```
 
 ```{r various-parameters, echo = FALSE}
+culture_info = read.csv(here("data", "PatchSizePilot_culture_info.csv"), header = TRUE)
+
 gif_figures = TRUE
 
 publication_width = 12
@@ -131,6 +133,7 @@ protist_species = c("Ble", "Cep", "Col", "Eug", "Eup", "Lox", "Pau", "Pca", "Spi
 n_protist_species = length(protist_species)
 n_metaecosystems = 55
 n_cultures = 110
+eco_metaeco_types = unique(culture_info$eco_metaeco_type)
 
 colour_isolated = "#d9cbbe"
 colour_different_size = "#4992c6"

@@ -206,6 +206,7 @@ ds_classes_averaged = ds_classes %>%
   summarise(
     log_abundance_sd = sd(log_abundance),
     abundance = mean(size_class_abundance),
+    abundance_sd = sd(size_class_abundance),
     log_abundance = mean(log_abundance),
     sample_size = n(),
   ) %>%
@@ -227,8 +228,7 @@ datatable(ds_classes_averaged,
 #### Size classes abundance effect size (ds_classes_averaged_lnRR)
 
 ```{r eval = FALSE}
-eco_metaeco_types = unique(culture_info$eco_metaeco_type)
-ds_classes_averaged$lnRR_abundance = NA
+ds_classes_averaged$abundance_hedges_d = NA
 
 treatments_and_controls = data.frame(
   treatment = c("S (S_S)", "S (S_L)", "L (L_L)", "L (S_L)"),
@@ -244,6 +244,15 @@ for (disturbance_input in c("low", "high")) {
         row_n = row_n + 1
         
         eco_metaeco_treatment = treatments_and_controls$treatment[treatment_n]
+        
+        treatment = ds_classes_averaged %>%
+          filter(
+            disturbance == disturbance_input,
+            eco_metaeco_type == eco_metaeco_treatment,
+            time_point == time_point_input,
+            size_class_n == size_class_input
+          )
+        
         eco_metaeco_control = treatments_and_controls$control[treatment_n]
         
         control = ds_classes_averaged %>%
@@ -252,28 +261,25 @@ for (disturbance_input in c("low", "high")) {
             eco_metaeco_type == eco_metaeco_control,
             time_point == time_point_input,
             size_class_n == size_class_input
-          ) %>%
-          pull(log_abundance)
+          ) 
         
-        treatment = ds_classes_averaged %>%
-          filter(
-            disturbance == disturbance_input,
-            eco_metaeco_type == eco_metaeco_treatment,
-            time_point == time_point_input,
-            size_class_n == size_class_input
-          ) %>%
-          pull(log_abundance)
+        d = calculate.hedges_d(
+          treatment$abundance,
+          treatment$abundance_sd,
+          treatment$sample_size,
+          control$abundance,
+          control$abundance_sd,
+          control$sample_size
+        )
         
-        ds_classes_averaged$lnRR_abundance[ds_classes_averaged$disturbance == disturbance_input &
+        ds_classes_averaged$abundance_hedges_d[ds_classes_averaged$disturbance == disturbance_input &
                                              ds_classes_averaged$eco_metaeco_type == eco_metaeco_treatment &
                                              ds_classes_averaged$time_point == time_point_input &
-                                             ds_classes_averaged$size_class_n == size_class_input] = ln(treatment / control)
+                                             ds_classes_averaged$size_class_n == size_class_input] = d
       }
     }
   }
 }
-
-saveRDS(ds_classes_averaged, file = here("results", "ds_classes_averaged_with_effect_size.RData"))
 ```
 
 
