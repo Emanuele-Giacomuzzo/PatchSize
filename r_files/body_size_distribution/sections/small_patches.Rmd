@@ -87,7 +87,7 @@ for(time_point_input in 0:7) {
         )
       ) +
       geom_point(stat = "summary", fun = "mean") +
-      geom_line(
+      geom_line( 
         stat = "summary",
         fun = "mean",
         aes(group = eco_metaeco_type)
