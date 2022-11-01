@@ -1,5 +1,5 @@
 ---
-title: "S_patches"
+title: "Patch biomass: small patches"
 author: "Emanuele Giacomuzzo"
 date: "2022-08-02"
 output: html_document
@@ -190,9 +190,9 @@ full_model = lm(bioarea_density_hedges_d ~
                   day + 
                   eco_metaeco_type + 
                   disturbance +
-                  day * eco_metaeco_type +
-                  day * disturbance + 
-                  eco_metaeco_type * disturbance,
+                  day : eco_metaeco_type +
+                  day : disturbance + 
+                  eco_metaeco_type : disturbance,
                   data = ds_effect_size_bioarea_density %>%
                          filter(time_point >= first_time_point) %>%
                          filter(time_point <= last_time_point) %>%
@@ -205,9 +205,9 @@ full_model = lm(bioarea_density_hedges_d ~
 no_P = lm(bioarea_density_hedges_d ~               
                   day + 
                   disturbance +
-                  day * eco_metaeco_type +
-                  day * disturbance + 
-                  eco_metaeco_type * disturbance,
+                  day : eco_metaeco_type +
+                  day : disturbance + 
+                  eco_metaeco_type : disturbance,
                   data = ds_effect_size_bioarea_density %>%
                          filter(time_point >= first_time_point) %>%
                          filter(time_point <= last_time_point) %>%
@@ -224,9 +224,9 @@ Yes.
 no_D = lm(bioarea_density_hedges_d ~                  
                   day + 
                   eco_metaeco_type + 
-                  day * eco_metaeco_type +
-                  day * disturbance + 
-                  eco_metaeco_type * disturbance,
+                  day : eco_metaeco_type +
+                  day : disturbance + 
+                  eco_metaeco_type : disturbance,
                   data = ds_effect_size_bioarea_density %>%
                          filter(time_point >= first_time_point) %>%
                          filter(time_point <= last_time_point) %>%
@@ -244,8 +244,8 @@ no_TP = lm(bioarea_density_hedges_d ~
                   day + 
                   eco_metaeco_type + 
                   disturbance +
-                  day * disturbance + 
-                  eco_metaeco_type * disturbance,
+                  day : disturbance + 
+                  eco_metaeco_type : disturbance,
                   data = ds_effect_size_bioarea_density %>%
                          filter(time_point >= first_time_point) %>%
                          filter(time_point <= last_time_point) %>%
@@ -263,8 +263,8 @@ no_TD = lm(bioarea_density_hedges_d ~
                   day + 
                   eco_metaeco_type + 
                   disturbance +
-                  day * eco_metaeco_type +
-                  eco_metaeco_type * disturbance,
+                  day : eco_metaeco_type +
+                  eco_metaeco_type : disturbance,
                   data = ds_effect_size_bioarea_density %>%
                          filter(time_point >= first_time_point) %>%
                          filter(time_point <= last_time_point) %>%
@@ -282,7 +282,7 @@ no_PD = lm(bioarea_density_hedges_d ~
                   day + 
                   eco_metaeco_type + 
                   disturbance +
-                  day * eco_metaeco_type,
+                  day : eco_metaeco_type,
                   data = ds_effect_size_bioarea_density %>%
                          filter(time_point >= first_time_point) %>%
                          filter(time_point <= last_time_point) %>%

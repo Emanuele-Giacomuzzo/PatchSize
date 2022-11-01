@@ -5,9 +5,7 @@ date: "2022-08-03"
 output: 
   html_document:
     code_folding: hide
-  html_vignette: default
-  prettydoc::html_pretty: default
-bibliography: ../library.bib
+bibliography: library.bib
 html_document:
     toc: true
     toc_float: true
@@ -62,7 +60,7 @@ rm(extracted.path, list_of_main_sections, main_section, r.files, rmd.files, sect
 ```
 
 ```{r set-up-environment, echo = FALSE}
-knitr::opts_chunk$set(message = FALSE)
+knitr::opts_chunk$set(message = FALSE, cache=TRUE)
 rm( list = ls(  ) )
 cat( "\014" )
 start_time = Sys.time()
@@ -73,7 +71,7 @@ start_time = Sys.time()
 recompute_analyses = FALSE
 ```
 
-```{r packages, echo = FALSE, results = FALSE, message = FALSE}
+```{r packages, echo = FALSE, results = FALSE, message = FALSE, cache = FALSE}
 library("conflicted")
 library("tidyverse")
 library("grid")

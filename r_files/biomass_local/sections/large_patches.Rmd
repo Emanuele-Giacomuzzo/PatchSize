@@ -194,9 +194,9 @@ full_model = lm(bioarea_density_hedges_d ~
                   day + 
                   eco_metaeco_type + 
                   disturbance +
-                  day * eco_metaeco_type +
-                  day * disturbance + 
-                  eco_metaeco_type * disturbance,
+                  day : eco_metaeco_type +
+                  day : disturbance + 
+                  eco_metaeco_type : disturbance,
                   data = ds_effect_size_bioarea_density %>%
                          filter(time_point >= first_time_point) %>%
                          filter(time_point <= last_time_point) %>%
@@ -210,9 +210,9 @@ full_model = lm(bioarea_density_hedges_d ~
 no_P = lm(bioarea_density_hedges_d ~
                   day + 
                   disturbance +
-                  day * eco_metaeco_type +
-                  day * disturbance + 
-                  eco_metaeco_type * disturbance,
+                  day : eco_metaeco_type +
+                  day : disturbance + 
+                  eco_metaeco_type : disturbance,
                   data = ds_effect_size_bioarea_density %>%
                          filter(time_point >= first_time_point) %>%
                          filter(time_point <= last_time_point) %>%
@@ -230,9 +230,9 @@ Let's see.
 no_D = lm(bioarea_density_hedges_d ~
                   day + 
                   eco_metaeco_type + 
-                  day * eco_metaeco_type +
-                  day * disturbance + 
-                  eco_metaeco_type * disturbance,
+                  day : eco_metaeco_type +
+                  day : disturbance + 
+                  eco_metaeco_type : disturbance,
                   data = ds_effect_size_bioarea_density %>%
                          filter(time_point >= first_time_point) %>%
                          filter(time_point <= last_time_point) %>%
@@ -251,8 +251,8 @@ no_TP = lm(bioarea_density_hedges_d ~
                   day + 
                   eco_metaeco_type + 
                   disturbance +
-                  day * disturbance + 
-                  eco_metaeco_type * disturbance,
+                  day : disturbance + 
+                  eco_metaeco_type : disturbance,
                   data = ds_effect_size_bioarea_density %>%
                          filter(time_point >= first_time_point) %>%
                          filter(time_point <= last_time_point) %>%
@@ -271,7 +271,7 @@ no_TD = lm(bioarea_density_hedges_d ~
                   day + 
                   eco_metaeco_type + 
                   disturbance +
-                  eco_metaeco_type * disturbance,
+                  eco_metaeco_type : disturbance,
                   data = ds_effect_size_bioarea_density %>%
                          filter(time_point >= first_time_point) %>%
                          filter(time_point <= last_time_point) %>%
@@ -290,7 +290,7 @@ no_PD = lm(bioarea_density_hedges_d ~
                   day + 
                   eco_metaeco_type + 
                   disturbance +
-                  day * disturbance,
+                  day : disturbance,
                   data = ds_effect_size_bioarea_density %>%
                          filter(time_point >= first_time_point) %>%
                          filter(time_point <= last_time_point) %>%
@@ -324,7 +324,7 @@ R2_full = glance(best_model)$r.squared
 no_patch_type = lm(bioarea_density_hedges_d ~
                   day + 
                   disturbance +
-                  day * disturbance,
+                  day : disturbance,
                   data = ds_effect_size_bioarea_density %>%
                          filter(time_point >= first_time_point) %>%
                          filter(time_point <= last_time_point) %>%

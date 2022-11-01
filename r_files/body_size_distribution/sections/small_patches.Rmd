@@ -1,5 +1,5 @@
 ---
-title: "small_patches"
+title: "Body size distribution: small patches"
 author: "Emanuele Giacomuzzo"
 date: "2022-09-08"
 output: html_document
@@ -217,3 +217,192 @@ for(time_point_input in 0:7) {
   )
 }
 ```
+
+Body size class: 1, disturbance = low
+
+#### Model Time Series
+
+##### Model selection
+
+Let's start from the full model (no mixed effect: meta-ecosystems have been pulled to create the lnRR):
+
+$$
+d = t + P + D + t*P + t*D + P*D
+$$
+
+d = Hedge's d of the abundance of a size class (base level is calculated at each disturbance level and time point as the mean bioarea of the small isolated patches)
+
+t = time
+
+P = patch type
+
+D = disturbance
+
+We will exclude in the model the time point 0 and 1. At time point 0 all cultures were the same because that's how we made them. At time point 1 no disturbance event had already taken place.
+
+```{r choose-time-points-body-size-distribution}
+first_time_point = 2
+last_time_point = 7
+```
+
+```{r choose-size-class}
+chosen_size_class = 2
+```
+
+```{r small-patches-full-model-body-size-distribution}
+full_model = lm(
+  abundance_hedges_d ~
+    day +
+    eco_metaeco_type +
+    disturbance +
+    day : eco_metaeco_type +
+    day : disturbance +
+    eco_metaeco_type : disturbance,
+  data = ds_classes_averaged %>%
+    filter(
+      eco_metaeco_type == "S (S_S)" |
+        eco_metaeco_type == "S (S_L)",
+      time_point >= first_time_point,
+      time_point <= last_time_point,
+      size_class_n == chosen_size_class
+    )
+)
+```
+
+*Should we keep P?*
+
+```{r small-patches-no_P-body-size-distribution}
+no_P = lm(
+  abundance_hedges_d ~
+    day +
+    disturbance +
+    day : eco_metaeco_type +
+    day : disturbance +
+    eco_metaeco_type : disturbance,
+  data = ds_classes_averaged %>%
+    filter(
+      eco_metaeco_type == "S (S_S)" |
+        eco_metaeco_type == "S (S_L)",
+      time_point >= first_time_point,
+      time_point <= last_time_point,
+      size_class_n == chosen_size_class
+    )
+)
+
+AIC(full_model, no_P)
+```
+
+Yes.
+
+*Should we keep D?*
+
+```{r}
+no_D = lm(bioarea_density_hedges_d ~                  
+                  day + 
+                  eco_metaeco_type + 
+                  day * eco_metaeco_type +
+                  day * disturbance + 
+                  eco_metaeco_type * disturbance,
+                  data = ds_effect_size_bioarea_density %>%
+                         filter(time_point >= first_time_point) %>%
+                         filter(time_point <= last_time_point) %>%
+                         filter(eco_metaeco_type== "S (S_S)" | eco_metaeco_type == "S (S_L)"))
+
+AIC(full_model, no_D)
+```
+
+Yes.
+
+*Should we keep t \* P?*
+
+```{r small-patches-no-TM-body-size-distribution}
+no_TP = lm(bioarea_density_hedges_d ~
+                  day + 
+                  eco_metaeco_type + 
+                  disturbance +
+                  day * disturbance + 
+                  eco_metaeco_type * disturbance,
+                  data = ds_effect_size_bioarea_density %>%
+                         filter(time_point >= first_time_point) %>%
+                         filter(time_point <= last_time_point) %>%
+                         filter(eco_metaeco_type== "S (S_S)" | eco_metaeco_type == "S (S_L)"))
+
+AIC(full_model, no_TP)
+```
+
+Yes.
+
+*Should we keep t \* D?*
+
+```{r small-patches-no-TD-body-size-distribution}
+no_TD = lm(bioarea_density_hedges_d ~
+                  day + 
+                  eco_metaeco_type + 
+                  disturbance +
+                  day * eco_metaeco_type +
+                  eco_metaeco_type * disturbance,
+                  data = ds_effect_size_bioarea_density %>%
+                         filter(time_point >= first_time_point) %>%
+                         filter(time_point <= last_time_point) %>%
+                         filter(eco_metaeco_type== "S (S_S)" | eco_metaeco_type == "S (S_L)"))
+
+AIC(full_model, no_TD)
+```
+
+No.
+
+Should we keep P \* D?
+
+```{r small-patches-no-MD-body-size-distribution}
+no_PD = lm(bioarea_density_hedges_d ~
+                  day + 
+                  eco_metaeco_type + 
+                  disturbance +
+                  day * eco_metaeco_type,
+                  data = ds_effect_size_bioarea_density %>%
+                         filter(time_point >= first_time_point) %>%
+                         filter(time_point <= last_time_point) %>%
+                         filter(eco_metaeco_type== "S (S_S)" | eco_metaeco_type == "S (S_L)"))
+
+AIC(no_TD, no_PD)
+```
+
+No.
+
+##### Best model
+
+Then our best model is:
+
+$$
+lnRR (bioarea \: density) = t + P + D + t*P
+$$
+
+Let's then do some model diagnostics.
+
+```{r small-t2-t7-best-model-body-size-distribution}
+best_model = no_PD
+par(mfrow = c(2,3))
+plot(best_model, which = 1:5)
+```
+
+```{r}
+R2_full = glance(best_model)$r.squared
+no_patch_type = lm(bioarea_density_hedges_d ~
+                  day + 
+                  disturbance,
+                  data = ds_effect_size_bioarea_density %>%
+                         filter(time_point >= first_time_point) %>%
+                         filter(time_point <= last_time_point) %>%
+                         filter(eco_metaeco_type== "S (S_S)" | eco_metaeco_type == "S (S_L)"))
+
+R2_no_P = glance(no_patch_type)$r.squared
+R2_P = R2_full - R2_no_P
+
+R2_full = round(R2_full, digits = 2)
+R2_P = round(R2_P, digits = 2)
+```
+
+\
+The adjusted R squared of the model is `r R2_full` and the adjusted R squared of patch type is `r R2_P` (which includes also its interaction with disturbance).
+
+Single time points: see modelling choices.
