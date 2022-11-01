@@ -1,0 +1,293 @@
+---
+title: "PatchSizePilot"
+author: "Emanuele Giacomuzzo"
+date: "2022-08-03"
+output: 
+  html_document:
+    code_folding: hide
+  html_vignette: default
+  prettydoc::html_pretty: default
+bibliography: ../library.bib
+html_document:
+    toc: true
+    toc_float: true
+    code_folding: hide
+    number_sections: true
+    includes:
+      after_body: tabset-dropdown.html
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r extract-sections, echo = FALSE, eval = FALSE}
+#This chunk is to extract the r code contained in each child. I use it so that I can run sections more easily from the console. It's not necessary for the analysis. This is why I keep it eval = FALSE.
+
+library(here)
+library(knitr)
+library(purrr)
+
+list_of_main_sections = c(
+  "abundance",
+  "biomass_local",
+  "biomass_regional",
+  "body_size_distribution",
+  "body_size_median",
+  "data",
+  "evaporation",
+  "tests"
+)
+
+for (main_section in list_of_main_sections) {
+  sections.path = here("r_files", main_section, "sections")
+  extracted.path = here("r_files", main_section, "extracted_sections")
+  
+  r.files = list.files(sections.path)
+  rmd.files = r.files[grepl(".Rmd", r.files)]
+  
+  map(rmd.files, function(file.i) {
+    file.name = gsub(".Rmd", "", file.i)
+    extracted.file = paste0(file.name, ".R")
+    purl(file.path(sections.path, file.i),
+         file.path(extracted.path, extracted.file))
+  })
+}
+
+rm(extracted.path, list_of_main_sections, main_section, r.files, rmd.files, sections.path)
+```
+
+```{r renv-seetings, eval = FALSE, echo = FALSE}
+#renv::repair()
+#renv::restore()
+#renv::snapshot()
+```
+
+```{r set-up-environment, echo = FALSE}
+knitr::opts_chunk$set(message = FALSE)
+rm( list = ls(  ) )
+cat( "\014" )
+start_time = Sys.time()
+```
+
+```{r recompute-analyses, echo = FALSE}
+#Lengthy analyses have been suppressed. However, if you set recompute_analyses = TRUE it redoes them. 
+recompute_analyses = FALSE
+```
+
+```{r packages, echo = FALSE, results = FALSE, message = FALSE}
+library("conflicted")
+library("tidyverse")
+library("grid")
+library("gridExtra") 
+library("lme4")
+library("here")
+library("MuMIn")
+library("equatiomatic")
+library("knitr")
+library("optimx")
+library("GenSA")
+library("purrr")
+library("kableExtra")
+library("DT")
+library("renv")
+library("broom")
+library("patchwork")
+library("gganimate") 
+library("gapminder")
+library("gifski")
+library("av")
+library("transformr")
+library("gifski")
+library("GGally")
+#library("strengejacke")
+library("sjPlot")
+library("sjstats")
+library("partR2")
+library("SciViews")
+library("effsize")
+library("boot")
+library("vegan")
+library("betapart")
+
+conflict_prefer("load", "base")
+conflict_prefer("filter", "dplyr")
+```
+
+```{r functions, echo = FALSE}
+source(here("r_files", "functions", "calculate.hedges_d.R"))
+```
+
+```{r various-parameters, echo = FALSE}
+culture_info = read.csv(here("data", "PatchSizePilot_culture_info.csv"), header = TRUE)
+
+gif_figures = TRUE
+
+publication_width = 12
+publication_height = 12
+publication_unit = "cm"
+
+nr_videos = c(12,1,1,1,1,1,2,2)
+last_time_point = 7
+n_time_points = 8
+first_perturbation_day = 5
+ecosystems_to_take_off = 60 #Culture ID = 60 because it was spilled (isolated small patch, high disturbance, system nr = 40)
+metaecosystems_to_take_off = 40 #System 40 was the system of culture 60 that I spilled
+protist_species = c("Ble", "Cep", "Col", "Eug", "Eup", "Lox", "Pau", "Pca", "Spi", "Spi_te", "Tet")
+n_protist_species = length(protist_species)
+n_metaecosystems = 55
+n_cultures = 110
+eco_metaeco_types = unique(culture_info$eco_metaeco_type)
+
+colour_isolated = "#d9cbbe"
+colour_different_size = "#4992c6"
+colour_same_size = "#bc9960"
+colour_small = "#ffff00"
+colour_medium = "#ff9933"
+colour_large = "#ff0000"
+colour_MM = "#dd7f42" #Colour of the Medium-Medium meta-ecosystem
+colour_SL = "#438cbe" #Colour of the Small-Large meta-ecosystem 
+```
+
+# PatchSizePilot {.tabset}
+
+```{r overview-experiment, child = here("r_files", "overview.Rmd")}
+```
+
+```{r manipulate-data, child = here("r_files", "data", "main_data.Rmd")}
+source(here("r_files", "data", "extracted_sections", "experimental_treatments.R"))
+source(here("r_files", "data", "extracted_sections", "biomass_abundance_data.R"))
+source(here("r_files", "data", "extracted_sections", "body_size_data.R"))
+```
+
+```{r child = here("r_files", "biomass_regional", "main_biomass_regional.Rmd")}
+```
+
+```{r child = here("r_files", "biomass_local", "main_biomass_local.Rmd")}
+```
+
+```{r child = here("r_files", "abundance", "main_abundance.Rmd")}
+```
+
+```{r child = here("r_files", "population_abundances", "main_population_abundances.Rmd")}
+```
+
+```{r child = here("r_files", "biodiversity", "main_biodiversity.Rmd")}
+```
+
+```{r child = here("r_files", "body_size_distribution", "main_body_size_distribution.Rmd")}
+```
+
+```{r child = here("r_files", "body_size_median", "main_body_size_median.Rmd")}
+```
+
+```{r child = here("r_files", "evaporation", "sections", "evaporation.Rmd")}
+```
+
+## Figures
+
+```{r, echo = FALSE, fig.align='center', fig.cap = "Regional biomass under low disturbance in meta-ecosystems of the same total area, but exhibiting two local patches of the same size (red, medium-medium meta-ecosystem) or different size (blue, small-large meta-ecosystem). Points represent the mean, error bars represent the standard deviation. See the Appendix for equivalent figure of the high disturbance treatment.", eval = FALSE}
+regional_publication + labs(title = "")
+
+ggsave(here("results", "biomass", "regional_publication.jpg"), 
+       regional_publication + labs(title = ""), 
+       units = publication_unit,
+       width = publication_width, 
+       height = publication_height)
+```
+
+```{r, echo = FALSE, fig.align = 'center', fig.cap = "Local biomass under low disturbance in patches connected to a patch of the same size (red, small patches of small-small meta-ecosystems) or to a patch of larger size (blue, small patches of small-large meta-ecosystems). The local biomass has been transformed as the natural logarithm of the reponse ratio as follows: ln(RR) = ln((bioarea + 1) / mean bioarea small isolated patches under low disturbance).", eval = FALSE}
+small_patches_publication + labs(title = "")
+
+ggsave(here("results", "biomass", "small_patches_publication.jpg"), 
+       small_patches_publication + labs(title = ""), 
+       units = publication_unit,
+       width = publication_width, 
+       height = publication_height)
+```
+
+```{r child = here("r_files", "tests", "main_tests.Rmd")}
+```
+
+```{r save-figures}
+small_patches_presentation = ds_biomass_abund %>%
+          filter(disturbance == disturbance_input) %>%
+          filter(patch_size == "S") %>%
+          ggplot(aes(x = day,
+                     y = bioarea_per_volume,
+                     group = interaction(day,eco_metaeco_type),
+                     fill = eco_metaeco_type)) +
+          geom_boxplot() +
+          labs(x = "Day",
+               y = "Local Bioarea (µm²/μl)",
+               fill = "") +
+          theme_bw() +
+          theme(panel.grid.major = element_blank(),
+                panel.grid.minor = element_blank(),
+                legend.position = c(.95, .95),
+                legend.justification = c("right", "top"),
+        legend.box.just = "right",
+        legend.margin = margin(6, 6, 6, 6),
+        text = element_text(size = 15)) +
+          scale_fill_discrete(labels = c("Small isolated",
+                                         "Small connected to large",
+                                         "Small connected to small")) +
+          geom_vline(xintercept = first_perturbation_day + 0.7,
+                     linetype = "dotdash",
+                     color = "grey",
+                     size = 0.7) +
+  scale_x_continuous(breaks = c(0, 4, 8, 12, 16, 20, 24, 28))
+
+ggsave(here("results", "biomass", "presentation_small_patches.jpg"), 
+       small_patches_presentation + labs(title = ""), 
+       units = publication_unit,
+       width = 17, 
+       height = publication_height)
+
+metaecos_presentation = ds_regional_biomass %>%
+          filter(disturbance == disturbance_input) %>%
+          filter (metaecosystem_type == "S_L" |
+                  metaecosystem_type == "M_M") %>%
+          ggplot (aes(x = day,
+                      y = total_regional_bioarea,
+                      group = interaction(day, metaecosystem_type),
+                      fill = metaecosystem_type)) +
+          geom_boxplot() +
+          labs(x = "Day", 
+               y = "Regional Bioarea (µm²)",
+               color = '', 
+               fill = '') +
+          scale_fill_discrete(labels = c("Medium-Medium", 
+                                         "Small-Large")) +
+          theme_bw() +
+          theme(panel.grid.major = element_blank(), 
+                panel.grid.minor = element_blank(),
+                legend.position = c(.95, .95),
+                legend.justification = c("right", "top"),
+                legend.box.just = "right",
+                legend.margin = margin(6, 6, 6, 6),
+                text = element_text(size = 15))  +
+          geom_vline(xintercept = first_perturbation_day + 0.7, 
+                     linetype = "dotdash", 
+                     color = "grey", 
+                     size = 0.7) +
+  scale_x_continuous(breaks = c(0, 4, 8, 12, 16, 20, 24, 28))
+  
+
+ggsave(here("results", "biomass", "presentation_metaecos.jpg"), 
+       metaecos_presentation + labs(title = ""), 
+       units = publication_unit,
+       width = 17, 
+       height = publication_height)
+```
+
+## To do 
+
+Check that the single lines plots have the right labels.
+
+## Running time
+
+```{r running-time, echo = FALSE, eval = TRUE}
+end_time = Sys.time()
+end_time - start_time
+```
+
+## Bibliography
