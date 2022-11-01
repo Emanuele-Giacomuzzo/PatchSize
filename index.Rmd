@@ -17,42 +17,6 @@ editor_options:
   chunk_output_type: console
 ---
 
-```{r extract-sections, echo = FALSE, eval = FALSE}
-#This chunk is to extract the r code contained in each child. I use it so that I can run sections more easily from the console. It's not necessary for the analysis. This is why I keep it eval = FALSE.
-
-library(here)
-library(knitr)
-library(purrr)
-
-list_of_main_sections = c(
-  "abundance",
-  "biomass_local",
-  "biomass_regional",
-  "body_size_distribution",
-  "body_size_median",
-  "data",
-  "evaporation",
-  "tests"
-)
-
-for (main_section in list_of_main_sections) {
-  sections.path = here("r_files", main_section, "sections")
-  extracted.path = here("r_files", main_section, "extracted_sections")
-  
-  r.files = list.files(sections.path)
-  rmd.files = r.files[grepl(".Rmd", r.files)]
-  
-  map(rmd.files, function(file.i) {
-    file.name = gsub(".Rmd", "", file.i)
-    extracted.file = paste0(file.name, ".R")
-    purl(file.path(sections.path, file.i),
-         file.path(extracted.path, extracted.file))
-  })
-}
-
-rm(extracted.path, list_of_main_sections, main_section, r.files, rmd.files, sections.path)
-```
-
 ```{r renv-seetings, eval = FALSE, echo = FALSE}
 #renv::repair()
 #renv::restore()
@@ -64,11 +28,7 @@ knitr::opts_chunk$set(message = FALSE, cache=TRUE)
 rm( list = ls(  ) )
 cat( "\014" )
 start_time = Sys.time()
-```
-
-```{r recompute-analyses, echo = FALSE}
-#Lengthy analyses have been suppressed. However, if you set recompute_analyses = TRUE it redoes them. 
-recompute_analyses = FALSE
+recompute_analyses = FALSE #Lengthy analyses have been suppressed. However, if you set recompute_analyses = TRUE it redoes them. 
 ```
 
 ```{r packages, echo = FALSE, results = FALSE, message = FALSE, cache = FALSE}
@@ -150,136 +110,130 @@ colour_SL = "#438cbe" #Colour of the Small-Large meta-ecosystem
 ```{r overview-experiment, child = here("r_files", "overview.Rmd")}
 ```
 
-```{r manipulate-data, child = here("r_files", "data", "main_data.Rmd")}
-source(here("r_files", "data", "extracted_sections", "experimental_treatments.R"))
-source(here("r_files", "data", "extracted_sections", "biomass_abundance_data.R"))
-source(here("r_files", "data", "extracted_sections", "body_size_data.R"))
+## Data {.tabset .tabset-pills}
+
+```{r child = here("r_files", "data_experimental_treatments.Rmd")}
 ```
 
-```{r child = here("r_files", "biomass_regional", "main_biomass_regional.Rmd")}
+```{r child = here("r_files", "data_biomass_abundance_data.Rmd")}
 ```
 
-```{r child = here("r_files", "biomass_local", "main_biomass_local.Rmd")}
+```{r child = here("r_files", "data_body_size_data.Rmd")}
 ```
 
-```{r child = here("r_files", "abundance", "main_abundance.Rmd")}
+## Meta-Ecosystem Biomass {.tabset .tabset-dropdown}
+
+```{r child = here("r_files", "biomass_metaeco_all.Rmd")}
 ```
 
-```{r child = here("r_files", "population_abundances", "main_population_abundances.Rmd")}
+```{r child = here("r_files", "biomass_MM_SL_plots.Rmd")}
 ```
 
-```{r child = here("r_files", "biodiversity", "main_biodiversity.Rmd")}
+```{r child = here("r_files", "biomass_MM_SL_time_series.Rmd")}
 ```
 
-```{r child = here("r_files", "body_size_distribution", "main_body_size_distribution.Rmd")}
+```{r child = here("r_files", "biomass_MM_SL_single_points.Rmd")}
 ```
 
-```{r child = here("r_files", "body_size_median", "main_body_size_median.Rmd")}
+```{r child = here("r_files", "biomass_SL_SL_from_isolated.Rmd"), eval = FALSE}
 ```
 
-```{r child = here("r_files", "evaporation", "sections", "evaporation.Rmd")}
+```{r child = here("r_files", "biomass_metaeco_equally_sized_patches.Rmd")}
+```
+## Patches: Biomass {.tabset .tabset-dropdown}
+
+```{r child = here("r_files", "biomass_all_patches.Rmd")}
 ```
 
-## Figures
-
-```{r, echo = FALSE, fig.align='center', fig.cap = "Regional biomass under low disturbance in meta-ecosystems of the same total area, but exhibiting two local patches of the same size (red, medium-medium meta-ecosystem) or different size (blue, small-large meta-ecosystem). Points represent the mean, error bars represent the standard deviation. See the Appendix for equivalent figure of the high disturbance treatment.", eval = FALSE}
-regional_publication + labs(title = "")
-
-ggsave(here("results", "biomass", "regional_publication.jpg"), 
-       regional_publication + labs(title = ""), 
-       units = publication_unit,
-       width = publication_width, 
-       height = publication_height)
+```{r child = here("r_files", "biomass_small_patches.Rmd")}
 ```
 
-```{r, echo = FALSE, fig.align = 'center', fig.cap = "Local biomass under low disturbance in patches connected to a patch of the same size (red, small patches of small-small meta-ecosystems) or to a patch of larger size (blue, small patches of small-large meta-ecosystems). The local biomass has been transformed as the natural logarithm of the reponse ratio as follows: ln(RR) = ln((bioarea + 1) / mean bioarea small isolated patches under low disturbance).", eval = FALSE}
-small_patches_publication + labs(title = "")
-
-ggsave(here("results", "biomass", "small_patches_publication.jpg"), 
-       small_patches_publication + labs(title = ""), 
-       units = publication_unit,
-       width = publication_width, 
-       height = publication_height)
+```{r child = here("r_files", "biomass_large_patches.Rmd")}
 ```
 
-```{r child = here("r_files", "tests", "main_tests.Rmd")}
+```{r child = here("r_files", "biomass_isolated_patches.Rmd")}
 ```
 
-```{r save-figures}
-small_patches_presentation = ds_biomass_abund %>%
-          filter(disturbance == disturbance_input) %>%
-          filter(patch_size == "S") %>%
-          ggplot(aes(x = day,
-                     y = bioarea_per_volume,
-                     group = interaction(day,eco_metaeco_type),
-                     fill = eco_metaeco_type)) +
-          geom_boxplot() +
-          labs(x = "Day",
-               y = "Local Bioarea (µm²/μl)",
-               fill = "") +
-          theme_bw() +
-          theme(panel.grid.major = element_blank(),
-                panel.grid.minor = element_blank(),
-                legend.position = c(.95, .95),
-                legend.justification = c("right", "top"),
-        legend.box.just = "right",
-        legend.margin = margin(6, 6, 6, 6),
-        text = element_text(size = 15)) +
-          scale_fill_discrete(labels = c("Small isolated",
-                                         "Small connected to large",
-                                         "Small connected to small")) +
-          geom_vline(xintercept = first_perturbation_day + 0.7,
-                     linetype = "dotdash",
-                     color = "grey",
-                     size = 0.7) +
-  scale_x_continuous(breaks = c(0, 4, 8, 12, 16, 20, 24, 28))
+## Patches: Community Abundance {.tabset .tabset-dropdown}
 
-ggsave(here("results", "biomass", "presentation_small_patches.jpg"), 
-       small_patches_presentation + labs(title = ""), 
-       units = publication_unit,
-       width = 17, 
-       height = publication_height)
-
-metaecos_presentation = ds_regional_biomass %>%
-          filter(disturbance == disturbance_input) %>%
-          filter (metaecosystem_type == "S_L" |
-                  metaecosystem_type == "M_M") %>%
-          ggplot (aes(x = day,
-                      y = total_regional_bioarea,
-                      group = interaction(day, metaecosystem_type),
-                      fill = metaecosystem_type)) +
-          geom_boxplot() +
-          labs(x = "Day", 
-               y = "Regional Bioarea (µm²)",
-               color = '', 
-               fill = '') +
-          scale_fill_discrete(labels = c("Medium-Medium", 
-                                         "Small-Large")) +
-          theme_bw() +
-          theme(panel.grid.major = element_blank(), 
-                panel.grid.minor = element_blank(),
-                legend.position = c(.95, .95),
-                legend.justification = c("right", "top"),
-                legend.box.just = "right",
-                legend.margin = margin(6, 6, 6, 6),
-                text = element_text(size = 15))  +
-          geom_vline(xintercept = first_perturbation_day + 0.7, 
-                     linetype = "dotdash", 
-                     color = "grey", 
-                     size = 0.7) +
-  scale_x_continuous(breaks = c(0, 4, 8, 12, 16, 20, 24, 28))
-  
-
-ggsave(here("results", "biomass", "presentation_metaecos.jpg"), 
-       metaecos_presentation + labs(title = ""), 
-       units = publication_unit,
-       width = 17, 
-       height = publication_height)
+```{r child = here("r_files", "comm_abundance_small_patches.Rmd")}
 ```
 
-## To do 
+```{r child = here("r_files", "comm_abundance_large_patches.Rmd")}
+```
 
-Check that the single lines plots have the right labels.
+```{r child = here("r_files", "comm_abundance_isolated_patches.Rmd")}
+```
+
+## Patches: Population Abundances {.tabset .tabset-dropdown}
+
+```{r child = here("r_files", "population_abundances_small_patches.Rmd")}
+```
+
+```{r child = here("r_files", "population_abundances_large_patches.Rmd")}
+```
+
+```{r child = here("r_files", "population_abundances_isolated_patches.Rmd")}
+```
+
+## Biodiversity {.tabset .tabset-pills}
+
+### Alpha Diversity {.tabset .tabset-dropdown}
+
+```{r child = here("r_files", "alpha_diversity_small_patches.Rmd")}
+```
+
+```{r child = here("r_files", "alpha_diversity_large_patches.Rmd")}
+```
+
+```{r child = here("r_files", "alpha_diversity_isolated_patches.Rmd")}
+```
+
+### Beta Diversity {.tabset .tabset-dropdown}
+
+```{r child = here("r_files", "beta_diversity.Rmd")}
+```
+
+### Gamma Diversity {.tabset .tabset-dropdown}
+
+```{r child = here("r_files", "gamma_diversity.Rmd")}
+```
+
+## Body size distribution {.tabset .tabset-dropdown}
+
+```{r child = here("r_files", "body_size_distribution_gifs.Rmd"), eval = FALSE}
+```
+
+```{r child = here("r_files", "body_size_distribution_small_patches.Rmd")}
+```
+
+```{r child = here("r_files", "body_size_distribution_large_patches.Rmd")}
+```
+
+```{r child = here("r_files", "body_size_distribution_isolated_patches.Rmd")}
+```
+
+## Median body size {.tabset .tabset-dropdown}
+
+```{r child = here("r_files", "body_size_median_all_patches.Rmd")}
+```
+
+```{r child = here("r_files", "body_size_median_small_patches.Rmd")}
+```
+
+```{r child = here("r_files", "body_size_median_large_patches.Rmd")}
+```
+
+```{r child = here("r_files", "body_size_median_isolated_patches.Rmd")}
+```
+
+## Evaporation {.tabset .tabset-pills}
+
+```{r child = here("r_files", "evaporation.Rmd")}
+```
+
+```{r child = here("r_files", "evaporation_tests.Rmd")}
+```
 
 ## Running time
 
