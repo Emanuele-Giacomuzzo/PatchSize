@@ -243,7 +243,7 @@ for (disturbance_input in c("low", "high")) {
       for (size_class_input in 1:nr_of_size_classes) {
         row_n = row_n + 1
         
-        eco_metaeco_treatment = treatments_and_controls$control[treatment_n]
+        eco_metaeco_treatment = treatments_and_controls$treatment[treatment_n]
         eco_metaeco_control = treatments_and_controls$control[treatment_n]
         
         control = ds_classes_averaged %>%
@@ -273,31 +273,7 @@ for (disturbance_input in c("low", "high")) {
   }
 }
 
-for (patch_size_input in c("S", "M", "L")) {
-  for (disturbance_input in c("low", "high")) {
-    for (time_point_input in 0:7) {
-      averaged_value_isolated_control = ds_lnRR_median_body_size %>%
-        filter(
-          eco_metaeco_type == patch_size_input,
-          disturbance == disturbance_input,
-          time_point == time_point_input
-        ) %>%
-        ungroup() %>%
-        select(mean_median_body_size)
-      
-      ds_lnRR_median_body_size$isolated_control[ds_lnRR_median_body_size$patch_size == patch_size_input &
-                                                  ds_lnRR_median_body_size$disturbance == disturbance_input &
-                                                  ds_lnRR_median_body_size$time_point == time_point_input] =
-        averaged_value_isolated_control
-      
-    }
-  }
-}
-
-ds_lnRR_median_body_size = ds_lnRR_median_body_size %>%
-  mutate(isolated_control = as.numeric(isolated_control)) %>%
-  mutate(lnRR_median_body_size = ln(mean_median_body_size / isolated_control))
-
+saveRDS(ds_classes_averaged, file = here("results", "ds_classes_averaged_with_effect_size.RData"))
 ```
 
 
