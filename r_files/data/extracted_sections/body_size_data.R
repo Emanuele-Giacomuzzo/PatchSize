@@ -1,4 +1,4 @@
-## ------------------------------------------------------------------------------------------------------------------------------------
+## ----------------------------------------------------------------------------------------------------------------------------------
 culture_info = read.csv(here("data", "PatchSizePilot_culture_info.csv"), header = TRUE)
 load(here("data", "morphology", "t0.RData"));t0 = morph_mvt
 load(here("data", "morphology", "t1.RData"));t1 = morph_mvt
@@ -11,7 +11,7 @@ load(here("data", "morphology", "t7.RData"));t7 = morph_mvt
 rm(morph_mvt)
 
 
-## ----body-size-tidy-time-points------------------------------------------------------------------------------------------------------
+## ----body-size-tidy-time-points----------------------------------------------------------------------------------------------------
 #Column: time
 t0$time = NA
 t1$time = NA
@@ -38,7 +38,7 @@ t6 = t6 %>% rename(replicate_video = replicate)
 t7 = t7 %>% rename(replicate_video = replicate)
 
 
-## ----ds-body-size-creation-----------------------------------------------------------------------------------------------------------
+## ----ds-body-size-creation---------------------------------------------------------------------------------------------------------
 cultures_n = max(culture_info$culture_ID)
 original_t0_rows = nrow(t0)
 ID_vector = rep(1:cultures_n, each = original_t0_rows)
@@ -58,7 +58,7 @@ ds_body_size = rbind(t0, t1, t2, t3, t4, t5, t6, t7)
 rm(t0, t1, t2, t3, t4, t5, t6, t7)
 
 
-## ----tidy-body-size-ds---------------------------------------------------------------------------------------------------------------
+## ----tidy-body-size-ds-------------------------------------------------------------------------------------------------------------
 #Column: day
 ds_body_size$day = ds_body_size$time_point;
 ds_body_size$day[ds_body_size$day=="t0"] = "0"
@@ -112,7 +112,7 @@ ds_body_size = ds_body_size[, c("culture_ID",
             "mean_area")]
 
 
-## ------------------------------------------------------------------------------------------------------------------------------------
+## ----------------------------------------------------------------------------------------------------------------------------------
 datatable(ds_body_size,
           rownames = FALSE,
           options = list(scrollX = TRUE),
@@ -122,12 +122,13 @@ datatable(ds_body_size,
 
 
 
-## ------------------------------------------------------------------------------------------------------------------------------------
+## ----------------------------------------------------------------------------------------------------------------------------------
 ds_classes = readRDS(here("results", "ds_classes.RData")) #Watch out: it contains 27468 rows instead of 27720 because we excluded already culture_ID = 60, which I spilled during the experiment.
 
 ds_classes_averaged = ds_classes %>%
   group_by(
     culture_ID,
+    metaecosystem,
     eco_metaeco_type,
     patch_size,
     disturbance,
@@ -135,7 +136,7 @@ ds_classes_averaged = ds_classes %>%
     log_size_class
   ) %>%
   summarise(log_abundance = mean(log_size_class_abundance)) %>%
-  group_by(eco_metaeco_type, patch_size, disturbance, day, log_size_class) %>%
+  group_by(eco_metaeco_type, metaecosystem, patch_size, disturbance, day, log_size_class) %>%
   summarise(
     log_abundance_sd = sd(log_abundance),
     log_abundance = mean(log_abundance),
@@ -147,13 +148,8 @@ ds_classes_averaged = ds_classes %>%
     log_abundance_upper_ci = log_abundance + qt(1 - (0.05 / 2), sample_size - 1) * log_abundance_se
   ) #Expected number of rows: 12 size classes * 8 eco_metaeco_types * 2 disturbance types * 8 time points = 1536
 
-saveRDS(ds_classes_averaged,
-        file = here("results", "ds_classes_averaged.RData"))
 
-
-## ------------------------------------------------------------------------------------------------------------------------------------
-ds_classes_averaged = readRDS(here("results", "ds_classes_averaged.RData"))
-
+## ----------------------------------------------------------------------------------------------------------------------------------
 datatable(ds_classes_averaged,
           rownames = FALSE,
           options = list(scrollX = TRUE),
@@ -161,7 +157,7 @@ datatable(ds_classes_averaged,
                         clear = FALSE))
 
 
-## ----ds_median_body_size-creation----------------------------------------------------------------------------------------------------
+## ----ds_median_body_size-creation--------------------------------------------------------------------------------------------------
 eco_metaeco_types = unique(culture_info$eco_metaeco_type)
 
 ds_median_body_size = ds_body_size %>%
@@ -170,7 +166,7 @@ ds_median_body_size = ds_body_size %>%
         ungroup()
 
 
-## ------------------------------------------------------------------------------------------------------------------------------------
+## ----------------------------------------------------------------------------------------------------------------------------------
 datatable(ds_median_body_size,
           rownames = FALSE,
           options = list(scrollX = TRUE),
@@ -180,7 +176,7 @@ datatable(ds_median_body_size,
 
 
 
-## ------------------------------------------------------------------------------------------------------------------------------------
+## ----------------------------------------------------------------------------------------------------------------------------------
 ds_lnRR_median_body_size = readRDS(here("results", "ds_lnRR_median_body_size.RData"))
 
 datatable(ds_lnRR_median_body_size,
@@ -190,7 +186,7 @@ datatable(ds_lnRR_median_body_size,
                         clear = FALSE))
 
 
-## ------------------------------------------------------------------------------------------------------------------------------------
+## ----------------------------------------------------------------------------------------------------------------------------------
 
 #How do you calculate the quantiles in dplyr?
 

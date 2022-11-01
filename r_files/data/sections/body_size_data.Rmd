@@ -1,5 +1,5 @@
 ---
-title: "data_manipulation"
+title: "Data manipulation of body size data"
 author: "Emanuele Giacomuzzo"
 date: "2022-08-07"
 output: html_document
@@ -7,9 +7,9 @@ editor_options:
   chunk_output_type: console
 ---
 
-### Body size
+### Body size (ds_body_size)
 
-```{r}
+```{r ds_body_size-import-time-points}
 culture_info = read.csv(here("data", "PatchSizePilot_culture_info.csv"), header = TRUE)
 load(here("data", "morphology", "t0.RData"));t0 = morph_mvt
 load(here("data", "morphology", "t1.RData"));t1 = morph_mvt
@@ -22,7 +22,7 @@ load(here("data", "morphology", "t7.RData"));t7 = morph_mvt
 rm(morph_mvt)
 ```
 
-```{r body-size-tidy-time-points}
+```{r ds_body_size-tidy-time-points}
 #Column: time
 t0$time = NA
 t1$time = NA
@@ -49,7 +49,7 @@ t6 = t6 %>% rename(replicate_video = replicate)
 t7 = t7 %>% rename(replicate_video = replicate)
 ```
 
-```{r ds-body-size-creation}
+```{r ds-body-size-join-time-points}
 cultures_n = max(culture_info$culture_ID)
 original_t0_rows = nrow(t0)
 ID_vector = rep(1:cultures_n, each = original_t0_rows)
@@ -69,8 +69,7 @@ ds_body_size = rbind(t0, t1, t2, t3, t4, t5, t6, t7)
 rm(t0, t1, t2, t3, t4, t5, t6, t7)
 ```
 
-```{r tidy-body-size-ds}
-#Column: day
+```{r ds_body_size-tidy-columns}
 ds_body_size$day = ds_body_size$time_point;
 ds_body_size$day[ds_body_size$day=="t0"] = "0"
 ds_body_size$day[ds_body_size$day=="t1"] = "4"
@@ -82,7 +81,6 @@ ds_body_size$day[ds_body_size$day=="t6"] = "24"
 ds_body_size$day[ds_body_size$day=="t7"] = "28"
 ds_body_size$day = as.numeric(ds_body_size$day)
 
-#Column: time point
 ds_body_size$time_point[ds_body_size$time_point=="t0"] = 0
 ds_body_size$time_point[ds_body_size$time_point=="t1"] = 1
 ds_body_size$time_point[ds_body_size$time_point=="t2"] = 2
@@ -107,23 +105,9 @@ ds_body_size = ds_body_size %>%
          metaecosystem, 
          system_nr, 
          eco_metaeco_type)
-
-#Reorder columns
-ds_body_size = ds_body_size[, c("culture_ID", 
-            "system_nr", 
-            "disturbance", 
-            "time_point",
-            "day",
-            "patch_size", 
-            "patch_size_volume",
-            "metaecosystem", 
-            "metaecosystem_type", 
-            "eco_metaeco_type", 
-            "replicate_video",
-            "mean_area")]
 ```
 
-```{r}
+```{r ds_body_size-datatable}
 datatable(ds_body_size,
           rownames = FALSE,
           options = list(scrollX = TRUE),
@@ -131,88 +115,97 @@ datatable(ds_body_size,
                         clear = FALSE))
 ```
 
-#### Size classes data-set
+#### Size classes abundance (ds_classes_averaged)
 
 I am here creating 12 size classes as in @Jacquet2020. However, for some reason it seems like our body size classes are really different.
 
-```{r eval = recompute_analyses}
-
-#### --- PARAMETERS & INITIALISATION --- ###
-
-largest_size = max(ds_body_size$mean_area)
-n_cultures = 110
+```{r ds_classes_averaged-create-ds_classes, eval = recompute_analyses}
 nr_of_size_classes = 12
+largest_size = max(ds_body_size$mean_area)
 size_class_width = largest_size / nr_of_size_classes
-size_class_boundaries = seq(from = 0, 
-                            to = largest_size, 
+
+size_class_boundaries = seq(from = 0,
+                            to = largest_size,
                             by = size_class_width)
 single_videos_rows = NULL
+
 row = 0
-
-#time_point_input=7
-#class=1
-#n_video_replicates = length(unique(ds_body_size %>% filter(time_point == time_point_input)))
-
-### --- CREATE DATASET --- ###
-
-for (class in 1:nr_of_size_classes){
-  
+for (class in 1:nr_of_size_classes) {
   bin_lower_limit = size_class_boundaries[class]
-  bin_upper_limit = size_class_boundaries[class+1]
-  mean_size = (size_class_boundaries[class] + size_class_boundaries[class + 1])/2
+  bin_upper_limit = size_class_boundaries[class + 1]
+  mean_size = (size_class_boundaries[class] + size_class_boundaries[class + 1]) / 2
   
   
-  for (time_point_input in 0:last_time_point){
-    for (culture_ID_input in 1:n_cultures){
-      for(replicate_video_input in 1:nr_videos[time_point_input+1]){
-        
-        row = row + 1 
+  for (time_point_input in 0:last_time_point) {
+    for (culture_ID_input in 1:n_cultures) {
+      for (replicate_video_input in 1:nr_videos[time_point_input + 1]) {
+        row = row + 1
         
         video_class_abundance = ds_body_size %>%
-                                    filter(bin_lower_limit <= mean_area,
-                                          mean_area <= bin_upper_limit,
-                                          time_point == time_point_input,
-                                          culture_ID == culture_ID_input,
-                                          replicate_video == replicate_video_input) %>%
-                                    summarise(size_class_abundance = n())
-        video_class_abundance = as.numeric(unlist(video_class_abundance))
+          filter(
+            bin_lower_limit <= mean_area,
+            mean_area <= bin_upper_limit,
+            time_point == time_point_input,
+            culture_ID == culture_ID_input,
+            replicate_video == replicate_video_input
+          ) %>%
+          summarise(size_class_abundance = n()) %>%
+          pull(size_class_abundance)
         
         single_videos_rows[[row]] = ds_biomass_abund %>%
-                            filter(time_point == time_point_input,
-                                   culture_ID == culture_ID_input,
-                                   replicate_video == replicate_video_input) %>%
-                            mutate(size_class_abundance = video_class_abundance,
-                                   size_class_n = class,
-                                   size_class = mean_size,
-                                   log_size_class = log(size_class),
-                                   log_size_class_abundance = log(size_class_abundance + 1))
+          filter(
+            time_point == time_point_input,
+            culture_ID == culture_ID_input,
+            replicate_video == replicate_video_input
+          ) %>%
+          mutate(
+            size_class_abundance = video_class_abundance,
+            size_class_n = class,
+            size_class = mean_size,
+            log_size_class = log(size_class),
+            log_abundance = log(size_class_abundance + 1)
+          )
         
       }
     }
   }
 }
-ds_classes = single_videos_rows %>% 
-                    bind_rows()
+ds_classes = single_videos_rows %>%
+  bind_rows()
 
 saveRDS(ds_classes, file = here("results", "ds_classes.RData"))
 ```
 
-```{r}
+```{r ds_classes_averaged-average}
 ds_classes = readRDS(here("results", "ds_classes.RData")) #Watch out: it contains 27468 rows instead of 27720 because we excluded already culture_ID = 60, which I spilled during the experiment.
 
 ds_classes_averaged = ds_classes %>%
   group_by(
     culture_ID,
+    metaecosystem,
     eco_metaeco_type,
     patch_size,
     disturbance,
     day,
+    time_point,
+    size_class_n,
     log_size_class
   ) %>%
-  summarise(log_abundance = mean(log_size_class_abundance)) %>%
-  group_by(eco_metaeco_type, patch_size, disturbance, day, log_size_class) %>%
+  summarise(log_abundance = mean(log_abundance),
+            size_class_abundance = mean(size_class_abundance)) %>%
+  group_by(
+    eco_metaeco_type,
+    metaecosystem,
+    patch_size,
+    disturbance,
+    day,
+    time_point,
+    size_class_n,
+    log_size_class
+  ) %>%
   summarise(
     log_abundance_sd = sd(log_abundance),
+    abundance = mean(size_class_abundance),
     log_abundance = mean(log_abundance),
     sample_size = n(),
   ) %>%
@@ -221,14 +214,9 @@ ds_classes_averaged = ds_classes %>%
     log_abundance_lower_ci = log_abundance - qt(1 - (0.05 / 2), sample_size - 1) * log_abundance_se,
     log_abundance_upper_ci = log_abundance + qt(1 - (0.05 / 2), sample_size - 1) * log_abundance_se
   ) #Expected number of rows: 12 size classes * 8 eco_metaeco_types * 2 disturbance types * 8 time points = 1536
-
-saveRDS(ds_classes_averaged,
-        file = here("results", "ds_classes_averaged.RData"))
 ```
 
-```{r}
-ds_classes_averaged = readRDS(here("results", "ds_classes_averaged.RData"))
-
+```{r ds_classes_averaged-datatable}
 datatable(ds_classes_averaged,
           rownames = FALSE,
           options = list(scrollX = TRUE),
@@ -236,10 +224,86 @@ datatable(ds_classes_averaged,
                         clear = FALSE))
 ```
 
+#### Size classes abundance effect size (ds_classes_averaged_lnRR)
 
-#### Median data-set (`ds_median_body_size)`
+```{r eval = FALSE}
+eco_metaeco_types = unique(culture_info$eco_metaeco_type)
+ds_classes_averaged$lnRR_abundance = NA
 
-```{r ds_median_body_size-creation}
+treatments_and_controls = data.frame(
+  treatment = c("S (S_S)", "S (S_L)", "L (L_L)", "L (S_L)"),
+  control = c("S", "S", "L", "L")
+)
+
+n_of_treatments = nrow(treatments_and_controls)
+
+for (disturbance_input in c("low", "high")) {
+  for (treatment_n in 1:n_of_treatments) {
+    for (time_point_input in 0:7) {
+      for (size_class_input in 1:nr_of_size_classes) {
+        row_n = row_n + 1
+        
+        eco_metaeco_treatment = treatments_and_controls$control[treatment_n]
+        eco_metaeco_control = treatments_and_controls$control[treatment_n]
+        
+        control = ds_classes_averaged %>%
+          filter(
+            disturbance == disturbance_input,
+            eco_metaeco_type == eco_metaeco_control,
+            time_point == time_point_input,
+            size_class_n == size_class_input
+          ) %>%
+          pull(log_abundance)
+        
+        treatment = ds_classes_averaged %>%
+          filter(
+            disturbance == disturbance_input,
+            eco_metaeco_type == eco_metaeco_treatment,
+            time_point == time_point_input,
+            size_class_n == size_class_input
+          ) %>%
+          pull(log_abundance)
+        
+        ds_classes_averaged$lnRR_abundance[ds_classes_averaged$disturbance == disturbance_input &
+                                             ds_classes_averaged$eco_metaeco_type == eco_metaeco_treatment &
+                                             ds_classes_averaged$time_point == time_point_input &
+                                             ds_classes_averaged$size_class_n == size_class_input] = ln(treatment / control)
+      }
+    }
+  }
+}
+
+for (patch_size_input in c("S", "M", "L")) {
+  for (disturbance_input in c("low", "high")) {
+    for (time_point_input in 0:7) {
+      averaged_value_isolated_control = ds_lnRR_median_body_size %>%
+        filter(
+          eco_metaeco_type == patch_size_input,
+          disturbance == disturbance_input,
+          time_point == time_point_input
+        ) %>%
+        ungroup() %>%
+        select(mean_median_body_size)
+      
+      ds_lnRR_median_body_size$isolated_control[ds_lnRR_median_body_size$patch_size == patch_size_input &
+                                                  ds_lnRR_median_body_size$disturbance == disturbance_input &
+                                                  ds_lnRR_median_body_size$time_point == time_point_input] =
+        averaged_value_isolated_control
+      
+    }
+  }
+}
+
+ds_lnRR_median_body_size = ds_lnRR_median_body_size %>%
+  mutate(isolated_control = as.numeric(isolated_control)) %>%
+  mutate(lnRR_median_body_size = ln(mean_median_body_size / isolated_control))
+
+```
+
+
+#### Median body size (`ds_median_body_size)`
+
+```{r ds_median_body_size-create}
 eco_metaeco_types = unique(culture_info$eco_metaeco_type)
 
 ds_median_body_size = ds_body_size %>%
@@ -248,7 +312,7 @@ ds_median_body_size = ds_body_size %>%
         ungroup()
 ```
 
-```{r}
+```{r ds_median_body_size-datatable}
 datatable(ds_median_body_size,
           rownames = FALSE,
           options = list(scrollX = TRUE),
@@ -256,65 +320,71 @@ datatable(ds_median_body_size,
                         clear = FALSE))
 ```
 
-#### lnRR median body size data-set (`ds_lnRR_median_body_size)`
+#### Median body size effect size (`ds_lnRR_median_body_size)`
 
-```{r create-ds_lnRR_median_body_size, eval = recompute_analyses}
+```{r ds_lnRR_median_body_size-create, eval = recompute_analyses}
 eco_metaeco_types = unique(culture_info$eco_metaeco_type)
 single_row = NULL
 row_n = 0
 
-for (disturbance_input in c("low", "high")){
-  for (eco_metaeco_input in eco_metaeco_types){
-    for (time_point_input in 0:7){
-      
+for (disturbance_input in c("low", "high")) {
+  for (eco_metaeco_input in eco_metaeco_types) {
+    for (time_point_input in 0:7) {
       row_n = row_n + 1
       
       single_row[[row_n]] = ds_median_body_size %>%
-        filter(eco_metaeco_type == eco_metaeco_input,
-               disturbance == disturbance_input,
-               time_point == time_point_input) %>% 
+        filter(
+          eco_metaeco_type == eco_metaeco_input,
+          disturbance == disturbance_input,
+          time_point == time_point_input
+        ) %>%
         group_by(culture_ID, time_point) %>%
         mutate(median_body_size_across_videos = mean(median_body_size)) %>%
         ungroup() %>%
-        group_by(eco_metaeco_type, patch_size, disturbance, time_point, day) %>%
+        group_by(eco_metaeco_type,
+                 patch_size,
+                 disturbance,
+                 time_point,
+                 day) %>%
         summarise(mean_median_body_size = mean(median_body_size_across_videos))
       
-      }
     }
   }
+}
 
 ds_lnRR_median_body_size = single_row %>%
   bind_rows()
 
-for (patch_size_input in c("S", "M", "L")){
-  for (disturbance_input in c("low", "high")){
-    for (time_point_input in 0:7){
-      
+for (patch_size_input in c("S", "M", "L")) {
+  for (disturbance_input in c("low", "high")) {
+    for (time_point_input in 0:7) {
       averaged_value_isolated_control = ds_lnRR_median_body_size %>%
-        filter(eco_metaeco_type == patch_size_input,
-               disturbance == disturbance_input,
-               time_point == time_point_input) %>%
+        filter(
+          eco_metaeco_type == patch_size_input,
+          disturbance == disturbance_input,
+          time_point == time_point_input
+        ) %>%
         ungroup() %>%
         select(mean_median_body_size)
       
-      ds_lnRR_median_body_size$isolated_control[
-        ds_lnRR_median_body_size$patch_size == patch_size_input & 
-          ds_lnRR_median_body_size$disturbance == disturbance_input &
-          ds_lnRR_median_body_size$time_point == time_point_input] = 
+      ds_lnRR_median_body_size$isolated_control[ds_lnRR_median_body_size$patch_size == patch_size_input &
+                                                  ds_lnRR_median_body_size$disturbance == disturbance_input &
+                                                  ds_lnRR_median_body_size$time_point == time_point_input] =
         averaged_value_isolated_control
       
-      }
     }
   }
+}
 
 ds_lnRR_median_body_size = ds_lnRR_median_body_size %>%
   mutate(isolated_control = as.numeric(isolated_control)) %>%
   mutate(lnRR_median_body_size = ln(mean_median_body_size / isolated_control))
 
-saveRDS(ds_lnRR_median_body_size, file = here("results", "ds_lnRR_median_body_size.RData"))
+saveRDS(ds_lnRR_median_body_size,
+        file = here("results", "ds_lnRR_median_body_size.RData"))
 ```
 
-```{r}
+```{r ds_lnRR_median_body_size-datable}
 ds_lnRR_median_body_size = readRDS(here("results", "ds_lnRR_median_body_size.RData"))
 
 datatable(ds_lnRR_median_body_size,
@@ -322,24 +392,4 @@ datatable(ds_lnRR_median_body_size,
           options = list(scrollX = TRUE),
           filter = list(position = 'top', 
                         clear = FALSE))
-```
-
-I need to assemble a dataset with the 75% and 95% IQR abundances.
-
-```{r}
-
-#How do you calculate the quantiles in dplyr?
-
-disturbance_input = "low"
-eco_metaeco_input = "S (S_S)"
-time_point_input = 4
-
-ds_body_size %>%
-  filter(disturbance == disturbance_input,
-         eco_metaeco_type == eco_metaeco_input,
-         time_point == time_point_input,
-         culture_ID == 16,
-         replicate_video == 1) #%>%
-  #filter(mean_area > quantile(mean_area, 0.125), mean_area < quantile(x, 0.125))
-
 ```

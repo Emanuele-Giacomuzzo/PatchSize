@@ -1,4 +1,4 @@
-## ----metaecosystem-different-size-single-systems-------------------------------------------------------------------------------------
+## ----metaecosystem-different-size-single-systems-----------------------------------------------------------------------------------
 for (disturbance_input in c("low", "high")) {
   print(
     ds_regional_biomass %>%
@@ -49,7 +49,7 @@ for (disturbance_input in c("low", "high")) {
 }
 
 
-## ----metaecos-different-size-boxplots------------------------------------------------------------------------------------------------
+## ----metaecos-different-size-boxplots----------------------------------------------------------------------------------------------
 for (disturbance_input in c("low", "high")) {
   print(
     ds_regional_biomass %>%

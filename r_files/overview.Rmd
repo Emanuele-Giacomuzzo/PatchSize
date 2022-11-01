@@ -81,3 +81,16 @@ We had mainly two research questions:
     Same thing for the large patches.
 
 -   Single time points cannot be computed for effect sizes just because I have a single data point as response variable (e.g., one for S (S_S) at low disturbance at time point = 2). It would have been nice to show the difference in treatments at specific time points visually through confidence intervals. However, the confidence interval cannot be computed for the last two time points because there are too many zeros and their confidence interval computation produces a lot of Nan, Inf, and -Inf. At this point it doesn't make sense to show just a subset of time points and we decided to opt out from the visualisation of confidence intervals.
+
+### CI
+To calcula the 95% CI of the abundance of different size classes I used the following code: https://stackoverflow.com/questions/35953394/calculating-length-of-95-ci-using-dplyr, whose formula can be found here:
+https://courses.lumenlearning.com/introstats1/chapter/a-single-population-mean-using-the-student-t-distribution/
+
+$$
+CI_{lower} = mean - (t \: score * \frac{SD}{sample \: size})
+$$
+$$
+CI_{upper} = mean + (t \: score * \frac{SD}{sample \: size})
+$$
+
+where the t-score is computed from the student t distribution using the r function qt with percentile = 0.975 and degrees of freedom = sample size - 1. 

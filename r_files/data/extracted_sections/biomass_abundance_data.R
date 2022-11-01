@@ -1,4 +1,4 @@
-## ----biomass-import, message = FALSE, echo = TRUE------------------------------------------------------------------------------------
+## ----biomass-import, message = FALSE, echo = TRUE----------------------------------------------------------------------------------
 load(here("data", "population", "t0.RData")); t0 = pop_output
 load(here("data", "population", "t1.RData")); t1 = pop_output
 load(here("data", "population", "t2.RData")); t2 = pop_output
@@ -10,7 +10,7 @@ load(here("data", "population", "t7.RData")); t7 = pop_output
 rm(pop_output)
 
 
-## ----import-species-data-------------------------------------------------------------------------------------------------------------
+## ----import-species-data-----------------------------------------------------------------------------------------------------------
 species_ID_t0 = read.csv(here("data", "population_species_ID", "species_ID_t0.csv")) %>%
   select(file, Ble:Tet)
 species_ID_t1 = read.csv(here("data", "population_species_ID", "species_ID_t1.csv")) %>%
@@ -29,7 +29,7 @@ species_ID_t7 = read.csv(here("data", "population_species_ID", "species_ID_t7.cs
   select(file, Ble:Tet)
 
 
-## ----join-datasets-------------------------------------------------------------------------------------------------------------------
+## ----join-datasets-----------------------------------------------------------------------------------------------------------------
 t0 = merge(t0, species_ID_t0, by = "file")
 t1 = merge(t1, species_ID_t1, by = "file")
 t2 = merge(t2, species_ID_t2, by = "file")
@@ -41,7 +41,7 @@ t7 = merge(t7, species_ID_t7, by = "file")
 rm(species_ID_t0, species_ID_t1, species_ID_t2, species_ID_t3, species_ID_t4, species_ID_t5, species_ID_t6, species_ID_t7)
 
 
-## ----biomass-tidy-time-points, message = FALSE, echo = TRUE--------------------------------------------------------------------------
+## ----biomass-tidy-time-points, message = FALSE, echo = TRUE------------------------------------------------------------------------
 #Column: time
 t0$time = NA
 t1$time = NA
@@ -59,7 +59,7 @@ t7 = t7 %>%
   rename(replicate_video = replicate)
 
 
-## ----biomass-bind-time-points, message = FALSE, echo = TRUE--------------------------------------------------------------------------
+## ----biomass-bind-time-points, message = FALSE, echo = TRUE------------------------------------------------------------------------
 #Elongate t0 (so that it can be merged wiht culture_info)
 number_of_columns_t0 = ncol(t0)
 nr_of_cultures = nrow(culture_info)
@@ -82,7 +82,7 @@ ds_biomass_abund = rbind(t0, t1, t2, t3, t4, t5, t6, t7)
 rm(t0, t1, t2, t3, t4, t5, t6, t7)
 
 
-## ----biomass-tidy-columns, message = FALSE, echo = TRUE------------------------------------------------------------------------------
+## ----biomass-tidy-columns, message = FALSE, echo = TRUE----------------------------------------------------------------------------
 #Take off spilled cultures
 ds_biomass_abund = ds_biomass_abund %>%
   filter(! culture_ID %in% ecosystems_to_take_off)
@@ -184,7 +184,7 @@ ds_biomass_abund = ds_biomass_abund %>%
            Tet)
 
 
-## ----alpha-diversity-----------------------------------------------------------------------------------------------------------------
+## ----alpha-diversity---------------------------------------------------------------------------------------------------------------
 ds_biomass_abund = ds_biomass_abund %>%
   mutate(Ble_presence = case_when(Ble > 0 ~ 1,
                                   TRUE ~ 0)) %>%
@@ -260,7 +260,7 @@ ds_biomass_abund_averaged = ds_biomass_abund %>%
                             Tet_presence)
 
 
-## ------------------------------------------------------------------------------------------------------------------------------------
+## ----------------------------------------------------------------------------------------------------------------------------------
 datatable(ds_biomass_abund,
           rownames = FALSE,
           options = list(scrollX = TRUE),
@@ -268,7 +268,7 @@ datatable(ds_biomass_abund,
                         clear = FALSE))
 
 
-## ----create-ds_effect_size_bioarea_density-------------------------------------------------------------------------------------------
+## ----create-ds_effect_size_bioarea_density-----------------------------------------------------------------------------------------
 eco_metaeco_types = unique(ds_biomass_abund$eco_metaeco_type)
 small_patches = c("S", "S (S_S)", "S (S_L)")
 medium_patches = c("M", "M (M_M)")
@@ -344,7 +344,7 @@ ds_effect_size_bioarea_density = averaged_bioarea_density %>%
   mutate(bioarea_density_lnRR = ln(mean_bioarea_density / mean_bioarea_density_isolated))
 
 
-## ------------------------------------------------------------------------------------------------------------------------------------
+## ----------------------------------------------------------------------------------------------------------------------------------
 datatable(ds_effect_size_bioarea_density,
           rownames = FALSE,
           options = list(scrollX = TRUE),
@@ -352,7 +352,7 @@ datatable(ds_effect_size_bioarea_density,
                         clear = FALSE))
 
 
-## ----regional-biomass----------------------------------------------------------------------------------------------------------------
+## ----regional-biomass--------------------------------------------------------------------------------------------------------------
 ds_regional_biomass = ds_biomass_abund %>%
   filter(metaecosystem == "yes",
          ! system_nr %in% metaecosystems_to_take_off) %>%
@@ -367,11 +367,11 @@ ds_regional_biomass = ds_biomass_abund %>%
 
 
 
-## ------------------------------------------------------------------------------------------------------------------------------------
+## ----------------------------------------------------------------------------------------------------------------------------------
 ds_regional_biomass = readRDS(here("results", "ds_regional_biomass.RData"))
 
 
-## ----beta-diversity------------------------------------------------------------------------------------------------------------------
+## ----beta-diversity----------------------------------------------------------------------------------------------------------------
 ds_for_beta_diversity = ds_biomass_abund %>%
   filter(!metaecosystem_type == "S_L from isolated") %>%
   group_by(culture_ID, system_nr, time_point) %>%
@@ -426,7 +426,7 @@ for (system_nr_input in 16:70) {
 }
 
 
-## ------------------------------------------------------------------------------------------------------------------------------------
+## ----------------------------------------------------------------------------------------------------------------------------------
 datatable(ds_regional_biomass,
           rownames = FALSE,
           options = list(scrollX = TRUE),
@@ -434,7 +434,7 @@ datatable(ds_regional_biomass,
                         clear = FALSE))
 
 
-## ----create-ds_effect_size_community_density-----------------------------------------------------------------------------------------
+## ----create-ds_effect_size_community_density---------------------------------------------------------------------------------------
 eco_metaeco_types = unique(ds_biomass_abund$eco_metaeco_type)
 small_patches = c("S", "S (S_S)", "S (S_L)")
 medium_patches = c("M", "M (M_M)")
@@ -491,7 +491,7 @@ ds_effect_size_community_density = averaged_community_density %>%
   mutate(community_density_lnRR = ln(mean_community_density/mean_community_density_isolated))
 
 
-## ------------------------------------------------------------------------------------------------------------------------------------
+## ----------------------------------------------------------------------------------------------------------------------------------
 datatable(ds_effect_size_community_density,
           rownames = FALSE,
           options = list(scrollX = TRUE),
@@ -499,7 +499,7 @@ datatable(ds_effect_size_community_density,
                         clear = FALSE))
 
 
-## ----import-species-id-data-and-bind-------------------------------------------------------------------------------------------------
+## ----import-species-id-data-and-bind-----------------------------------------------------------------------------------------------
 t0_file_name = here("data", "population_species_ID", "species_ID_t0.csv")
 t0 = read.csv(t0_file_name, header = TRUE)  %>%
   mutate(culture_ID = NA, time = NA, replicate = 1:12)
@@ -536,7 +536,7 @@ ds_ID = rbind(t0, t1, t2, t3, t4, t5, t6, t7) %>%
                values_to = "abundance")
 
 
-## ----plot-species-ID-----------------------------------------------------------------------------------------------------------------
+## ----plot-species-ID---------------------------------------------------------------------------------------------------------------
 ds_ID %>%
   filter(time_point == "t1") %>%
   ggplot(aes(x = species,
