@@ -14,9 +14,11 @@ include_graphics(here("gifs", "transition_day_S_low.gif"))
 include_graphics(here("gifs", "transition_day_S_high.gif"))
 ```
 
-#### Low disturbance {.tabset .tabset-pills}
+#### Plots
 
-##### Boxplots
+##### Low disturbance {.tabset .tabset-pills}
+
+###### Abundance Untransformed
 
 ```{r}
 for(time_point_input in 0:7) {
@@ -69,7 +71,7 @@ for(time_point_input in 0:7) {
 }
 ```
 
-##### Effect size
+###### Abundance Effect Size
 
 ```{r}
 for(time_point_input in 0:7) {
@@ -116,9 +118,9 @@ for(time_point_input in 0:7) {
 }
 ```
 
-#### High disturbance {.tabset .tabset-pills}
+##### High disturbance {.tabset .tabset-pills}
 
-##### Boxplots
+###### Abundance Untransformed
 
 ```{r}
 for(time_point_input in 0:7) {
@@ -171,7 +173,7 @@ for(time_point_input in 0:7) {
 }
 ```
 
-##### Effect size
+###### Abundance Effect Size
 
 ```{r}
 for(time_point_input in 0:7) {
@@ -218,11 +220,56 @@ for(time_point_input in 0:7) {
 }
 ```
 
+```{r}
+for (disturbance_input in c("low", "high")){
+for(chosen_size_class in 1:nr_of_size_classes) {
+  print(
+    ds_classes_averaged %>%
+      filter(disturbance == disturbance_input) %>%
+      filter(eco_metaeco_type == "S (S_S)" | eco_metaeco_type == "S (S_L)") %>%
+      filter(size_class_n == chosen_size_class) %>%
+      ggplot(
+        aes(
+          x = day,
+          y = abundance_hedges_d,
+          group = interaction(day, eco_metaeco_type),
+          color = eco_metaeco_type
+        )
+      ) +
+      geom_point(stat = "summary", fun = "mean") +
+      geom_line(
+        stat = "summary",
+        fun = "mean",
+        aes(group = eco_metaeco_type)
+      ) +
+      scale_color_manual(
+        values = c(colour_different_size, colour_same_size),
+        labels = c("Small connected to large",
+                   "Small connected to small")
+      ) +
+      theme_bw() +
+      theme(
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        #legend.position = c(.95, .95),
+        #legend.justification = c("right", "top"),
+        legend.box.just = "right",
+        legend.margin = margin(6, 6, 6, 6)
+      ) +
+      labs(
+        title = paste0("Disturbance = ", disturbance_input, ", Size Class = ", (chosen_size_class)),
+        x = 'Day',
+        y = 'Hedge\'s d',
+        color = ""
+      )
+  )
+}}
+```
+
+
 Body size class: 1, disturbance = low
 
-#### Model Time Series
-
-##### Model selection
+#### Model Time Series {.tabset}
 
 Let's start from the full model (no mixed effect: meta-ecosystems have been pulled to create the lnRR):
 
@@ -245,164 +292,1001 @@ first_time_point = 2
 last_time_point = 7
 ```
 
-```{r choose-size-class}
+##### Size Class: 1
+
+```{r choose-size-class-1}
+chosen_size_class = 1
+```
+
+```{r}
+for (disturbance_input in c("low", "high")) {
+  print(
+    ds_classes_averaged %>%
+      filter(size_class_n == chosen_size_class) %>%
+      filter(eco_metaeco_type == "S (S_S)" |
+               eco_metaeco_type == "S (S_L)") %>%
+      filter(disturbance == disturbance_input) %>%
+      ggplot(
+        aes(
+          x = day,
+          y = abundance_hedges_d,
+          group = interaction(day, eco_metaeco_type),
+          color = eco_metaeco_type
+        )
+      ) +
+      geom_point(stat = "summary", fun = "mean") +
+      geom_line(
+        stat = "summary",
+        fun = "mean",
+        aes(group = eco_metaeco_type)
+      ) +
+      scale_color_manual(
+        values = c(colour_different_size, colour_same_size),
+        labels = c("Small connected to large",
+                   "Small connected to small")
+      ) +
+      theme_bw() +
+      theme(
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        #legend.position = c(.95, .2),
+        #legend.justification = c("right", "top"),
+        legend.box.just = "right",
+        legend.margin = margin(6, 6, 6, 6)
+      ) +
+      labs(
+        title = paste0("Disturbance = ", (disturbance_input)),
+        x = 'Day',
+        y = 'Hedge\'s d',
+        color = ""
+      )
+  )
+}
+```
+
+```{r}
+data = ds_classes_averaged %>%
+  filter(
+    eco_metaeco_type == "S (S_S)" |
+      eco_metaeco_type == "S (S_L)",
+    time_point >= first_time_point,
+    time_point <= last_time_point,
+    size_class_n == chosen_size_class
+  ) %>%
+  ungroup() %>%
+  select(eco_metaeco_type, day, disturbance, abundance_hedges_d) 
+
+stepswise_AIC = glmulti(
+  y = abundance_hedges_d ~
+    day +
+    eco_metaeco_type +
+    eco_metaeco_type:day +
+    eco_metaeco_type:disturbance +
+    disturbance +
+    disturbance:day,
+  data = data,
+  fitfunc = lm
+)
+
+summary(stepswise_AIC)
+```
+
+Therefore, the best model is the null model.
+
+##### Size Class: 2
+
+```{r}
 chosen_size_class = 2
 ```
 
-```{r small-patches-full-model-body-size-distribution}
-full_model = lm(
-  abundance_hedges_d ~
-    day +
-    eco_metaeco_type +
-    disturbance +
-    day : eco_metaeco_type +
-    day : disturbance +
-    eco_metaeco_type : disturbance,
-  data = ds_classes_averaged %>%
-    filter(
-      eco_metaeco_type == "S (S_S)" |
-        eco_metaeco_type == "S (S_L)",
-      time_point >= first_time_point,
-      time_point <= last_time_point,
-      size_class_n == chosen_size_class
-    )
-)
+```{r}
+for (disturbance_input in c("low", "high")) {
+  print(
+    ds_classes_averaged %>%
+      filter(size_class_n == chosen_size_class) %>%
+      filter(eco_metaeco_type == "S (S_S)" |
+               eco_metaeco_type == "S (S_L)") %>%
+      filter(disturbance == disturbance_input) %>%
+      ggplot(
+        aes(
+          x = day,
+          y = abundance_hedges_d,
+          group = interaction(day, eco_metaeco_type),
+          color = eco_metaeco_type
+        )
+      ) +
+      geom_point(stat = "summary", fun = "mean") +
+      geom_line(
+        stat = "summary",
+        fun = "mean",
+        aes(group = eco_metaeco_type)
+      ) +
+      scale_color_manual(
+        values = c(colour_different_size, colour_same_size),
+        labels = c("Small connected to large",
+                   "Small connected to small")
+      ) +
+      theme_bw() +
+      theme(
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        #legend.position = c(.95, .2),
+        #legend.justification = c("right", "top"),
+        legend.box.just = "right",
+        legend.margin = margin(6, 6, 6, 6)
+      ) +
+      labs(
+        title = paste0("Disturbance = ", (disturbance_input)),
+        x = 'Day',
+        y = 'Hedge\'s d',
+        color = ""
+      )
+  )
+}
 ```
-
-*Should we keep P?*
-
-```{r small-patches-no_P-body-size-distribution}
-no_P = lm(
-  abundance_hedges_d ~
-    day +
-    disturbance +
-    day : eco_metaeco_type +
-    day : disturbance +
-    eco_metaeco_type : disturbance,
-  data = ds_classes_averaged %>%
-    filter(
-      eco_metaeco_type == "S (S_S)" |
-        eco_metaeco_type == "S (S_L)",
-      time_point >= first_time_point,
-      time_point <= last_time_point,
-      size_class_n == chosen_size_class
-    )
-)
-
-AIC(full_model, no_P)
-```
-
-Yes.
-
-*Should we keep D?*
 
 ```{r}
-no_D = lm(bioarea_density_hedges_d ~                  
-                  day + 
-                  eco_metaeco_type + 
-                  day * eco_metaeco_type +
-                  day * disturbance + 
-                  eco_metaeco_type * disturbance,
-                  data = ds_effect_size_bioarea_density %>%
-                         filter(time_point >= first_time_point) %>%
-                         filter(time_point <= last_time_point) %>%
-                         filter(eco_metaeco_type== "S (S_S)" | eco_metaeco_type == "S (S_L)"))
+data = ds_classes_averaged %>%
+  filter(
+    eco_metaeco_type == "S (S_S)" |
+      eco_metaeco_type == "S (S_L)",
+    time_point >= first_time_point,
+    time_point <= last_time_point,
+    size_class_n == chosen_size_class
+  ) %>%
+  ungroup() %>%
+  select(eco_metaeco_type, day, disturbance, abundance_hedges_d) 
 
-AIC(full_model, no_D)
+stepswise_AIC = glmulti(
+  y = abundance_hedges_d ~
+    day +
+    eco_metaeco_type +
+    eco_metaeco_type:day +
+    eco_metaeco_type:disturbance +
+    disturbance +
+    disturbance:day,
+  data = data,
+  fitfunc = lm
+)
+
+summary(stepswise_AIC)
 ```
 
-Yes.
-
-*Should we keep t \* P?*
-
-```{r small-patches-no-TM-body-size-distribution}
-no_TP = lm(bioarea_density_hedges_d ~
-                  day + 
-                  eco_metaeco_type + 
-                  disturbance +
-                  day * disturbance + 
-                  eco_metaeco_type * disturbance,
-                  data = ds_effect_size_bioarea_density %>%
-                         filter(time_point >= first_time_point) %>%
-                         filter(time_point <= last_time_point) %>%
-                         filter(eco_metaeco_type== "S (S_S)" | eco_metaeco_type == "S (S_L)"))
-
-AIC(full_model, no_TP)
-```
-
-Yes.
-
-*Should we keep t \* D?*
-
-```{r small-patches-no-TD-body-size-distribution}
-no_TD = lm(bioarea_density_hedges_d ~
-                  day + 
-                  eco_metaeco_type + 
-                  disturbance +
-                  day * eco_metaeco_type +
-                  eco_metaeco_type * disturbance,
-                  data = ds_effect_size_bioarea_density %>%
-                         filter(time_point >= first_time_point) %>%
-                         filter(time_point <= last_time_point) %>%
-                         filter(eco_metaeco_type== "S (S_S)" | eco_metaeco_type == "S (S_L)"))
-
-AIC(full_model, no_TD)
-```
-
-No.
-
-Should we keep P \* D?
-
-```{r small-patches-no-MD-body-size-distribution}
-no_PD = lm(bioarea_density_hedges_d ~
-                  day + 
-                  eco_metaeco_type + 
-                  disturbance +
-                  day * eco_metaeco_type,
-                  data = ds_effect_size_bioarea_density %>%
-                         filter(time_point >= first_time_point) %>%
-                         filter(time_point <= last_time_point) %>%
-                         filter(eco_metaeco_type== "S (S_S)" | eco_metaeco_type == "S (S_L)"))
-
-AIC(no_TD, no_PD)
-```
-
-No.
-
-##### Best model
-
-Then our best model is:
+Therefore, the best model is:
 
 $$
-lnRR (bioarea \: density) = t + P + D + t*P
+d = day + patch \: type + day*patch \:type
 $$
+
 
 Let's then do some model diagnostics.
 
-```{r small-t2-t7-best-model-body-size-distribution}
-best_model = no_PD
+```{r eval = FALSE}
 par(mfrow = c(2,3))
 plot(best_model, which = 1:5)
 ```
 
-```{r}
+```{r eval = FALSE}
 R2_full = glance(best_model)$r.squared
-no_patch_type = lm(bioarea_density_hedges_d ~
-                  day + 
-                  disturbance,
-                  data = ds_effect_size_bioarea_density %>%
-                         filter(time_point >= first_time_point) %>%
-                         filter(time_point <= last_time_point) %>%
-                         filter(eco_metaeco_type== "S (S_S)" | eco_metaeco_type == "S (S_L)"))
+no_ecometaeco_type = lm(abundance_hedges_d ~
+                          day,
+                        data = data)
 
-R2_no_P = glance(no_patch_type)$r.squared
-R2_P = R2_full - R2_no_P
+R2_no_ecometaeco_type = glance(no_patch_type)$r.squared
+R2_ecometaeco_type = R2_full - R2_no_ecometaeco_type
 
 R2_full = round(R2_full, digits = 2)
-R2_P = round(R2_P, digits = 2)
+R2_no_ecometaeco_type = round(R2_no_ecometaeco_type, digits = 2)
 ```
 
-\
 The adjusted R squared of the model is `r R2_full` and the adjusted R squared of patch type is `r R2_P` (which includes also its interaction with disturbance).
 
-Single time points: see modelling choices.
+##### Size Class: 3
+
+```{r}
+chosen_size_class = 3
+```
+
+```{r}
+for (disturbance_input in c("low", "high")) {
+  print(
+    ds_classes_averaged %>%
+      filter(size_class_n == chosen_size_class) %>%
+      filter(eco_metaeco_type == "S (S_S)" |
+               eco_metaeco_type == "S (S_L)") %>%
+      filter(disturbance == disturbance_input) %>%
+      ggplot(
+        aes(
+          x = day,
+          y = abundance_hedges_d,
+          group = interaction(day, eco_metaeco_type),
+          color = eco_metaeco_type
+        )
+      ) +
+      geom_point(stat = "summary", fun = "mean") +
+      geom_line(
+        stat = "summary",
+        fun = "mean",
+        aes(group = eco_metaeco_type)
+      ) +
+      scale_color_manual(
+        values = c(colour_different_size, colour_same_size),
+        labels = c("Small connected to large",
+                   "Small connected to small")
+      ) +
+      theme_bw() +
+      theme(
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        #legend.position = c(.95, .2),
+        #legend.justification = c("right", "top"),
+        legend.box.just = "right",
+        legend.margin = margin(6, 6, 6, 6)
+      ) +
+      labs(
+        title = paste0("Disturbance = ", (disturbance_input)),
+        x = 'Day',
+        y = 'Hedge\'s d',
+        color = ""
+      )
+  )
+}
+```
+
+```{r}
+data = ds_classes_averaged %>%
+  filter(
+    eco_metaeco_type == "S (S_S)" |
+      eco_metaeco_type == "S (S_L)",
+    time_point >= first_time_point,
+    time_point <= last_time_point,
+    size_class_n == chosen_size_class
+  ) %>%
+  ungroup() %>%
+  select(eco_metaeco_type, day, disturbance, abundance_hedges_d) 
+
+stepswise_AIC = glmulti(
+  y = abundance_hedges_d ~
+    day +
+    eco_metaeco_type +
+    eco_metaeco_type:day +
+    eco_metaeco_type:disturbance +
+    disturbance +
+    disturbance:day,
+  data = data,
+  fitfunc = lm
+)
+
+summary(stepswise_AIC)
+```
+
+Therefore, the best model is:
+
+##### Size Class: 4
+
+```{r}
+chosen_size_class = 4
+```
+
+```{r}
+for (disturbance_input in c("low", "high")) {
+  print(
+    ds_classes_averaged %>%
+      filter(size_class_n == chosen_size_class) %>%
+      filter(eco_metaeco_type == "S (S_S)" |
+               eco_metaeco_type == "S (S_L)") %>%
+      filter(disturbance == disturbance_input) %>%
+      ggplot(
+        aes(
+          x = day,
+          y = abundance_hedges_d,
+          group = interaction(day, eco_metaeco_type),
+          color = eco_metaeco_type
+        )
+      ) +
+      geom_point(stat = "summary", fun = "mean") +
+      geom_line(
+        stat = "summary",
+        fun = "mean",
+        aes(group = eco_metaeco_type)
+      ) +
+      scale_color_manual(
+        values = c(colour_different_size, colour_same_size),
+        labels = c("Small connected to large",
+                   "Small connected to small")
+      ) +
+      theme_bw() +
+      theme(
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        #legend.position = c(.95, .2),
+        #legend.justification = c("right", "top"),
+        legend.box.just = "right",
+        legend.margin = margin(6, 6, 6, 6)
+      ) +
+      labs(
+        title = paste0("Disturbance = ", (disturbance_input)),
+        x = 'Day',
+        y = 'Hedge\'s d',
+        color = ""
+      )
+  )
+}
+```
+
+```{r}
+data = ds_classes_averaged %>%
+  filter(
+    eco_metaeco_type == "S (S_S)" |
+      eco_metaeco_type == "S (S_L)",
+    time_point >= first_time_point,
+    time_point <= last_time_point,
+    size_class_n == chosen_size_class
+  ) %>%
+  ungroup() %>%
+  select(eco_metaeco_type, day, disturbance, abundance_hedges_d) 
+
+stepswise_AIC = glmulti(
+  y = abundance_hedges_d ~
+    day +
+    eco_metaeco_type +
+    eco_metaeco_type:day +
+    eco_metaeco_type:disturbance +
+    disturbance +
+    disturbance:day,
+  data = data,
+  fitfunc = lm
+)
+
+summary(stepswise_AIC)
+```
+
+Therefore, the best model is:
+
+##### Size Class: 5
+
+```{r}
+chosen_size_class = 5
+```
+
+```{r}
+for (disturbance_input in c("low", "high")) {
+  print(
+    ds_classes_averaged %>%
+      filter(size_class_n == chosen_size_class) %>%
+      filter(eco_metaeco_type == "S (S_S)" |
+               eco_metaeco_type == "S (S_L)") %>%
+      filter(disturbance == disturbance_input) %>%
+      ggplot(
+        aes(
+          x = day,
+          y = abundance_hedges_d,
+          group = interaction(day, eco_metaeco_type),
+          color = eco_metaeco_type
+        )
+      ) +
+      geom_point(stat = "summary", fun = "mean") +
+      geom_line(
+        stat = "summary",
+        fun = "mean",
+        aes(group = eco_metaeco_type)
+      ) +
+      scale_color_manual(
+        values = c(colour_different_size, colour_same_size),
+        labels = c("Small connected to large",
+                   "Small connected to small")
+      ) +
+      theme_bw() +
+      theme(
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        #legend.position = c(.95, .2),
+        #legend.justification = c("right", "top"),
+        legend.box.just = "right",
+        legend.margin = margin(6, 6, 6, 6)
+      ) +
+      labs(
+        title = paste0("Disturbance = ", (disturbance_input)),
+        x = 'Day',
+        y = 'Hedge\'s d',
+        color = ""
+      )
+  )
+}
+```
+
+```{r}
+data = ds_classes_averaged %>%
+  filter(
+    eco_metaeco_type == "S (S_S)" |
+      eco_metaeco_type == "S (S_L)",
+    time_point >= first_time_point,
+    time_point <= last_time_point,
+    size_class_n == chosen_size_class
+  ) %>%
+  ungroup() %>%
+  select(eco_metaeco_type, day, disturbance, abundance_hedges_d) 
+
+stepswise_AIC = glmulti(
+  y = abundance_hedges_d ~
+    day +
+    eco_metaeco_type +
+    eco_metaeco_type:day +
+    eco_metaeco_type:disturbance +
+    disturbance +
+    disturbance:day,
+  data = data,
+  fitfunc = lm
+)
+
+summary(stepswise_AIC)
+```
+
+Therefore, the best model is:
+
+##### Size Class: 6
+
+```{r}
+chosen_size_class = 6
+```
+
+```{r}
+for (disturbance_input in c("low", "high")) {
+  print(
+    ds_classes_averaged %>%
+      filter(size_class_n == chosen_size_class) %>%
+      filter(eco_metaeco_type == "S (S_S)" |
+               eco_metaeco_type == "S (S_L)") %>%
+      filter(disturbance == disturbance_input) %>%
+      ggplot(
+        aes(
+          x = day,
+          y = abundance_hedges_d,
+          group = interaction(day, eco_metaeco_type),
+          color = eco_metaeco_type
+        )
+      ) +
+      geom_point(stat = "summary", fun = "mean") +
+      geom_line(
+        stat = "summary",
+        fun = "mean",
+        aes(group = eco_metaeco_type)
+      ) +
+      scale_color_manual(
+        values = c(colour_different_size, colour_same_size),
+        labels = c("Small connected to large",
+                   "Small connected to small")
+      ) +
+      theme_bw() +
+      theme(
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        #legend.position = c(.95, .2),
+        #legend.justification = c("right", "top"),
+        legend.box.just = "right",
+        legend.margin = margin(6, 6, 6, 6)
+      ) +
+      labs(
+        title = paste0("Disturbance = ", (disturbance_input)),
+        x = 'Day',
+        y = 'Hedge\'s d',
+        color = ""
+      )
+  )
+}
+```
+
+```{r}
+data = ds_classes_averaged %>%
+  filter(
+    eco_metaeco_type == "S (S_S)" |
+      eco_metaeco_type == "S (S_L)",
+    time_point >= first_time_point,
+    time_point <= last_time_point,
+    size_class_n == chosen_size_class
+  ) %>%
+  ungroup() %>%
+  select(eco_metaeco_type, day, disturbance, abundance_hedges_d) 
+
+stepswise_AIC = glmulti(
+  y = abundance_hedges_d ~
+    day +
+    eco_metaeco_type +
+    eco_metaeco_type:day +
+    eco_metaeco_type:disturbance +
+    disturbance +
+    disturbance:day,
+  data = data,
+  fitfunc = lm
+)
+
+summary(stepswise_AIC)
+```
+
+Therefore, the best model is:
+
+##### Size Class: 7
+
+```{r}
+chosen_size_class = 7
+```
+
+```{r}
+for (disturbance_input in c("low", "high")) {
+  print(
+    ds_classes_averaged %>%
+      filter(size_class_n == chosen_size_class) %>%
+      filter(eco_metaeco_type == "S (S_S)" |
+               eco_metaeco_type == "S (S_L)") %>%
+      filter(disturbance == disturbance_input) %>%
+      ggplot(
+        aes(
+          x = day,
+          y = abundance_hedges_d,
+          group = interaction(day, eco_metaeco_type),
+          color = eco_metaeco_type
+        )
+      ) +
+      geom_point(stat = "summary", fun = "mean") +
+      geom_line(
+        stat = "summary",
+        fun = "mean",
+        aes(group = eco_metaeco_type)
+      ) +
+      scale_color_manual(
+        values = c(colour_different_size, colour_same_size),
+        labels = c("Small connected to large",
+                   "Small connected to small")
+      ) +
+      theme_bw() +
+      theme(
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        #legend.position = c(.95, .2),
+        #legend.justification = c("right", "top"),
+        legend.box.just = "right",
+        legend.margin = margin(6, 6, 6, 6)
+      ) +
+      labs(
+        title = paste0("Disturbance = ", (disturbance_input)),
+        x = 'Day',
+        y = 'Hedge\'s d',
+        color = ""
+      )
+  )
+}
+```
+
+```{r}
+data = ds_classes_averaged %>%
+  filter(
+    eco_metaeco_type == "S (S_S)" |
+      eco_metaeco_type == "S (S_L)",
+    time_point >= first_time_point,
+    time_point <= last_time_point,
+    size_class_n == chosen_size_class
+  ) %>%
+  ungroup() %>%
+  select(eco_metaeco_type, day, disturbance, abundance_hedges_d) 
+
+stepswise_AIC = glmulti(
+  y = abundance_hedges_d ~
+    day +
+    eco_metaeco_type +
+    eco_metaeco_type:day +
+    eco_metaeco_type:disturbance +
+    disturbance +
+    disturbance:day,
+  data = data,
+  fitfunc = lm
+)
+
+summary(stepswise_AIC)
+```
+
+Therefore, the best model is:
+
+##### Size Class: 8
+
+```{r}
+chosen_size_class = 8
+```
+
+```{r}
+for (disturbance_input in c("low", "high")) {
+  print(
+    ds_classes_averaged %>%
+      filter(size_class_n == chosen_size_class) %>%
+      filter(eco_metaeco_type == "S (S_S)" |
+               eco_metaeco_type == "S (S_L)") %>%
+      filter(disturbance == disturbance_input) %>%
+      ggplot(
+        aes(
+          x = day,
+          y = abundance_hedges_d,
+          group = interaction(day, eco_metaeco_type),
+          color = eco_metaeco_type
+        )
+      ) +
+      geom_point(stat = "summary", fun = "mean") +
+      geom_line(
+        stat = "summary",
+        fun = "mean",
+        aes(group = eco_metaeco_type)
+      ) +
+      scale_color_manual(
+        values = c(colour_different_size, colour_same_size),
+        labels = c("Small connected to large",
+                   "Small connected to small")
+      ) +
+      theme_bw() +
+      theme(
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        #legend.position = c(.95, .2),
+        #legend.justification = c("right", "top"),
+        legend.box.just = "right",
+        legend.margin = margin(6, 6, 6, 6)
+      ) +
+      labs(
+        title = paste0("Disturbance = ", (disturbance_input)),
+        x = 'Day',
+        y = 'Hedge\'s d',
+        color = ""
+      )
+  )
+}
+```
+
+```{r}
+data = ds_classes_averaged %>%
+  filter(
+    eco_metaeco_type == "S (S_S)" |
+      eco_metaeco_type == "S (S_L)",
+    time_point >= first_time_point,
+    time_point <= last_time_point,
+    size_class_n == chosen_size_class
+  ) %>%
+  ungroup() %>%
+  select(eco_metaeco_type, day, disturbance, abundance_hedges_d) 
+
+stepswise_AIC = glmulti(
+  y = abundance_hedges_d ~
+    day +
+    eco_metaeco_type +
+    eco_metaeco_type:day +
+    eco_metaeco_type:disturbance +
+    disturbance +
+    disturbance:day,
+  data = data,
+  fitfunc = lm
+)
+
+summary(stepswise_AIC)
+```
+
+Therefore, the best model is:
+
+##### Size Class: 9
+
+```{r}
+chosen_size_class = 9
+```
+
+```{r}
+for (disturbance_input in c("low", "high")) {
+  print(
+    ds_classes_averaged %>%
+      filter(size_class_n == chosen_size_class) %>%
+      filter(eco_metaeco_type == "S (S_S)" |
+               eco_metaeco_type == "S (S_L)") %>%
+      filter(disturbance == disturbance_input) %>%
+      ggplot(
+        aes(
+          x = day,
+          y = abundance_hedges_d,
+          group = interaction(day, eco_metaeco_type),
+          color = eco_metaeco_type
+        )
+      ) +
+      geom_point(stat = "summary", fun = "mean") +
+      geom_line(
+        stat = "summary",
+        fun = "mean",
+        aes(group = eco_metaeco_type)
+      ) +
+      scale_color_manual(
+        values = c(colour_different_size, colour_same_size),
+        labels = c("Small connected to large",
+                   "Small connected to small")
+      ) +
+      theme_bw() +
+      theme(
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        #legend.position = c(.95, .2),
+        #legend.justification = c("right", "top"),
+        legend.box.just = "right",
+        legend.margin = margin(6, 6, 6, 6)
+      ) +
+      labs(
+        title = paste0("Disturbance = ", (disturbance_input)),
+        x = 'Day',
+        y = 'Hedge\'s d',
+        color = ""
+      )
+  )
+}
+```
+
+```{r}
+data = ds_classes_averaged %>%
+  filter(
+    eco_metaeco_type == "S (S_S)" |
+      eco_metaeco_type == "S (S_L)",
+    time_point >= first_time_point,
+    time_point <= last_time_point,
+    size_class_n == chosen_size_class
+  ) %>%
+  ungroup() %>%
+  select(eco_metaeco_type, day, disturbance, abundance_hedges_d) 
+
+stepswise_AIC = glmulti(
+  y = abundance_hedges_d ~
+    day +
+    eco_metaeco_type +
+    eco_metaeco_type:day +
+    eco_metaeco_type:disturbance +
+    disturbance +
+    disturbance:day,
+  data = data,
+  fitfunc = lm
+)
+
+summary(stepswise_AIC)
+```
+
+Therefore, the best model is:
+
+##### Size Class: 10
+
+```{r}
+chosen_size_class = 10
+```
+
+```{r}
+for (disturbance_input in c("low", "high")) {
+  print(
+    ds_classes_averaged %>%
+      filter(size_class_n == chosen_size_class) %>%
+      filter(eco_metaeco_type == "S (S_S)" |
+               eco_metaeco_type == "S (S_L)") %>%
+      filter(disturbance == disturbance_input) %>%
+      ggplot(
+        aes(
+          x = day,
+          y = abundance_hedges_d,
+          group = interaction(day, eco_metaeco_type),
+          color = eco_metaeco_type
+        )
+      ) +
+      geom_point(stat = "summary", fun = "mean") +
+      geom_line(
+        stat = "summary",
+        fun = "mean",
+        aes(group = eco_metaeco_type)
+      ) +
+      scale_color_manual(
+        values = c(colour_different_size, colour_same_size),
+        labels = c("Small connected to large",
+                   "Small connected to small")
+      ) +
+      theme_bw() +
+      theme(
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        #legend.position = c(.95, .2),
+        #legend.justification = c("right", "top"),
+        legend.box.just = "right",
+        legend.margin = margin(6, 6, 6, 6)
+      ) +
+      labs(
+        title = paste0("Disturbance = ", (disturbance_input)),
+        x = 'Day',
+        y = 'Hedge\'s d',
+        color = ""
+      )
+  )
+}
+```
+
+```{r}
+data = ds_classes_averaged %>%
+  filter(
+    eco_metaeco_type == "S (S_S)" |
+      eco_metaeco_type == "S (S_L)",
+    time_point >= first_time_point,
+    time_point <= last_time_point,
+    size_class_n == chosen_size_class
+  ) %>%
+  ungroup() %>%
+  select(eco_metaeco_type, day, disturbance, abundance_hedges_d) 
+
+stepswise_AIC = glmulti(
+  y = abundance_hedges_d ~
+    day +
+    eco_metaeco_type +
+    eco_metaeco_type:day +
+    eco_metaeco_type:disturbance +
+    disturbance +
+    disturbance:day,
+  data = data,
+  fitfunc = lm
+)
+
+summary(stepswise_AIC)
+```
+
+Therefore, the best model is:
+
+##### Size Class: 11
+
+```{r}
+chosen_size_class = 11
+```
+
+```{r}
+for (disturbance_input in c("low", "high")) {
+  print(
+    ds_classes_averaged %>%
+      filter(size_class_n == chosen_size_class) %>%
+      filter(eco_metaeco_type == "S (S_S)" |
+               eco_metaeco_type == "S (S_L)") %>%
+      filter(disturbance == disturbance_input) %>%
+      ggplot(
+        aes(
+          x = day,
+          y = abundance_hedges_d,
+          group = interaction(day, eco_metaeco_type),
+          color = eco_metaeco_type
+        )
+      ) +
+      geom_point(stat = "summary", fun = "mean") +
+      geom_line(
+        stat = "summary",
+        fun = "mean",
+        aes(group = eco_metaeco_type)
+      ) +
+      scale_color_manual(
+        values = c(colour_different_size, colour_same_size),
+        labels = c("Small connected to large",
+                   "Small connected to small")
+      ) +
+      theme_bw() +
+      theme(
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        #legend.position = c(.95, .2),
+        #legend.justification = c("right", "top"),
+        legend.box.just = "right",
+        legend.margin = margin(6, 6, 6, 6)
+      ) +
+      labs(
+        title = paste0("Disturbance = ", (disturbance_input)),
+        x = 'Day',
+        y = 'Hedge\'s d',
+        color = ""
+      )
+  )
+}
+```
+
+```{r}
+data = ds_classes_averaged %>%
+  filter(
+    eco_metaeco_type == "S (S_S)" |
+      eco_metaeco_type == "S (S_L)",
+    time_point >= first_time_point,
+    time_point <= last_time_point,
+    size_class_n == chosen_size_class
+  ) %>%
+  ungroup() %>%
+  select(eco_metaeco_type, day, disturbance, abundance_hedges_d) 
+
+stepswise_AIC = glmulti(
+  y = abundance_hedges_d ~
+    day +
+    eco_metaeco_type +
+    eco_metaeco_type:day +
+    eco_metaeco_type:disturbance +
+    disturbance +
+    disturbance:day,
+  data = data,
+  fitfunc = lm
+)
+
+summary(stepswise_AIC)
+```
+
+Therefore, the best model is:
+
+##### Size Class: 12
+
+```{r}
+chosen_size_class = 12
+```
+
+```{r}
+for (disturbance_input in c("low", "high")) {
+  print(
+    ds_classes_averaged %>%
+      filter(size_class_n == chosen_size_class) %>%
+      filter(eco_metaeco_type == "S (S_S)" |
+               eco_metaeco_type == "S (S_L)") %>%
+      filter(disturbance == disturbance_input) %>%
+      ggplot(
+        aes(
+          x = day,
+          y = abundance_hedges_d,
+          group = interaction(day, eco_metaeco_type),
+          color = eco_metaeco_type
+        )
+      ) +
+      geom_point(stat = "summary", fun = "mean") +
+      geom_line(
+        stat = "summary",
+        fun = "mean",
+        aes(group = eco_metaeco_type)
+      ) +
+      scale_color_manual(
+        values = c(colour_different_size, colour_same_size),
+        labels = c("Small connected to large",
+                   "Small connected to small")
+      ) +
+      theme_bw() +
+      theme(
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        #legend.position = c(.95, .2),
+        #legend.justification = c("right", "top"),
+        legend.box.just = "right",
+        legend.margin = margin(6, 6, 6, 6)
+      ) +
+      labs(
+        title = paste0("Disturbance = ", (disturbance_input)),
+        x = 'Day',
+        y = 'Hedge\'s d',
+        color = ""
+      )
+  )
+}
+```
+
+```{r}
+data = ds_classes_averaged %>%
+  filter(
+    eco_metaeco_type == "S (S_S)" |
+      eco_metaeco_type == "S (S_L)",
+    time_point >= first_time_point,
+    time_point <= last_time_point,
+    size_class_n == chosen_size_class
+  ) %>%
+  ungroup() %>%
+  select(eco_metaeco_type, day, disturbance, abundance_hedges_d) 
+
+stepswise_AIC = glmulti(
+  y = abundance_hedges_d ~
+    day +
+    eco_metaeco_type +
+    eco_metaeco_type:day +
+    eco_metaeco_type:disturbance +
+    disturbance +
+    disturbance:day,
+  data = data,
+  fitfunc = lm
+)
+
+summary(stepswise_AIC)
+```
+
+Therefore, the best model is:

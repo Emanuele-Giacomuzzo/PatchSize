@@ -5,8 +5,6 @@ date: "2022-08-18"
 output: html_document
 ---
 
-## Overview {.tabset .tabset-pills}
-
 ### Recap
 
 Meta-ecosystems have been studied looking at meta-ecosystems in which patch size was the same. However, of course, we know that meta-ecosystems are mad out of patches that have different size. To see the effects of patch size on meta-ecosystem properties, we ran a four weeks protist experiment in which different ecosystems were connected through the flow of nutrients. The flow of nutrients resulted from a perturbation of the ecosystems in which a fixed part of the cultures was boiled and then poored into the receiving patch. This had a fixed volume (e.g., small perturbation = 6.75 ml) and was the same across all patch sizes. The experiment design consisted in crossing two disturbances with a small, medium, and large isolated ecosystems and with a small-small, medium-medium, large-large, and small-large meta-ecosystem. We took videos every four days and we create this perturbation and resource flow the day after taking videos. We skipped the perturbation the day after we assembled the experiment so that we would start perturbing it when population densities were already high.
@@ -83,14 +81,17 @@ We had mainly two research questions:
 -   Single time points cannot be computed for effect sizes just because I have a single data point as response variable (e.g., one for S (S_S) at low disturbance at time point = 2). It would have been nice to show the difference in treatments at specific time points visually through confidence intervals. However, the confidence interval cannot be computed for the last two time points because there are too many zeros and their confidence interval computation produces a lot of Nan, Inf, and -Inf. At this point it doesn't make sense to show just a subset of time points and we decided to opt out from the visualisation of confidence intervals.
 
 ### CI
-To calcula the 95% CI of the abundance of different size classes I used the following code: https://stackoverflow.com/questions/35953394/calculating-length-of-95-ci-using-dplyr, whose formula can be found here:
-https://courses.lumenlearning.com/introstats1/chapter/a-single-population-mean-using-the-student-t-distribution/
+
+To calcula the 95% CI of the abundance of different size classes I used the following code: <https://stackoverflow.com/questions/35953394/calculating-length-of-95-ci-using-dplyr>, whose formula can be found here: <https://courses.lumenlearning.com/introstats1/chapter/a-single-population-mean-using-the-student-t-distribution/>
 
 $$
 CI_{lower} = mean - (t \: score * \frac{SD}{sample \: size})
-$$
-$$
+$$ $$
 CI_{upper} = mean + (t \: score * \frac{SD}{sample \: size})
 $$
 
-where the t-score is computed from the student t distribution using the r function qt with percentile = 0.975 and degrees of freedom = sample size - 1. 
+where the t-score is computed from the student t distribution using the r function qt with percentile = 0.975 and degrees of freedom = sample size - 1.
+
+### Model testing
+
+According to this [post on stackoverflow](https://stackoverflow.com/questions/40729701/how-to-use-formula-in-r-to-exclude-main-effect-but-retain-interaction){.uri} it's not possible to build a model where there is the interaction between a factor and a continuous variable with having the factor as main variable. This is because of the function `model.matrix.default`. Therefore, I'm going to test the effects of day by taking off also the interaction term between `day` and `eco_metaeco_type`.

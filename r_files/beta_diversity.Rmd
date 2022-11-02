@@ -56,6 +56,25 @@ for (disturbance_input in c("low", "high")) {
 }
 ```
 
+**Model time series**
+
+```{r eval = FALSE}
+data = ds_regional_biomass %>%
+  filter (metaecosystem_type == "S_L" |
+            metaecosystem_type == "M_M",
+          time_point >= 2)
+
+stepswise_AIC = glmulti(
+  y = total_regional_bioarea ~
+    day * metaecosystem_type * disturbance +
+    (day | system_nr),
+  data = data,
+  fitfunc = lmer
+)
+
+summary(stepswise_AIC)
+```
+
 #### Equally sized patches
 
 ```{r}

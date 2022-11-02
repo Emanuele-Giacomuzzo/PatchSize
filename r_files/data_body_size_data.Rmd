@@ -122,8 +122,19 @@ I am here creating 12 size classes as in @Jacquet2020. However, for some reason 
 nr_of_size_classes = 12
 ```
 
-```{r ds_classes_averaged-create-ds_classes, eval = recompute_analyses}
+```{r}
 largest_size = max(ds_body_size$mean_area)
+```
+
+The logarithm of the largest individual in the experiment was `r log(largest_size)` μm² compared to 11.4 in  @Jacquet2020. 
+
+To see what happens, let's set the largest size to the one of @Jacquet2020. 
+
+```{r}
+largest_size = exp(11.4) 
+```
+
+```{r ds_classes_averaged-create-ds_classes, eval = recompute_analyses}
 size_class_width = largest_size / nr_of_size_classes
 
 size_class_boundaries = seq(from = 0,

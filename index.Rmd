@@ -24,7 +24,7 @@ editor_options:
 ```
 
 ```{r set-up-environment, echo = FALSE}
-knitr::opts_chunk$set(message = FALSE, cache=TRUE)
+knitr::opts_chunk$set(message = FALSE)#, cache=TRUE)
 rm( list = ls(  ) )
 cat( "\014" )
 start_time = Sys.time()
@@ -65,9 +65,15 @@ library("effsize")
 library("boot")
 library("vegan")
 library("betapart")
+library("caret")
+library("leaps")
+library("MASS")
+library("glmulti")
+
 
 conflict_prefer("load", "base")
 conflict_prefer("filter", "dplyr")
+conflict_prefer("select", "dplyr")
 ```
 
 ```{r functions, echo = FALSE}
@@ -105,7 +111,9 @@ colour_MM = "#dd7f42" #Colour of the Medium-Medium meta-ecosystem
 colour_SL = "#438cbe" #Colour of the Small-Large meta-ecosystem 
 ```
 
-# PatchSizePilot {.tabset}
+# {.tabset}
+
+## Overview {.tabset .tabset-pills}
 
 ```{r overview-experiment, child = here("r_files", "overview.Rmd")}
 ```
@@ -226,6 +234,10 @@ colour_SL = "#438cbe" #Colour of the Small-Large meta-ecosystem
 
 ```{r child = here("r_files", "body_size_median_isolated_patches.Rmd")}
 ```
+Quitting from lines NA-690 (/Users/ema/Documents/GitHub/PatchSizePilot/r_files/body_size_distribution_small_patches.Rmd) 
+Error in parse_block(g[-1], g[1], params.src, markdown_mode) : 
+  Duplicate chunk label 'small-patches-full-model-body-size-distribution', which has been used for the chunk:
+model_1 = lm(
 
 ## Evaporation {.tabset .tabset-pills}
 

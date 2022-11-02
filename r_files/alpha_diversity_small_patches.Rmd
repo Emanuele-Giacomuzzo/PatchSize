@@ -9,7 +9,7 @@ editor_options:
 
 #### Small patches {.tabset .tabset-pills}
 
-*Research question: *
+*Research question:*
 
 ##### Plots
 
