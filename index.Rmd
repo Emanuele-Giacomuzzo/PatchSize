@@ -247,6 +247,11 @@ model_1 = lm(
 ```{r child = here("r_files", "evaporation_tests.Rmd")}
 ```
 
+## Video analysis script
+
+```{r child = here("r_files", "video_analysis_script.Rmd")}
+```
+
 ## Running time
 
 ```{r running-time, echo = FALSE, eval = TRUE}
@@ -255,3 +260,4 @@ end_time - start_time
 ```
 
 ## Bibliography
+

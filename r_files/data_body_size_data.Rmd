@@ -10,23 +10,20 @@ editor_options:
 ### Body size (ds_body_size)
 
 ```{r ds_body_size-import-time-points}
-load(here("data", "morphology", "t0.RData"));t0 = morph_mvt
-load(here("data", "morphology", "t1.RData"));t1 = morph_mvt
-load(here("data", "morphology", "t2.RData"));t2 = morph_mvt
-load(here("data", "morphology", "t3.RData"));t3 = morph_mvt
-load(here("data", "morphology", "t4.RData"));t4 = morph_mvt
-load(here("data", "morphology", "t5.RData"));t5 = morph_mvt
-load(here("data", "morphology", "t6.RData"));t6 = morph_mvt
-load(here("data", "morphology", "t7.RData"));t7 = morph_mvt
-rm(morph_mvt)
+load(here("data", "morphology", "t0.RData"));t0 = morph_mvt; rm(morph_mvt)
+load(here("data", "morphology", "t1.RData"));t1 = morph_mvt; rm(morph_mvt)
+load(here("data", "morphology", "t2.RData"));t2 = morph_mvt; rm(morph_mvt)
+load(here("data", "morphology", "t3.RData"));t3 = morph_mvt; rm(morph_mvt)
+load(here("data", "morphology", "t4.RData"));t4 = morph_mvt; rm(morph_mvt)
+load(here("data", "morphology", "t5.RData"));t5 = morph_mvt; rm(morph_mvt)
+load(here("data", "morphology", "t6.RData"));t6 = morph_mvt; rm(morph_mvt)
+load(here("data", "morphology", "t7.RData"));t7 = morph_mvt; rm(morph_mvt)
 ```
 
 ```{r ds_body_size-tidy-time-points}
-#Column: time
 t0$time = NA
 t1$time = NA
 
-#Column: replicate_video
 t0$replicate_video[t0$file == "sample_00001"] = 1
 t0$replicate_video[t0$file == "sample_00002"] = 2
 t0$replicate_video[t0$file == "sample_00003"] = 3
@@ -240,7 +237,7 @@ datatable(ds_classes_averaged,
 
 #### Size classes abundance effect size (ds_classes_averaged_lnRR)
 
-```{r}
+```{r ds_classes_averaged_lnRR}
 ds_classes_averaged$abundance_hedges_d = NA
 
 treatments_and_controls = data.frame(

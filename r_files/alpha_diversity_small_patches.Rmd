@@ -9,10 +9,6 @@ editor_options:
 
 #### Small patches {.tabset .tabset-pills}
 
-*Research question:*
-
-##### Plots
-
 ```{r}
 for (disturbance_input in c("low", "high")) {
   

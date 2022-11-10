@@ -58,25 +58,24 @@ rm(species_ID_t0, species_ID_t1, species_ID_t2, species_ID_t3, species_ID_t4, sp
 
 
 ```{r ds_biomass_abund-tidy-time-points, message = FALSE, echo = TRUE}
-#Column: time
-t0$time = NA
-t1$time = NA
+t2$time = NULL
+t3$time = NULL
+t4$time = NULL
+t5$time = NULL
+t6$time = NULL
+t7$time = NULL
 
-#Column: replicate_video
 t0$replicate_video = 1:12 #In t1 I took 12 videos of a single 
 t1$replicate_video = 1 #In t1 I took only 1 video/culture
 t2$replicate_video = 1 #In t2 I took only 1 video/culture
 t3$replicate_video = 1 #In t3 I took only 1 video/culture
 t4$replicate_video = 1 #In t4 I took only 1 video/culture
 t5$replicate_video = 1 #In t5 I took only 1 video/culture
-t6 = t6 %>%
-  rename(replicate_video = replicate)
-t7 = t7 %>%
-  rename(replicate_video = replicate)
+t6$replicate_video = t6$replicate; t6$replicate = NULL
+t7$replicate_video = t7$replicate; t7$replicate = NULL
 ```
 
-```{r ds_biomass_abund-join-time-points, message = FALSE, echo = TRUE}
-#Elongate t0 (so that it can be merged wiht culture_info)
+```{r elongate-t0-to-merge-with-culture-info}
 number_of_columns_t0 = ncol(t0)
 nr_of_cultures = nrow(culture_info)
 nr_of_videos = nrow(t0)
@@ -84,8 +83,9 @@ nr_of_videos = nrow(t0)
 t0 = t0[rep(row.names(t0), nr_of_cultures),] %>%
    arrange(file) %>%
    mutate(culture_ID = rep(1:nr_of_cultures, times = nr_of_videos))
+```
 
-#Merge time points
+```{r ds_biomass_abund-join-time-points, message = FALSE, echo = TRUE}
 t0 = merge(culture_info,t0, by="culture_ID")
 t1 = merge(culture_info,t1, by = "culture_ID")
 t2 = merge(culture_info,t2, by = "culture_ID")
@@ -234,7 +234,6 @@ ds_biomass_abund_averaged = ds_biomass_abund %>%
                             Tet_presence)
 ```
 
-
 ```{r ds_biomass_abund-datatable}
 datatable(ds_biomass_abund,
           rownames = FALSE,
@@ -243,159 +242,341 @@ datatable(ds_biomass_abund,
                         clear = FALSE))
 ```
 
-#### Patch biomass effect size (`ds_effect_size_bioarea_density)`
+##### Effect sizes
 
-```{r ds_effect_size_bioarea_density-create}
-eco_metaeco_types = unique(ds_biomass_abund$eco_metaeco_type)
-small_patches = c("S", "S (S_S)", "S (S_L)")
-medium_patches = c("M", "M (M_M)")
-large_patches = c("L", "L (L_L)", "L (S_L)")
-
-averaged_bioarea_density = ds_biomass_abund %>%
-  group_by(culture_ID, time_point) %>%
-  mutate(bioarea_per_volume_across_videos = mean(bioarea_per_volume)) %>%
-  ungroup() %>%
-  group_by(disturbance, eco_metaeco_type, time_point) %>%
-  mutate(
-    mean_bioarea_density = mean(bioarea_per_volume_across_videos),
-    sd_bioarea_density = sd(bioarea_per_volume_across_videos),
-    sam_size_bioarea_density = n()
+```{r ds_patches_averaged}
+ds_patches_averaged = ds_biomass_abund %>%
+  group_by(
+    culture_ID,
+    system_nr,
+    disturbance,
+    time_point,
+    day,
+    patch_size,
+    eco_metaeco_type
   ) %>%
-  ungroup() %>%
-  mutate(
-    mean_bioarea_density_isolated = NA,
-    sd_bioarea_density_isolated = NA,
-    sam_size_bioarea_density_isolated = NA
+  summarise(
+    bioarea_per_volume_across_videos = mean(bioarea_per_volume),
+    indiv_per_volume_across_videos = mean(indiv_per_volume),
+    species_richness_across_videos = max(species_richness),
+    Ble_across_videos = mean(Ble),
+    Cep_across_videos = mean(Cep),
+    Col_across_videos = mean(Col),
+    Eug_across_videos = mean(Eug),
+    Eup_across_videos = mean(Eup),
+    Lox_across_videos = mean(Lox),
+    Pau_across_videos = mean(Pau),
+    Pca_across_videos = mean(Pca),
+    Spi_across_videos = mean(Spi),
+    Spi_te_across_videos = mean(Spi_te),
+    Tet_across_videos = mean(Tet)
+  ) %>%
+  group_by(disturbance, eco_metaeco_type, time_point, day) %>%
+  summarise(
+    sample_size = n(),
+    bioarea_per_volume_mean = mean(bioarea_per_volume_across_videos),
+    bioarea_per_volume_sd = sd(bioarea_per_volume_across_videos),
+    indiv_per_volume_mean = mean(indiv_per_volume_across_videos),
+    indiv_per_volume_sd = sd(indiv_per_volume_across_videos),
+    species_richness_mean = mean(species_richness_across_videos),
+    species_richness_sd = sd(species_richness_across_videos),
+    Ble_mean = mean(Ble_across_videos),
+    Ble_sd = sd(Ble_across_videos),
+    Cep_mean = mean(Cep_across_videos),
+    Cep_sd = sd(Cep_across_videos),
+    Col_mean = mean(Col_across_videos),
+    Col_sd = sd(Col_across_videos),
+    Eug_mean = mean(Eug_across_videos),
+    Eug_sd = sd(Eug_across_videos),
+    Eup_mean = mean(Eup_across_videos),
+    Eup_sd = sd(Eup_across_videos),
+    Lox_mean = mean(Lox_across_videos),
+    Lox_sd = sd(Lox_across_videos),
+    Pau_mean = mean(Pau_across_videos),
+    Pau_sd = sd(Pau_across_videos),
+    Pca_mean = mean(Pca_across_videos),
+    Pca_sd = sd(Pca_across_videos),
+    Spi_mean = mean(Spi_across_videos),
+    Spi_sd = sd(Spi_across_videos),
+    Spi_te_mean = mean(Spi_te_across_videos),
+    Spi_te_sd = sd(Spi_te_across_videos),
+    Tet_mean = mean(Tet_across_videos),
+    Tet_sd = sd(Tet_across_videos)
   )
 
+treatments_and_controls = data.frame(
+  treatment = c("S (S_S)", "S (S_L)", "L (L_L)", "L (S_L)"),
+  control = c("S", "S", "L", "L")
+)
+
+n_of_treatments = nrow(treatments_and_controls)
+
+#Initialise the new columns
+ds_patches_averaged %>%
+  mutate(bioarea_per_volume_d = NA,
+         indiv_per_volume_d = NA,
+         species_richness_d = NA,
+         Ble_d = NA,
+         Cep_d = NA,
+         Col_d = NA,
+         Eug_d = NA,
+         Eup_d = NA,
+         Lox_d = NA,
+         Pau_d = NA,
+         Pca_d = NA,
+         Spi_d = NA,
+         Spi_te_d = NA,
+         Tet_d = NA,
+         bioarea_per_volume_lnRR = NA,
+         indiv_per_volume_lnRR = NA,
+         species_richness_lnRR = NA,
+         Ble_lnRR = NA,
+         Cep_lnRR = NA,
+         Col_lnRR = NA,
+         Eug_lnRR = NA,
+         Eup_lnRR = NA,
+         Lox_lnRR = NA,
+         Pau_lnRR = NA,
+         Pca_lnRR = NA,
+         Spi_lnRR = NA,
+         Spi_te_lnRR = NA,
+         Tet_lnRR = NA)
+
+row_n = 0
 for (disturbance_input in c("low", "high")) {
-  for (eco_metaeco_input in eco_metaeco_types) {
+  for (treatment_n in 1:n_of_treatments) {
     for (time_point_input in 0:7) {
-      if (eco_metaeco_input %in% small_patches) {
-        isolated_patch_type = "S"
-      }
-      if (eco_metaeco_input %in% medium_patches) {
-        isolated_patch_type = "M"
-      }
-      if (eco_metaeco_input %in% large_patches) {
-        isolated_patch_type = "L"
-      }
+      row_n = row_n + 1
       
-      control_row = averaged_bioarea_density %>%
+      eco_metaeco_treatment = treatments_and_controls$treatment[treatment_n]
+      treatment = ds_patches_averaged %>%
         filter(
-          eco_metaeco_type == isolated_patch_type,
           disturbance == disturbance_input,
+          eco_metaeco_type == eco_metaeco_treatment,
           time_point == time_point_input
         )
       
-      averaged_bioarea_density$mean_bioarea_density_isolated[averaged_bioarea_density$eco_metaeco_type == eco_metaeco_input &
-                                                               averaged_bioarea_density$disturbance == disturbance_input &
-                                                               averaged_bioarea_density$time_point == time_point_input] =
-        control_row$mean_bioarea_density
+      eco_metaeco_control = treatments_and_controls$control[treatment_n]
+      control = ds_patches_averaged %>%
+        filter(
+          disturbance == disturbance_input,
+          eco_metaeco_type == eco_metaeco_control,
+          time_point == time_point_input
+        )
       
-      averaged_bioarea_density$sd_bioarea_density_isolated[averaged_bioarea_density$eco_metaeco_type == eco_metaeco_input &
-                                                             averaged_bioarea_density$disturbance == disturbance_input &
-                                                             averaged_bioarea_density$time_point == time_point_input] =
-        control_row$sd_bioarea_density
+      ds_patches_averaged$bioarea_per_volume_d[ds_patches_averaged$disturbance == disturbance_input &
+                                                 ds_patches_averaged$eco_metaeco_type == eco_metaeco_treatment &
+                                                 ds_patches_averaged$time_point == time_point_input] = calculate.hedges_d(
+                                                   treatment$bioarea_per_volume_mean,
+                                                   treatment$bioarea_per_volume_sd,
+                                                   treatment$sample_size,
+                                                   control$bioarea_per_volume_mean,
+                                                   control$bioarea_per_volume_sd,
+                                                   control$sample_size
+                                                 )
       
-      averaged_bioarea_density$sam_size_bioarea_density_isolated[averaged_bioarea_density$eco_metaeco_type == eco_metaeco_input &
-                                                                   averaged_bioarea_density$disturbance == disturbance_input &
-                                                                   averaged_bioarea_density$time_point == time_point_input] =
-        control_row$sam_size_bioarea_density
+      ds_patches_averaged$bioarea_per_volume_lnRR[ds_patches_averaged$disturbance == disturbance_input &
+                                                    ds_patches_averaged$eco_metaeco_type == eco_metaeco_treatment &
+                                                    ds_patches_averaged$time_point == time_point_input] = ln(treatment$bioarea_per_volume_mean / control$bioarea_per_volume_mean)
       
+      ds_patches_averaged$indiv_per_volume_d[ds_patches_averaged$disturbance == disturbance_input &
+                                               ds_patches_averaged$eco_metaeco_type == eco_metaeco_treatment &
+                                               ds_patches_averaged$time_point == time_point_input] = calculate.hedges_d(
+                                                 treatment$indiv_per_volume_mean,
+                                                 treatment$indiv_per_volume_sd,
+                                                 treatment$sample_size,
+                                                 control$indiv_per_volume_mean,
+                                                 control$indiv_per_volume_sd,
+                                                 control$sample_size
+                                               )
+      
+      ds_patches_averaged$indiv_per_volume_lnRR[ds_patches_averaged$disturbance == disturbance_input &
+                                                    ds_patches_averaged$eco_metaeco_type == eco_metaeco_treatment &
+                                                    ds_patches_averaged$time_point == time_point_input] = ln(treatment$indiv_per_volume_mean / control$indiv_per_volume_mean)
+      
+      ds_patches_averaged$species_richness_d[ds_patches_averaged$disturbance == disturbance_input &
+                                               ds_patches_averaged$eco_metaeco_type == eco_metaeco_treatment &
+                                               ds_patches_averaged$time_point == time_point_input] = calculate.hedges_d(
+                                                 treatment$species_richness_mean,
+                                                 treatment$species_richness_sd,
+                                                 treatment$sample_size,
+                                                 control$species_richness_mean,
+                                                 control$species_richness_sd,
+                                                 control$sample_size
+                                               )
+      
+      ds_patches_averaged$species_richness_lnRR[ds_patches_averaged$disturbance == disturbance_input &
+                                                  ds_patches_averaged$eco_metaeco_type == eco_metaeco_treatment &
+                                                  ds_patches_averaged$time_point == time_point_input] = ln(treatment$species_richness_mean / control$species_richness_mean)
+      
+      ds_patches_averaged$Ble_d[ds_patches_averaged$disturbance == disturbance_input &
+                                  ds_patches_averaged$eco_metaeco_type == eco_metaeco_treatment &
+                                  ds_patches_averaged$time_point == time_point_input] = calculate.hedges_d(
+                                    treatment$Ble_mean,
+                                    treatment$Ble_sd,
+                                    treatment$sample_size,
+                                    control$Ble_mean,
+                                    control$Ble_sd,
+                                    control$sample_size
+                                  )
+      
+      ds_patches_averaged$Ble_lnRR[ds_patches_averaged$disturbance == disturbance_input &
+                                                    ds_patches_averaged$eco_metaeco_type == eco_metaeco_treatment &
+                                                    ds_patches_averaged$time_point == time_point_input] = ln(treatment$Ble_mean / control$Ble_mean)
+      
+      ds_patches_averaged$Cep_d[ds_patches_averaged$disturbance == disturbance_input &
+                                  ds_patches_averaged$eco_metaeco_type == eco_metaeco_treatment &
+                                  ds_patches_averaged$time_point == time_point_input] = calculate.hedges_d(
+                                    treatment$Cep_mean,
+                                    treatment$Cep_sd,
+                                    treatment$sample_size,
+                                    control$Cep_mean,
+                                    control$Cep_sd,
+                                    control$sample_size
+                                  )
+      
+      ds_patches_averaged$Cep_lnRR[ds_patches_averaged$disturbance == disturbance_input &
+                                                    ds_patches_averaged$eco_metaeco_type == eco_metaeco_treatment &
+                                                    ds_patches_averaged$time_point == time_point_input] = ln(treatment$Cep_mean / control$Cep_mean)
+      
+      ds_patches_averaged$Col_d[ds_patches_averaged$disturbance == disturbance_input &
+                                  ds_patches_averaged$eco_metaeco_type == eco_metaeco_treatment &
+                                  ds_patches_averaged$time_point == time_point_input] = calculate.hedges_d(
+                                    treatment$Col_mean,
+                                    treatment$Col_sd,
+                                    treatment$sample_size,
+                                    control$Col_mean,
+                                    control$Col_sd,
+                                    control$sample_size
+                                  )
+      
+      ds_patches_averaged$Col_lnRR[ds_patches_averaged$disturbance == disturbance_input &
+                                                    ds_patches_averaged$eco_metaeco_type == eco_metaeco_treatment &
+                                                    ds_patches_averaged$time_point == time_point_input] = ln(treatment$Col_mean / control$Col_mean)
+      
+      ds_patches_averaged$Eug_d[ds_patches_averaged$disturbance == disturbance_input &
+                                  ds_patches_averaged$eco_metaeco_type == eco_metaeco_treatment &
+                                  ds_patches_averaged$time_point == time_point_input] = calculate.hedges_d(
+                                    treatment$Eug_mean,
+                                    treatment$Eug_sd,
+                                    treatment$sample_size,
+                                    control$Eug_mean,
+                                    control$Eug_sd,
+                                    control$sample_size
+                                  )
+      
+      ds_patches_averaged$Eug_lnRR[ds_patches_averaged$disturbance == disturbance_input &
+                                                    ds_patches_averaged$eco_metaeco_type == eco_metaeco_treatment &
+                                                    ds_patches_averaged$time_point == time_point_input] = ln(treatment$Eug_mean / control$Eug_mean)
+      
+      ds_patches_averaged$Eup_d[ds_patches_averaged$disturbance == disturbance_input &
+                                  ds_patches_averaged$eco_metaeco_type == eco_metaeco_treatment &
+                                  ds_patches_averaged$time_point == time_point_input] = calculate.hedges_d(
+                                    treatment$Eup_mean,
+                                    treatment$Eup_sd,
+                                    treatment$sample_size,
+                                    control$Eup_mean,
+                                    control$Eup_sd,
+                                    control$sample_size
+                                  )
+      
+      ds_patches_averaged$Eup_lnRR[ds_patches_averaged$disturbance == disturbance_input &
+                                                    ds_patches_averaged$eco_metaeco_type == eco_metaeco_treatment &
+                                                    ds_patches_averaged$time_point == time_point_input] = ln(treatment$Eup_mean / control$Eup_mean)
+      
+      ds_patches_averaged$Lox_d[ds_patches_averaged$disturbance == disturbance_input &
+                                  ds_patches_averaged$eco_metaeco_type == eco_metaeco_treatment &
+                                  ds_patches_averaged$time_point == time_point_input] = calculate.hedges_d(
+                                    treatment$Lox_mean,
+                                    treatment$Lox_sd,
+                                    treatment$sample_size,
+                                    control$Lox_mean,
+                                    control$Lox_sd,
+                                    control$sample_size
+                                  )
+      
+      ds_patches_averaged$Lox_lnRR[ds_patches_averaged$disturbance == disturbance_input &
+                                                    ds_patches_averaged$eco_metaeco_type == eco_metaeco_treatment &
+                                                    ds_patches_averaged$time_point == time_point_input] = ln(treatment$Lox_mean / control$Lox_mean)
+      
+      ds_patches_averaged$Pau_d[ds_patches_averaged$disturbance == disturbance_input &
+                                  ds_patches_averaged$eco_metaeco_type == eco_metaeco_treatment &
+                                  ds_patches_averaged$time_point == time_point_input] = calculate.hedges_d(
+                                    treatment$Pau_mean,
+                                    treatment$Pau_sd,
+                                    treatment$sample_size,
+                                    control$Pau_mean,
+                                    control$Pau_sd,
+                                    control$sample_size
+                                  )
+      
+      ds_patches_averaged$Pau_lnRR[ds_patches_averaged$disturbance == disturbance_input &
+                                                    ds_patches_averaged$eco_metaeco_type == eco_metaeco_treatment &
+                                                    ds_patches_averaged$time_point == time_point_input] = ln(treatment$Pau_mean / control$Pau_mean)
+      
+      ds_patches_averaged$Pca_d[ds_patches_averaged$disturbance == disturbance_input &
+                                  ds_patches_averaged$eco_metaeco_type == eco_metaeco_treatment &
+                                  ds_patches_averaged$time_point == time_point_input] = calculate.hedges_d(
+                                    treatment$Pca_mean,
+                                    treatment$Pca_sd,
+                                    treatment$sample_size,
+                                    control$Pca_mean,
+                                    control$Pca_sd,
+                                    control$sample_size
+                                  )
+      
+      ds_patches_averaged$Pca_lnRR[ds_patches_averaged$disturbance == disturbance_input &
+                                                    ds_patches_averaged$eco_metaeco_type == eco_metaeco_treatment &
+                                                    ds_patches_averaged$time_point == time_point_input] = ln(treatment$Pca_mean / control$Pca_mean)
+      
+      ds_patches_averaged$Spi_d[ds_patches_averaged$disturbance == disturbance_input &
+                                  ds_patches_averaged$eco_metaeco_type == eco_metaeco_treatment &
+                                  ds_patches_averaged$time_point == time_point_input] = calculate.hedges_d(
+                                    treatment$Spi_mean,
+                                    treatment$Spi_sd,
+                                    treatment$sample_size,
+                                    control$Spi_mean,
+                                    control$Spi_sd,
+                                    control$sample_size
+                                  )
+      
+      ds_patches_averaged$Spi_lnRR[ds_patches_averaged$disturbance == disturbance_input &
+                                                    ds_patches_averaged$eco_metaeco_type == eco_metaeco_treatment &
+                                                    ds_patches_averaged$time_point == time_point_input] = ln(treatment$Spi_mean / control$Spi_mean)
+      
+      ds_patches_averaged$Spi_te_d[ds_patches_averaged$disturbance == disturbance_input &
+                                     ds_patches_averaged$eco_metaeco_type == eco_metaeco_treatment &
+                                     ds_patches_averaged$time_point == time_point_input] = calculate.hedges_d(
+                                       treatment$Spi_te_mean,
+                                       treatment$Spi_te_sd,
+                                       treatment$sample_size,
+                                       control$Spi_te_mean,
+                                       control$Spi_te_sd,
+                                       control$sample_size
+                                     )
+      
+      ds_patches_averaged$Spi_te_lnRR[ds_patches_averaged$disturbance == disturbance_input &
+                                                    ds_patches_averaged$eco_metaeco_type == eco_metaeco_treatment &
+                                                    ds_patches_averaged$time_point == time_point_input] = ln(treatment$Spi_te_mean / control$Spi_te_mean)
+      
+      ds_patches_averaged$Tet_d[ds_patches_averaged$disturbance == disturbance_input &
+                                  ds_patches_averaged$eco_metaeco_type == eco_metaeco_treatment &
+                                  ds_patches_averaged$time_point == time_point_input] = calculate.hedges_d(
+                                    treatment$Tet_mean,
+                                    treatment$Tet_sd,
+                                    treatment$sample_size,
+                                    control$Tet_mean,
+                                    control$Tet_sd,
+                                    control$sample_size
+                                  )
+      
+      ds_patches_averaged$Tet_lnRR[ds_patches_averaged$disturbance == disturbance_input &
+                                                    ds_patches_averaged$eco_metaeco_type == eco_metaeco_treatment &
+                                                    ds_patches_averaged$time_point == time_point_input] = ln(treatment$Tet_mean / control$Tet_mean)
     }
   }
 }
-
-ds_effect_size_bioarea_density = averaged_bioarea_density %>%
-  mutate(
-    bioarea_density_hedges_d = calculate.hedges_d(
-      mean_bioarea_density,
-      sd_bioarea_density,
-      sam_size_bioarea_density,
-      mean_bioarea_density_isolated,
-      sd_bioarea_density_isolated,
-      sam_size_bioarea_density_isolated
-    )
-  ) %>%
-  mutate(bioarea_density_lnRR = ln(mean_bioarea_density / mean_bioarea_density_isolated))
 ```
-
-```{r ds_effect_size_bioarea_density-datatable}
-datatable(ds_effect_size_bioarea_density,
-          rownames = FALSE,
-          options = list(scrollX = TRUE),
-          filter = list(position = 'top', 
-                        clear = FALSE))
-```
-
-#### Patch community density effect size (`ds_lnRR_community_density)`
-
-```{r ds_effect_size_community_density-create}
-eco_metaeco_types = unique(ds_biomass_abund$eco_metaeco_type)
-small_patches = c("S", "S (S_S)", "S (S_L)")
-medium_patches = c("M", "M (M_M)")
-large_patches = c("L", "L (L_L)", "L (S_L)")
-
-averaged_community_density = ds_biomass_abund %>%
-        group_by(disturbance, eco_metaeco_type, time_point, culture_ID, patch_size, day) %>%
-        summarise(indiv_per_volume_across_videos = mean(indiv_per_volume)) %>%
-        group_by(disturbance, eco_metaeco_type, time_point, patch_size, day) %>%
-        summarise(mean_community_density = mean(indiv_per_volume_across_videos),
-                  sd_community_density = sd(indiv_per_volume_across_videos),
-                  sam_size_community_density = n())
-
-for (disturbance_input in c("low", "high")){
-  for (eco_metaeco_input in eco_metaeco_types){
-    for (time_point_input in 0:7){
-    
-      if (eco_metaeco_input %in% small_patches){isolated_patch_type = "S"}
-      if (eco_metaeco_input %in% medium_patches){isolated_patch_type = "M"}
-      if (eco_metaeco_input %in% large_patches){isolated_patch_type = "L"}
-      
-      control_row = averaged_community_density %>%
-        filter(eco_metaeco_type == isolated_patch_type,
-               disturbance == disturbance_input,
-               time_point == time_point_input)
-      
-      averaged_community_density$mean_community_density_isolated[
-        averaged_community_density$eco_metaeco_type == eco_metaeco_input &
-        averaged_community_density$disturbance == disturbance_input &
-        averaged_community_density$time_point == time_point_input] = 
-      control_row$mean_community_density
-      
-      averaged_community_density$sd_community_density_isolated[
-        averaged_community_density$eco_metaeco_type == eco_metaeco_input & 
-        averaged_community_density$disturbance == disturbance_input &
-        averaged_community_density$time_point == time_point_input] = 
-      control_row$sd_community_density
-      
-      averaged_community_density$sam_size_community_density_isolated[
-        averaged_community_density$eco_metaeco_type == eco_metaeco_input & 
-        averaged_community_density$disturbance == disturbance_input &
-        averaged_community_density$time_point == time_point_input] = 
-      control_row$sam_size_community_density
-      
-      }}}
-
-ds_effect_size_community_density = averaged_community_density %>%
-  mutate(community_density_hedges_d = calculate.hedges_d(mean_community_density,
-                                       sd_community_density,
-                                       sam_size_community_density,
-                                       mean_community_density_isolated,
-                                       sd_community_density_isolated,
-                                       sam_size_community_density_isolated)) %>%
-  mutate(community_density_lnRR = ln(mean_community_density/mean_community_density_isolated))
-```
-
-```{r ds_effect_size_community_density-datatable}
-datatable(ds_effect_size_community_density,
-          rownames = FALSE,
-          options = list(scrollX = TRUE),
-          filter = list(position = 'top', 
-                        clear = FALSE))
-```
-
 
 #### Meta-ecosystem biomass (`ds_regional_biomass`)
 
@@ -403,8 +584,7 @@ This is the dataset of the regional biomass of different meta-ecosystems. It con
 
 ```{r ds_regional_biomass-create-dataset}
 ds_regional_biomass = ds_biomass_abund %>%
-  filter(metaecosystem == "yes",
-         ! system_nr %in% metaecosystems_to_take_off) %>%
+  filter(metaecosystem == "yes",!system_nr %in% metaecosystems_to_take_off) %>%
   group_by(culture_ID, time_point) %>%
   mutate(bioarea_per_volume_video_averaged = mean(bioarea_per_volume)) %>%
   ungroup() %>%

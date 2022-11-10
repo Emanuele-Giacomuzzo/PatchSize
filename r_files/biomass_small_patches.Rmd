@@ -115,14 +115,14 @@ for (disturbance_input in c("low", "high")) {
 ```{r small-patches-lnRR-plots}
 for (disturbance_input in c("low", "high")) {
   print(
-    ds_effect_size_bioarea_density %>%
+    ds_patches_averaged %>%
       filter(!time_point == 0) %>% #At time point 0 all cultures were the same
       filter(disturbance == disturbance_input) %>%
       filter(eco_metaeco_type == "S (S_S)" |
                eco_metaeco_type == "S (S_L)") %>%
       ggplot(aes(
         x = day,
-        y = bioarea_density_lnRR,
+        y = bioarea_per_volume_d,
         color = eco_metaeco_type
       )) +
       geom_point(position = position_dodge(0.5)) +
@@ -186,14 +186,14 @@ last_time_point = 7
 ```
 
 ```{r small-patches-full-model}
-full_model = lm(bioarea_density_hedges_d ~                  
+full_model = lm(bioarea_per_volume_d ~                  
                   day + 
                   eco_metaeco_type + 
                   disturbance +
                   day : eco_metaeco_type +
                   day : disturbance + 
                   eco_metaeco_type : disturbance,
-                  data = ds_effect_size_bioarea_density %>%
+                  data = ds_patches_averaged %>%
                          filter(time_point >= first_time_point) %>%
                          filter(time_point <= last_time_point) %>%
                          filter(eco_metaeco_type== "S (S_S)" | eco_metaeco_type == "S (S_L)"))
@@ -202,13 +202,13 @@ full_model = lm(bioarea_density_hedges_d ~
 *Should we keep P?*
 
 ```{r small-patches-no_P}
-no_P = lm(bioarea_density_hedges_d ~               
+no_P = lm(bioarea_per_volume_d ~               
                   day + 
                   disturbance +
                   day : eco_metaeco_type +
                   day : disturbance + 
                   eco_metaeco_type : disturbance,
-                  data = ds_effect_size_bioarea_density %>%
+                  data = ds_patches_averaged %>%
                          filter(time_point >= first_time_point) %>%
                          filter(time_point <= last_time_point) %>%
                          filter(eco_metaeco_type== "S (S_S)" | eco_metaeco_type == "S (S_L)"))
@@ -221,13 +221,13 @@ Yes.
 *Should we keep D?*
 
 ```{r}
-no_D = lm(bioarea_density_hedges_d ~                  
+no_D = lm(bioarea_per_volume_d ~                  
                   day + 
                   eco_metaeco_type + 
                   day : eco_metaeco_type +
                   day : disturbance + 
                   eco_metaeco_type : disturbance,
-                  data = ds_effect_size_bioarea_density %>%
+                  data = ds_patches_averaged %>%
                          filter(time_point >= first_time_point) %>%
                          filter(time_point <= last_time_point) %>%
                          filter(eco_metaeco_type== "S (S_S)" | eco_metaeco_type == "S (S_L)"))
@@ -240,13 +240,13 @@ Yes.
 *Should we keep t \* P?*
 
 ```{r small-patches-no-TM}
-no_TP = lm(bioarea_density_hedges_d ~
+no_TP = lm(bioarea_per_volume_d ~
                   day + 
                   eco_metaeco_type + 
                   disturbance +
                   day : disturbance + 
                   eco_metaeco_type : disturbance,
-                  data = ds_effect_size_bioarea_density %>%
+                  data = ds_patches_averaged %>%
                          filter(time_point >= first_time_point) %>%
                          filter(time_point <= last_time_point) %>%
                          filter(eco_metaeco_type== "S (S_S)" | eco_metaeco_type == "S (S_L)"))
@@ -259,13 +259,13 @@ Yes.
 *Should we keep t \* D?*
 
 ```{r small-patches-no-TD}
-no_TD = lm(bioarea_density_hedges_d ~
+no_TD = lm(bioarea_per_volume_d ~
                   day + 
                   eco_metaeco_type + 
                   disturbance +
                   day : eco_metaeco_type +
                   eco_metaeco_type : disturbance,
-                  data = ds_effect_size_bioarea_density %>%
+                  data = ds_patches_averaged %>%
                          filter(time_point >= first_time_point) %>%
                          filter(time_point <= last_time_point) %>%
                          filter(eco_metaeco_type== "S (S_S)" | eco_metaeco_type == "S (S_L)"))
@@ -278,12 +278,12 @@ No.
 Should we keep P \* D?
 
 ```{r small-patches-no-MD}
-no_PD = lm(bioarea_density_hedges_d ~
+no_PD = lm(bioarea_per_volume_d ~
                   day + 
                   eco_metaeco_type + 
                   disturbance +
                   day : eco_metaeco_type,
-                  data = ds_effect_size_bioarea_density %>%
+                  data = ds_patches_averaged %>%
                          filter(time_point >= first_time_point) %>%
                          filter(time_point <= last_time_point) %>%
                          filter(eco_metaeco_type== "S (S_S)" | eco_metaeco_type == "S (S_L)"))
@@ -311,10 +311,10 @@ plot(best_model, which = 1:5)
 
 ```{r}
 R2_full = glance(best_model)$r.squared
-no_patch_type = lm(bioarea_density_hedges_d ~
+no_patch_type = lm(bioarea_per_volume_d ~
                   day + 
                   disturbance,
-                  data = ds_effect_size_bioarea_density %>%
+                  data = ds_patches_averaged %>%
                          filter(time_point >= first_time_point) %>%
                          filter(time_point <= last_time_point) %>%
                          filter(eco_metaeco_type== "S (S_S)" | eco_metaeco_type == "S (S_L)"))

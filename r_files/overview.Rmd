@@ -86,12 +86,18 @@ To calcula the 95% CI of the abundance of different size classes I used the foll
 
 $$
 CI_{lower} = mean - (t \: score * \frac{SD}{sample \: size})
-$$ $$
+$$
+$$
 CI_{upper} = mean + (t \: score * \frac{SD}{sample \: size})
 $$
 
 where the t-score is computed from the student t distribution using the r function qt with percentile = 0.975 and degrees of freedom = sample size - 1.
 
+To calculate the CI of Hedge's d: ... 
+
 ### Model testing
 
 According to this [post on stackoverflow](https://stackoverflow.com/questions/40729701/how-to-use-formula-in-r-to-exclude-main-effect-but-retain-interaction){.uri} it's not possible to build a model where there is the interaction between a factor and a continuous variable with having the factor as main variable. This is because of the function `model.matrix.default`. Therefore, I'm going to test the effects of day by taking off also the interaction term between `day` and `eco_metaeco_type`.
+
+### Size distribution 
+I thought I might look into how to better choose the nr of size classes. In @Loder1997 it says that they have no idea how to do that. I will then just look into how to best choose the number of histragram plots. 

@@ -1181,34 +1181,7 @@ for (disturbance_input in c("low", "high")) {
 }
 ```
 
-```{r}
-data = ds_classes_averaged %>%
-  filter(
-    eco_metaeco_type == "S (S_S)" |
-      eco_metaeco_type == "S (S_L)",
-    time_point >= first_time_point,
-    time_point <= last_time_point,
-    size_class_n == chosen_size_class
-  ) %>%
-  ungroup() %>%
-  select(eco_metaeco_type, day, disturbance, abundance_hedges_d) 
-
-stepswise_AIC = glmulti(
-  y = abundance_hedges_d ~
-    day +
-    eco_metaeco_type +
-    eco_metaeco_type:day +
-    eco_metaeco_type:disturbance +
-    disturbance +
-    disturbance:day,
-  data = data,
-  fitfunc = lm
-)
-
-summary(stepswise_AIC)
-```
-
-Therefore, the best model is:
+This cannot be run because there are just too few data points. 
 
 ##### Size Class: 12
 
@@ -1262,31 +1235,4 @@ for (disturbance_input in c("low", "high")) {
 }
 ```
 
-```{r}
-data = ds_classes_averaged %>%
-  filter(
-    eco_metaeco_type == "S (S_S)" |
-      eco_metaeco_type == "S (S_L)",
-    time_point >= first_time_point,
-    time_point <= last_time_point,
-    size_class_n == chosen_size_class
-  ) %>%
-  ungroup() %>%
-  select(eco_metaeco_type, day, disturbance, abundance_hedges_d) 
-
-stepswise_AIC = glmulti(
-  y = abundance_hedges_d ~
-    day +
-    eco_metaeco_type +
-    eco_metaeco_type:day +
-    eco_metaeco_type:disturbance +
-    disturbance +
-    disturbance:day,
-  data = data,
-  fitfunc = lm
-)
-
-summary(stepswise_AIC)
-```
-
-Therefore, the best model is:
+This cannot be run because there are just too few data points.  
