@@ -104,6 +104,8 @@ ds_body_size = ds_body_size %>%
 ```
 
 ```{r ds_body_size-datatable}
+saveRDS(ds_body_size, file = here("results", "ds_body_size.RData"))
+
 datatable(ds_body_size,
           rownames = FALSE,
           options = list(scrollX = TRUE),
@@ -228,6 +230,8 @@ ds_classes_averaged = ds_classes %>%
 ```
 
 ```{r ds_classes_averaged-datatable}
+saveRDS(ds_classes_averaged, file = here("results", "ds_classes_averaged.RData"))
+
 datatable(ds_classes_averaged,
           rownames = FALSE,
           options = list(scrollX = TRUE),
@@ -306,6 +310,8 @@ ds_median_body_size = ds_body_size %>%
 ```
 
 ```{r ds_median_body_size-datatable}
+saveRDS(ds_median_body_size, file = here("results", "ds_median_body_size.RData"))
+
 datatable(ds_median_body_size,
           rownames = FALSE,
           options = list(scrollX = TRUE),

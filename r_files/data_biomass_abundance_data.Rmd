@@ -235,6 +235,8 @@ ds_biomass_abund_averaged = ds_biomass_abund %>%
 ```
 
 ```{r ds_biomass_abund-datatable}
+saveRDS(ds_biomass_abund, file = here("results", "ds_biomass_abund.RData"))
+
 datatable(ds_biomass_abund,
           rownames = FALSE,
           options = list(scrollX = TRUE),
@@ -578,6 +580,16 @@ for (disturbance_input in c("low", "high")) {
 }
 ```
 
+```{r ds_patches_averaged-datatable}
+saveRDS(ds_patches_averaged, file = here("results", "ds_patches_averaged.RData"))
+
+datatable(ds_patches_averaged,
+          rownames = FALSE,
+          options = list(scrollX = TRUE),
+          filter = list(position = 'top', 
+                        clear = FALSE))
+```
+
 #### Meta-ecosystem biomass (`ds_regional_biomass`)
 
 This is the dataset of the regional biomass of different meta-ecosystems. It contains also the regional biomass of the combination of a small isolated and a large isolated patch (`S_L_from_isolated`).
@@ -716,6 +728,8 @@ for (system_nr_input in 16:70) {
 ```
 
 ```{r ds_regional_biomass-datatable}
+saveRDS(ds_regional_biomass, file = here("results", "ds_regional_biomass.RData"))
+
 datatable(ds_regional_biomass,
           rownames = FALSE,
           options = list(scrollX = TRUE),

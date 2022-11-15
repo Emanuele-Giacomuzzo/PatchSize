@@ -76,6 +76,19 @@ conflict_prefer("filter", "dplyr")
 conflict_prefer("select", "dplyr")
 ```
 
+```{r include = FALSE}
+#This is here just to import all the datasets quickly when workin in r markdown. 
+culture_info = read.csv(here("data", "PatchSizePilot_culture_info.csv"), header = TRUE)
+ds_biomass_abund = readRDS(here("results", "ds_biomass_abund.RData"))
+ds_patches_averaged = readRDS(here("results", "ds_patches_averaged.RData"))
+ds_regional_biomass = readRDS(here("results", "ds_regional_biomass.RData"))
+ds_body_size = readRDS(here("results", "ds_body_size.RData"))
+ds_classes_averaged = readRDS(here("results", "ds_classes_averaged.RData"))
+ds_median_body_size = readRDS(here("results", "ds_median_body_size.RData"))
+ds_lnRR_median_body_size = readRDS(here("results", "ds_lnRR_median_body_size.RData"))
+```
+
+
 ```{r functions, echo = FALSE}
 source(here("r_files", "functions", "calculate.hedges_d.R"))
 ```
@@ -88,6 +101,7 @@ gif_figures = TRUE
 publication_width = 12
 publication_height = 12
 publication_unit = "cm"
+presentation_size = 20
 
 nr_videos = c(12,1,1,1,1,1,2,2)
 last_time_point = 7

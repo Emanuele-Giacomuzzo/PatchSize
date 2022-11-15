@@ -16,6 +16,8 @@ culture_info = read.csv(here("data", "PatchSizePilot_culture_info.csv"), header 
 ```
 
 ```{r}
+
+
 datatable(culture_info[,1:10],
           rownames = FALSE,
           options = list(scrollX = TRUE),

@@ -119,6 +119,7 @@ for (disturbance_input in c("low", "high")) {
       labs(caption = "Vertical grey line: first perturbation")
   )
 }
+
 ```
 
 ```{r median-body-size-small-patches-lnRR-plots}
