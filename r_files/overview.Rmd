@@ -82,22 +82,54 @@ We had mainly two research questions:
 
 ### CI
 
+#### 95% confidence interval of means
+
 To calcula the 95% CI of the abundance of different size classes I used the following code: <https://stackoverflow.com/questions/35953394/calculating-length-of-95-ci-using-dplyr>, whose formula can be found here: <https://courses.lumenlearning.com/introstats1/chapter/a-single-population-mean-using-the-student-t-distribution/>
 
 $$
 CI_{lower} = mean - (t \: score * \frac{SD}{sample \: size})
-$$
-$$
+$$ $$
 CI_{upper} = mean + (t \: score * \frac{SD}{sample \: size})
 $$
 
 where the t-score is computed from the student t distribution using the r function qt with percentile = 0.975 and degrees of freedom = sample size - 1.
 
-To calculate the CI of Hedge's d: ... 
+#### 95% confidence interval of Hedge's d (aka Hedge's g)
+
+Hedge's d ± 95 CI = d ± 1.96\*SE
+
+See [HEDGES G CONFIDENCE LIMIT (nist.gov)](https://www.itl.nist.gov/div898/software/dataplot/refman1/auxillar/hedges_g.htm), [meta analysis - Calculate effect size and confidence interval from published means±std - Cross Validated (stackexchange.com)](https://stats.stackexchange.com/questions/460367/calculate-effect-size-and-confidence-interval-from-published-means%C2%B1std).
+
+$$
+SE_g = \sqrt{V_g}
+$$
+
+$$
+V_g = J^2 * V_d
+$$
+
+$$
+J = 1 - \frac{3}{4df-1}
+$$
+
+$$
+V_d = \frac{n1 + n2}{n_1 n_2} + \frac{d^2}{2(n_1 + n_2)}
+$$
+
+d = Hedge's d
+
+n1 = sample size of group 1
+
+n2 = sample size of group 2
+
+df = degrees of freedom (df = n1 + n2 - 2)
+
+See <https://www.meta-analysis.com/downloads/Meta-analysis%20Effect%20sizes%20based%20on%20means.pdf>
 
 ### Model testing
 
 According to this [post on stackoverflow](https://stackoverflow.com/questions/40729701/how-to-use-formula-in-r-to-exclude-main-effect-but-retain-interaction){.uri} it's not possible to build a model where there is the interaction between a factor and a continuous variable with having the factor as main variable. This is because of the function `model.matrix.default`. Therefore, I'm going to test the effects of day by taking off also the interaction term between `day` and `eco_metaeco_type`.
 
-### Size distribution 
-I thought I might look into how to better choose the nr of size classes. In @Loder1997 it says that they have no idea how to do that. I will then just look into how to best choose the number of histragram plots. 
+### Size distribution
+
+I thought I might look into how to better choose the nr of size classes. In @Loder1997 it says that they have no idea how to do that. I will then just look into how to best choose the number of histragram plots.

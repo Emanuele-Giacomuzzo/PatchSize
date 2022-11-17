@@ -69,7 +69,7 @@ library("caret")
 library("leaps")
 library("MASS")
 library("glmulti")
-
+library("metafor")
 
 conflict_prefer("load", "base")
 conflict_prefer("filter", "dplyr")
