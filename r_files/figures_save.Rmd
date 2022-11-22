@@ -2,36 +2,81 @@
 title: "Save Nice Figures"
 output: html_document
 date: "2022-11-01"
+editor_options: 
+  chunk_output_type: console
 ---
 
 ```{r save-figures, echo  = FALSE}
 small_patches_presentation = ds_biomass_abund %>%
-          filter(disturbance == disturbance_input) %>%
-          filter(patch_size == "S") %>%
-          ggplot(aes(x = day,
-                     y = bioarea_per_volume,
-                     group = interaction(day,eco_metaeco_type),
-                     fill = eco_metaeco_type)) +
-          geom_boxplot() +
-          labs(x = "Day",
-               y = "Local Bioarea (µm²/μl)",
-               fill = "") +
-          theme_bw() +
-          theme(panel.grid.major = element_blank(),
-                panel.grid.minor = element_blank(),
-                legend.position = c(.95, .95),
-                legend.justification = c("right", "top"),
-        legend.box.just = "right",
-        legend.margin = margin(6, 6, 6, 6),
-        text = element_text(size = 15)) +
-          scale_fill_discrete(labels = c("Small isolated",
-                                         "Small connected to large",
-                                         "Small connected to small")) +
-          geom_vline(xintercept = first_perturbation_day + 0.7,
-                     linetype = "dotdash",
-                     color = "grey",
-                     size = 0.7) +
-  scale_x_continuous(breaks = c(0, 4, 8, 12, 16, 20, 24, 28))
+  group_by(culture_ID, eco_metaeco_type, patch_size, disturbance, day) %>%
+  summarise(bioarea_per_volume = mean(bioarea_per_volume)) %>%
+  filter(disturbance == disturbance_input,
+         patch_size == "S") %>%
+  ggplot(aes(
+    x = day,
+    y = bioarea_per_volume,
+    group = interaction(day, eco_metaeco_type),
+    fill = eco_metaeco_type
+  )) +
+  geom_boxplot() +
+  labs(x = "Day",
+       y = "Local Bioarea (µm²/μl)",
+       fill = "") +
+  theme_bw() +
+  theme(
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    legend.position = c(.95, .95),
+    legend.justification = c("right", "top"),
+    legend.box.just = "right",
+    legend.margin = margin(6, 6, 6, 6),
+    text = element_text(size = 15)
+  ) +
+  scale_fill_manual(values = c(colour_isolated, colour_different_size, colour_same_size),
+                    labels = c(
+    "Small isolated",
+    "Small connected to large",
+    "Small connected to small"
+  )) +
+  scale_x_continuous(breaks = c(0, 4, 8, 12, 16, 20, 24, 28)) +
+  geom_vline(
+    xintercept = first_perturbation_day + 0.7,
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_vline(
+    xintercept = first_perturbation_day+4 + 0.7,
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_vline(
+    xintercept = first_perturbation_day+8 + 0.7,
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_vline(
+    xintercept = first_perturbation_day+12 + 0.7,
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_vline(
+    xintercept = first_perturbation_day+16 + 0.7,
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_vline(
+    xintercept = first_perturbation_day+20 + 0.7,
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  )
+
+small_patches_presentation
 
 ggsave(here("results", "biomass", "presentation_small_patches.jpg"), 
        small_patches_presentation + labs(title = ""), 
@@ -67,8 +112,9 @@ metaecos_presentation = ds_regional_biomass %>%
                      color = "grey", 
                      size = 0.7) +
   scale_x_continuous(breaks = c(0, 4, 8, 12, 16, 20, 24, 28))
-  
 
+metaecos_presentation
+  
 ggsave(here("results", "biomass", "presentation_metaecos.jpg"), 
        metaecos_presentation + labs(title = ""), 
        units = publication_unit,

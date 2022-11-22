@@ -1,0 +1,81 @@
+---
+title: "Median Body Size Effect Size"
+output: html_document
+date: "2022-11-22"
+---
+
+#### Median body size effect size (`ds_lnRR_median_body_size)`
+
+```{r ds_lnRR_median_body_size-create, eval = recompute_analyses}
+eco_metaeco_types = unique(culture_info$eco_metaeco_type)
+single_row = NULL
+row_n = 0
+
+for (disturbance_input in c("low", "high")) {
+  for (eco_metaeco_input in eco_metaeco_types) {
+    for (time_point_input in 0:7) {
+      row_n = row_n + 1
+      
+      single_row[[row_n]] = ds_median_body_size %>%
+        filter(
+          eco_metaeco_type == eco_metaeco_input,
+          disturbance == disturbance_input,
+          time_point == time_point_input
+        ) %>%
+        group_by(culture_ID, time_point) %>%
+        mutate(median_body_size_across_videos = mean(median_body_size)) %>%
+        ungroup() %>%
+        group_by(eco_metaeco_type,
+                 patch_size,
+                 disturbance,
+                 time_point,
+                 day) %>%
+        summarise(mean_median_body_size = mean(median_body_size_across_videos))
+      
+    }
+  }
+}
+
+ds_lnRR_median_body_size = single_row %>%
+  bind_rows()
+
+for (patch_size_input in c("S", "M", "L")) {
+  for (disturbance_input in c("low", "high")) {
+    for (time_point_input in 0:7) {
+      averaged_value_isolated_control = ds_lnRR_median_body_size %>%
+        filter(
+          eco_metaeco_type == patch_size_input,
+          disturbance == disturbance_input,
+          time_point == time_point_input
+        ) %>%
+        ungroup() %>%
+        select(mean_median_body_size)
+      
+      ds_lnRR_median_body_size$isolated_control[ds_lnRR_median_body_size$patch_size == patch_size_input &
+                                                  ds_lnRR_median_body_size$disturbance == disturbance_input &
+                                                  ds_lnRR_median_body_size$time_point == time_point_input] =
+        averaged_value_isolated_control
+      
+    }
+  }
+}
+
+ds_lnRR_median_body_size = ds_lnRR_median_body_size %>%
+  mutate(isolated_control = as.numeric(isolated_control)) %>%
+  mutate(lnRR_median_body_size = ln(mean_median_body_size / isolated_control))
+
+saveRDS(ds_lnRR_median_body_size,
+        file = here("results", "ds_lnRR_median_body_size.RData"))
+```
+
+```{r}
+ds_lnRR_median_body_size = readRDS(here("results", "ds_lnRR_median_body_size.RData"))
+```
+
+```{r ds_lnRR_median_body_size-datable}
+datatable(ds_lnRR_median_body_size,
+          rownames = FALSE,
+          options = list(scrollX = TRUE),
+          filter = list(position = 'top', 
+                        clear = FALSE))
+```

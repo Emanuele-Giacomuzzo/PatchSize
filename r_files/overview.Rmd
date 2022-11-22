@@ -69,6 +69,14 @@ We had mainly two research questions:
 
 ### Modeling choices
 
+-   Interactions (here refers to how biomass changes across different patch types, but it's the same for meta-ecosystem type and other response variables)
+
+    -   Day \* Patch Type = biomass changes in different ways in different ecosystem types. Yes.
+
+    -   Day \* Disturbance = disturbance has a different effect at different days. Yes.
+
+    -   Patch Type \* Disturbance = disturbance has a different effect on different patch types. Yes.
+
 -   I am going to select the best model according to AIC. @Halsey2019 suggests this approach instead of p values. P-values are not a reliable way of choosing a model because:
 
     -   My sample size is small, producing larger p-values

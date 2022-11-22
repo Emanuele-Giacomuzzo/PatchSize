@@ -1,0 +1,152 @@
+---
+title: "Data Regional Biomass"
+output: html_document
+date: "2022-11-22"
+---
+
+### Meta-ecosystem biomass (`ds_regional_biomass`)
+
+This is the dataset of the regional biomass of different meta-ecosystems. It contains also the regional biomass of the combination of a small isolated and a large isolated patch (`S_L_from_isolated`).
+
+```{r ds_regional_biomass-create-dataset}
+ds_regional_biomass = ds_biomass_abund %>%
+  filter(metaecosystem == "yes",!system_nr %in% metaecosystems_to_take_off) %>%
+  group_by(culture_ID, time_point) %>%
+  mutate(bioarea_per_volume_video_averaged = mean(bioarea_per_volume)) %>%
+  ungroup() %>%
+  mutate(total_patch_bioarea = bioarea_per_volume_video_averaged * patch_size_volume) %>%
+  group_by(system_nr, time_point) %>%
+  mutate(total_regional_bioarea = sum(total_patch_bioarea)) %>%
+  ungroup()
+```
+
+```{r ds_regional_biomass-create-SL_SL_from_isolated, message=FALSE, results='hide', eval = recompute_analyses}
+isolated_S_and_L = ds_biomass_abund %>%
+  filter(eco_metaeco_type == "S" | eco_metaeco_type == "L") %>%
+  group_by(system_nr, time_point) %>%
+  mutate(bioarea_per_volume_across_videos = mean(bioarea_per_volume)) %>%
+  ungroup()
+
+isolated_S_low = isolated_S_and_L %>%
+  filter(eco_metaeco_type == "S",
+         disturbance == "low")
+isolated_L_low = isolated_S_and_L %>%
+  filter(eco_metaeco_type == "L",
+         disturbance == "low")
+isolated_S_high = isolated_S_and_L %>%
+  filter(eco_metaeco_type == "S",
+         disturbance == "high")
+isolated_L_high = isolated_S_and_L %>%
+  filter(eco_metaeco_type == "L",
+         disturbance == "high")
+
+S_low_system_nrs = unique(isolated_S_low$system_nr)
+S_high_system_nrs = unique(isolated_S_high$system_nr)
+L_low_system_nrs = unique(isolated_L_low$system_nr)
+L_high_system_nrs = unique(isolated_L_high$system_nr)
+
+low_system_nrs_combination = expand.grid(S_low_system_nrs, L_low_system_nrs) %>%
+  mutate(disturbance = "low")
+high_system_nrs_combination = expand.grid(S_high_system_nrs, L_high_system_nrs) %>%
+  mutate(disturbance = "high")
+system_nr_combinations = rbind(low_system_nrs_combination, high_system_nrs_combination) %>%
+  rename(S_system_nr = Var1) %>%
+  rename(L_system_nr = Var2)
+
+number_of_combinations = nrow(system_nr_combinations)
+SL_from_isolated_all_combinations = NULL
+for (pair in 1:number_of_combinations){
+  
+  SL_from_isolated_one_combination = 
+    ds_biomass_abund %>%
+    filter(system_nr %in% system_nr_combinations[pair,]) %>%
+    group_by(disturbance, day, time_point, system_nr) %>%
+    summarise(regional_bioarea_across_videos = mean(bioarea_per_volume)) %>%
+    group_by(disturbance, day, time_point) %>%
+    summarise(total_regional_bioarea = sum(regional_bioarea_across_videos)) %>%
+    mutate(system_nr = 1000 + pair) %>%
+    mutate(metaecosystem_type = "S_L_from_isolated")
+  
+  SL_from_isolated_all_combinations[[pair]] = SL_from_isolated_one_combination}
+
+
+SL_from_isolated_all_combinations_together = NULL
+for (combination in 1:number_of_combinations){
+ 
+  SL_from_isolated_all_combinations_together = 
+    rbind(SL_from_isolated_all_combinations_together,
+          SL_from_isolated_all_combinations[[pair]])}
+
+ds_regional_biomass = rbind(ds_regional_biomass, SL_from_isolated_all_combinations_together)
+
+saveRDS(ds_regional_biomass, file = here("results", "ds_regional_biomass.RData"))
+```
+
+```{r ds_regional_biomass-read-after-heavy-computation}
+ds_regional_biomass = readRDS(here("results", "ds_regional_biomass.RData"))
+```
+
+```{r ds_regional_biomass-calculate-beta-diversity}
+ds_for_beta_diversity = ds_biomass_abund %>%
+  filter(!metaecosystem_type == "S_L from isolated") %>%
+  group_by(culture_ID, system_nr, time_point) %>%
+  summarise(
+    Ble = mean(Ble),
+    Cep = mean(Cep),
+    Col = mean(Col),
+    Eug = mean(Eug),
+    Eup = mean(Eup),
+    Lox = mean(Lox),
+    Pau = mean(Pau),
+    Pca = mean(Pca),
+    Spi = mean(Spi),
+    Spi_te = mean(Spi_te),
+    Tet = mean(Tet)
+  )
+
+ds_regional_biomass$beta_diversity = NA
+ds_regional_biomass$gamma_diversity = NA
+
+for (system_nr_input in 16:70) {
+  for (time_point_input in 0:(n_time_points-1)) {
+    
+    if(system_nr_input %in% metaecosystems_to_take_off) next
+    
+    abundances_two_patches = ds_for_beta_diversity %>%
+      filter(system_nr == system_nr_input,
+             time_point == time_point_input) %>%
+      ungroup() %>%
+      select(Ble:Tet)
+    
+    pres_abs_two_patches = ifelse(test = abundances_two_patches > 0,
+                                  yes = 1,
+                                  no = 0) 
+    
+    distance_list = beta.pair(pres_abs_two_patches, index.family = "jaccard")
+    beta_diversity = distance_list$beta.jac
+    
+    summed_columns = colSums(pres_abs_two_patches)
+    vector_for_gamma = ifelse(test = summed_columns > 0,
+                                  yes = 1,
+                                  no = 0) 
+    gamma_diversity = sum(vector_for_gamma)
+    
+    ds_regional_biomass$beta_diversity[ds_regional_biomass$system_nr == system_nr_input &
+                                         ds_regional_biomass$time_point == time_point_input] = beta_diversity
+    ds_regional_biomass$gamma_diversity[ds_regional_biomass$system_nr == system_nr_input &
+                                         ds_regional_biomass$time_point == time_point_input] = gamma_diversity
+    
+    
+  }
+}
+```
+
+```{r ds_regional_biomass-datatable}
+saveRDS(ds_regional_biomass, file = here("results", "ds_regional_biomass.RData"))
+
+datatable(ds_regional_biomass,
+          rownames = FALSE,
+          options = list(scrollX = TRUE),
+          filter = list(position = 'top', 
+                        clear = FALSE))
+```

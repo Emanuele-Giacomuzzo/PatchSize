@@ -9,7 +9,7 @@ editor_options:
 
 ### Small patches {.tabset .tabset-pills}
 
-```{r echo = FALSE}
+```{r echo = FALSE, eval = include_GIFS}
 include_graphics(here("gifs", "transition_day_S_low.gif"))
 include_graphics(here("gifs", "transition_day_S_high.gif"))
 ```

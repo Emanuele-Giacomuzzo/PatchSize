@@ -18,20 +18,29 @@ editor_options:
 ---
 
 ```{r renv-seetings, eval = FALSE, echo = FALSE}
+
+#Manage package versions using the package "renv". 
+
 #renv::repair()
 #renv::restore()
 #renv::snapshot()
 ```
 
 ```{r set-up-environment, echo = FALSE}
+
+#Set up the environment. 
+
 knitr::opts_chunk$set(message = FALSE)#, cache=TRUE)
 rm( list = ls(  ) )
 cat( "\014" )
 start_time = Sys.time()
-recompute_analyses = FALSE #Lengthy analyses have been suppressed. However, if you set recompute_analyses = TRUE it redoes them. 
+recompute_analyses = FALSE #Lengthy analyses have been suppressed. Set recompute_analyses = TRUE to redo them. 
 ```
 
 ```{r packages, echo = FALSE, results = FALSE, message = FALSE, cache = FALSE}
+
+#Packages & conflicts
+
 library("conflicted")
 library("tidyverse")
 library("grid")
@@ -77,7 +86,9 @@ conflict_prefer("select", "dplyr")
 ```
 
 ```{r include = FALSE}
-#This is here just to import all the datasets quickly when workin in r markdown. 
+
+#Import data sets (useful to avoid knitting/going through every child when working in rmd). 
+
 culture_info = read.csv(here("data", "PatchSizePilot_culture_info.csv"), header = TRUE)
 ds_biomass_abund = readRDS(here("results", "ds_biomass_abund.RData"))
 ds_patches_averaged = readRDS(here("results", "ds_patches_averaged.RData"))
@@ -90,18 +101,15 @@ ds_lnRR_median_body_size = readRDS(here("results", "ds_lnRR_median_body_size.RDa
 
 
 ```{r functions, echo = FALSE}
+
+#Import functions. 
+
 source(here("r_files", "functions", "calculate.hedges_d.R"))
 ```
 
 ```{r various-parameters, echo = FALSE}
-culture_info = read.csv(here("data", "PatchSizePilot_culture_info.csv"), header = TRUE)
 
-gif_figures = TRUE
-
-publication_width = 12
-publication_height = 12
-publication_unit = "cm"
-presentation_size = 20
+#Give experiment parameters. 
 
 nr_videos = c(12,1,1,1,1,1,2,2)
 last_time_point = 7
@@ -113,7 +121,25 @@ protist_species = c("Ble", "Cep", "Col", "Eug", "Eup", "Lox", "Pau", "Pca", "Spi
 n_protist_species = length(protist_species)
 n_metaecosystems = 55
 n_cultures = 110
-eco_metaeco_types = unique(culture_info$eco_metaeco_type)
+culture_info = read.csv(here("data", "PatchSizePilot_culture_info.csv"), header = TRUE); eco_metaeco_types = unique(culture_info$eco_metaeco_type)
+```
+
+```{r}
+
+#Handle figures. 
+
+include_GIFS = FALSE
+
+publication_width = 12
+publication_height = 12
+publication_unit = "cm"
+presentation_size = 20
+```
+
+
+```{r}
+
+#Choose colours. 
 
 colour_isolated = "#d9cbbe"
 colour_different_size = "#4992c6"
@@ -124,6 +150,7 @@ colour_large = "#ff0000"
 colour_MM = "#dd7f42" #Colour of the Medium-Medium meta-ecosystem
 colour_SL = "#438cbe" #Colour of the Small-Large meta-ecosystem 
 ```
+
 
 # {.tabset}
 
@@ -137,10 +164,25 @@ colour_SL = "#438cbe" #Colour of the Small-Large meta-ecosystem
 ```{r child = here("r_files", "data_experimental_treatments.Rmd")}
 ```
 
-```{r child = here("r_files", "data_biomass_abundance_data.Rmd")}
+```{r child = here("r_files", "data_biomass_abund.Rmd")}
 ```
 
-```{r child = here("r_files", "data_body_size_data.Rmd")}
+```{r child = here("r_files", "data_patches_averaged.Rmd")}
+```
+
+```{r child = here("r_files", "data_regional_biomass.Rmd")}
+```
+
+```{r child = here("r_files", "data_body_size.Rmd")}
+```
+
+```{r child = here("r_files", "data_classes_averaged.Rmd")}
+```
+
+```{r child = here("r_files", "data_median_body_size.Rmd")}
+```
+
+```{r child = here("r_files", "data_median_body_size_effect_size.Rmd")}
 ```
 
 ## Meta-Ecosystem Biomass {.tabset .tabset-dropdown}
@@ -223,7 +265,7 @@ colour_SL = "#438cbe" #Colour of the Small-Large meta-ecosystem
 
 ## Body size distribution {.tabset .tabset-dropdown}
 
-```{r child = here("r_files", "body_size_distribution_gifs.Rmd"), eval = FALSE}
+```{r child = here("r_files", "body_size_distribution_gifs.Rmd"), eval = recompute_analyses}
 ```
 
 ```{r child = here("r_files", "body_size_distribution_small_patches.Rmd")}
@@ -264,6 +306,9 @@ model_1 = lm(
 ## Video analysis script
 
 ```{r child = here("r_files", "video_analysis_script.Rmd")}
+```
+
+```{r child = here("r_files", "parameterisation.Rmd")}
 ```
 
 ## Running time
