@@ -19,9 +19,1046 @@ editor_options:
 patch_size_input = "S"
 disturbance_input = "low"
 
+long_dataset = ds_biomass_abund %>%
+      group_by(culture_ID, disturbance, patch_size, day, eco_metaeco_type) %>%
+      summarise(
+        Ble = mean(Ble),
+        Cep = mean(Cep),
+        Col = mean(Col),
+        Eup = mean(Eup),
+        Eug = mean(Eug),
+        Lox = mean(Lox),
+        Pau = mean(Pau),
+        Pca = mean(Pca),
+        Spi = mean(Spi),
+        Spi_te = mean(Spi_te),
+        Tet = mean(Tet)
+      ) %>%
+      pivot_longer(Ble:Tet, names_to = "species", values_to = "population_abundance")
+
+for (species_input in 1:n_protist_species) {
+  print(
+     long_dataset %>%
+      filter(disturbance == disturbance_input) %>%
+      filter(patch_size == patch_size_input) %>%
+      filter(species == protist_species[species_input]) %>%
+      ggplot(
+        aes(
+          x = day,
+          y = population_abundance,
+          group = interaction(day, eco_metaeco_type),
+          fill = eco_metaeco_type
+        )
+      ) +
+      geom_boxplot() +
+      labs(
+        title = paste0(protist_species[species_input], " (Disturbance = ", disturbance_input, ")"),
+        x = "Day",
+        y = "Abundance (indiv/μl ?)",
+        fill = ""
+      ) +
+      theme_bw() +
+      theme(
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        legend.position = "bottom"
+      ) +
+      scale_fill_manual(
+        values = c(colour_isolated, colour_different_size, colour_same_size),
+        labels = c(
+          "Small isolated",
+          "Small connected to large",
+          "Small connected to small"
+        )
+      )  +
+      scale_x_continuous(breaks = unique(ds_biomass_abund$day)) +
+      geom_vline(
+        xintercept = perturbation_days[1] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[2] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[3] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[4] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[5] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[6] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      labs(caption = "Vertical grey line: resource flow")
+  )
+  
+}
+```
+
+```{r}
+ds_patches_averaged %>%
+      filter(disturbance == disturbance_input,
+             eco_metaeco_type == "S (S_L)" | eco_metaeco_type == "S (S_S)",
+             day > 0) %>%
+      ggplot(aes(
+        x = day,
+        y = Ble_d,
+        color = eco_metaeco_type
+      )) +
+      geom_point(position = position_dodge(0.5)) +
+      geom_line(position = position_dodge(0.5)) +
+      geom_errorbar(
+        aes(ymin = Ble_d_lower,
+            ymax = Ble_d_upper),
+        width = .2,
+        position = position_dodge(0.5)
+      ) +
+      labs(
+        title = paste("Disturbance =", disturbance_input),
+        x = "Day",
+        y = "Ble Density Effect Size (Hedge's d)",
+        color = ""
+      ) +
+       scale_color_discrete(
+         labels = c("Small connected to large",
+                    "Small connnected to small")
+       ) +
+      scale_x_continuous(breaks = unique(ds_patches_averaged$day)) +
+      theme_bw() +
+      theme(
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        legend.position = "bottom"
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[1] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[2] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[3] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[4] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[5] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[6] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_hline(
+        yintercept = 0,
+        linetype = "dotted",
+        color = "black",
+        size = 0.7
+      )
+
+ds_patches_averaged %>%
+      filter(disturbance == disturbance_input,
+             eco_metaeco_type == "S (S_L)" | eco_metaeco_type == "S (S_S)",
+             day > 0) %>%
+      ggplot(aes(
+        x = day,
+        y = Ble_d,
+        color = eco_metaeco_type
+      )) +
+      geom_point(position = position_dodge(0.5)) +
+      geom_line(position = position_dodge(0.5)) +
+      geom_errorbar(
+        aes(ymin = Ble_d_lower,
+            ymax = Ble_d_upper),
+        width = .2,
+        position = position_dodge(0.5)
+      ) +
+      labs(
+        title = paste("Disturbance =", disturbance_input),
+        x = "Day",
+        y = "Ble Density Effect Size (Hedge's d)",
+        color = ""
+      ) +
+       scale_color_discrete(
+         labels = c("Small connected to large",
+                    "Small connnected to small")
+       ) +
+      scale_x_continuous(breaks = unique(ds_patches_averaged$day)) +
+      theme_bw() +
+      theme(
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        legend.position = "bottom"
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[1] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[2] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[3] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[4] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[5] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[6] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_hline(
+        yintercept = 0,
+        linetype = "dotted",
+        color = "black",
+        size = 0.7
+      )
+
+ds_patches_averaged %>%
+      filter(disturbance == disturbance_input,
+             eco_metaeco_type == "S (S_L)" | eco_metaeco_type == "S (S_S)",
+             day > 0) %>%
+      ggplot(aes(
+        x = day,
+        y = Cep_d,
+        color = eco_metaeco_type
+      )) +
+      geom_point(position = position_dodge(0.5)) +
+      geom_line(position = position_dodge(0.5)) +
+      geom_errorbar(
+        aes(ymin = Cep_d_lower,
+            ymax = Cep_d_upper),
+        width = .2,
+        position = position_dodge(0.5)
+      ) +
+      labs(
+        title = paste("Disturbance =", disturbance_input),
+        x = "Day",
+        y = "Cep Density Effect Size (Hedge's d)",
+        color = ""
+      ) +
+       scale_color_discrete(
+         labels = c("Small connected to large",
+                    "Small connnected to small")
+       ) +
+      scale_x_continuous(breaks = unique(ds_patches_averaged$day)) +
+      theme_bw() +
+      theme(
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        legend.position = "bottom"
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[1] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[2] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[3] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[4] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[5] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[6] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_hline(
+        yintercept = 0,
+        linetype = "dotted",
+        color = "black",
+        size = 0.7
+      )
+
+ds_patches_averaged %>%
+      filter(disturbance == disturbance_input,
+             eco_metaeco_type == "S (S_L)" | eco_metaeco_type == "S (S_S)",
+             day > 0) %>%
+      ggplot(aes(
+        x = day,
+        y = Col_d,
+        color = eco_metaeco_type
+      )) +
+      geom_point(position = position_dodge(0.5)) +
+      geom_line(position = position_dodge(0.5)) +
+      geom_errorbar(
+        aes(ymin = Col_d_lower,
+            ymax = Col_d_upper),
+        width = .2,
+        position = position_dodge(0.5)
+      ) +
+      labs(
+        title = paste("Disturbance =", disturbance_input),
+        x = "Day",
+        y = "Col Density Effect Size (Hedge's d)",
+        color = ""
+      ) +
+       scale_color_discrete(
+         labels = c("Small connected to large",
+                    "Small connnected to small")
+       ) +
+      scale_x_continuous(breaks = unique(ds_patches_averaged$day)) +
+      theme_bw() +
+      theme(
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        legend.position = "bottom"
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[1] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[2] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[3] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[4] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[5] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[6] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_hline(
+        yintercept = 0,
+        linetype = "dotted",
+        color = "black",
+        size = 0.7
+      )
+
+ds_patches_averaged %>%
+      filter(disturbance == disturbance_input,
+             eco_metaeco_type == "S (S_L)" | eco_metaeco_type == "S (S_S)",
+             day > 0) %>%
+      ggplot(aes(
+        x = day,
+        y = Eug_d,
+        color = eco_metaeco_type
+      )) +
+      geom_point(position = position_dodge(0.5)) +
+      geom_line(position = position_dodge(0.5)) +
+      geom_errorbar(
+        aes(ymin = Eug_d_lower,
+            ymax = Eug_d_upper),
+        width = .2,
+        position = position_dodge(0.5)
+      ) +
+      labs(
+        title = paste("Disturbance =", disturbance_input),
+        x = "Day",
+        y = "Eug Density Effect Size (Hedge's d)",
+        color = ""
+      ) +
+       scale_color_discrete(
+         labels = c("Small connected to large",
+                    "Small connnected to small")
+       ) +
+      scale_x_continuous(breaks = unique(ds_patches_averaged$day)) +
+      theme_bw() +
+      theme(
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        legend.position = "bottom"
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[1] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[2] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[3] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[4] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[5] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[6] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_hline(
+        yintercept = 0,
+        linetype = "dotted",
+        color = "black",
+        size = 0.7
+      )
+
+ds_patches_averaged %>%
+      filter(disturbance == disturbance_input,
+             eco_metaeco_type == "S (S_L)" | eco_metaeco_type == "S (S_S)",
+             day > 0) %>%
+      ggplot(aes(
+        x = day,
+        y = Eup_d,
+        color = eco_metaeco_type
+      )) +
+      geom_point(position = position_dodge(0.5)) +
+      geom_line(position = position_dodge(0.5)) +
+      geom_errorbar(
+        aes(ymin = Eup_d_lower,
+            ymax = Eup_d_upper),
+        width = .2,
+        position = position_dodge(0.5)
+      ) +
+      labs(
+        title = paste("Disturbance =", disturbance_input),
+        x = "Day",
+        y = "Eup Density Effect Size (Hedge's d)",
+        color = ""
+      ) +
+       scale_color_discrete(
+         labels = c("Small connected to large",
+                    "Small connnected to small")
+       ) +
+      scale_x_continuous(breaks = unique(ds_patches_averaged$day)) +
+      theme_bw() +
+      theme(
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        legend.position = "bottom"
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[1] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[2] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[3] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[4] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[5] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[6] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_hline(
+        yintercept = 0,
+        linetype = "dotted",
+        color = "black",
+        size = 0.7
+      )
+
+ds_patches_averaged %>%
+      filter(disturbance == disturbance_input,
+             eco_metaeco_type == "S (S_L)" | eco_metaeco_type == "S (S_S)",
+             day > 0) %>%
+      ggplot(aes(
+        x = day,
+        y = Lox_d,
+        color = eco_metaeco_type
+      )) +
+      geom_point(position = position_dodge(0.5)) +
+      geom_line(position = position_dodge(0.5)) +
+      geom_errorbar(
+        aes(ymin = Lox_d_lower,
+            ymax = Lox_d_upper),
+        width = .2,
+        position = position_dodge(0.5)
+      ) +
+      labs(
+        title = paste("Disturbance =", disturbance_input),
+        x = "Day",
+        y = "Lox Density Effect Size (Hedge's d)",
+        color = ""
+      ) +
+       scale_color_discrete(
+         labels = c("Small connected to large",
+                    "Small connnected to small")
+       ) +
+      scale_x_continuous(breaks = unique(ds_patches_averaged$day)) +
+      theme_bw() +
+      theme(
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        legend.position = "bottom"
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[1] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[2] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[3] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[4] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[5] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[6] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_hline(
+        yintercept = 0,
+        linetype = "dotted",
+        color = "black",
+        size = 0.7
+      )
+
+ds_patches_averaged %>%
+      filter(disturbance == disturbance_input,
+             eco_metaeco_type == "S (S_L)" | eco_metaeco_type == "S (S_S)",
+             day > 0) %>%
+      ggplot(aes(
+        x = day,
+        y = Pau_d,
+        color = eco_metaeco_type
+      )) +
+      geom_point(position = position_dodge(0.5)) +
+      geom_line(position = position_dodge(0.5)) +
+      geom_errorbar(
+        aes(ymin = Pau_d_lower,
+            ymax = Pau_d_upper),
+        width = .2,
+        position = position_dodge(0.5)
+      ) +
+      labs(
+        title = paste("Disturbance =", disturbance_input),
+        x = "Day",
+        y = "Pau Density Effect Size (Hedge's d)",
+        color = ""
+      ) +
+       scale_color_discrete(
+         labels = c("Small connected to large",
+                    "Small connnected to small")
+       ) +
+      scale_x_continuous(breaks = unique(ds_patches_averaged$day)) +
+      theme_bw() +
+      theme(
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        legend.position = "bottom"
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[1] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[2] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[3] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[4] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[5] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[6] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_hline(
+        yintercept = 0,
+        linetype = "dotted",
+        color = "black",
+        size = 0.7
+      )
+
+ds_patches_averaged %>%
+      filter(disturbance == disturbance_input,
+             eco_metaeco_type == "S (S_L)" | eco_metaeco_type == "S (S_S)",
+             day > 0) %>%
+      ggplot(aes(
+        x = day,
+        y = Pca_d,
+        color = eco_metaeco_type
+      )) +
+      geom_point(position = position_dodge(0.5)) +
+      geom_line(position = position_dodge(0.5)) +
+      geom_errorbar(
+        aes(ymin = Pca_d_lower,
+            ymax = Pca_d_upper),
+        width = .2,
+        position = position_dodge(0.5)
+      ) +
+      labs(
+        title = paste("Disturbance =", disturbance_input),
+        x = "Day",
+        y = "Pca Density Effect Size (Hedge's d)",
+        color = ""
+      ) +
+       scale_color_discrete(
+         labels = c("Small connected to large",
+                    "Small connnected to small")
+       ) +
+      scale_x_continuous(breaks = unique(ds_patches_averaged$day)) +
+      theme_bw() +
+      theme(
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        legend.position = "bottom"
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[1] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[2] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[3] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[4] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[5] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[6] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_hline(
+        yintercept = 0,
+        linetype = "dotted",
+        color = "black",
+        size = 0.7
+      )
+
+ds_patches_averaged %>%
+      filter(disturbance == disturbance_input,
+             eco_metaeco_type == "S (S_L)" | eco_metaeco_type == "S (S_S)",
+             day > 0) %>%
+      ggplot(aes(
+        x = day,
+        y = Spi_d,
+        color = eco_metaeco_type
+      )) +
+      geom_point(position = position_dodge(0.5)) +
+      geom_line(position = position_dodge(0.5)) +
+      geom_errorbar(
+        aes(ymin = Spi_d_lower,
+            ymax = Spi_d_upper),
+        width = .2,
+        position = position_dodge(0.5)
+      ) +
+      labs(
+        title = paste("Disturbance =", disturbance_input),
+        x = "Day",
+        y = "Spi Density Effect Size (Hedge's d)",
+        color = ""
+      ) +
+       scale_color_discrete(
+         labels = c("Small connected to large",
+                    "Small connnected to small")
+       ) +
+      scale_x_continuous(breaks = unique(ds_patches_averaged$day)) +
+      theme_bw() +
+      theme(
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        legend.position = "bottom"
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[1] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[2] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[3] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[4] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[5] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[6] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_hline(
+        yintercept = 0,
+        linetype = "dotted",
+        color = "black",
+        size = 0.7
+      )
+
+ds_patches_averaged %>%
+      filter(disturbance == disturbance_input,
+             eco_metaeco_type == "S (S_L)" | eco_metaeco_type == "S (S_S)",
+             day > 0) %>%
+      ggplot(aes(
+        x = day,
+        y = Spi_te_d,
+        color = eco_metaeco_type
+      )) +
+      geom_point(position = position_dodge(0.5)) +
+      geom_line(position = position_dodge(0.5)) +
+      geom_errorbar(
+        aes(ymin = Spi_te_d_lower,
+            ymax = Spi_te_d_upper),
+        width = .2,
+        position = position_dodge(0.5)
+      ) +
+      labs(
+        title = paste("Disturbance =", disturbance_input),
+        x = "Day",
+        y = "Spi_te Density Effect Size (Hedge's d)",
+        color = ""
+      ) +
+       scale_color_discrete(
+         labels = c("Small connected to large",
+                    "Small connnected to small")
+       ) +
+      scale_x_continuous(breaks = unique(ds_patches_averaged$day)) +
+      theme_bw() +
+      theme(
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        legend.position = "bottom"
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[1] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[2] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[3] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[4] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[5] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[6] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_hline(
+        yintercept = 0,
+        linetype = "dotted",
+        color = "black",
+        size = 0.7
+      )
+
+ds_patches_averaged %>%
+      filter(disturbance == disturbance_input,
+             eco_metaeco_type == "S (S_L)" | eco_metaeco_type == "S (S_S)",
+             day > 0) %>%
+      ggplot(aes(
+        x = day,
+        y = Tet_d,
+        color = eco_metaeco_type
+      )) +
+      geom_point(position = position_dodge(0.5)) +
+      geom_line(position = position_dodge(0.5)) +
+      geom_errorbar(
+        aes(ymin = Tet_d_lower,
+            ymax = Tet_d_upper),
+        width = .2,
+        position = position_dodge(0.5)
+      ) +
+      labs(
+        title = paste("Disturbance =", disturbance_input),
+        x = "Day",
+        y = "Tet Density Effect Size (Hedge's d)",
+        color = ""
+      ) +
+       scale_color_discrete(
+         labels = c("Small connected to large",
+                    "Small connnected to small")
+       ) +
+      scale_x_continuous(breaks = unique(ds_patches_averaged$day)) +
+      theme_bw() +
+      theme(
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        legend.position = "bottom"
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[1] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[2] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[3] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[4] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[5] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[6] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_hline(
+        yintercept = 0,
+        linetype = "dotted",
+        color = "black",
+        size = 0.7
+      )
+```
+
+
+```{r}
 for (species_input in 1:n_protist_species) {
   print(
     ds_biomass_abund %>%
+      group_by(culture_ID, disturbance, patch_size, day, eco_metaeco_type) %>%
+      summarise(
+        Ble = mean(Ble),
+        Cep = mean(Cep),
+        Col = mean(Col),
+        Eup = mean(Eup),
+        Eug = mean(Eug),
+        Lox = mean(Lox),
+        Pau = mean(Pau),
+        Pca = mean(Pca),
+        Spi = mean(Spi),
+        Spi_te = mean(Spi_te),
+        Tet = mean(Tet)
+      ) %>%
       pivot_longer(Ble:Tet, names_to = "species", values_to = "population_abundance") %>%
       filter(disturbance == disturbance_input) %>%
       filter(patch_size == patch_size_input) %>%
@@ -38,17 +1075,14 @@ for (species_input in 1:n_protist_species) {
       labs(
         title = paste0(protist_species[species_input], " (Disturbance = ", disturbance_input, ")"),
         x = "Day",
-        y = "Population abundance (indiv/μl I think)",
+        y = "Abundance (indiv/μl ?)",
         fill = ""
       ) +
       theme_bw() +
       theme(
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
-        legend.position = c(.95, .95),
-        legend.justification = c("right", "top"),
-        legend.box.just = "right",
-        legend.margin = margin(6, 6, 6, 6)
+        legend.position = "bottom"
       ) +
       scale_fill_manual(
         values = c(colour_isolated, colour_different_size, colour_same_size),
@@ -58,17 +1092,49 @@ for (species_input in 1:n_protist_species) {
           "Small connected to small"
         )
       )  +
+      scale_x_continuous(breaks = unique(ds_biomass_abund$day)) +
       geom_vline(
-        xintercept = first_perturbation_day,
+        xintercept = perturbation_days[1] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
-      labs(caption = "Vertical grey line: first perturbation")
+      geom_vline(
+        xintercept = perturbation_days[2] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[3] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[4] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[5] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[6] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      labs(caption = "Vertical grey line: resource flow")
   )
   
 }
 ```
+
 
 ##### High disturbance
 
@@ -79,6 +1145,20 @@ disturbance_input = "high"
 for (species_input in 1:n_protist_species) {
   print(
     ds_biomass_abund %>%
+      group_by(culture_ID, disturbance, patch_size, day, eco_metaeco_type) %>%
+      summarise(
+        Ble = mean(Ble),
+        Cep = mean(Cep),
+        Col = mean(Col),
+        Eup = mean(Eup),
+        Eug = mean(Eug),
+        Lox = mean(Lox),
+        Pau = mean(Pau),
+        Pca = mean(Pca),
+        Spi = mean(Spi),
+        Spi_te = mean(Spi_te),
+        Tet = mean(Tet)
+      ) %>%
       pivot_longer(Ble:Tet, names_to = "species", values_to = "population_abundance") %>%
       filter(disturbance == disturbance_input) %>%
       filter(patch_size == patch_size_input) %>%
@@ -95,17 +1175,14 @@ for (species_input in 1:n_protist_species) {
       labs(
         title = paste0(protist_species[species_input], " (Disturbance = ", disturbance_input, ")"),
         x = "Day",
-        y = "Population abundance (indiv/μl I think)",
+        y = "Abundance (indiv/μl ?)",
         fill = ""
       ) +
       theme_bw() +
       theme(
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
-        legend.position = c(.95, .95),
-        legend.justification = c("right", "top"),
-        legend.box.just = "right",
-        legend.margin = margin(6, 6, 6, 6)
+        legend.position = "bottom"
       ) +
       scale_fill_manual(
         values = c(colour_isolated, colour_different_size, colour_same_size),
@@ -115,14 +1192,971 @@ for (species_input in 1:n_protist_species) {
           "Small connected to small"
         )
       )  +
+      scale_x_continuous(breaks = unique(ds_biomass_abund$day)) +
       geom_vline(
-        xintercept = first_perturbation_day,
+        xintercept = perturbation_days[1] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
-      labs(caption = "Vertical grey line: first perturbation")
+      geom_vline(
+        xintercept = perturbation_days[2] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[3] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[4] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[5] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[6] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      labs(caption = "Vertical grey line: resource flow")
   )
   
 }
+```
+
+```{r}
+ds_patches_averaged %>%
+      filter(disturbance == disturbance_input,
+             eco_metaeco_type == "S (S_L)" | eco_metaeco_type == "S (S_S)",
+             day > 0) %>%
+      ggplot(aes(
+        x = day,
+        y = Ble_d,
+        color = eco_metaeco_type
+      )) +
+      geom_point(position = position_dodge(0.5)) +
+      geom_line(position = position_dodge(0.5)) +
+      geom_errorbar(
+        aes(ymin = Ble_d_lower,
+            ymax = Ble_d_upper),
+        width = .2,
+        position = position_dodge(0.5)
+      ) +
+      labs(
+        title = paste("Disturbance =", disturbance_input),
+        x = "Day",
+        y = "Ble Density Effect Size (Hedge's d)",
+        color = ""
+      ) +
+       scale_color_discrete(
+         labels = c("Small connected to large",
+                    "Small connnected to small")
+       ) +
+      scale_x_continuous(breaks = unique(ds_patches_averaged$day)) +
+      theme_bw() +
+      theme(
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        legend.position = "bottom"
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[1] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[2] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[3] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[4] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[5] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[6] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_hline(
+        yintercept = 0,
+        linetype = "dotted",
+        color = "black",
+        size = 0.7
+      )
+
+ds_patches_averaged %>%
+      filter(disturbance == disturbance_input,
+             eco_metaeco_type == "S (S_L)" | eco_metaeco_type == "S (S_S)",
+             day > 0) %>%
+      ggplot(aes(
+        x = day,
+        y = Ble_d,
+        color = eco_metaeco_type
+      )) +
+      geom_point(position = position_dodge(0.5)) +
+      geom_line(position = position_dodge(0.5)) +
+      geom_errorbar(
+        aes(ymin = Ble_d_lower,
+            ymax = Ble_d_upper),
+        width = .2,
+        position = position_dodge(0.5)
+      ) +
+      labs(
+        title = paste("Disturbance =", disturbance_input),
+        x = "Day",
+        y = "Ble Density Effect Size (Hedge's d)",
+        color = ""
+      ) +
+       scale_color_discrete(
+         labels = c("Small connected to large",
+                    "Small connnected to small")
+       ) +
+      scale_x_continuous(breaks = unique(ds_patches_averaged$day)) +
+      theme_bw() +
+      theme(
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        legend.position = "bottom"
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[1] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[2] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[3] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[4] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[5] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[6] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_hline(
+        yintercept = 0,
+        linetype = "dotted",
+        color = "black",
+        size = 0.7
+      )
+
+ds_patches_averaged %>%
+      filter(disturbance == disturbance_input,
+             eco_metaeco_type == "S (S_L)" | eco_metaeco_type == "S (S_S)",
+             day > 0) %>%
+      ggplot(aes(
+        x = day,
+        y = Cep_d,
+        color = eco_metaeco_type
+      )) +
+      geom_point(position = position_dodge(0.5)) +
+      geom_line(position = position_dodge(0.5)) +
+      geom_errorbar(
+        aes(ymin = Cep_d_lower,
+            ymax = Cep_d_upper),
+        width = .2,
+        position = position_dodge(0.5)
+      ) +
+      labs(
+        title = paste("Disturbance =", disturbance_input),
+        x = "Day",
+        y = "Cep Density Effect Size (Hedge's d)",
+        color = ""
+      ) +
+       scale_color_discrete(
+         labels = c("Small connected to large",
+                    "Small connnected to small")
+       ) +
+      scale_x_continuous(breaks = unique(ds_patches_averaged$day)) +
+      theme_bw() +
+      theme(
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        legend.position = "bottom"
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[1] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[2] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[3] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[4] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[5] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[6] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_hline(
+        yintercept = 0,
+        linetype = "dotted",
+        color = "black",
+        size = 0.7
+      )
+
+ds_patches_averaged %>%
+      filter(disturbance == disturbance_input,
+             eco_metaeco_type == "S (S_L)" | eco_metaeco_type == "S (S_S)",
+             day > 0) %>%
+      ggplot(aes(
+        x = day,
+        y = Col_d,
+        color = eco_metaeco_type
+      )) +
+      geom_point(position = position_dodge(0.5)) +
+      geom_line(position = position_dodge(0.5)) +
+      geom_errorbar(
+        aes(ymin = Col_d_lower,
+            ymax = Col_d_upper),
+        width = .2,
+        position = position_dodge(0.5)
+      ) +
+      labs(
+        title = paste("Disturbance =", disturbance_input),
+        x = "Day",
+        y = "Col Density Effect Size (Hedge's d)",
+        color = ""
+      ) +
+       scale_color_discrete(
+         labels = c("Small connected to large",
+                    "Small connnected to small")
+       ) +
+      scale_x_continuous(breaks = unique(ds_patches_averaged$day)) +
+      theme_bw() +
+      theme(
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        legend.position = "bottom"
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[1] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[2] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[3] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[4] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[5] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[6] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_hline(
+        yintercept = 0,
+        linetype = "dotted",
+        color = "black",
+        size = 0.7
+      )
+
+ds_patches_averaged %>%
+      filter(disturbance == disturbance_input,
+             eco_metaeco_type == "S (S_L)" | eco_metaeco_type == "S (S_S)",
+             day > 0) %>%
+      ggplot(aes(
+        x = day,
+        y = Eug_d,
+        color = eco_metaeco_type
+      )) +
+      geom_point(position = position_dodge(0.5)) +
+      geom_line(position = position_dodge(0.5)) +
+      geom_errorbar(
+        aes(ymin = Eug_d_lower,
+            ymax = Eug_d_upper),
+        width = .2,
+        position = position_dodge(0.5)
+      ) +
+      labs(
+        title = paste("Disturbance =", disturbance_input),
+        x = "Day",
+        y = "Eug Density Effect Size (Hedge's d)",
+        color = ""
+      ) +
+       scale_color_discrete(
+         labels = c("Small connected to large",
+                    "Small connnected to small")
+       ) +
+      scale_x_continuous(breaks = unique(ds_patches_averaged$day)) +
+      theme_bw() +
+      theme(
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        legend.position = "bottom"
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[1] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[2] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[3] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[4] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[5] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[6] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_hline(
+        yintercept = 0,
+        linetype = "dotted",
+        color = "black",
+        size = 0.7
+      )
+
+ds_patches_averaged %>%
+      filter(disturbance == disturbance_input,
+             eco_metaeco_type == "S (S_L)" | eco_metaeco_type == "S (S_S)",
+             day > 0) %>%
+      ggplot(aes(
+        x = day,
+        y = Eup_d,
+        color = eco_metaeco_type
+      )) +
+      geom_point(position = position_dodge(0.5)) +
+      geom_line(position = position_dodge(0.5)) +
+      geom_errorbar(
+        aes(ymin = Eup_d_lower,
+            ymax = Eup_d_upper),
+        width = .2,
+        position = position_dodge(0.5)
+      ) +
+      labs(
+        title = paste("Disturbance =", disturbance_input),
+        x = "Day",
+        y = "Eup Density Effect Size (Hedge's d)",
+        color = ""
+      ) +
+       scale_color_discrete(
+         labels = c("Small connected to large",
+                    "Small connnected to small")
+       ) +
+      scale_x_continuous(breaks = unique(ds_patches_averaged$day)) +
+      theme_bw() +
+      theme(
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        legend.position = "bottom"
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[1] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[2] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[3] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[4] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[5] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[6] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_hline(
+        yintercept = 0,
+        linetype = "dotted",
+        color = "black",
+        size = 0.7
+      )
+
+ds_patches_averaged %>%
+      filter(disturbance == disturbance_input,
+             eco_metaeco_type == "S (S_L)" | eco_metaeco_type == "S (S_S)",
+             day > 0) %>%
+      ggplot(aes(
+        x = day,
+        y = Lox_d,
+        color = eco_metaeco_type
+      )) +
+      geom_point(position = position_dodge(0.5)) +
+      geom_line(position = position_dodge(0.5)) +
+      geom_errorbar(
+        aes(ymin = Lox_d_lower,
+            ymax = Lox_d_upper),
+        width = .2,
+        position = position_dodge(0.5)
+      ) +
+      labs(
+        title = paste("Disturbance =", disturbance_input),
+        x = "Day",
+        y = "Lox Density Effect Size (Hedge's d)",
+        color = ""
+      ) +
+       scale_color_discrete(
+         labels = c("Small connected to large",
+                    "Small connnected to small")
+       ) +
+      scale_x_continuous(breaks = unique(ds_patches_averaged$day)) +
+      theme_bw() +
+      theme(
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        legend.position = "bottom"
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[1] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[2] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[3] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[4] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[5] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[6] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_hline(
+        yintercept = 0,
+        linetype = "dotted",
+        color = "black",
+        size = 0.7
+      )
+
+ds_patches_averaged %>%
+      filter(disturbance == disturbance_input,
+             eco_metaeco_type == "S (S_L)" | eco_metaeco_type == "S (S_S)",
+             day > 0) %>%
+      ggplot(aes(
+        x = day,
+        y = Pau_d,
+        color = eco_metaeco_type
+      )) +
+      geom_point(position = position_dodge(0.5)) +
+      geom_line(position = position_dodge(0.5)) +
+      geom_errorbar(
+        aes(ymin = Pau_d_lower,
+            ymax = Pau_d_upper),
+        width = .2,
+        position = position_dodge(0.5)
+      ) +
+      labs(
+        title = paste("Disturbance =", disturbance_input),
+        x = "Day",
+        y = "Pau Density Effect Size (Hedge's d)",
+        color = ""
+      ) +
+       scale_color_discrete(
+         labels = c("Small connected to large",
+                    "Small connnected to small")
+       ) +
+      scale_x_continuous(breaks = unique(ds_patches_averaged$day)) +
+      theme_bw() +
+      theme(
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        legend.position = "bottom"
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[1] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[2] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[3] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[4] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[5] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[6] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_hline(
+        yintercept = 0,
+        linetype = "dotted",
+        color = "black",
+        size = 0.7
+      )
+
+ds_patches_averaged %>%
+      filter(disturbance == disturbance_input,
+             eco_metaeco_type == "S (S_L)" | eco_metaeco_type == "S (S_S)",
+             day > 0) %>%
+      ggplot(aes(
+        x = day,
+        y = Pca_d,
+        color = eco_metaeco_type
+      )) +
+      geom_point(position = position_dodge(0.5)) +
+      geom_line(position = position_dodge(0.5)) +
+      geom_errorbar(
+        aes(ymin = Pca_d_lower,
+            ymax = Pca_d_upper),
+        width = .2,
+        position = position_dodge(0.5)
+      ) +
+      labs(
+        title = paste("Disturbance =", disturbance_input),
+        x = "Day",
+        y = "Pca Density Effect Size (Hedge's d)",
+        color = ""
+      ) +
+       scale_color_discrete(
+         labels = c("Small connected to large",
+                    "Small connnected to small")
+       ) +
+      scale_x_continuous(breaks = unique(ds_patches_averaged$day)) +
+      theme_bw() +
+      theme(
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        legend.position = "bottom"
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[1] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[2] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[3] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[4] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[5] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[6] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_hline(
+        yintercept = 0,
+        linetype = "dotted",
+        color = "black",
+        size = 0.7
+      )
+
+ds_patches_averaged %>%
+      filter(disturbance == disturbance_input,
+             eco_metaeco_type == "S (S_L)" | eco_metaeco_type == "S (S_S)",
+             day > 0) %>%
+      ggplot(aes(
+        x = day,
+        y = Spi_d,
+        color = eco_metaeco_type
+      )) +
+      geom_point(position = position_dodge(0.5)) +
+      geom_line(position = position_dodge(0.5)) +
+      geom_errorbar(
+        aes(ymin = Spi_d_lower,
+            ymax = Spi_d_upper),
+        width = .2,
+        position = position_dodge(0.5)
+      ) +
+      labs(
+        title = paste("Disturbance =", disturbance_input),
+        x = "Day",
+        y = "Spi Density Effect Size (Hedge's d)",
+        color = ""
+      ) +
+       scale_color_discrete(
+         labels = c("Small connected to large",
+                    "Small connnected to small")
+       ) +
+      scale_x_continuous(breaks = unique(ds_patches_averaged$day)) +
+      theme_bw() +
+      theme(
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        legend.position = "bottom"
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[1] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[2] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[3] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[4] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[5] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[6] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_hline(
+        yintercept = 0,
+        linetype = "dotted",
+        color = "black",
+        size = 0.7
+      )
+
+ds_patches_averaged %>%
+      filter(disturbance == disturbance_input,
+             eco_metaeco_type == "S (S_L)" | eco_metaeco_type == "S (S_S)",
+             day > 0) %>%
+      ggplot(aes(
+        x = day,
+        y = Spi_te_d,
+        color = eco_metaeco_type
+      )) +
+      geom_point(position = position_dodge(0.5)) +
+      geom_line(position = position_dodge(0.5)) +
+      geom_errorbar(
+        aes(ymin = Spi_te_d_lower,
+            ymax = Spi_te_d_upper),
+        width = .2,
+        position = position_dodge(0.5)
+      ) +
+      labs(
+        title = paste("Disturbance =", disturbance_input),
+        x = "Day",
+        y = "Spi_te Density Effect Size (Hedge's d)",
+        color = ""
+      ) +
+       scale_color_discrete(
+         labels = c("Small connected to large",
+                    "Small connnected to small")
+       ) +
+      scale_x_continuous(breaks = unique(ds_patches_averaged$day)) +
+      theme_bw() +
+      theme(
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        legend.position = "bottom"
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[1] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[2] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[3] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[4] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[5] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[6] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_hline(
+        yintercept = 0,
+        linetype = "dotted",
+        color = "black",
+        size = 0.7
+      )
+
+ds_patches_averaged %>%
+      filter(disturbance == disturbance_input,
+             eco_metaeco_type == "S (S_L)" | eco_metaeco_type == "S (S_S)",
+             day > 0) %>%
+      ggplot(aes(
+        x = day,
+        y = Tet_d,
+        color = eco_metaeco_type
+      )) +
+      geom_point(position = position_dodge(0.5)) +
+      geom_line(position = position_dodge(0.5)) +
+      geom_errorbar(
+        aes(ymin = Tet_d_lower,
+            ymax = Tet_d_upper),
+        width = .2,
+        position = position_dodge(0.5)
+      ) +
+      labs(
+        title = paste("Disturbance =", disturbance_input),
+        x = "Day",
+        y = "Tet Density Effect Size (Hedge's d)",
+        color = ""
+      ) +
+       scale_color_discrete(
+         labels = c("Small connected to large",
+                    "Small connnected to small")
+       ) +
+      scale_x_continuous(breaks = unique(ds_patches_averaged$day)) +
+      theme_bw() +
+      theme(
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        legend.position = "bottom"
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[1] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[2] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[3] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[4] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[5] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[6] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_hline(
+        yintercept = 0,
+        linetype = "dotted",
+        color = "black",
+        size = 0.7
+      )
 ```
