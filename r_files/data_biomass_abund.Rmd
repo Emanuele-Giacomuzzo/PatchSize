@@ -11,7 +11,7 @@ editor_options:
 
 This dataset is the master dataset containing all the information about the biomass of the experiment.
 
-```{r ds_biomass_abund-import-pop_data, message = FALSE, echo = TRUE}
+```{r import_population_data_(ds_biomass_abund), message = FALSE, echo = TRUE}
 
 #Import data
 
@@ -53,7 +53,7 @@ t7 = merge(t7, species_ID_t7, by = "file")
 rm(species_ID_t0, species_ID_t1, species_ID_t2, species_ID_t3, species_ID_t4, species_ID_t5, species_ID_t6, species_ID_t7)
 ```
 
-```{r ds_biomass_abund-tidy-time-points, message = FALSE, echo = TRUE}
+```{r tidy_time_points_(ds_biomass_abund), message = FALSE, echo = TRUE}
 
 #Manipulate the columns "time" & "replicate_video"
 
@@ -166,29 +166,29 @@ ds_biomass_abund = ds_biomass_abund %>%
          Tet)
 ```
 
-```{r}
-
-#Add baselines (from t1).
-
-baselines = ds_biomass_abund %>%
-  filter(time_point == 1) %>%
-  group_by(culture_ID) %>%
-  summarise(bioarea_per_volume_across_videos = mean(bioarea_per_volume)) %>%
-  rename(baseline = bioarea_per_volume_across_videos)
-
-ds_biomass_abund = full_join(ds_biomass_abund, baselines)
-
-# ds_biomass_abund %>%
-#   ggplot(aes(x = day, 
-#              y = baseline, 
-#              group = interaction(day, eco_metaeco_type),
-#              fill= eco_metaeco_type)) +
-#   geom_boxplot()
-```
-
-```{r ds_biomass_abund-calculate-alpha-diversity}
+```{r calculate_alpha_diversity_(ds_biomass_abund)}
 
 #Calculate species richness
+
+ds_biomass_abund$shannon = NA
+ds_biomass_abund$simpson = NA
+ds_biomass_abund$inv_simpson = NA
+for (row in 1:nrow(ds_biomass_abund)){
+  
+  species_vector = ds_biomass_abund %>%
+    slice(row) %>%
+    select(Ble:Tet)
+  
+  shannon = diversity(species_vector, index = "shannon")
+  simpson = diversity(species_vector, index = "simpson")
+  inv_simpson = diversity(species_vector, index = "invsimpson")
+  
+  ds_biomass_abund[row,]$shannon = shannon
+  ds_biomass_abund[row,]$simpson = simpson
+  ds_biomass_abund[row,]$inv_simpson = inv_simpson
+  
+  
+}
 
 ds_biomass_abund = ds_biomass_abund %>%
   mutate(Ble_presence = case_when(Ble > 0 ~ 1,
@@ -265,11 +265,52 @@ ds_biomass_abund_averaged = ds_biomass_abund %>%
                             Tet_presence)
 ```
 
-```{r}
+```{r add_baselines_(ds_biomass_abund)}
+
+#Add baselines (from t1).
+
+baselines = ds_biomass_abund %>%
+  filter(time_point == 1) %>%
+  group_by(culture_ID) %>%
+  summarise(bioarea_per_volume_across_videos = mean(bioarea_per_volume),
+            indiv_per_volume_across_videos = mean(indiv_per_volume),
+            species_richness_across_videos = mean(species_richness),
+            shannon_across_videos = mean(shannon),
+            Ble_across_videos = mean(Ble),
+            Cep_across_videos = mean(Cep),
+            Col_across_videos = mean(Col),
+            Eug_across_videos = mean(Eug),
+            Eup_across_videos = mean(Eup),
+            Lox_across_videos = mean(Lox),
+            Pau_across_videos = mean(Pau),
+            Pca_across_videos = mean(Pca),
+            Spi_across_videos = mean(Spi),
+            Spi_te_across_videos = mean(Spi_te),
+            Tet_across_videos = mean(Tet)) %>%
+  rename(baseline_bioarea = bioarea_per_volume_across_videos,
+         baseline_indiv_per_volume = indiv_per_volume_across_videos,
+         baseline_species_richness = species_richness_across_videos,
+         baseline_shannon = shannon_across_videos,
+         baseline_Ble = Ble_across_videos,
+         baseline_Cep = Cep_across_videos,
+         baseline_Col = Col_across_videos,
+         baseline_Eug = Eug_across_videos,
+         baseline_Eup = Eup_across_videos,
+         baseline_Lox = Lox_across_videos,
+         baseline_Pau = Pau_across_videos,
+         baseline_Pca = Pca_across_videos,
+         baseline_Spi = Spi_across_videos,
+         baseline_Spi_te = Spi_te_across_videos,
+         baseline_Tet = Tet_across_videos)
+
+ds_biomass_abund = full_join(ds_biomass_abund, baselines)
+```
+
+```{r save_ds_biomas_abund}
 saveRDS(ds_biomass_abund, file = here("results", "ds_biomass_abund.RData"))
 ```
 
-```{r ds_biomass_abund-datatable}
+```{r show_ds_biomass_abund}
 datatable(ds_biomass_abund,
           rownames = FALSE,
           options = list(scrollX = TRUE),

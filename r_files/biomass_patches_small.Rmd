@@ -1,0 +1,331 @@
+---
+title: "Patch biomass: small patches"
+author: "Emanuele Giacomuzzo"
+date: "2022-08-02"
+output: html_document
+editor_options:
+  chunk_output_type: console
+---
+
+### Small patches {.tabset .tabset-pills}
+
+*Research question: how does biomass density change according to the size to which the patch is connected? (Does a small patch connected to a small patch have the same biomass density than a small patch connected to a large patch?)*
+
+#### Plots
+
+```{r small-patches-single-ecosystems-plots}
+for (disturbance_input in c("low", "high")) {
+  print(
+    ds_biomass_abund %>%
+      filter(disturbance == disturbance_input) %>%
+      filter(patch_size == "S") %>%
+      ggplot(
+        aes(
+          x = day,
+          y = bioarea_per_volume,
+          group = culture_ID,
+          fill = culture_ID,
+          color = culture_ID,
+          linetype = eco_metaeco_type
+        )
+      ) +
+      geom_line(stat = "summary", fun = "mean") +
+      labs(
+        title = paste("Disturbance =", disturbance_input),
+        x = "Day",
+        y = "Patch Bioarea (µm²/μl)",
+        linetype = ""
+      ) +
+      theme_bw() +
+      theme(
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        legend.position = "bottom"
+      ) +
+      scale_linetype_discrete(
+        labels = c(
+          "Small isolated",
+          "Small connected to small",
+          "Small connected to large"
+        )
+      )  +
+      scale_x_continuous(breaks = unique(ds_biomass_abund$day)) +
+      geom_vline(
+        xintercept = perturbation_days[1] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[2] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[3] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[4] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[5] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[6] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      labs(caption = "Vertical grey line: resource flow")
+  )
+}
+```
+
+```{r biomass-small-patches-boxplots}
+for (disturbance_input in c("low", "high")) {
+  print(
+    ds_biomass_abund %>%
+      group_by(culture_ID, patch_size, eco_metaeco_type, disturbance, day) %>%
+      summarise(bioarea_per_volume_across_videos = mean(bioarea_per_volume)) %>%
+      filter(patch_size == "S",
+             disturbance == disturbance_input) %>%
+      ggplot(
+        aes(
+          x = day,
+          y = bioarea_per_volume_across_videos,
+          group = interaction(day, eco_metaeco_type),
+          fill = eco_metaeco_type
+        )
+      ) +
+      geom_boxplot() +
+      labs(
+        title = paste("Disturbance =", disturbance_input),
+        x = "Day",
+        y = "Patch Bioarea (µm²/μl)",
+        fill = ""
+      ) +
+      theme_bw() +
+      theme(
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        legend.position = "bottom"
+      ) +
+      scale_fill_manual(
+        values = c(colour_isolated, colour_different_size, colour_same_size),
+        labels = c(
+          "Small isolated",
+          "Small connected to large",
+          "Small connected to small"
+        )
+      ) +
+      scale_x_continuous(breaks = unique(ds_biomass_abund$day)) +
+      geom_vline(
+        xintercept = perturbation_days[1] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[2] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[3] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[4] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[5] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[6] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      labs(caption = "Vertical grey line: resource flow")
+  )
+}
+```
+
+```{r biomass-small-patches-effect-size}
+for (disturbance_input in c("low", "high")) {
+  print(
+    ds_patches_averaged %>%
+      filter(!time_point == 0) %>% #At time point 0 all cultures were the same
+      filter(disturbance == disturbance_input) %>%
+      filter(eco_metaeco_type == "S (S_S)" |
+               eco_metaeco_type == "S (S_L)") %>%
+      ggplot(aes(
+        x = day,
+        y = bioarea_per_volume_d,
+        color = eco_metaeco_type
+      )) +
+      geom_point(position = position_dodge(0.5)) +
+      geom_line(position = position_dodge(0.5)) +
+      geom_errorbar(
+        aes(ymin = bioarea_per_volume_d_lower,
+            ymax = bioarea_per_volume_d_upper),
+        width = .2,
+        position = position_dodge(0.5)
+      ) +
+      labs(
+        title = paste("Disturbance =", disturbance_input),
+        x = "Day",
+        y = "Bioarea Density Effect Size (Hedge's d)",
+        color = ""
+      ) +
+      scale_color_discrete(
+        labels = c("Small connected to large",
+                   "Small connnected to small")
+      ) +
+      scale_x_continuous(breaks = unique(ds_patches_averaged$day)) +
+      theme_bw() +
+      theme(
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        legend.position = "bottom"
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[1] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[2] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[3] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[4] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[5] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = perturbation_days[6] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_hline(
+        yintercept = 0,
+        linetype = "dotted",
+        color = "black",
+        size = 0.7
+      )
+  )
+}
+```
+
+#### Model 
+
+Let's test our hypothesis that small patches connected to large had more bioarea density. To do so, we will use a linear model. As we are using an effect size (control = isolated small), we have pulled all the replicates together and we cannot include random effects. We will exclude time point 0 because there all the cultures were the same (we did not measure each culture at day 0, but we measured the large bottle from which we created all cultures). We excluded the data points of time point = 1 because disturbance and ecosystem type couldn't have had an effect, but we included them as baseline_bioareas. We are now including both baseline_bioareas and their interaction with time, as baseline_bioareas should have less of an effect as time goes by.
+
+$$
+Bioarea \: density \: (Hedge's \: d) = B + t + P + D + t*P + t*D + P*D + t*B
+$$
+
+B = baseline_bioarea (bioarea at t1, before the first resource flow)
+
+t = time
+
+P = patch type (connected to small vs connected to large)
+
+D = disturbance
+
+```{r choose-time-points}
+first_time_point = 2
+last_time_point = 7
+
+filtered_data = ds_patches_averaged %>%
+                         filter(time_point >= first_time_point,
+                                time_point <= last_time_point,
+                                eco_metaeco_type== "S (S_S)" | eco_metaeco_type == "S (S_L)")
+```
+
+```{r small-patches-full-model}
+full_model = lm(bioarea_per_volume_d ~                  
+                  day + 
+                  eco_metaeco_type + 
+                  disturbance +
+                  day : eco_metaeco_type +
+                  day : disturbance + 
+                  eco_metaeco_type : disturbance +
+                  baseline_bioarea + 
+                  day : baseline_bioarea,
+                  data = filtered_data)
+
+null_model = lm(bioarea_per_volume_d ~                  
+                  day + 
+                  disturbance +
+                  day : disturbance + 
+                  baseline_bioarea + 
+                  day : baseline_bioarea,
+                  data = filtered_data)
+
+anova(full_model, null_model)
+AIC(full_model, null_model)
+```
+
+Let's then do some model diagnostics.
+
+```{r small-t2-t7-best-model}
+par(mfrow = c(2,3))
+plot(full_model, which = 1:5)
+```
+
+```{r}
+R2_full = glance(full_model)$r.squared
+no_patch_type = lm(bioarea_per_volume_d ~
+                  day + 
+                  disturbance,
+                  data = ds_patches_averaged %>%
+                         filter(time_point >= first_time_point) %>%
+                         filter(time_point <= last_time_point) %>%
+                         filter(eco_metaeco_type== "S (S_S)" | eco_metaeco_type == "S (S_L)"))
+
+R2_null = glance(null_model)$r.squared
+R2_P = R2_full - R2_null
+
+R2_full = round(R2_full, digits = 2)
+R2_P = round(R2_P, digits = 2)
+```
+
+The adjusted R squared of the model is `r R2_full` and the adjusted R squared of patch type is `r R2_P` (which includes also its interaction with disturbance). I don't think it's necessary to look at effect sizes at different time points.

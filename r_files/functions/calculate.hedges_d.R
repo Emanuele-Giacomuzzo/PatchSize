@@ -17,6 +17,24 @@ calculate.hedges_d = function(Y1, s1, n1, Y2, s2, n2){
   
   d = (Y1 - Y2) / denominator * J
   
-  return(d)
+  #See https://www.meta-analysis.com/downloads/Meta-analysis%20Effect%20sizes%20based%20on%20means.pdf for how I calculate 95% CI in the following steps.
+  
+  Vd = ((n1 + n2) / (n1* n2)) + (d^2 / (2 * (n1 + n2)))
+  
+  Vg = J^2 * Vd
+  
+  SE = sqrt(Vg)
+  
+  upper_CI = d + (1.96 * SE)
+    
+  lower_CI = d - (1.96 * SE)
+  
+  hedges_d = data.frame(
+    d = d,
+    upper_CI = upper_CI,
+    lower_CI = lower_CI
+  )
+  
+  return(hedges_d)
   
 }

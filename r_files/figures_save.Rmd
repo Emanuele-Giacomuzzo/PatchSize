@@ -40,37 +40,37 @@ small_patches_presentation = ds_biomass_abund %>%
   )) +
   scale_x_continuous(breaks = c(0, 4, 8, 12, 16, 20, 24, 28)) +
   geom_vline(
-    xintercept = first_perturbation_day + 0.7,
+    xintercept = perturbation_days[1] + 0.7,
     linetype = "dotdash",
     color = "grey",
     size = 0.7
   ) +
   geom_vline(
-    xintercept = first_perturbation_day+4 + 0.7,
+    xintercept = perturbation_days[2] + 0.7,
     linetype = "dotdash",
     color = "grey",
     size = 0.7
   ) +
   geom_vline(
-    xintercept = first_perturbation_day+8 + 0.7,
+    xintercept = perturbation_days[3] + 0.7,
     linetype = "dotdash",
     color = "grey",
     size = 0.7
   ) +
   geom_vline(
-    xintercept = first_perturbation_day+12 + 0.7,
+    xintercept = perturbation_days[4] + 0.7,
     linetype = "dotdash",
     color = "grey",
     size = 0.7
   ) +
   geom_vline(
-    xintercept = first_perturbation_day+16 + 0.7,
+    xintercept = perturbation_days[5] + 0.7,
     linetype = "dotdash",
     color = "grey",
     size = 0.7
   ) +
   geom_vline(
-    xintercept = first_perturbation_day+20 + 0.7,
+    xintercept = perturbation_days[6] + 0.7,
     linetype = "dotdash",
     color = "grey",
     size = 0.7

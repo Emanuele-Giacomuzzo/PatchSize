@@ -2,25 +2,44 @@
 title: "Data Regional Biomass"
 output: html_document
 date: "2022-11-22"
+editor_options: 
+  chunk_output_type: console
 ---
 
 ### Meta-ecosystem biomass (`ds_regional_biomass`)
 
-This is the dataset of the regional biomass of different meta-ecosystems. It contains also the regional biomass of the combination of a small isolated and a large isolated patch (`S_L_from_isolated`).
+Dataset of the total meta-ecosystem bioarea. It contains also the regional biomass of the combination of a small isolated and a large isolated patch (`metecosystem type = S_L_from_isolated`).
 
 ```{r ds_regional_biomass-create-dataset}
+
+#Create ds_regional_biomass
+
 ds_regional_biomass = ds_biomass_abund %>%
+  mutate(total_patch_bioarea = bioarea_per_volume * patch_size_volume) %>%
   filter(metaecosystem == "yes",!system_nr %in% metaecosystems_to_take_off) %>%
-  group_by(culture_ID, time_point) %>%
-  mutate(bioarea_per_volume_video_averaged = mean(bioarea_per_volume)) %>%
-  ungroup() %>%
-  mutate(total_patch_bioarea = bioarea_per_volume_video_averaged * patch_size_volume) %>%
-  group_by(system_nr, time_point) %>%
-  mutate(total_regional_bioarea = sum(total_patch_bioarea)) %>%
-  ungroup()
+  group_by(culture_ID, 
+           patch_size,
+           patch_size_volume,
+           disturbance,
+           metaecosystem_type,
+           time_point,
+           day,
+           system_nr,
+           eco_metaeco_type) %>%
+  summarise(bioarea_per_volume_video_averaged = mean(bioarea_per_volume),
+            total_patch_bioarea_video_averaged = mean(total_patch_bioarea)) %>%
+  group_by(system_nr, 
+           time_point,
+           disturbance,
+           metaecosystem_type,
+           day) %>%
+  summarise(total_regional_bioarea = sum(total_patch_bioarea_video_averaged))
 ```
 
 ```{r ds_regional_biomass-create-SL_SL_from_isolated, message=FALSE, results='hide', eval = recompute_analyses}
+
+#Add to ds_regional_biomass also the Small-Large meta-ecosystems from isolated
+
 isolated_S_and_L = ds_biomass_abund %>%
   filter(eco_metaeco_type == "S" | eco_metaeco_type == "L") %>%
   group_by(system_nr, time_point) %>%
@@ -87,7 +106,10 @@ ds_regional_biomass = readRDS(here("results", "ds_regional_biomass.RData"))
 ```
 
 ```{r ds_regional_biomass-calculate-beta-diversity}
-ds_for_beta_diversity = ds_biomass_abund %>%
+
+#Calculate beta diversity & gamma diversity
+
+ds_biomass_abund_video_averaged = ds_biomass_abund %>%
   filter(!metaecosystem_type == "S_L from isolated") %>%
   group_by(culture_ID, system_nr, time_point) %>%
   summarise(
@@ -104,46 +126,99 @@ ds_for_beta_diversity = ds_biomass_abund %>%
     Tet = mean(Tet)
   )
 
-ds_regional_biomass$beta_diversity = NA
-ds_regional_biomass$gamma_diversity = NA
 
-for (system_nr_input in 16:70) {
-  for (time_point_input in 0:(n_time_points-1)) {
+ds_regional_biomass$jaccard_index = NA
+ds_regional_biomass$bray_curtis = NA
+ds_regional_biomass$metaecosystem_richness = NA
+for (system_nr_input in system_nr_metaecosystems) {
+  for (time_point_input in first_time_point:last_time_point) {
     
-    if(system_nr_input %in% metaecosystems_to_take_off) next
+    if (system_nr_input %in% metaecosystems_to_take_off)
+      next
     
-    abundances_two_patches = ds_for_beta_diversity %>%
+    #Vectors
+    
+    species_vector_of_the_two_patches = ds_biomass_abund_video_averaged %>%
       filter(system_nr == system_nr_input,
              time_point == time_point_input) %>%
       ungroup() %>%
       select(Ble:Tet)
     
-    pres_abs_two_patches = ifelse(test = abundances_two_patches > 0,
-                                  yes = 1,
-                                  no = 0) 
+    species_vector_mean_across_patches = species_vector_of_the_two_patches %>%
+      summarise(across(everything(), 
+                       list(mean)))
     
-    distance_list = beta.pair(pres_abs_two_patches, index.family = "jaccard")
-    beta_diversity = distance_list$beta.jac
+    presence_absence_two_patches = ifelse(test = species_vector_of_the_two_patches > 0,
+                                          yes = 1,
+                                          no = 0)
     
-    summed_columns = colSums(pres_abs_two_patches)
-    vector_for_gamma = ifelse(test = summed_columns > 0,
-                                  yes = 1,
-                                  no = 0) 
-    gamma_diversity = sum(vector_for_gamma)
+    summed_columns = colSums(presence_absence_two_patches)
     
-    ds_regional_biomass$beta_diversity[ds_regional_biomass$system_nr == system_nr_input &
-                                         ds_regional_biomass$time_point == time_point_input] = beta_diversity
-    ds_regional_biomass$gamma_diversity[ds_regional_biomass$system_nr == system_nr_input &
-                                         ds_regional_biomass$time_point == time_point_input] = gamma_diversity
+    presence_absence_metaecosystem = ifelse(test = summed_columns > 0,
+                              yes = 1,
+                              no = 0)
+    
+    #Beta diversity
+  
+    all_jaccard_indices = beta.pair(presence_absence_two_patches, 
+                                     index.family = "jaccard")
+    
+    jaccard_index = all_jaccard_indices$beta.jac
+    
+    bray_curtis = vegdist(presence_absence_two_patches, method = "bray")
+    
+    #Gamma diversity
+    
+    metaecosystem_richness = sum(presence_absence_metaecosystem)
+    
+    gamma_shannon = diversity(species_vector_mean_across_patches, index = "shannon")
+    
+    #Add to dataset
+    
+    ds_regional_biomass$jaccard_index[ds_regional_biomass$system_nr == system_nr_input &
+                                         ds_regional_biomass$time_point == time_point_input] = jaccard_index
+    
+    ds_regional_biomass$bray_curtis[ds_regional_biomass$system_nr == system_nr_input &
+                                         ds_regional_biomass$time_point == time_point_input] = bray_curtis
+    
+    ds_regional_biomass$metaecosystem_richness[ds_regional_biomass$system_nr == system_nr_input &
+                                          ds_regional_biomass$time_point == time_point_input] = metaecosystem_richness
+    
+    ds_regional_biomass$gamma_shannon[ds_regional_biomass$system_nr == system_nr_input &
+                                          ds_regional_biomass$time_point == time_point_input] = gamma_shannon
     
     
   }
 }
 ```
 
-```{r ds_regional_biomass-datatable}
-saveRDS(ds_regional_biomass, file = here("results", "ds_regional_biomass.RData"))
+```{r}
 
+#Add baselines (from t1)
+
+baselines = ds_regional_biomass %>%
+  ungroup() %>%
+  filter(time_point == 1) %>%
+  select(system_nr, 
+         total_regional_bioarea, 
+         jaccard_index,
+         bray_curtis,
+         metaecosystem_richness,
+         gamma_shannon) %>%
+  rename(baseline_bioarea = total_regional_bioarea,
+         baseline_jaccard_index = jaccard_index,
+         baseline_bray_curtis = bray_curtis,
+         baseline_metaecosystem_richness = metaecosystem_richness,
+         baseline_gamma_shannon = gamma_shannon)
+
+ds_regional_biomass = full_join(ds_regional_biomass, baselines)
+```
+
+```{r}
+saveRDS(ds_regional_biomass, file = here("results", "ds_regional_biomass.RData"))
+```
+
+```{r ds_regional_biomass-datatable}
 datatable(ds_regional_biomass,
           rownames = FALSE,
           options = list(scrollX = TRUE),

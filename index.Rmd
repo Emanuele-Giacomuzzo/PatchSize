@@ -54,7 +54,7 @@ library("optimx")
 library("GenSA")
 library("purrr")
 library("kableExtra")
-library("DT") 
+library("DT")
 library("renv")
 library("broom")
 library("patchwork")
@@ -112,9 +112,14 @@ source(here("r_files", "functions", "calculate.hedges_d.R"))
 #Give experiment parameters. 
 
 nr_videos = c(12,1,1,1,1,1,2,2)
+first_time_point = 0
 last_time_point = 7
 n_time_points = 8
+
 first_perturbation_day = 5
+perturbation_days = c(5, 9, 13, 17, 21, 25)
+
+system_nr_metaecosystems = 16:70
 ecosystems_to_take_off = 60 #Culture ID = 60 because it was spilled (isolated small patch, high disturbance, system nr = 40)
 metaecosystems_to_take_off = 40 #System 40 was the system of culture 60 that I spilled
 protist_species = c("Ble", "Cep", "Col", "Eug", "Eup", "Lox", "Pau", "Pca", "Spi", "Spi_te", "Tet")
@@ -190,77 +195,78 @@ colour_SL = "#438cbe" #Colour of the Small-Large meta-ecosystem
 ```{r child = here("r_files", "biomass_metaeco_all.Rmd")}
 ```
 
-```{r child = here("r_files", "biomass_MM_SL_plots.Rmd")}
+```{r child = here("r_files", "biomass_metaeco_MM_SL.Rmd")}
 ```
 
-```{r child = here("r_files", "biomass_MM_SL_time_series.Rmd")}
+```{r child = here("r_files", "biomass_metaeco_SL_SL_from_isolated.Rmd"), eval = FALSE}
 ```
 
-```{r child = here("r_files", "biomass_MM_SL_single_points.Rmd")}
+```{r child = here("r_files", "biomass_metaeco_equally_sized.Rmd")}
 ```
 
-```{r child = here("r_files", "biomass_SL_SL_from_isolated.Rmd"), eval = FALSE}
-```
-
-```{r child = here("r_files", "biomass_metaeco_equally_sized_patches.Rmd")}
-```
 ## Patches: Biomass {.tabset .tabset-dropdown}
 
-```{r child = here("r_files", "biomass_all_patches.Rmd")}
+```{r child = here("r_files", "biomass_patches_all.Rmd")}
 ```
 
-```{r child = here("r_files", "biomass_small_patches.Rmd")}
+```{r child = here("r_files", "biomass_patches_small.Rmd")}
 ```
 
-```{r child = here("r_files", "biomass_large_patches.Rmd")}
+```{r child = here("r_files", "biomass_patches_large.Rmd")}
 ```
 
-```{r child = here("r_files", "biomass_isolated_patches.Rmd")}
+```{r child = here("r_files", "biomass_patches_isolated.Rmd")}
 ```
 
 ## Patches: Community Abundance {.tabset .tabset-dropdown}
 
-```{r child = here("r_files", "comm_abundance_small_patches.Rmd")}
+```{r child = here("r_files", "comm_abundance_patches_small.Rmd")}
 ```
 
-```{r child = here("r_files", "comm_abundance_large_patches.Rmd")}
+```{r child = here("r_files", "comm_abundance_patches_large.Rmd")}
 ```
 
-```{r child = here("r_files", "comm_abundance_isolated_patches.Rmd")}
+```{r child = here("r_files", "comm_abundance_patches_isolated.Rmd")}
 ```
 
 ## Patches: Population Abundances {.tabset .tabset-dropdown}
 
-```{r child = here("r_files", "population_abundances_small_patches.Rmd")}
+```{r child = here("r_files", "population_abundances_patches_small.Rmd")}
 ```
 
-```{r child = here("r_files", "population_abundances_large_patches.Rmd")}
+```{r child = here("r_files", "population_abundances_patches_large.Rmd")}
 ```
 
-```{r child = here("r_files", "population_abundances_isolated_patches.Rmd")}
+```{r child = here("r_files", "population_abundances_patches_isolated.Rmd")}
 ```
 
 ## Biodiversity {.tabset .tabset-pills}
 
 ### Alpha Diversity {.tabset .tabset-dropdown}
 
-```{r child = here("r_files", "alpha_diversity_small_patches.Rmd")}
+```{r child = here("r_files", "alpha_diversity_patches_small.Rmd")}
 ```
 
-```{r child = here("r_files", "alpha_diversity_large_patches.Rmd")}
+```{r child = here("r_files", "alpha_diversity_patches_large.Rmd")}
 ```
 
-```{r child = here("r_files", "alpha_diversity_isolated_patches.Rmd")}
+```{r child = here("r_files", "alpha_diversity_patches_isolated.Rmd")}
 ```
 
 ### Beta Diversity {.tabset .tabset-dropdown}
 
-```{r child = here("r_files", "beta_diversity.Rmd")}
+```{r child = here("r_files", "beta_diversity_metaeco_MM_SL.Rmd")}
+```
+
+```{r child = here("r_files", "beta_diversity_metaeco_equally_sized.Rmd")}
 ```
 
 ### Gamma Diversity {.tabset .tabset-dropdown}
 
-```{r child = here("r_files", "gamma_diversity.Rmd")}
+```{r child = here("r_files", "gamma_diversity_metaeco_MM_SL.Rmd")}
+```
+
+```{r child = here("r_files", "gamma_diversity_metaeco_equally_sized.Rmd")}
 ```
 
 ## Body size distribution {.tabset .tabset-dropdown}
@@ -268,32 +274,28 @@ colour_SL = "#438cbe" #Colour of the Small-Large meta-ecosystem
 ```{r child = here("r_files", "body_size_distribution_gifs.Rmd"), eval = recompute_analyses}
 ```
 
-```{r child = here("r_files", "body_size_distribution_small_patches.Rmd")}
+```{r child = here("r_files", "body_size_distribution_patches_small.Rmd")}
 ```
 
-```{r child = here("r_files", "body_size_distribution_large_patches.Rmd")}
+```{r child = here("r_files", "body_size_distribution_patches_large.Rmd")}
 ```
 
-```{r child = here("r_files", "body_size_distribution_isolated_patches.Rmd")}
+```{r child = here("r_files", "body_size_distribution_patches_isolated.Rmd")}
 ```
 
 ## Median body size {.tabset .tabset-dropdown}
 
-```{r child = here("r_files", "body_size_median_all_patches.Rmd")}
+```{r child = here("r_files", "body_size_median_patches_all.Rmd")}
 ```
 
-```{r child = here("r_files", "body_size_median_small_patches.Rmd")}
+```{r child = here("r_files", "body_size_median_patches_small.Rmd")}
 ```
 
-```{r child = here("r_files", "body_size_median_large_patches.Rmd")}
+```{r child = here("r_files", "body_size_median_patches_large.Rmd")}
 ```
 
-```{r child = here("r_files", "body_size_median_isolated_patches.Rmd")}
+```{r child = here("r_files", "body_size_median_patches_isolated.Rmd")}
 ```
-Quitting from lines NA-690 (/Users/ema/Documents/GitHub/PatchSizePilot/r_files/body_size_distribution_small_patches.Rmd) 
-Error in parse_block(g[-1], g[1], params.src, markdown_mode) : 
-  Duplicate chunk label 'small-patches-full-model-body-size-distribution', which has been used for the chunk:
-model_1 = lm(
 
 ## Evaporation {.tabset .tabset-pills}
 
