@@ -98,38 +98,18 @@ for (combination in 1:number_of_combinations){
 
 ds_regional_biomass = rbind(ds_regional_biomass, SL_from_isolated_all_combinations_together)
 
-saveRDS(ds_regional_biomass, file = here("results", "ds_regional_biomass.RData"))
-```
-
-```{r ds_regional_biomass-read-after-heavy-computation}
-ds_regional_biomass = readRDS(here("results", "ds_regional_biomass.RData"))
+saveRDS(ds_regional_biomass, file = here("results", "ds_regional_biomass_isolated.RData"))
 ```
 
 ```{r ds_regional_biomass-calculate-beta-diversity}
 
 #Calculate beta diversity & gamma diversity
 
-ds_biomass_abund_video_averaged = ds_biomass_abund %>%
-  filter(!metaecosystem_type == "S_L from isolated") %>%
-  group_by(culture_ID, system_nr, time_point) %>%
-  summarise(
-    Ble = mean(Ble),
-    Cep = mean(Cep),
-    Col = mean(Col),
-    Eug = mean(Eug),
-    Eup = mean(Eup),
-    Lox = mean(Lox),
-    Pau = mean(Pau),
-    Pca = mean(Pca),
-    Spi = mean(Spi),
-    Spi_te = mean(Spi_te),
-    Tet = mean(Tet)
-  )
+ds_regional_biomass = ds_regional_biomass %>%
+  mutate(jaccard_index = NA,
+         bray_curtis = NA,
+         metaecosystem_richness = NA)
 
-
-ds_regional_biomass$jaccard_index = NA
-ds_regional_biomass$bray_curtis = NA
-ds_regional_biomass$metaecosystem_richness = NA
 for (system_nr_input in system_nr_metaecosystems) {
   for (time_point_input in first_time_point:last_time_point) {
     
@@ -138,7 +118,7 @@ for (system_nr_input in system_nr_metaecosystems) {
     
     #Vectors
     
-    species_vector_of_the_two_patches = ds_biomass_abund_video_averaged %>%
+    species_vector_of_the_two_patches = ds_biomass_abund %>%
       filter(system_nr == system_nr_input,
              time_point == time_point_input) %>%
       ungroup() %>%

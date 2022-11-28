@@ -2,6 +2,8 @@
 title: "Data Classes Averaged"
 output: html_document
 date: "2022-11-22"
+editor_options: 
+  chunk_output_type: console
 ---
 
 ### Size classes abundance (ds_classes_averaged)
@@ -14,17 +16,12 @@ nr_of_size_classes = 12
 
 ```{r}
 largest_size = max(ds_body_size$mean_area)
+#largest_size = exp(11.4) To see what happens, let's set the largest size to the one of @Jacquet2020. 
 ```
 
 The logarithm of the largest individual in the experiment was `r log(largest_size)` μm² compared to 11.4 in  @Jacquet2020. 
 
-To see what happens, let's set the largest size to the one of @Jacquet2020. 
-
-```{r}
-largest_size = exp(11.4) 
-```
-
-```{r ds_classes_averaged-create-ds_classes, eval = recompute_analyses}
+```{r ds_classes_averaged-create-ds_classes, eval = FALSE}
 size_class_width = largest_size / nr_of_size_classes
 
 size_class_boundaries = seq(from = 0,
@@ -58,10 +55,10 @@ for (class in 1:nr_of_size_classes) {
         single_videos_rows[[row]] = ds_biomass_abund %>%
           filter(
             time_point == time_point_input,
-            culture_ID == culture_ID_input,
-            replicate_video == replicate_video_input
+            culture_ID == culture_ID_input
           ) %>%
           mutate(
+            replicate_video = replicate_video_input,
             size_class_abundance = video_class_abundance,
             size_class_n = class,
             size_class = mean_size,
@@ -157,7 +154,9 @@ for (disturbance_input in c("low", "high")) {
             size_class_n == size_class_input
           ) 
         
-        d = calculate.hedges_d(
+        #Body size class abundance
+        
+        hedges_d_size_class = calculate.hedges_d(
           treatment$abundance,
           treatment$abundance_sd,
           treatment$sample_size,
@@ -169,7 +168,19 @@ for (disturbance_input in c("low", "high")) {
         ds_classes_averaged$abundance_hedges_d[ds_classes_averaged$disturbance == disturbance_input &
                                              ds_classes_averaged$eco_metaeco_type == eco_metaeco_treatment &
                                              ds_classes_averaged$time_point == time_point_input &
-                                             ds_classes_averaged$size_class_n == size_class_input] = d
+                                             ds_classes_averaged$size_class_n == size_class_input] = hedges_d_size_class$d
+        
+        ds_classes_averaged$abundance_hedges_d_upper[ds_classes_averaged$disturbance == disturbance_input &
+                                             ds_classes_averaged$eco_metaeco_type == eco_metaeco_treatment &
+                                             ds_classes_averaged$time_point == time_point_input &
+                                             ds_classes_averaged$size_class_n == size_class_input] = hedges_d_size_class$upper_CI
+        
+        ds_classes_averaged$abundance_hedges_d_lower[ds_classes_averaged$disturbance == disturbance_input &
+                                             ds_classes_averaged$eco_metaeco_type == eco_metaeco_treatment &
+                                             ds_classes_averaged$time_point == time_point_input &
+                                             ds_classes_averaged$size_class_n == size_class_input] = hedges_d_size_class$lower_CI
+        
+        
       }
     }
   }

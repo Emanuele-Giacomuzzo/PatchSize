@@ -46,37 +46,37 @@ for (disturbance_input in c("low", "high")) {
       ) +
       scale_x_continuous(breaks = unique(ds_regional_biomass$day)) +
       geom_vline(
-        xintercept = perturbation_days[1] + 0.7,
+        xintercept = resource_flow_days[1] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[2] + 0.7,
+        xintercept = resource_flow_days[2] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[3] + 0.7,
+        xintercept = resource_flow_days[3] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[4] + 0.7,
+        xintercept = resource_flow_days[4] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[5] + 0.7,
+        xintercept = resource_flow_days[5] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[6] + 0.7,
+        xintercept = resource_flow_days[6] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
@@ -122,37 +122,37 @@ for (disturbance_input in c("low", "high")) {
       )  +
       scale_x_continuous(breaks = unique(ds_regional_biomass$day)) +
       geom_vline(
-        xintercept = perturbation_days[1] + 0.7,
+        xintercept = resource_flow_days[1] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[2] + 0.7,
+        xintercept = resource_flow_days[2] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[3] + 0.7,
+        xintercept = resource_flow_days[3] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[4] + 0.7,
+        xintercept = resource_flow_days[4] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[5] + 0.7,
+        xintercept = resource_flow_days[5] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[6] + 0.7,
+        xintercept = resource_flow_days[6] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7

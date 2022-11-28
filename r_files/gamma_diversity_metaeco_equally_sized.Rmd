@@ -12,13 +12,13 @@ editor_options:
 for (disturbance_input in c("low", "high")) {
   print(
     ds_regional_biomass %>%
-      filter(disturbance == disturbance_input) %>%
-      filter(!metaecosystem_type == "S_L") %>%
-      filter(!metaecosystem_type == "S_L_from_isolated") %>%
+      filter(disturbance == disturbance_input,
+             !metaecosystem_type == "S_L",
+             !metaecosystem_type == "S_L_from_isolated") %>%
       ggplot(
         aes(
           x = day,
-          y = gamma_diversity,
+          y = gamma_shannon,
           group = interaction(day, metaecosystem_type),
           fill = metaecosystem_type
         )

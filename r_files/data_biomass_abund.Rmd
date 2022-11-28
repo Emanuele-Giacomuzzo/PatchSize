@@ -136,34 +136,39 @@ ds_biomass_abund = ds_biomass_abund %>%
 
 ds_for_evaporation = ds_biomass_abund #Keep this dataset for the evaporation effects
 
-ds_biomass_abund = ds_biomass_abund %>% 
-  select(culture_ID, 
-         patch_size,
-         patch_size_volume,
-         disturbance, 
-         metaecosystem_type, 
-         indiv_per_volume, 
-         replicate_video, 
-         time_point,
-         day,
-         metaecosystem, 
-         system_nr, 
-         eco_metaeco_type,
-         bioarea_per_volume,
-         bioarea_tot,
-         indiv_per_volume,
-         indiv_tot,
-         Ble,
-         Cep,
-         Col,
-         Eug,
-         Eup,
-         Lox,
-         Pau,
-         Pca,
-         Spi,
-         Spi_te,
-         Tet)
+### Average videos
+
+ds_biomass_abund = ds_biomass_abund %>%
+  group_by(
+    culture_ID,
+    patch_size,
+    patch_size_volume,
+    disturbance,
+    metaecosystem_type,
+    time_point,
+    day,
+    metaecosystem,
+    system_nr,
+    eco_metaeco_type
+  ) %>%
+  summarise(
+    bioarea_per_volume = mean(bioarea_per_volume),
+    bioarea_tot = mean(bioarea_tot),
+    indiv_per_volume = mean(indiv_per_volume),
+    indiv_tot = mean(indiv_tot),
+    Ble = mean(Ble),
+    Cep = mean(Cep),
+    Col = mean(Col),
+    Eug = mean(Eug),
+    Eup = mean(Eup),
+    Lox = mean(Lox),
+    Pau = mean(Pau),
+    Pca = mean(Pca),
+    Spi = mean(Spi),
+    Spi_te = mean(Spi_te),
+    Tet = mean(Tet)
+  ) %>%
+  ungroup()
 ```
 
 ```{r calculate_alpha_diversity_(ds_biomass_abund)}

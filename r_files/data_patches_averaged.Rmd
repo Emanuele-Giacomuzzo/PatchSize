@@ -58,7 +58,6 @@ ds_patches_averaged = ds_biomass_abund %>%
            day) %>%
   summarise(
     sample_size = n(),
-    
     baseline_bioarea = mean(baseline_bioarea_across_videos),
     baseline_indiv_per_volume = mean(indiv_per_volume_across_videos),
     baseline_species_richness = mean(species_richness_across_videos),
@@ -74,7 +73,6 @@ ds_patches_averaged = ds_biomass_abund %>%
     baseline_Spi = mean(Spi_across_videos),
     baseline_Spi_te = mean(Spi_te_across_videos),
     baseline_Tet = mean(Tet_across_videos),
-    
     bioarea_per_volume_mean = mean(bioarea_per_volume_across_videos),
     bioarea_per_volume_sd = sd(bioarea_per_volume_across_videos),
     indiv_per_volume_mean = mean(indiv_per_volume_across_videos),
@@ -183,6 +181,7 @@ for (disturbance_input in c("low", "high")) {
       row_n = row_n + 1
       
       eco_metaeco_treatment = treatments_and_controls$treatment[treatment_n]
+      
       treatment_row = ds_patches_averaged %>%
         filter(
           disturbance == disturbance_input,
@@ -191,6 +190,7 @@ for (disturbance_input in c("low", "high")) {
         )
       
       eco_metaeco_control = treatments_and_controls$control[treatment_n]
+      
       control_row = ds_patches_averaged %>%
         filter(
           disturbance == disturbance_input,

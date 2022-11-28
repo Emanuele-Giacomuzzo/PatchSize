@@ -30,11 +30,11 @@ editor_options:
 
 #Set up the environment. 
 
-knitr::opts_chunk$set(message = FALSE)#, cache=TRUE)
+knitr::opts_chunk$set(message = FALSE, cache=TRUE)
 rm( list = ls(  ) )
 cat( "\014" )
 start_time = Sys.time()
-recompute_analyses = FALSE #Lengthy analyses have been suppressed. Set recompute_analyses = TRUE to redo them. 
+recompute_analyses = TRUE #Lengthy analyses have been suppressed. Set recompute_analyses = TRUE to redo them. 
 ```
 
 ```{r packages, echo = FALSE, results = FALSE, message = FALSE, cache = FALSE}
@@ -117,7 +117,8 @@ last_time_point = 7
 n_time_points = 8
 
 first_perturbation_day = 5
-perturbation_days = c(5, 9, 13, 17, 21, 25)
+resource_flow_days = c(5, 9, 13, 17, 21, 25)
+sampling_days = c(0, 4, 8, 12, 16, 20, 24, 28)
 
 system_nr_metaecosystems = 16:70
 ecosystems_to_take_off = 60 #Culture ID = 60 because it was spilled (isolated small patch, high disturbance, system nr = 40)
@@ -129,7 +130,7 @@ n_cultures = 110
 culture_info = read.csv(here("data", "PatchSizePilot_culture_info.csv"), header = TRUE); eco_metaeco_types = unique(culture_info$eco_metaeco_type)
 ```
 
-```{r}
+```{r echo = FALSE}
 
 #Handle figures. 
 
@@ -142,7 +143,7 @@ presentation_size = 20
 ```
 
 
-```{r}
+```{r echo = FALSE}
 
 #Choose colours. 
 

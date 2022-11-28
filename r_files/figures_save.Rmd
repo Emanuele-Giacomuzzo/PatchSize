@@ -7,115 +7,161 @@ editor_options:
 ---
 
 ```{r save-figures, echo  = FALSE}
-small_patches_presentation = ds_biomass_abund %>%
-  group_by(culture_ID, eco_metaeco_type, patch_size, disturbance, day) %>%
-  summarise(bioarea_per_volume = mean(bioarea_per_volume)) %>%
-  filter(disturbance == disturbance_input,
-         patch_size == "S") %>%
-  ggplot(aes(
-    x = day,
-    y = bioarea_per_volume,
-    group = interaction(day, eco_metaeco_type),
-    fill = eco_metaeco_type
-  )) +
-  geom_boxplot() +
-  labs(x = "Day",
-       y = "Local Bioarea (µm²/μl)",
-       fill = "") +
-  theme_bw() +
-  theme(
-    panel.grid.major = element_blank(),
-    panel.grid.minor = element_blank(),
-    legend.position = c(.95, .95),
-    legend.justification = c("right", "top"),
-    legend.box.just = "right",
-    legend.margin = margin(6, 6, 6, 6),
-    text = element_text(size = 15)
-  ) +
-  scale_fill_manual(values = c(colour_isolated, colour_different_size, colour_same_size),
-                    labels = c(
-    "Small isolated",
-    "Small connected to large",
-    "Small connected to small"
-  )) +
-  scale_x_continuous(breaks = c(0, 4, 8, 12, 16, 20, 24, 28)) +
-  geom_vline(
-    xintercept = perturbation_days[1] + 0.7,
-    linetype = "dotdash",
-    color = "grey",
-    size = 0.7
-  ) +
-  geom_vline(
-    xintercept = perturbation_days[2] + 0.7,
-    linetype = "dotdash",
-    color = "grey",
-    size = 0.7
-  ) +
-  geom_vline(
-    xintercept = perturbation_days[3] + 0.7,
-    linetype = "dotdash",
-    color = "grey",
-    size = 0.7
-  ) +
-  geom_vline(
-    xintercept = perturbation_days[4] + 0.7,
-    linetype = "dotdash",
-    color = "grey",
-    size = 0.7
-  ) +
-  geom_vline(
-    xintercept = perturbation_days[5] + 0.7,
-    linetype = "dotdash",
-    color = "grey",
-    size = 0.7
-  ) +
-  geom_vline(
-    xintercept = perturbation_days[6] + 0.7,
-    linetype = "dotdash",
-    color = "grey",
-    size = 0.7
-  )
+small_patches_presentation = ds_patches_averaged %>%
+      filter(!time_point == 0,
+             disturbance == "low",
+             eco_metaeco_type %in% c("S (S_S)", "S (S_L)")) %>%
+      ggplot(aes(
+        x = day,
+        y = bioarea_per_volume_d,
+        color = eco_metaeco_type
+      )) +
+      geom_point(position = position_dodge(0.5)) +
+      geom_line(position = position_dodge(0.5)) +
+      geom_errorbar(
+        aes(ymin = bioarea_per_volume_d_lower,
+            ymax = bioarea_per_volume_d_upper),
+        width = .2,
+        position = position_dodge(0.5)
+      ) +
+      labs(
+        x = "Day",
+        y = "Bioarea Density Effect Size (Hedge's d)",
+        color = ""
+      ) +
+      scale_color_discrete(
+        labels = c("Small connected to large",
+                   "Small connnected to small")
+      ) +
+      scale_x_continuous(breaks = unique(ds_patches_averaged$day)) +
+      theme_bw() +
+      theme(
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        legend.position = "none"
+      ) +
+      geom_vline(
+        xintercept = resource_flow_days[1] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = resource_flow_days[2] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = resource_flow_days[3] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = resource_flow_days[4] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = resource_flow_days[5] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = resource_flow_days[6] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_hline(
+        yintercept = 0,
+        linetype = "dotted",
+        color = "black",
+        size = 0.7
+      )
 
 small_patches_presentation
 
-ggsave(here("results", "biomass", "presentation_small_patches.jpg"), 
+ggsave(here("results", "presentation", "presentation_small_patches.jpg"), 
        small_patches_presentation + labs(title = ""), 
        units = publication_unit,
        width = 17, 
        height = publication_height)
 
 metaecos_presentation = ds_regional_biomass %>%
-          filter(disturbance == disturbance_input) %>%
-          filter (metaecosystem_type == "S_L" |
-                  metaecosystem_type == "M_M") %>%
-          ggplot (aes(x = day,
-                      y = total_regional_bioarea,
-                      group = interaction(day, metaecosystem_type),
-                      fill = metaecosystem_type)) +
-          geom_boxplot() +
-          labs(x = "Day", 
-               y = "Regional Bioarea (µm²)",
-               color = '', 
-               fill = '') +
-          scale_fill_discrete(labels = c("Medium-Medium", 
-                                         "Small-Large")) +
-          theme_bw() +
-          theme(panel.grid.major = element_blank(), 
-                panel.grid.minor = element_blank(),
-                legend.position = c(.95, .95),
-                legend.justification = c("right", "top"),
-                legend.box.just = "right",
-                legend.margin = margin(6, 6, 6, 6),
-                text = element_text(size = 15))  +
-          geom_vline(xintercept = first_perturbation_day + 0.7, 
-                     linetype = "dotdash", 
-                     color = "grey", 
-                     size = 0.7) +
-  scale_x_continuous(breaks = c(0, 4, 8, 12, 16, 20, 24, 28))
+      filter(disturbance == "low") %>%
+      filter (metaecosystem_type == "S_L" |
+                metaecosystem_type == "M_M") %>%
+      ggplot (
+        aes(
+          x = day,
+          y = total_regional_bioarea,
+          group = interaction(day, metaecosystem_type),
+          fill = metaecosystem_type
+        )
+      ) +
+      geom_boxplot() +
+      labs(
+        x = "Day",
+        y = "Meta-ecosystem Total Bioarea (µm²)",
+        color = '',
+        fill = ''
+      ) +
+      scale_fill_manual(
+        values = c(colour_MM, colour_SL),
+        labels = c("Medium-Medium",
+                   "Small-Large")
+      ) +
+      theme_bw() +
+      theme(
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        legend.position = "none"
+      )  +
+      scale_x_continuous(breaks = unique(ds_regional_biomass$day)) +
+      geom_vline(
+        xintercept = resource_flow_days[1] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = resource_flow_days[2] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = resource_flow_days[3] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = resource_flow_days[4] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = resource_flow_days[5] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = resource_flow_days[6] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      )
 
 metaecos_presentation
   
-ggsave(here("results", "biomass", "presentation_metaecos.jpg"), 
+ggsave(here("results", "presentation", "presentation_metaecos.jpg"), 
        metaecos_presentation + labs(title = ""), 
        units = publication_unit,
        width = 17, 

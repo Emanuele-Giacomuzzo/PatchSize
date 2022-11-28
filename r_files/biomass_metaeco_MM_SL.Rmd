@@ -50,37 +50,37 @@ for (disturbance_input in c("low", "high")) {
       ) +
       scale_x_continuous(breaks = unique(ds_regional_biomass$day)) +
       geom_vline(
-        xintercept = perturbation_days[1] + 0.7,
+        xintercept = resource_flow_days[1] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[2] + 0.7,
+        xintercept = resource_flow_days[2] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[3] + 0.7,
+        xintercept = resource_flow_days[3] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[4] + 0.7,
+        xintercept = resource_flow_days[4] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[5] + 0.7,
+        xintercept = resource_flow_days[5] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[6] + 0.7,
+        xintercept = resource_flow_days[6] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
@@ -126,37 +126,37 @@ for (disturbance_input in c("low", "high")) {
       )  +
       scale_x_continuous(breaks = unique(ds_regional_biomass$day)) +
       geom_vline(
-        xintercept = perturbation_days[1] + 0.7,
+        xintercept = resource_flow_days[1] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[2] + 0.7,
+        xintercept = resource_flow_days[2] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[3] + 0.7,
+        xintercept = resource_flow_days[3] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[4] + 0.7,
+        xintercept = resource_flow_days[4] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[5] + 0.7,
+        xintercept = resource_flow_days[5] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[6] + 0.7,
+        xintercept = resource_flow_days[6] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
@@ -386,6 +386,7 @@ null_model = lm(total_regional_bioarea ~
             baseline_bioarea,
           data = data)
 
+anova(full_model, null_model)
 AIC(full_model, null_model)
 ```
 
@@ -462,7 +463,8 @@ null_model = lm(total_regional_bioarea ~
             baseline_bioarea,
           data = data)
 
-AIC(full_model, null_model)
+anova(full_model, null_model)
+AIC(full_model, null_model) 
 ```
 
 ```{r}
@@ -526,18 +528,21 @@ for(disturbance_input in c("low", "high")) {
 ```
 
 ```{r}
-full_model = lm(total_regional_bioarea ~
-            metaecosystem_type +
-            disturbance +
-            baseline_bioarea +
-            metaecosystem_type * disturbance,
-          data = data)
+full_model = lm(
+  total_regional_bioarea ~
+    metaecosystem_type +
+    disturbance +
+    baseline_bioarea +
+    metaecosystem_type * disturbance,
+  data = data
+  )
 
 null_model = lm(total_regional_bioarea ~
-            disturbance +
-            baseline_bioarea,
-          data = data)
+                  disturbance +
+                  baseline_bioarea,
+                data = data)
 
+anova(full_model, null_model)
 AIC(full_model, null_model)
 ```
 

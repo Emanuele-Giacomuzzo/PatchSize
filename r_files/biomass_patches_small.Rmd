@@ -51,37 +51,37 @@ for (disturbance_input in c("low", "high")) {
       )  +
       scale_x_continuous(breaks = unique(ds_biomass_abund$day)) +
       geom_vline(
-        xintercept = perturbation_days[1] + 0.7,
+        xintercept = resource_flow_days[1] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[2] + 0.7,
+        xintercept = resource_flow_days[2] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[3] + 0.7,
+        xintercept = resource_flow_days[3] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[4] + 0.7,
+        xintercept = resource_flow_days[4] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[5] + 0.7,
+        xintercept = resource_flow_days[5] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[6] + 0.7,
+        xintercept = resource_flow_days[6] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
@@ -130,37 +130,37 @@ for (disturbance_input in c("low", "high")) {
       ) +
       scale_x_continuous(breaks = unique(ds_biomass_abund$day)) +
       geom_vline(
-        xintercept = perturbation_days[1] + 0.7,
+        xintercept = resource_flow_days[1] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[2] + 0.7,
+        xintercept = resource_flow_days[2] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[3] + 0.7,
+        xintercept = resource_flow_days[3] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[4] + 0.7,
+        xintercept = resource_flow_days[4] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[5] + 0.7,
+        xintercept = resource_flow_days[5] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[6] + 0.7,
+        xintercept = resource_flow_days[6] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
@@ -174,10 +174,9 @@ for (disturbance_input in c("low", "high")) {
 for (disturbance_input in c("low", "high")) {
   print(
     ds_patches_averaged %>%
-      filter(!time_point == 0) %>% #At time point 0 all cultures were the same
-      filter(disturbance == disturbance_input) %>%
-      filter(eco_metaeco_type == "S (S_S)" |
-               eco_metaeco_type == "S (S_L)") %>%
+      filter(!time_point == 0,
+             disturbance == disturbance_input,
+             eco_metaeco_type %in% c("S (S_S)", "S (S_L)")) %>%
       ggplot(aes(
         x = day,
         y = bioarea_per_volume_d,
@@ -209,37 +208,37 @@ for (disturbance_input in c("low", "high")) {
         legend.position = "bottom"
       ) +
       geom_vline(
-        xintercept = perturbation_days[1] + 0.7,
+        xintercept = resource_flow_days[1] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[2] + 0.7,
+        xintercept = resource_flow_days[2] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[3] + 0.7,
+        xintercept = resource_flow_days[3] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[4] + 0.7,
+        xintercept = resource_flow_days[4] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[5] + 0.7,
+        xintercept = resource_flow_days[5] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[6] + 0.7,
+        xintercept = resource_flow_days[6] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
@@ -254,7 +253,7 @@ for (disturbance_input in c("low", "high")) {
 }
 ```
 
-#### Model 
+#### Model
 
 Let's test our hypothesis that small patches connected to large had more bioarea density. To do so, we will use a linear model. As we are using an effect size (control = isolated small), we have pulled all the replicates together and we cannot include random effects. We will exclude time point 0 because there all the cultures were the same (we did not measure each culture at day 0, but we measured the large bottle from which we created all cultures). We excluded the data points of time point = 1 because disturbance and ecosystem type couldn't have had an effect, but we included them as baseline_bioareas. We are now including both baseline_bioareas and their interaction with time, as baseline_bioareas should have less of an effect as time goes by.
 
@@ -300,8 +299,13 @@ null_model = lm(bioarea_per_volume_d ~
                   day : baseline_bioarea,
                   data = filtered_data)
 
-anova(full_model, null_model)
 AIC(full_model, null_model)
+
+anova = anova(full_model, null_model)
+anova
+
+p_value = anova$`Pr(>F)`[2]
+p_value = round(p_value, digits = 3)
 ```
 
 Let's then do some model diagnostics.
@@ -328,4 +332,12 @@ R2_full = round(R2_full, digits = 2)
 R2_P = round(R2_P, digits = 2)
 ```
 
-The adjusted R squared of the model is `r R2_full` and the adjusted R squared of patch type is `r R2_P` (which includes also its interaction with disturbance). I don't think it's necessary to look at effect sizes at different time points.
+-   Full Model
+
+    -   Adjusted R2 = `r R2_full`
+
+-   Patch Type (includes: (1) Patch Type; (2) Patch Type \* Day; and (3) Patch Type \* Disturbance)
+
+    -   p value = `r p_value`
+
+    -   Adjusted R2 = `r R2_P`

@@ -39,9 +39,9 @@ long_dataset = ds_biomass_abund %>%
 for (species_input in 1:n_protist_species) {
   print(
      long_dataset %>%
-      filter(disturbance == disturbance_input) %>%
-      filter(patch_size == patch_size_input) %>%
-      filter(species == protist_species[species_input]) %>%
+      filter(disturbance == disturbance_input,
+             patch_size == patch_size_input,
+             species == protist_species[species_input]) %>%
       ggplot(
         aes(
           x = day,
@@ -73,37 +73,37 @@ for (species_input in 1:n_protist_species) {
       )  +
       scale_x_continuous(breaks = unique(ds_biomass_abund$day)) +
       geom_vline(
-        xintercept = perturbation_days[1] + 0.7,
+        xintercept = resource_flow_days[1] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[2] + 0.7,
+        xintercept = resource_flow_days[2] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[3] + 0.7,
+        xintercept = resource_flow_days[3] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[4] + 0.7,
+        xintercept = resource_flow_days[4] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[5] + 0.7,
+        xintercept = resource_flow_days[5] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[6] + 0.7,
+        xintercept = resource_flow_days[6] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
@@ -150,37 +150,37 @@ ds_patches_averaged %>%
         legend.position = "bottom"
       ) +
       geom_vline(
-        xintercept = perturbation_days[1] + 0.7,
+        xintercept = resource_flow_days[1] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[2] + 0.7,
+        xintercept = resource_flow_days[2] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[3] + 0.7,
+        xintercept = resource_flow_days[3] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[4] + 0.7,
+        xintercept = resource_flow_days[4] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[5] + 0.7,
+        xintercept = resource_flow_days[5] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[6] + 0.7,
+        xintercept = resource_flow_days[6] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
@@ -227,37 +227,37 @@ ds_patches_averaged %>%
         legend.position = "bottom"
       ) +
       geom_vline(
-        xintercept = perturbation_days[1] + 0.7,
+        xintercept = resource_flow_days[1] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[2] + 0.7,
+        xintercept = resource_flow_days[2] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[3] + 0.7,
+        xintercept = resource_flow_days[3] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[4] + 0.7,
+        xintercept = resource_flow_days[4] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[5] + 0.7,
+        xintercept = resource_flow_days[5] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[6] + 0.7,
+        xintercept = resource_flow_days[6] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
@@ -304,37 +304,37 @@ ds_patches_averaged %>%
         legend.position = "bottom"
       ) +
       geom_vline(
-        xintercept = perturbation_days[1] + 0.7,
+        xintercept = resource_flow_days[1] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[2] + 0.7,
+        xintercept = resource_flow_days[2] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[3] + 0.7,
+        xintercept = resource_flow_days[3] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[4] + 0.7,
+        xintercept = resource_flow_days[4] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[5] + 0.7,
+        xintercept = resource_flow_days[5] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[6] + 0.7,
+        xintercept = resource_flow_days[6] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
@@ -381,37 +381,37 @@ ds_patches_averaged %>%
         legend.position = "bottom"
       ) +
       geom_vline(
-        xintercept = perturbation_days[1] + 0.7,
+        xintercept = resource_flow_days[1] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[2] + 0.7,
+        xintercept = resource_flow_days[2] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[3] + 0.7,
+        xintercept = resource_flow_days[3] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[4] + 0.7,
+        xintercept = resource_flow_days[4] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[5] + 0.7,
+        xintercept = resource_flow_days[5] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[6] + 0.7,
+        xintercept = resource_flow_days[6] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
@@ -458,37 +458,37 @@ ds_patches_averaged %>%
         legend.position = "bottom"
       ) +
       geom_vline(
-        xintercept = perturbation_days[1] + 0.7,
+        xintercept = resource_flow_days[1] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[2] + 0.7,
+        xintercept = resource_flow_days[2] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[3] + 0.7,
+        xintercept = resource_flow_days[3] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[4] + 0.7,
+        xintercept = resource_flow_days[4] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[5] + 0.7,
+        xintercept = resource_flow_days[5] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[6] + 0.7,
+        xintercept = resource_flow_days[6] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
@@ -535,37 +535,37 @@ ds_patches_averaged %>%
         legend.position = "bottom"
       ) +
       geom_vline(
-        xintercept = perturbation_days[1] + 0.7,
+        xintercept = resource_flow_days[1] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[2] + 0.7,
+        xintercept = resource_flow_days[2] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[3] + 0.7,
+        xintercept = resource_flow_days[3] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[4] + 0.7,
+        xintercept = resource_flow_days[4] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[5] + 0.7,
+        xintercept = resource_flow_days[5] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[6] + 0.7,
+        xintercept = resource_flow_days[6] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
@@ -612,37 +612,37 @@ ds_patches_averaged %>%
         legend.position = "bottom"
       ) +
       geom_vline(
-        xintercept = perturbation_days[1] + 0.7,
+        xintercept = resource_flow_days[1] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[2] + 0.7,
+        xintercept = resource_flow_days[2] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[3] + 0.7,
+        xintercept = resource_flow_days[3] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[4] + 0.7,
+        xintercept = resource_flow_days[4] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[5] + 0.7,
+        xintercept = resource_flow_days[5] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[6] + 0.7,
+        xintercept = resource_flow_days[6] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
@@ -689,37 +689,37 @@ ds_patches_averaged %>%
         legend.position = "bottom"
       ) +
       geom_vline(
-        xintercept = perturbation_days[1] + 0.7,
+        xintercept = resource_flow_days[1] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[2] + 0.7,
+        xintercept = resource_flow_days[2] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[3] + 0.7,
+        xintercept = resource_flow_days[3] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[4] + 0.7,
+        xintercept = resource_flow_days[4] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[5] + 0.7,
+        xintercept = resource_flow_days[5] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[6] + 0.7,
+        xintercept = resource_flow_days[6] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
@@ -766,37 +766,37 @@ ds_patches_averaged %>%
         legend.position = "bottom"
       ) +
       geom_vline(
-        xintercept = perturbation_days[1] + 0.7,
+        xintercept = resource_flow_days[1] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[2] + 0.7,
+        xintercept = resource_flow_days[2] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[3] + 0.7,
+        xintercept = resource_flow_days[3] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[4] + 0.7,
+        xintercept = resource_flow_days[4] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[5] + 0.7,
+        xintercept = resource_flow_days[5] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[6] + 0.7,
+        xintercept = resource_flow_days[6] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
@@ -843,37 +843,37 @@ ds_patches_averaged %>%
         legend.position = "bottom"
       ) +
       geom_vline(
-        xintercept = perturbation_days[1] + 0.7,
+        xintercept = resource_flow_days[1] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[2] + 0.7,
+        xintercept = resource_flow_days[2] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[3] + 0.7,
+        xintercept = resource_flow_days[3] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[4] + 0.7,
+        xintercept = resource_flow_days[4] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[5] + 0.7,
+        xintercept = resource_flow_days[5] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[6] + 0.7,
+        xintercept = resource_flow_days[6] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
@@ -920,37 +920,37 @@ ds_patches_averaged %>%
         legend.position = "bottom"
       ) +
       geom_vline(
-        xintercept = perturbation_days[1] + 0.7,
+        xintercept = resource_flow_days[1] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[2] + 0.7,
+        xintercept = resource_flow_days[2] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[3] + 0.7,
+        xintercept = resource_flow_days[3] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[4] + 0.7,
+        xintercept = resource_flow_days[4] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[5] + 0.7,
+        xintercept = resource_flow_days[5] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[6] + 0.7,
+        xintercept = resource_flow_days[6] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
@@ -997,37 +997,37 @@ ds_patches_averaged %>%
         legend.position = "bottom"
       ) +
       geom_vline(
-        xintercept = perturbation_days[1] + 0.7,
+        xintercept = resource_flow_days[1] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[2] + 0.7,
+        xintercept = resource_flow_days[2] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[3] + 0.7,
+        xintercept = resource_flow_days[3] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[4] + 0.7,
+        xintercept = resource_flow_days[4] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[5] + 0.7,
+        xintercept = resource_flow_days[5] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[6] + 0.7,
+        xintercept = resource_flow_days[6] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
@@ -1039,102 +1039,6 @@ ds_patches_averaged %>%
         size = 0.7
       )
 ```
-
-
-```{r}
-for (species_input in 1:n_protist_species) {
-  print(
-    ds_biomass_abund %>%
-      group_by(culture_ID, disturbance, patch_size, day, eco_metaeco_type) %>%
-      summarise(
-        Ble = mean(Ble),
-        Cep = mean(Cep),
-        Col = mean(Col),
-        Eup = mean(Eup),
-        Eug = mean(Eug),
-        Lox = mean(Lox),
-        Pau = mean(Pau),
-        Pca = mean(Pca),
-        Spi = mean(Spi),
-        Spi_te = mean(Spi_te),
-        Tet = mean(Tet)
-      ) %>%
-      pivot_longer(Ble:Tet, names_to = "species", values_to = "population_abundance") %>%
-      filter(disturbance == disturbance_input) %>%
-      filter(patch_size == patch_size_input) %>%
-      filter(species == protist_species[species_input]) %>%
-      ggplot(
-        aes(
-          x = day,
-          y = population_abundance,
-          group = interaction(day, eco_metaeco_type),
-          fill = eco_metaeco_type
-        )
-      ) +
-      geom_boxplot() +
-      labs(
-        title = paste0(protist_species[species_input], " (Disturbance = ", disturbance_input, ")"),
-        x = "Day",
-        y = "Abundance (indiv/μl ?)",
-        fill = ""
-      ) +
-      theme_bw() +
-      theme(
-        panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(),
-        legend.position = "bottom"
-      ) +
-      scale_fill_manual(
-        values = c(colour_isolated, colour_different_size, colour_same_size),
-        labels = c(
-          "Small isolated",
-          "Small connected to large",
-          "Small connected to small"
-        )
-      )  +
-      scale_x_continuous(breaks = unique(ds_biomass_abund$day)) +
-      geom_vline(
-        xintercept = perturbation_days[1] + 0.7,
-        linetype = "dotdash",
-        color = "grey",
-        size = 0.7
-      ) +
-      geom_vline(
-        xintercept = perturbation_days[2] + 0.7,
-        linetype = "dotdash",
-        color = "grey",
-        size = 0.7
-      ) +
-      geom_vline(
-        xintercept = perturbation_days[3] + 0.7,
-        linetype = "dotdash",
-        color = "grey",
-        size = 0.7
-      ) +
-      geom_vline(
-        xintercept = perturbation_days[4] + 0.7,
-        linetype = "dotdash",
-        color = "grey",
-        size = 0.7
-      ) +
-      geom_vline(
-        xintercept = perturbation_days[5] + 0.7,
-        linetype = "dotdash",
-        color = "grey",
-        size = 0.7
-      ) +
-      geom_vline(
-        xintercept = perturbation_days[6] + 0.7,
-        linetype = "dotdash",
-        color = "grey",
-        size = 0.7
-      ) +
-      labs(caption = "Vertical grey line: resource flow")
-  )
-  
-}
-```
-
 
 ##### High disturbance
 
@@ -1194,37 +1098,37 @@ for (species_input in 1:n_protist_species) {
       )  +
       scale_x_continuous(breaks = unique(ds_biomass_abund$day)) +
       geom_vline(
-        xintercept = perturbation_days[1] + 0.7,
+        xintercept = resource_flow_days[1] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[2] + 0.7,
+        xintercept = resource_flow_days[2] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[3] + 0.7,
+        xintercept = resource_flow_days[3] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[4] + 0.7,
+        xintercept = resource_flow_days[4] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[5] + 0.7,
+        xintercept = resource_flow_days[5] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[6] + 0.7,
+        xintercept = resource_flow_days[6] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
@@ -1271,37 +1175,37 @@ ds_patches_averaged %>%
         legend.position = "bottom"
       ) +
       geom_vline(
-        xintercept = perturbation_days[1] + 0.7,
+        xintercept = resource_flow_days[1] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[2] + 0.7,
+        xintercept = resource_flow_days[2] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[3] + 0.7,
+        xintercept = resource_flow_days[3] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[4] + 0.7,
+        xintercept = resource_flow_days[4] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[5] + 0.7,
+        xintercept = resource_flow_days[5] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[6] + 0.7,
+        xintercept = resource_flow_days[6] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
@@ -1348,37 +1252,37 @@ ds_patches_averaged %>%
         legend.position = "bottom"
       ) +
       geom_vline(
-        xintercept = perturbation_days[1] + 0.7,
+        xintercept = resource_flow_days[1] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[2] + 0.7,
+        xintercept = resource_flow_days[2] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[3] + 0.7,
+        xintercept = resource_flow_days[3] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[4] + 0.7,
+        xintercept = resource_flow_days[4] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[5] + 0.7,
+        xintercept = resource_flow_days[5] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[6] + 0.7,
+        xintercept = resource_flow_days[6] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
@@ -1425,37 +1329,37 @@ ds_patches_averaged %>%
         legend.position = "bottom"
       ) +
       geom_vline(
-        xintercept = perturbation_days[1] + 0.7,
+        xintercept = resource_flow_days[1] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[2] + 0.7,
+        xintercept = resource_flow_days[2] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[3] + 0.7,
+        xintercept = resource_flow_days[3] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[4] + 0.7,
+        xintercept = resource_flow_days[4] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[5] + 0.7,
+        xintercept = resource_flow_days[5] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[6] + 0.7,
+        xintercept = resource_flow_days[6] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
@@ -1502,37 +1406,37 @@ ds_patches_averaged %>%
         legend.position = "bottom"
       ) +
       geom_vline(
-        xintercept = perturbation_days[1] + 0.7,
+        xintercept = resource_flow_days[1] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[2] + 0.7,
+        xintercept = resource_flow_days[2] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[3] + 0.7,
+        xintercept = resource_flow_days[3] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[4] + 0.7,
+        xintercept = resource_flow_days[4] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[5] + 0.7,
+        xintercept = resource_flow_days[5] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[6] + 0.7,
+        xintercept = resource_flow_days[6] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
@@ -1579,37 +1483,37 @@ ds_patches_averaged %>%
         legend.position = "bottom"
       ) +
       geom_vline(
-        xintercept = perturbation_days[1] + 0.7,
+        xintercept = resource_flow_days[1] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[2] + 0.7,
+        xintercept = resource_flow_days[2] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[3] + 0.7,
+        xintercept = resource_flow_days[3] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[4] + 0.7,
+        xintercept = resource_flow_days[4] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[5] + 0.7,
+        xintercept = resource_flow_days[5] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[6] + 0.7,
+        xintercept = resource_flow_days[6] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
@@ -1656,37 +1560,37 @@ ds_patches_averaged %>%
         legend.position = "bottom"
       ) +
       geom_vline(
-        xintercept = perturbation_days[1] + 0.7,
+        xintercept = resource_flow_days[1] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[2] + 0.7,
+        xintercept = resource_flow_days[2] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[3] + 0.7,
+        xintercept = resource_flow_days[3] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[4] + 0.7,
+        xintercept = resource_flow_days[4] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[5] + 0.7,
+        xintercept = resource_flow_days[5] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[6] + 0.7,
+        xintercept = resource_flow_days[6] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
@@ -1733,37 +1637,37 @@ ds_patches_averaged %>%
         legend.position = "bottom"
       ) +
       geom_vline(
-        xintercept = perturbation_days[1] + 0.7,
+        xintercept = resource_flow_days[1] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[2] + 0.7,
+        xintercept = resource_flow_days[2] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[3] + 0.7,
+        xintercept = resource_flow_days[3] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[4] + 0.7,
+        xintercept = resource_flow_days[4] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[5] + 0.7,
+        xintercept = resource_flow_days[5] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[6] + 0.7,
+        xintercept = resource_flow_days[6] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
@@ -1810,37 +1714,37 @@ ds_patches_averaged %>%
         legend.position = "bottom"
       ) +
       geom_vline(
-        xintercept = perturbation_days[1] + 0.7,
+        xintercept = resource_flow_days[1] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[2] + 0.7,
+        xintercept = resource_flow_days[2] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[3] + 0.7,
+        xintercept = resource_flow_days[3] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[4] + 0.7,
+        xintercept = resource_flow_days[4] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[5] + 0.7,
+        xintercept = resource_flow_days[5] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[6] + 0.7,
+        xintercept = resource_flow_days[6] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
@@ -1887,37 +1791,37 @@ ds_patches_averaged %>%
         legend.position = "bottom"
       ) +
       geom_vline(
-        xintercept = perturbation_days[1] + 0.7,
+        xintercept = resource_flow_days[1] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[2] + 0.7,
+        xintercept = resource_flow_days[2] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[3] + 0.7,
+        xintercept = resource_flow_days[3] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[4] + 0.7,
+        xintercept = resource_flow_days[4] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[5] + 0.7,
+        xintercept = resource_flow_days[5] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[6] + 0.7,
+        xintercept = resource_flow_days[6] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
@@ -1964,37 +1868,37 @@ ds_patches_averaged %>%
         legend.position = "bottom"
       ) +
       geom_vline(
-        xintercept = perturbation_days[1] + 0.7,
+        xintercept = resource_flow_days[1] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[2] + 0.7,
+        xintercept = resource_flow_days[2] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[3] + 0.7,
+        xintercept = resource_flow_days[3] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[4] + 0.7,
+        xintercept = resource_flow_days[4] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[5] + 0.7,
+        xintercept = resource_flow_days[5] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[6] + 0.7,
+        xintercept = resource_flow_days[6] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
@@ -2041,37 +1945,37 @@ ds_patches_averaged %>%
         legend.position = "bottom"
       ) +
       geom_vline(
-        xintercept = perturbation_days[1] + 0.7,
+        xintercept = resource_flow_days[1] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[2] + 0.7,
+        xintercept = resource_flow_days[2] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[3] + 0.7,
+        xintercept = resource_flow_days[3] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[4] + 0.7,
+        xintercept = resource_flow_days[4] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[5] + 0.7,
+        xintercept = resource_flow_days[5] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[6] + 0.7,
+        xintercept = resource_flow_days[6] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
@@ -2118,37 +2022,37 @@ ds_patches_averaged %>%
         legend.position = "bottom"
       ) +
       geom_vline(
-        xintercept = perturbation_days[1] + 0.7,
+        xintercept = resource_flow_days[1] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[2] + 0.7,
+        xintercept = resource_flow_days[2] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[3] + 0.7,
+        xintercept = resource_flow_days[3] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[4] + 0.7,
+        xintercept = resource_flow_days[4] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[5] + 0.7,
+        xintercept = resource_flow_days[5] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = perturbation_days[6] + 0.7,
+        xintercept = resource_flow_days[6] + 0.7,
         linetype = "dotdash",
         color = "grey",
         size = 0.7

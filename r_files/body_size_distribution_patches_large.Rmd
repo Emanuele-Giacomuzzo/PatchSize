@@ -22,9 +22,9 @@ include_graphics(here("gifs", "transition_day_L_high.gif"))
 for(time_point_input in 0:7) {
   print(
     ds_classes_averaged %>%
-      filter(disturbance == "low") %>%
-      filter(eco_metaeco_type == "L (L_L)" | eco_metaeco_type == "L (S_L)") %>%
-      filter(day == time_point_input*4) %>%
+      filter(disturbance == "low",
+             eco_metaeco_type == "L (L_L)" | eco_metaeco_type == "L (S_L)",
+             day == time_point_input*4) %>%
       ggplot(
         aes(
           x = log_size_class,
@@ -54,10 +54,7 @@ for(time_point_input in 0:7) {
       theme(
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
-        legend.position = c(.95, .95),
-        legend.justification = c("right", "top"),
-        legend.box.just = "right",
-        legend.margin = margin(6, 6, 6, 6)
+        legend.position = "bottom"
       ) +
       labs(
         title = paste0("Day = ", (time_point_input*4)),
@@ -75,9 +72,9 @@ for(time_point_input in 0:7) {
 for(time_point_input in 0:7) {
   print(
     ds_classes_averaged %>%
-      filter(disturbance == "low") %>%
-      filter(eco_metaeco_type == "L (L_L)" | eco_metaeco_type == "L (S_L)") %>%
-      filter(day == time_point_input*4) %>%
+      filter(disturbance == "low",
+             eco_metaeco_type == "L (L_L)" | eco_metaeco_type == "L (S_L)",
+             day == time_point_input*4) %>%
       ggplot(
         aes(
           x = log_size_class,
@@ -101,10 +98,7 @@ for(time_point_input in 0:7) {
       theme(
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
-        legend.position = c(.95, .95),
-        legend.justification = c("right", "top"),
-        legend.box.just = "right",
-        legend.margin = margin(6, 6, 6, 6)
+        legend.position = "bottom"
       ) +
       labs(
         title = paste0("Day = ", (time_point_input*4)),
@@ -156,10 +150,7 @@ for(time_point_input in 0:7) {
       theme(
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
-        legend.position = c(.95, .95),
-        legend.justification = c("right", "top"),
-        legend.box.just = "right",
-        legend.margin = margin(6, 6, 6, 6)
+        legend.position = "bottom"
       ) +
       labs(
         title = paste0("Day = ", (time_point_input*4)),
@@ -177,9 +168,9 @@ for(time_point_input in 0:7) {
 for(time_point_input in 0:7) {
   print(
     ds_classes_averaged %>%
-      filter(disturbance == "high") %>%
-      filter(eco_metaeco_type == "L (L_L)" | eco_metaeco_type == "L (S_L)") %>%
-      filter(day == time_point_input*4) %>%
+      filter(disturbance == "high",
+             eco_metaeco_type == "L (L_L)" | eco_metaeco_type == "L (S_L)",
+             day == time_point_input*4) %>%
       ggplot(
         aes(
           x = log_size_class,
@@ -199,20 +190,17 @@ for(time_point_input in 0:7) {
         labels = c("Large connected to large",
                    "Large connected to small")
       ) +
-      theme_bw() +
-      theme(
-        panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(),
-        legend.position = c(.95, .95),
-        legend.justification = c("right", "top"),
-        legend.box.just = "right",
-        legend.margin = margin(6, 6, 6, 6)
-      ) +
       labs(
         title = paste0("Day = ", (time_point_input*4)),
         x = 'Log size (μm2)',
         y = 'Log abundance + 1 (indiv/μm2)',
         color = ""
+      ) + 
+      theme_bw() +
+      theme(
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        legend.position = "bottom"
       )
   )
 }
