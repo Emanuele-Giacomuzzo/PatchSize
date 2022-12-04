@@ -16,7 +16,7 @@ editor_options:
 ```{r abundance-isolated-patches-single-ecosystem-plots}
 for (disturbance_input in c("low", "high")) {
   print(
-    ds_biomass_abund %>%
+    ds_patches %>%
       filter (disturbance == disturbance_input,
               metaecosystem == "no") %>%
       group_by (system_nr, day, patch_size) %>%
@@ -61,7 +61,7 @@ for (disturbance_input in c("low", "high")) {
 ```{r abundance-isolated-patches-boxplots}
 for (disturbance_input in c("low", "high")) {
   print(
-    ds_biomass_abund %>%
+    ds_patches %>%
       filter(disturbance == disturbance_input,
              metaecosystem == "no") %>%
       ggplot(
@@ -107,7 +107,7 @@ Let's see how linear is the time trend of bioarea and if we can make it more lin
 **Linearity of regional bioarea \~ time**
 
 ```{r abundance-isolated-patches-plot-linearity}
-ds_biomass_abund %>%
+ds_patches %>%
   filter(time_point >= 2) %>%
   ggplot(aes(x = day,
              y = indiv_per_volume,
@@ -120,7 +120,7 @@ ds_biomass_abund %>%
 ```{r abundance-isolated-patches-linearity-test}
 linear_model = lm(indiv_per_volume ~ 
                     day, 
-                  data = ds_biomass_abund %>% 
+                  data = ds_patches %>% 
                             filter(time_point >= 2) %>%
                             filter(metaecosystem == "no"))
 
@@ -140,7 +140,7 @@ $$
 full = lmer(indiv_per_volume ~
                      day * patch_size_volume * disturbance +
                      (day | system_nr),
-                     data = ds_biomass_abund %>%
+                     data = ds_patches %>%
                             filter(time_point >= 2) %>%
                             filter(metaecosystem == "no"),
                    REML = FALSE,
@@ -161,7 +161,7 @@ full = lmer(indiv_per_volume ~
 no_correlation = lmer(indiv_per_volume ~
                      day * patch_size_volume * disturbance +
                      (day || system_nr),
-                     data = ds_biomass_abund %>%
+                     data = ds_patches %>%
                             filter(time_point >= 2) %>%
                             filter(metaecosystem == "no"),
                    REML = FALSE,
@@ -178,7 +178,7 @@ No.
 no_random_slopes = lmer(indiv_per_volume ~
                      day * patch_size_volume * disturbance +
                      (1 | system_nr),
-                     data = ds_biomass_abund %>%
+                     data = ds_patches %>%
                             filter(time_point >= 2) %>%
                             filter(metaecosystem == "no"),
                    REML = FALSE,
@@ -200,7 +200,7 @@ no_threeway = lmer(indiv_per_volume ~
                      day : disturbance +
                      patch_size_volume : disturbance + 
                      (1 | system_nr),
-                     data = ds_biomass_abund %>%
+                     data = ds_patches %>%
                             filter(time_point >= 2) %>%
                             filter(metaecosystem == "no"),
                    REML = FALSE,
@@ -222,7 +222,7 @@ no_TM = lmer(indiv_per_volume ~
                      day : disturbance +
                      patch_size_volume : disturbance + 
                      (1 | system_nr),
-                     data = ds_biomass_abund %>%
+                     data = ds_patches %>%
                             filter(time_point >= 2) %>%
                             filter(metaecosystem == "no"),
                    REML = FALSE,
@@ -243,7 +243,7 @@ no_TD = lmer(indiv_per_volume ~
                      day : patch_size_volume + 
                      patch_size_volume : disturbance + 
                      (1 | system_nr),
-                     data = ds_biomass_abund %>%
+                     data = ds_patches %>%
                             filter(time_point >= 2) %>%
                             filter(metaecosystem == "no"),
                    REML = FALSE,
@@ -263,7 +263,7 @@ no_MD = lmer(indiv_per_volume ~
                      disturbance +
                      day : patch_size_volume + 
                      (1 | system_nr),
-                     data = ds_biomass_abund %>%
+                     data = ds_patches %>%
                             filter(time_point >= 2) %>%
                             filter(metaecosystem == "no"),
                    REML = FALSE,
@@ -333,7 +333,7 @@ t2_t5 = lmer(indiv_per_volume ~
                      disturbance +
                      day : patch_size_volume + 
                      (1 | system_nr),
-                     data = ds_biomass_abund %>%
+                     data = ds_patches %>%
                             filter(time_point >= 2) %>%
                             filter(time_point <= 5) %>%
                             filter(metaecosystem == "no"),

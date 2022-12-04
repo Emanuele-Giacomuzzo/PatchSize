@@ -12,7 +12,7 @@ editor_options:
 ```{r plot-alpha-diversity-of-large-patches-with-single-replicates}
 for (disturbance_input in c("low", "high")) {
   print(
-    ds_biomass_abund %>%
+    ds_patches %>%
       filter(disturbance == disturbance_input) %>%
       filter(patch_size == "L") %>%
       ggplot(
@@ -46,7 +46,7 @@ for (disturbance_input in c("low", "high")) {
             "Large connected to small"
           )
         )  +
-      scale_x_continuous(breaks = unique(ds_biomass_abund$day)) +
+      scale_x_continuous(breaks = unique(ds_patches$day)) +
       geom_vline(
         xintercept = resource_flow_days[1] + 0.7,
         linetype = "dotdash",
@@ -90,7 +90,7 @@ for (disturbance_input in c("low", "high")) {
 ```{r}
 for (disturbance_input in c("low", "high")) {
   print(
-    ds_biomass_abund %>%
+    ds_patches %>%
       filter(disturbance == disturbance_input,
              patch_size == "L") %>%
       ggplot(
@@ -123,7 +123,7 @@ for (disturbance_input in c("low", "high")) {
            "Large connected to small"
          )
        ) +
-      scale_x_continuous(breaks = unique(ds_biomass_abund$day)) +
+      scale_x_continuous(breaks = unique(ds_patches$day)) +
       geom_vline(
         xintercept = resource_flow_days[1] + 0.7,
         linetype = "dotdash",

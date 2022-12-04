@@ -52,7 +52,7 @@ for (class in 1:nr_of_size_classes) {
           summarise(size_class_abundance = n()) %>%
           pull(size_class_abundance)
         
-        single_videos_rows[[row]] = ds_biomass_abund %>%
+        single_videos_rows[[row]] = ds_patches %>%
           filter(
             time_point == time_point_input,
             culture_ID == culture_ID_input

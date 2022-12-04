@@ -16,7 +16,7 @@ Do a meta-ecosystem with patches of the same size and a meta-ecosystems with pat
 ```{r S_L_from_isolated-single-systems-plots, message=FALSE}
 for (disturbance_input in c("low", "high")){
   
-  print(ds_regional_biomass %>%
+  print(ds_metaecosystems %>%
           filter ( disturbance == disturbance_input) %>%
           filter (metaecosystem_type == "S_L" | 
                   metaecosystem_type == "S_L_from_isolated") %>%
@@ -52,7 +52,7 @@ for (disturbance_input in c("low", "high")){
 ```{r S_L_from_isolated-single-boxplots}
 for (disturbance_input in c("low", "high")){
 
-  print(ds_regional_biomass %>%
+  print(ds_metaecosystems %>%
           filter(disturbance == disturbance_input) %>%
           filter(metaecosystem_type == "S_L" | 
                  metaecosystem_type == "S_L_from_isolated") %>%
@@ -82,3 +82,67 @@ for (disturbance_input in c("low", "high")){
 
 
 ##### Modelling
+
+```{r}
+#Compute possible combinations for the isolated meta-ecosystems. 
+
+Ma_Mh_from_isolated_system_nrs = ds_equally_dominated %>%
+  filter(metaecosystem_type == "Ma_Mh_from_isolated") %>%
+  pull(system_nr) %>%
+  unique()
+
+Ma_Mh_system_nrs = ds_equally_dominated %>%
+  filter(metaecosystem_type == "Ma_Mh") %>%
+  pull(system_nr) %>%
+  unique()
+
+possible_isolated_combinations = combn(x = Ma_Mh_from_isolated_system_nrs, 
+                                       m = length(Ma_Mh_system_nrs))
+
+#Bootstrap from all combinations the p value and delta AIC
+
+total_nr_of_combinations = ncol(possible_isolated_combinations)
+
+for (combination_nr in 1:total_nr_of_combinations){
+  
+  start = Sys.time()
+
+  combination = possible_isolated_combinations[, combination_nr]
+  
+  ds_equally_dominated_with_combination = ds_equally_dominated %>%
+    filter(metaecosystem_type == "Ma_Mh" | system_nr %in% combination)
+  
+  full_model = lmer(
+    total_regional_bioarea ~
+      day +
+      metaecosystem_type +
+      day:metaecosystem_type +
+      (day | system_nr),
+    data = ds_equally_dominated_with_combination,
+    REML = FALSE
+  )
+  
+  no_metaecosystem_type = lmer(total_regional_bioarea ~
+                                 day +
+                                 (day | system_nr),
+                               data = ds_equally_dominated_with_combination,
+                               REML = FALSE)
+  
+  anova = anova(full_model, no_metaecosystem_type)
+  
+  p_value = anova$`Pr(>Chisq)`[2]
+  
+  AIC_full_model = tidy(anova) %>%
+    filter(term == "full_model") %>%
+    pull(AIC)
+  
+  AIC_null_model = tidy(anova) %>%
+    filter(term == "no_metaecosystem_type") %>%
+    pull(AIC)
+  
+  end = Sys.time()
+  
+  end - start
+}
+```
+

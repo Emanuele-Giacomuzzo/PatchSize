@@ -7,11 +7,11 @@ editor_options:
   chunk_output_type: console
 ---
 
-### Patch biomass & community density (`ds_biomass_abund`)
+### Patch biomass & community density (`ds_patches`)
 
-This dataset is the master dataset containing all the information about the biomass of the experiment.
+-   Every row is a patch at a certain time point.
 
-```{r import_population_data_(ds_biomass_abund), message = FALSE, echo = TRUE}
+```{r import_population_data_(ds_patches), message = FALSE, echo = TRUE}
 
 #Import data
 
@@ -53,7 +53,7 @@ t7 = merge(t7, species_ID_t7, by = "file")
 rm(species_ID_t0, species_ID_t1, species_ID_t2, species_ID_t3, species_ID_t4, species_ID_t5, species_ID_t6, species_ID_t7)
 ```
 
-```{r tidy_time_points_(ds_biomass_abund), message = FALSE, echo = TRUE}
+```{r tidy_time_points_(ds_patches), message = FALSE, echo = TRUE}
 
 #Manipulate the columns "time" & "replicate_video"
 
@@ -87,7 +87,7 @@ t0 = t0[rep(row.names(t0), nr_of_cultures),] %>%
    mutate(culture_ID = rep(1:nr_of_cultures, times = nr_of_videos))
 ```
 
-```{r ds_biomass_abund-join-time-points, message = FALSE, echo = TRUE}
+```{r ds_patches-join-time-points, message = FALSE, echo = TRUE}
 
 #Merge time points
 
@@ -99,46 +99,46 @@ t4 = merge(culture_info,t4, by = "culture_ID")
 t5 = merge(culture_info,t5, by = "culture_ID")
 t6 = merge(culture_info,t6, by = "culture_ID")
 t7 = merge(culture_info,t7, by = "culture_ID")
-ds_biomass_abund = rbind(t0, t1, t2, t3, t4, t5, t6, t7)
+ds_patches = rbind(t0, t1, t2, t3, t4, t5, t6, t7)
 rm(t0, t1, t2, t3, t4, t5, t6, t7)
 ```
 
-```{r ds_biomass_abund-tidy-dataset-columns, message = FALSE, echo = TRUE}
+```{r ds_patches-tidy-dataset-columns, message = FALSE, echo = TRUE}
 
 #Tidy dataset. 
 
-ds_biomass_abund = ds_biomass_abund %>%
+ds_patches = ds_patches %>%
   filter(! culture_ID %in% ecosystems_to_take_off)
 
-ds_biomass_abund$time_point[ds_biomass_abund$time_point=="t0"] = 0
-ds_biomass_abund$time_point[ds_biomass_abund$time_point=="t1"] = 1
-ds_biomass_abund$time_point[ds_biomass_abund$time_point=="t2"] = 2
-ds_biomass_abund$time_point[ds_biomass_abund$time_point=="t3"] = 3
-ds_biomass_abund$time_point[ds_biomass_abund$time_point=="t4"] = 4
-ds_biomass_abund$time_point[ds_biomass_abund$time_point=="t5"] = 5
-ds_biomass_abund$time_point[ds_biomass_abund$time_point=="t6"] = 6
-ds_biomass_abund$time_point[ds_biomass_abund$time_point=="t7"] = 7
-ds_biomass_abund$time_point = as.character(ds_biomass_abund$time_point)
+ds_patches$time_point[ds_patches$time_point=="t0"] = 0
+ds_patches$time_point[ds_patches$time_point=="t1"] = 1
+ds_patches$time_point[ds_patches$time_point=="t2"] = 2
+ds_patches$time_point[ds_patches$time_point=="t3"] = 3
+ds_patches$time_point[ds_patches$time_point=="t4"] = 4
+ds_patches$time_point[ds_patches$time_point=="t5"] = 5
+ds_patches$time_point[ds_patches$time_point=="t6"] = 6
+ds_patches$time_point[ds_patches$time_point=="t7"] = 7
+ds_patches$time_point = as.character(ds_patches$time_point)
 
-ds_biomass_abund$day = NA
-ds_biomass_abund$day[ds_biomass_abund$time_point== 0] = 0
-ds_biomass_abund$day[ds_biomass_abund$time_point== 1] = 4
-ds_biomass_abund$day[ds_biomass_abund$time_point== 2] = 8
-ds_biomass_abund$day[ds_biomass_abund$time_point== 3] = 12
-ds_biomass_abund$day[ds_biomass_abund$time_point== 4] = 16
-ds_biomass_abund$day[ds_biomass_abund$time_point== 5] = 20
-ds_biomass_abund$day[ds_biomass_abund$time_point== 6] = 24
-ds_biomass_abund$day[ds_biomass_abund$time_point== 7] = 28
+ds_patches$day = NA
+ds_patches$day[ds_patches$time_point== 0] = 0
+ds_patches$day[ds_patches$time_point== 1] = 4
+ds_patches$day[ds_patches$time_point== 2] = 8
+ds_patches$day[ds_patches$time_point== 3] = 12
+ds_patches$day[ds_patches$time_point== 4] = 16
+ds_patches$day[ds_patches$time_point== 5] = 20
+ds_patches$day[ds_patches$time_point== 6] = 24
+ds_patches$day[ds_patches$time_point== 7] = 28
 
-ds_biomass_abund = ds_biomass_abund %>%
+ds_patches = ds_patches %>%
   mutate(bioarea_tot = bioarea_per_volume * (patch_size_volume * 1000)) %>% #bioarea_per_volume in µm2, patch_size_vol in ml 
   mutate(indiv_tot = indiv_per_volume * (patch_size_volume * 1000))
 
-ds_for_evaporation = ds_biomass_abund #Keep this dataset for the evaporation effects
+ds_for_evaporation = ds_patches #Keep this dataset for the evaporation effects
 
 ### Average videos
 
-ds_biomass_abund = ds_biomass_abund %>%
+ds_patches = ds_patches %>%
   group_by(
     culture_ID,
     patch_size,
@@ -171,16 +171,16 @@ ds_biomass_abund = ds_biomass_abund %>%
   ungroup()
 ```
 
-```{r calculate_alpha_diversity_(ds_biomass_abund)}
+```{r calculate_alpha_diversity_(ds_patches)}
 
 #Calculate species richness
 
-ds_biomass_abund$shannon = NA
-ds_biomass_abund$simpson = NA
-ds_biomass_abund$inv_simpson = NA
-for (row in 1:nrow(ds_biomass_abund)){
+ds_patches$shannon = NA
+ds_patches$simpson = NA
+ds_patches$inv_simpson = NA
+for (row in 1:nrow(ds_patches)){
   
-  species_vector = ds_biomass_abund %>%
+  species_vector = ds_patches %>%
     slice(row) %>%
     select(Ble:Tet)
   
@@ -188,14 +188,14 @@ for (row in 1:nrow(ds_biomass_abund)){
   simpson = diversity(species_vector, index = "simpson")
   inv_simpson = diversity(species_vector, index = "invsimpson")
   
-  ds_biomass_abund[row,]$shannon = shannon
-  ds_biomass_abund[row,]$simpson = simpson
-  ds_biomass_abund[row,]$inv_simpson = inv_simpson
+  ds_patches[row,]$shannon = shannon
+  ds_patches[row,]$simpson = simpson
+  ds_patches[row,]$inv_simpson = inv_simpson
   
   
 }
 
-ds_biomass_abund = ds_biomass_abund %>%
+ds_patches = ds_patches %>%
   mutate(Ble_presence = case_when(Ble > 0 ~ 1,
                                   TRUE ~ 0)) %>%
   mutate(Cep_presence = case_when(Cep > 0 ~ 1,
@@ -230,7 +230,7 @@ ds_biomass_abund = ds_biomass_abund %>%
                             Spi_te_presence +
                             Tet_presence)
 
-ds_biomass_abund_averaged = ds_biomass_abund %>%
+ds_patches_averaged = ds_patches %>%
   group_by(system_nr,
            time_point) %>%
   mutate(bioarea_per_volume = mean(bioarea_per_volume)) %>%
@@ -270,11 +270,11 @@ ds_biomass_abund_averaged = ds_biomass_abund %>%
                             Tet_presence)
 ```
 
-```{r add_baselines_(ds_biomass_abund)}
+```{r add_baselines_(ds_patches)}
 
 #Add baselines (from t1).
 
-baselines = ds_biomass_abund %>%
+baselines = ds_patches %>%
   filter(time_point == 1) %>%
   group_by(culture_ID) %>%
   summarise(bioarea_per_volume_across_videos = mean(bioarea_per_volume),
@@ -308,15 +308,15 @@ baselines = ds_biomass_abund %>%
          baseline_Spi_te = Spi_te_across_videos,
          baseline_Tet = Tet_across_videos)
 
-ds_biomass_abund = full_join(ds_biomass_abund, baselines)
+ds_patches = full_join(ds_patches, baselines)
 ```
 
 ```{r save_ds_biomas_abund}
-saveRDS(ds_biomass_abund, file = here("results", "ds_biomass_abund.RData"))
+saveRDS(ds_patches, file = here("results", "ds_patches.RData"))
 ```
 
-```{r show_ds_biomass_abund}
-datatable(ds_biomass_abund,
+```{r show_ds_patches}
+datatable(ds_patches,
           rownames = FALSE,
           options = list(scrollX = TRUE),
           filter = list(position = 'top', 

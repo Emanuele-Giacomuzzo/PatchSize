@@ -90,7 +90,7 @@ conflict_prefer("select", "dplyr")
 #Import data sets (useful to avoid knitting/going through every child when working in rmd). 
 
 culture_info = read.csv(here("data", "PatchSizePilot_culture_info.csv"), header = TRUE)
-ds_biomass_abund = readRDS(here("results", "ds_biomass_abund.RData"))
+ds_patches = readRDS(here("results", "ds_patches.RData"))
 ds_patches_averaged = readRDS(here("results", "ds_patches_averaged.RData"))
 ds_regional_biomass = readRDS(here("results", "ds_regional_biomass.RData"))
 ds_body_size = readRDS(here("results", "ds_body_size.RData"))
@@ -98,7 +98,6 @@ ds_classes_averaged = readRDS(here("results", "ds_classes_averaged.RData"))
 ds_median_body_size = readRDS(here("results", "ds_median_body_size.RData"))
 ds_lnRR_median_body_size = readRDS(here("results", "ds_lnRR_median_body_size.RData"))
 ```
-
 
 ```{r functions, echo = FALSE}
 
@@ -165,7 +164,7 @@ colour_SL = "#438cbe" #Colour of the Small-Large meta-ecosystem
 ```{r overview-experiment, child = here("r_files", "overview.Rmd")}
 ```
 
-## Data {.tabset .tabset-pills}
+## Data {.tabset .tabset-dropdown}
 
 ```{r child = here("r_files", "data_experimental_treatments.Rmd")}
 ```
@@ -176,7 +175,7 @@ colour_SL = "#438cbe" #Colour of the Small-Large meta-ecosystem
 ```{r child = here("r_files", "data_patches_averaged.Rmd")}
 ```
 
-```{r child = here("r_files", "data_regional_biomass.Rmd")}
+```{r child = here("r_files", "data_metaecosystems.Rmd")}
 ```
 
 ```{r child = here("r_files", "data_body_size.Rmd")}

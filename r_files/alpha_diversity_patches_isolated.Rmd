@@ -16,7 +16,7 @@ editor_options:
 ```{r}
 for (disturbance_input in c("low", "high")) {
   print(
-    ds_biomass_abund %>%
+    ds_patches %>%
       filter(disturbance == disturbance_input,
              metaecosystem == "no") %>%
       ungroup() %>%

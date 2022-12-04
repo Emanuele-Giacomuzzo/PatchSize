@@ -9,7 +9,7 @@ editor_options:
 ### Patch effect sizes (`ds_patches_averaged`)
 
 ```{r ds_patches_averaged}
-ds_patches_averaged = ds_biomass_abund %>%
+ds_patches_averaged = ds_patches %>%
   group_by(
     culture_ID,
     system_nr,

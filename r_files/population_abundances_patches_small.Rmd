@@ -1,5 +1,5 @@
 ---
-title: "small_patches"
+title: "Population abundances in small patches"
 author: "Emanuele Giacomuzzo"
 date: "2022-10-17"
 output: html_document
@@ -9,39 +9,30 @@ editor_options:
 
 ### Small patches {.tabset .tabset-pills}
 
-*Research question: *
+```{r}
+patch_size_input = "S"
+```
 
-#### Plots {.tabset .tabset-pills}
+#### Boxplots {.tabset .tabset-pills}
 
 ##### Low disturbance
 
 ```{r}
-patch_size_input = "S"
 disturbance_input = "low"
+```
 
-long_dataset = ds_biomass_abund %>%
-      group_by(culture_ID, disturbance, patch_size, day, eco_metaeco_type) %>%
-      summarise(
-        Ble = mean(Ble),
-        Cep = mean(Cep),
-        Col = mean(Col),
-        Eup = mean(Eup),
-        Eug = mean(Eug),
-        Lox = mean(Lox),
-        Pau = mean(Pau),
-        Pca = mean(Pca),
-        Spi = mean(Spi),
-        Spi_te = mean(Spi_te),
-        Tet = mean(Tet)
-      ) %>%
-      pivot_longer(Ble:Tet, names_to = "species", values_to = "population_abundance")
-
+```{r}
 for (species_input in 1:n_protist_species) {
   print(
-     long_dataset %>%
-      filter(disturbance == disturbance_input,
-             patch_size == patch_size_input,
-             species == protist_species[species_input]) %>%
+    ds_patches %>%
+      pivot_longer(Ble:Tet,
+                   names_to = "species",
+                   values_to = "population_abundance") %>%
+      filter(
+        disturbance == disturbance_input,
+        patch_size == patch_size_input,
+        species == protist_species[species_input]
+      ) %>%
       ggplot(
         aes(
           x = day,
@@ -71,7 +62,7 @@ for (species_input in 1:n_protist_species) {
           "Small connected to small"
         )
       )  +
-      scale_x_continuous(breaks = unique(ds_biomass_abund$day)) +
+      scale_x_continuous(breaks = unique(ds_patches$day)) +
       geom_vline(
         xintercept = resource_flow_days[1] + 0.7,
         linetype = "dotdash",
@@ -114,10 +105,105 @@ for (species_input in 1:n_protist_species) {
 }
 ```
 
+##### High disturbance
+
+```{r}
+disturbance_input = "high"
+```
+
+```{r}
+for (species_input in 1:n_protist_species) {
+  print(
+    ds_patches %>%
+      pivot_longer(Ble:Tet, 
+                   names_to = "species", 
+                   values_to = "population_abundance") %>%
+      filter(disturbance == disturbance_input,
+             patch_size == patch_size_input,
+             species == protist_species[species_input]) %>%
+      ggplot(
+        aes(
+          x = day,
+          y = population_abundance,
+          group = interaction(day, eco_metaeco_type),
+          fill = eco_metaeco_type
+        )
+      ) +
+      geom_boxplot() +
+      labs(
+        title = paste0(protist_species[species_input], " (Disturbance = ", disturbance_input, ")"),
+        x = "Day",
+        y = "Abundance (indiv/μl ?)",
+        fill = "",
+        caption = "Vertical grey line: resource flow"
+      ) +
+      theme_bw() +
+      theme(
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        legend.position = "bottom"
+      ) +
+      scale_fill_manual(
+        values = c(colour_isolated, colour_different_size, colour_same_size),
+        labels = c(
+          "Small isolated",
+          "Small connected to large",
+          "Small connected to small"
+        )
+      )  +
+      scale_x_continuous(breaks = unique(ds_patches$day)) +
+      geom_vline(
+        xintercept = resource_flow_days[1] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = resource_flow_days[2] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = resource_flow_days[3] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = resource_flow_days[4] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = resource_flow_days[5] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = resource_flow_days[6] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      )
+  )
+}
+```
+
+#### Effect sizes {.tabset .tabset-pills}
+
+##### Low disturbance
+
+```{r}
+disturbance_input = "low"
+```
+
 ```{r}
 ds_patches_averaged %>%
       filter(disturbance == disturbance_input,
-             eco_metaeco_type == "S (S_L)" | eco_metaeco_type == "S (S_S)",
+             eco_metaeco_type %in% c("S (S_L)", "S (S_S)"),
              day > 0) %>%
       ggplot(aes(
         x = day,
@@ -194,7 +280,7 @@ ds_patches_averaged %>%
 
 ds_patches_averaged %>%
       filter(disturbance == disturbance_input,
-             eco_metaeco_type == "S (S_L)" | eco_metaeco_type == "S (S_S)",
+             eco_metaeco_type %in% c("S (S_L)", "S (S_S)"),
              day > 0) %>%
       ggplot(aes(
         x = day,
@@ -271,7 +357,7 @@ ds_patches_averaged %>%
 
 ds_patches_averaged %>%
       filter(disturbance == disturbance_input,
-             eco_metaeco_type == "S (S_L)" | eco_metaeco_type == "S (S_S)",
+             eco_metaeco_type %in% c("S (S_L)", "S (S_S)"),
              day > 0) %>%
       ggplot(aes(
         x = day,
@@ -348,7 +434,7 @@ ds_patches_averaged %>%
 
 ds_patches_averaged %>%
       filter(disturbance == disturbance_input,
-             eco_metaeco_type == "S (S_L)" | eco_metaeco_type == "S (S_S)",
+             eco_metaeco_type %in% c("S (S_L)", "S (S_S)"),
              day > 0) %>%
       ggplot(aes(
         x = day,
@@ -425,7 +511,7 @@ ds_patches_averaged %>%
 
 ds_patches_averaged %>%
       filter(disturbance == disturbance_input,
-             eco_metaeco_type == "S (S_L)" | eco_metaeco_type == "S (S_S)",
+             eco_metaeco_type %in% c("S (S_L)", "S (S_S)"),
              day > 0) %>%
       ggplot(aes(
         x = day,
@@ -502,7 +588,7 @@ ds_patches_averaged %>%
 
 ds_patches_averaged %>%
       filter(disturbance == disturbance_input,
-             eco_metaeco_type == "S (S_L)" | eco_metaeco_type == "S (S_S)",
+             eco_metaeco_type %in% c("S (S_L)", "S (S_S)"),
              day > 0) %>%
       ggplot(aes(
         x = day,
@@ -579,7 +665,7 @@ ds_patches_averaged %>%
 
 ds_patches_averaged %>%
       filter(disturbance == disturbance_input,
-             eco_metaeco_type == "S (S_L)" | eco_metaeco_type == "S (S_S)",
+             eco_metaeco_type %in% c("S (S_L)", "S (S_S)"),
              day > 0) %>%
       ggplot(aes(
         x = day,
@@ -656,7 +742,7 @@ ds_patches_averaged %>%
 
 ds_patches_averaged %>%
       filter(disturbance == disturbance_input,
-             eco_metaeco_type == "S (S_L)" | eco_metaeco_type == "S (S_S)",
+             eco_metaeco_type %in% c("S (S_L)", "S (S_S)"),
              day > 0) %>%
       ggplot(aes(
         x = day,
@@ -733,7 +819,7 @@ ds_patches_averaged %>%
 
 ds_patches_averaged %>%
       filter(disturbance == disturbance_input,
-             eco_metaeco_type == "S (S_L)" | eco_metaeco_type == "S (S_S)",
+             eco_metaeco_type %in% c("S (S_L)", "S (S_S)"),
              day > 0) %>%
       ggplot(aes(
         x = day,
@@ -810,7 +896,7 @@ ds_patches_averaged %>%
 
 ds_patches_averaged %>%
       filter(disturbance == disturbance_input,
-             eco_metaeco_type == "S (S_L)" | eco_metaeco_type == "S (S_S)",
+             eco_metaeco_type %in% c("S (S_L)", "S (S_S)"),
              day > 0) %>%
       ggplot(aes(
         x = day,
@@ -887,7 +973,7 @@ ds_patches_averaged %>%
 
 ds_patches_averaged %>%
       filter(disturbance == disturbance_input,
-             eco_metaeco_type == "S (S_L)" | eco_metaeco_type == "S (S_S)",
+             eco_metaeco_type %in% c("S (S_L)", "S (S_S)"),
              day > 0) %>%
       ggplot(aes(
         x = day,
@@ -964,7 +1050,7 @@ ds_patches_averaged %>%
 
 ds_patches_averaged %>%
       filter(disturbance == disturbance_input,
-             eco_metaeco_type == "S (S_L)" | eco_metaeco_type == "S (S_S)",
+             eco_metaeco_type %in% c("S (S_L)", "S (S_S)"),
              day > 0) %>%
       ggplot(aes(
         x = day,
@@ -1043,106 +1129,13 @@ ds_patches_averaged %>%
 ##### High disturbance
 
 ```{r}
-patch_size_input = "S"
 disturbance_input = "high"
-
-for (species_input in 1:n_protist_species) {
-  print(
-    ds_biomass_abund %>%
-      group_by(culture_ID, disturbance, patch_size, day, eco_metaeco_type) %>%
-      summarise(
-        Ble = mean(Ble),
-        Cep = mean(Cep),
-        Col = mean(Col),
-        Eup = mean(Eup),
-        Eug = mean(Eug),
-        Lox = mean(Lox),
-        Pau = mean(Pau),
-        Pca = mean(Pca),
-        Spi = mean(Spi),
-        Spi_te = mean(Spi_te),
-        Tet = mean(Tet)
-      ) %>%
-      pivot_longer(Ble:Tet, names_to = "species", values_to = "population_abundance") %>%
-      filter(disturbance == disturbance_input) %>%
-      filter(patch_size == patch_size_input) %>%
-      filter(species == protist_species[species_input]) %>%
-      ggplot(
-        aes(
-          x = day,
-          y = population_abundance,
-          group = interaction(day, eco_metaeco_type),
-          fill = eco_metaeco_type
-        )
-      ) +
-      geom_boxplot() +
-      labs(
-        title = paste0(protist_species[species_input], " (Disturbance = ", disturbance_input, ")"),
-        x = "Day",
-        y = "Abundance (indiv/μl ?)",
-        fill = ""
-      ) +
-      theme_bw() +
-      theme(
-        panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(),
-        legend.position = "bottom"
-      ) +
-      scale_fill_manual(
-        values = c(colour_isolated, colour_different_size, colour_same_size),
-        labels = c(
-          "Small isolated",
-          "Small connected to large",
-          "Small connected to small"
-        )
-      )  +
-      scale_x_continuous(breaks = unique(ds_biomass_abund$day)) +
-      geom_vline(
-        xintercept = resource_flow_days[1] + 0.7,
-        linetype = "dotdash",
-        color = "grey",
-        size = 0.7
-      ) +
-      geom_vline(
-        xintercept = resource_flow_days[2] + 0.7,
-        linetype = "dotdash",
-        color = "grey",
-        size = 0.7
-      ) +
-      geom_vline(
-        xintercept = resource_flow_days[3] + 0.7,
-        linetype = "dotdash",
-        color = "grey",
-        size = 0.7
-      ) +
-      geom_vline(
-        xintercept = resource_flow_days[4] + 0.7,
-        linetype = "dotdash",
-        color = "grey",
-        size = 0.7
-      ) +
-      geom_vline(
-        xintercept = resource_flow_days[5] + 0.7,
-        linetype = "dotdash",
-        color = "grey",
-        size = 0.7
-      ) +
-      geom_vline(
-        xintercept = resource_flow_days[6] + 0.7,
-        linetype = "dotdash",
-        color = "grey",
-        size = 0.7
-      ) +
-      labs(caption = "Vertical grey line: resource flow")
-  )
-  
-}
 ```
 
 ```{r}
 ds_patches_averaged %>%
       filter(disturbance == disturbance_input,
-             eco_metaeco_type == "S (S_L)" | eco_metaeco_type == "S (S_S)",
+             eco_metaeco_type %in% c("S (S_L)", "S (S_S)"),
              day > 0) %>%
       ggplot(aes(
         x = day,
@@ -1219,7 +1212,7 @@ ds_patches_averaged %>%
 
 ds_patches_averaged %>%
       filter(disturbance == disturbance_input,
-             eco_metaeco_type == "S (S_L)" | eco_metaeco_type == "S (S_S)",
+             eco_metaeco_type %in% c("S (S_L)", "S (S_S)"),
              day > 0) %>%
       ggplot(aes(
         x = day,
@@ -1296,7 +1289,7 @@ ds_patches_averaged %>%
 
 ds_patches_averaged %>%
       filter(disturbance == disturbance_input,
-             eco_metaeco_type == "S (S_L)" | eco_metaeco_type == "S (S_S)",
+             eco_metaeco_type %in% c("S (S_L)", "S (S_S)"),
              day > 0) %>%
       ggplot(aes(
         x = day,
@@ -1373,7 +1366,7 @@ ds_patches_averaged %>%
 
 ds_patches_averaged %>%
       filter(disturbance == disturbance_input,
-             eco_metaeco_type == "S (S_L)" | eco_metaeco_type == "S (S_S)",
+             eco_metaeco_type %in% c("S (S_L)", "S (S_S)"),
              day > 0) %>%
       ggplot(aes(
         x = day,
@@ -1450,7 +1443,7 @@ ds_patches_averaged %>%
 
 ds_patches_averaged %>%
       filter(disturbance == disturbance_input,
-             eco_metaeco_type == "S (S_L)" | eco_metaeco_type == "S (S_S)",
+             eco_metaeco_type %in% c("S (S_L)", "S (S_S)"),
              day > 0) %>%
       ggplot(aes(
         x = day,
@@ -1527,7 +1520,7 @@ ds_patches_averaged %>%
 
 ds_patches_averaged %>%
       filter(disturbance == disturbance_input,
-             eco_metaeco_type == "S (S_L)" | eco_metaeco_type == "S (S_S)",
+             eco_metaeco_type %in% c("S (S_L)", "S (S_S)"),
              day > 0) %>%
       ggplot(aes(
         x = day,
@@ -1604,7 +1597,7 @@ ds_patches_averaged %>%
 
 ds_patches_averaged %>%
       filter(disturbance == disturbance_input,
-             eco_metaeco_type == "S (S_L)" | eco_metaeco_type == "S (S_S)",
+             eco_metaeco_type %in% c("S (S_L)", "S (S_S)"),
              day > 0) %>%
       ggplot(aes(
         x = day,
@@ -1681,7 +1674,7 @@ ds_patches_averaged %>%
 
 ds_patches_averaged %>%
       filter(disturbance == disturbance_input,
-             eco_metaeco_type == "S (S_L)" | eco_metaeco_type == "S (S_S)",
+             eco_metaeco_type %in% c("S (S_L)", "S (S_S)"),
              day > 0) %>%
       ggplot(aes(
         x = day,
@@ -1758,7 +1751,7 @@ ds_patches_averaged %>%
 
 ds_patches_averaged %>%
       filter(disturbance == disturbance_input,
-             eco_metaeco_type == "S (S_L)" | eco_metaeco_type == "S (S_S)",
+             eco_metaeco_type %in% c("S (S_L)", "S (S_S)"),
              day > 0) %>%
       ggplot(aes(
         x = day,
@@ -1835,7 +1828,7 @@ ds_patches_averaged %>%
 
 ds_patches_averaged %>%
       filter(disturbance == disturbance_input,
-             eco_metaeco_type == "S (S_L)" | eco_metaeco_type == "S (S_S)",
+             eco_metaeco_type %in% c("S (S_L)", "S (S_S)"),
              day > 0) %>%
       ggplot(aes(
         x = day,
@@ -1912,7 +1905,7 @@ ds_patches_averaged %>%
 
 ds_patches_averaged %>%
       filter(disturbance == disturbance_input,
-             eco_metaeco_type == "S (S_L)" | eco_metaeco_type == "S (S_S)",
+             eco_metaeco_type %in% c("S (S_L)", "S (S_S)"),
              day > 0) %>%
       ggplot(aes(
         x = day,
@@ -1989,7 +1982,7 @@ ds_patches_averaged %>%
 
 ds_patches_averaged %>%
       filter(disturbance == disturbance_input,
-             eco_metaeco_type == "S (S_L)" | eco_metaeco_type == "S (S_S)",
+             eco_metaeco_type %in% c("S (S_L)", "S (S_S)"),
              day > 0) %>%
       ggplot(aes(
         x = day,
@@ -2063,4 +2056,492 @@ ds_patches_averaged %>%
         color = "black",
         size = 0.7
       )
+```
+
+#### Model
+
+```{r}
+first_time_point = 2
+last_time_point = 7
+
+filtered_data = ds_patches_averaged %>%
+                         filter(time_point >= first_time_point,
+                                time_point <= last_time_point,
+                                eco_metaeco_type %in% c("S (S_S)","S (S_L)"))
+```
+
+##### Ble
+
+```{r}
+
+#Test hp 
+
+full_model = lm(Ble_d ~                  
+                  day + 
+                  eco_metaeco_type + 
+                  disturbance +
+                  day : eco_metaeco_type +
+                  day : disturbance + 
+                  eco_metaeco_type : disturbance +
+                  baseline_bioarea + 
+                  day : baseline_bioarea,
+                  data = filtered_data)
+
+null_model = lm(Ble_d ~                  
+                  day + 
+                  disturbance +
+                  day : disturbance + 
+                  baseline_bioarea + 
+                  day : baseline_bioarea,
+                  data = filtered_data)
+
+AIC(full_model, null_model)
+
+anova = anova(full_model, null_model)
+anova
+
+p_value = anova$`Pr(>F)`[2]
+p_value = round(p_value, digits = 3)
+p_value
+```
+
+```{r}
+
+#Model diagnostics
+
+par(mfrow = c(2,3))
+plot(full_model, which = 1:5)
+```
+
+##### Cep
+
+```{r}
+
+#Test hp 
+
+full_model = lm(Cep_d ~                  
+                  day + 
+                  eco_metaeco_type + 
+                  disturbance +
+                  day : eco_metaeco_type +
+                  day : disturbance + 
+                  eco_metaeco_type : disturbance +
+                  baseline_bioarea + 
+                  day : baseline_bioarea,
+                  data = filtered_data)
+
+null_model = lm(Cep_d ~                  
+                  day + 
+                  disturbance +
+                  day : disturbance + 
+                  baseline_bioarea + 
+                  day : baseline_bioarea,
+                  data = filtered_data)
+
+AIC(full_model, null_model)
+
+anova = anova(full_model, null_model)
+anova
+```
+
+```{r}
+
+#Model diagnostics
+
+par(mfrow = c(2,3))
+plot(full_model, which = 1:5)
+```
+
+##### Col
+
+```{r}
+
+#Test hp 
+
+full_model = lm(Col_d ~                  
+                  day + 
+                  eco_metaeco_type + 
+                  disturbance +
+                  day : eco_metaeco_type +
+                  day : disturbance + 
+                  eco_metaeco_type : disturbance +
+                  baseline_bioarea + 
+                  day : baseline_bioarea,
+                  data = filtered_data)
+
+null_model = lm(Col_d ~                  
+                  day + 
+                  disturbance +
+                  day : disturbance + 
+                  baseline_bioarea + 
+                  day : baseline_bioarea,
+                  data = filtered_data)
+
+AIC(full_model, null_model)
+
+anova = anova(full_model, null_model)
+anova
+```
+
+```{r}
+
+#Model diagnostics
+
+par(mfrow = c(2,3))
+plot(full_model, which = 1:5)
+```
+
+```{r}
+R2_full = glance(full_model)$r.squared
+no_patch_type = lm(bioarea_per_volume_d ~
+                  day + 
+                  disturbance,
+                  data = ds_patches_averaged %>%
+                         filter(time_point >= first_time_point) %>%
+                         filter(time_point <= last_time_point) %>%
+                         filter(eco_metaeco_type== "S (S_S)" | eco_metaeco_type == "S (S_L)"))
+
+R2_null = glance(null_model)$r.squared
+R2_P = R2_full - R2_null
+
+R2_full = round(R2_full, digits = 2)
+R2_P = round(R2_P, digits = 2)
+```
+
+##### Eug
+
+```{r}
+
+#Test hp 
+
+full_model = lm(Eug_d ~                  
+                  day + 
+                  eco_metaeco_type + 
+                  disturbance +
+                  day : eco_metaeco_type +
+                  day : disturbance + 
+                  eco_metaeco_type : disturbance +
+                  baseline_bioarea + 
+                  day : baseline_bioarea,
+                  data = filtered_data)
+
+null_model = lm(Eug_d ~                  
+                  day + 
+                  disturbance +
+                  day : disturbance + 
+                  baseline_bioarea + 
+                  day : baseline_bioarea,
+                  data = filtered_data)
+
+AIC(full_model, null_model)
+
+anova = anova(full_model, null_model)
+anova
+```
+
+```{r}
+
+#Model diagnostics
+
+par(mfrow = c(2,3))
+plot(full_model, which = 1:5)
+```
+
+##### Eup
+
+```{r}
+
+#Test hp 
+
+full_model = lm(Eup_d ~                  
+                  day + 
+                  eco_metaeco_type + 
+                  disturbance +
+                  day : eco_metaeco_type +
+                  day : disturbance + 
+                  eco_metaeco_type : disturbance +
+                  baseline_bioarea + 
+                  day : baseline_bioarea,
+                  data = filtered_data)
+
+null_model = lm(Eup_d ~                  
+                  day + 
+                  disturbance +
+                  day : disturbance + 
+                  baseline_bioarea + 
+                  day : baseline_bioarea,
+                  data = filtered_data)
+
+AIC(full_model, null_model)
+
+anova = anova(full_model, null_model)
+anova
+```
+
+```{r}
+
+#Model diagnostics
+
+par(mfrow = c(2,3))
+plot(full_model, which = 1:5)
+```
+
+##### Lox
+
+```{r}
+
+#Test hp 
+
+full_model = lm(Lox_d ~                  
+                  day + 
+                  eco_metaeco_type + 
+                  disturbance +
+                  day : eco_metaeco_type +
+                  day : disturbance + 
+                  eco_metaeco_type : disturbance +
+                  baseline_bioarea + 
+                  day : baseline_bioarea,
+                  data = filtered_data)
+
+null_model = lm(Lox_d ~                  
+                  day + 
+                  disturbance +
+                  day : disturbance + 
+                  baseline_bioarea + 
+                  day : baseline_bioarea,
+                  data = filtered_data)
+
+AIC(full_model, null_model)
+
+anova = anova(full_model, null_model)
+anova
+```
+
+```{r}
+
+#Model diagnostics
+
+par(mfrow = c(2,3))
+plot(full_model, which = 1:5)
+```
+
+##### Pau
+
+```{r}
+
+#Test hp 
+
+full_model = lm(Pau_d ~                  
+                  day + 
+                  eco_metaeco_type + 
+                  disturbance +
+                  day : eco_metaeco_type +
+                  day : disturbance + 
+                  eco_metaeco_type : disturbance +
+                  baseline_bioarea + 
+                  day : baseline_bioarea,
+                  data = filtered_data)
+
+null_model = lm(Pau_d ~                  
+                  day + 
+                  disturbance +
+                  day : disturbance + 
+                  baseline_bioarea + 
+                  day : baseline_bioarea,
+                  data = filtered_data)
+
+AIC(full_model, null_model)
+
+anova = anova(full_model, null_model)
+anova
+```
+
+```{r}
+
+#Model diagnostics
+
+par(mfrow = c(2,3))
+plot(full_model, which = 1:5)
+```
+
+##### Pca
+
+```{r}
+
+#Test hp 
+
+full_model = lm(Pca_d ~                  
+                  day + 
+                  eco_metaeco_type + 
+                  disturbance +
+                  day : eco_metaeco_type +
+                  day : disturbance + 
+                  eco_metaeco_type : disturbance +
+                  baseline_bioarea + 
+                  day : baseline_bioarea,
+                  data = filtered_data)
+
+null_model = lm(Pca_d ~                  
+                  day + 
+                  disturbance +
+                  day : disturbance + 
+                  baseline_bioarea + 
+                  day : baseline_bioarea,
+                  data = filtered_data)
+
+AIC(full_model, null_model)
+
+anova = anova(full_model, null_model)
+anova
+```
+
+```{r}
+
+#Model diagnostics
+
+par(mfrow = c(2,3))
+plot(full_model, which = 1:5)
+```
+
+##### Spi
+
+```{r}
+
+#Test hp 
+
+full_model = lm(Spi_d ~                  
+                  day + 
+                  eco_metaeco_type + 
+                  disturbance +
+                  day : eco_metaeco_type +
+                  day : disturbance + 
+                  eco_metaeco_type : disturbance +
+                  baseline_bioarea + 
+                  day : baseline_bioarea,
+                  data = filtered_data)
+
+null_model = lm(Spi_d ~                  
+                  day + 
+                  disturbance +
+                  day : disturbance + 
+                  baseline_bioarea + 
+                  day : baseline_bioarea,
+                  data = filtered_data)
+
+AIC(full_model, null_model)
+
+anova = anova(full_model, null_model)
+anova
+
+p_value = anova$`Pr(>F)`[2]
+p_value = round(p_value, digits = 3)
+```
+
+```{r}
+
+#Model diagnostics
+
+par(mfrow = c(2,3))
+plot(full_model, which = 1:5)
+```
+
+```{r}
+R2_full = glance(full_model)$r.squared
+no_patch_type = lm(bioarea_per_volume_d ~
+                  day + 
+                  disturbance,
+                  data = ds_patches_averaged %>%
+                         filter(time_point >= first_time_point) %>%
+                         filter(time_point <= last_time_point) %>%
+                         filter(eco_metaeco_type== "S (S_S)" | eco_metaeco_type == "S (S_L)"))
+
+R2_null = glance(null_model)$r.squared
+R2_P = R2_full - R2_null
+
+R2_full = round(R2_full, digits = 2)
+R2_P = round(R2_P, digits = 2)
+```
+
+-   p value of patch type: `r p-value`
+
+-   R2 of patch type: `r R2_P`
+
+##### Spi te
+
+```{r}
+
+#Test hp 
+
+full_model = lm(Spi_te_d ~                  
+                  day + 
+                  eco_metaeco_type + 
+                  disturbance +
+                  day : eco_metaeco_type +
+                  day : disturbance + 
+                  eco_metaeco_type : disturbance +
+                  baseline_bioarea + 
+                  day : baseline_bioarea,
+                  data = filtered_data)
+
+null_model = lm(Spi_te_d ~                  
+                  day + 
+                  disturbance +
+                  day : disturbance + 
+                  baseline_bioarea + 
+                  day : baseline_bioarea,
+                  data = filtered_data)
+
+AIC(full_model, null_model)
+
+anova = anova(full_model, null_model)
+anova
+```
+
+```{r}
+
+#Model diagnostics
+
+par(mfrow = c(2,3))
+plot(full_model, which = 1:5)
+```
+
+##### Tet
+
+It doesn't work.
+
+```{r eval = FALSE}
+
+#Test hp 
+
+full_model = lm(Tet_d ~                  
+                  day + 
+                  eco_metaeco_type + 
+                  disturbance +
+                  day : eco_metaeco_type +
+                  day : disturbance + 
+                  eco_metaeco_type : disturbance +
+                  baseline_bioarea + 
+                  day : baseline_bioarea,
+                  data = filtered_data)
+
+null_model = lm(Cep_d ~                  
+                  day + 
+                  disturbance +
+                  day : disturbance + 
+                  baseline_bioarea + 
+                  day : baseline_bioarea,
+                  data = filtered_data)
+
+AIC(full_model, null_model)
+
+anova = anova(full_model, null_model)
+anova
+```
+
+```{r}
+
+#Model diagnostics
+
+par(mfrow = c(2,3))
+plot(full_model, which = 1:5)
 ```

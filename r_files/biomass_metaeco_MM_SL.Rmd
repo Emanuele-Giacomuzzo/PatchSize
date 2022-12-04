@@ -179,25 +179,21 @@ $$
 t Day M Meta-ecosystem type D Disturbance B Baseline system nr Meta-ecosystem nr
 
 ```{r}
-data = ds_regional_biomass %>%
-    filter(time_point >= 2) %>%
-    filter(metaecosystem_type == "M_M" |
-             metaecosystem_type == "S_L")
+filtered_data = ds_regional_biomass %>%
+    filter(metaecosystem_type %in% c("M_M", "S_L"),
+           disturbance == "low",
+           time_point >= 2)
 ```
 
 ```{r}
 full_model = lmer(
   total_regional_bioarea ~
     day +
-    metaecosystem_type +
-    disturbance +
     baseline_bioarea + 
-    day * metaecosystem_type +
-    day * disturbance +
-    day * baseline_bioarea +
-    metaecosystem_type * disturbance + 
+    metaecosystem_type +
+    metaecosystem_type : day +
     (day | system_nr),
-  data = data,
+  data = filtered_data,
   REML = FALSE,
   control = lmerControl(optimizer = "Nelder_Mead")
 )
@@ -205,12 +201,9 @@ full_model = lmer(
 null_model = lmer(
   total_regional_bioarea ~
     day +
-    disturbance +
     baseline_bioarea + 
-    day * disturbance +
-    day * baseline_bioarea +
     (day | system_nr),
-  data = data,
+  data = filtered_data,
   REML = FALSE,
   control = lmerControl(optimizer = "Nelder_Mead")
 )
@@ -238,24 +231,7 @@ R2_conditional = round(R2_conditional, digits = 2)
 
 -   Conditional R2 = `r R2_conditional`
 
-To calculate the R of the single explaining variables, let's consider its inclusive R squares (see @Stoffel2021 ). These contain the variance of a variable including its collinearity with other variables. I chose them because there is no collinearity between meta-ecosystem type, disturbance, and day (they were experimentally crossed). [Check the other type of R squared you can calculate and whether you should check if they give you the same result.]{.underline} The inclusive R squares of this model are:
-
-```{r eval = FALSE}
-R2_regional = partR2(full_model,
-       partvars = c("day", 
-                    "metaecosystem_type", 
-                    "disturbance"),
-       R2_type = "conditional", 
-       nboot = 1000, 
-       CI = 0.95,
-       data = data) 
-saveRDS(R2_regional, file = here("results", "biomass", "R2_regional_t2t7.RData"))
-```
-
-```{r}
-R2_regional = readRDS(here("results", "biomass", "R2_regional_t2t7.RData"))
-R2_regional$IR2
-```
+The R2 of meta-ecosystem type couldn't be calculated because the package `partR2` (@Stoffel2021) can't compute it when we have random slopes.
 
 #### Model Time Points {.tabset}
 
@@ -272,25 +248,21 @@ Let's start by looking at whether meta-ecosystem type and disturbance had an eff
 ```{r}
 chosen_time_point = 1
 
-data = ds_regional_biomass %>%
-                            filter(time_point == chosen_time_point) %>%
-                            filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L")
+filtered_data = ds_regional_biomass %>%
+                            filter(disturbance == "low",
+                                   metaecosystem_type %in% c("M_M", "S_L"),
+                                   time_point == chosen_time_point)
 ```
 
 ```{r}
-for(disturbance_input in c("low", "high")) {
-  print(
-    data %>%
-      filter(disturbance == disturbance_input) %>%
+filtered_data %>%
       ggplot (aes(x = metaecosystem_type,
                   y = total_regional_bioarea)) +
       geom_boxplot() +
       labs(
         title = paste0(
           "Time point = ",
-          chosen_time_point,
-          ", Disturbance = ",
-          disturbance_input
+          chosen_time_point
         ),
         x = "",
         y = "Meta-ecosystem Total Bioarea (µm²)",
@@ -307,25 +279,21 @@ for(disturbance_input in c("low", "high")) {
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank()
       )
-  )
-}
 ```
 
 ```{r}
 full_model = lm(total_regional_bioarea ~
-            metaecosystem_type +
-            disturbance +
-            baseline_bioarea +
-            metaecosystem_type * disturbance,
-          data = data)
+            metaecosystem_type,
+          data = filtered_data)
 
 null_model = lm(total_regional_bioarea ~
-            disturbance +
-            baseline_bioarea,
-          data = data)
+            1,
+          data = filtered_data)
 
 AIC(full_model, null_model)
 ```
+
+I'm not using the baseline in the model because the baseline is computed on this exact time point.
 
 ##### Time point 2
 
@@ -334,25 +302,21 @@ Here there should be an effect of meta-ecosystem type.
 ```{r}
 chosen_time_point = 2
 
-data = ds_regional_biomass %>%
-                            filter(time_point == chosen_time_point) %>%
-                            filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L")
+filtered_data = ds_regional_biomass %>%
+                            filter(disturbance == "low",
+                                   metaecosystem_type %in% c("M_M", "S_L"),
+                                   time_point == chosen_time_point)
 ```
 
 ```{r}
-for(disturbance_input in c("low", "high")) {
-  print(
-    data %>%
-      filter(disturbance == disturbance_input) %>%
+filtered_data %>%
       ggplot (aes(x = metaecosystem_type,
                   y = total_regional_bioarea)) +
       geom_boxplot() +
       labs(
         title = paste0(
           "Time point = ",
-          chosen_time_point,
-          ", Disturbance = ",
-          disturbance_input
+          chosen_time_point
         ),
         x = "",
         y = "Meta-ecosystem Total Bioarea (µm²)",
@@ -369,22 +333,18 @@ for(disturbance_input in c("low", "high")) {
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank()
       )
-  )
-}
 ```
 
 ```{r}
 full_model = lm(total_regional_bioarea ~
             metaecosystem_type +
-            disturbance +
             baseline_bioarea +
             metaecosystem_type * disturbance,
-          data = data)
+          data = filtered_data)
 
 null_model = lm(total_regional_bioarea ~
-            disturbance +
             baseline_bioarea,
-          data = data)
+          data = filtered_data)
 
 anova(full_model, null_model)
 AIC(full_model, null_model)
@@ -411,25 +371,21 @@ Here there should be an effect of meta-ecosystem type.
 ```{r}
 chosen_time_point = 3
 
-data = ds_regional_biomass %>%
-                            filter(time_point == chosen_time_point) %>%
-                            filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L")
+filtered_data = ds_regional_biomass %>%
+                            filter(disturbance == "low",
+                                   metaecosystem_type %in% c("M_M", "S_L"),
+                                   time_point == chosen_time_point)
 ```
 
 ```{r}
-for(disturbance_input in c("low", "high")) {
-  print(
-    data %>%
-      filter(disturbance == disturbance_input) %>%
+filtered_data %>%
       ggplot (aes(x = metaecosystem_type,
                   y = total_regional_bioarea)) +
       geom_boxplot() +
       labs(
         title = paste0(
           "Time point = ",
-          chosen_time_point,
-          ", Disturbance = ",
-          disturbance_input
+          chosen_time_point
         ),
         x = "",
         y = "Meta-ecosystem Total Bioarea (µm²)",
@@ -446,28 +402,50 @@ for(disturbance_input in c("low", "high")) {
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank()
       )
-  )
-}
 ```
 
 ```{r}
+
+#With baseline
+
 full_model = lm(total_regional_bioarea ~
             metaecosystem_type +
-            disturbance +
-            baseline_bioarea +
-            metaecosystem_type * disturbance,
-          data = data)
+            baseline_bioarea,
+          data = filtered_data)
 
 null_model = lm(total_regional_bioarea ~
-            disturbance +
             baseline_bioarea,
-          data = data)
+          data = filtered_data)
 
 anova(full_model, null_model)
 AIC(full_model, null_model) 
+
+par(mfrow=c(2,3))
+plot(full_model, which = 1:5)
+
+R2_full = glance(full_model)$r.squared
+R2_null = glance(null_model)$r.squared
+R2_M = R2_full - R2_null
+
+R2_full = round(R2_full, digits = 2)
+R2_M = round(R2_M, digits = 2)
 ```
 
 ```{r}
+
+#Without baseline
+
+full_model = lm(total_regional_bioarea ~
+            metaecosystem_type,
+          data = filtered_data)
+
+null_model = lm(total_regional_bioarea ~
+                  1,
+          data = filtered_data)
+
+anova(full_model, null_model)
+AIC(full_model, null_model) 
+
 par(mfrow=c(2,3))
 plot(full_model, which = 1:5)
 
@@ -488,25 +466,21 @@ Here there should be an effect of meta-ecosystem type.
 ```{r}
 chosen_time_point = 4
 
-data = ds_regional_biomass %>%
-                            filter(time_point == chosen_time_point) %>%
-                            filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L")
+filtered_data = ds_regional_biomass %>%
+                            filter(disturbance == "low",
+                                   metaecosystem_type %in% c("M_M", "S_L"),
+                                   time_point == chosen_time_point)
 ```
 
 ```{r}
-for(disturbance_input in c("low", "high")) {
-  print(
-    data %>%
-      filter(disturbance == disturbance_input) %>%
+filtered_data %>%
       ggplot (aes(x = metaecosystem_type,
                   y = total_regional_bioarea)) +
       geom_boxplot() +
       labs(
         title = paste0(
           "Time point = ",
-          chosen_time_point,
-          ", Disturbance = ",
-          disturbance_input
+          chosen_time_point
         ),
         x = "",
         y = "Meta-ecosystem Total Bioarea (µm²)",
@@ -523,42 +497,50 @@ for(disturbance_input in c("low", "high")) {
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank()
       )
-  )
-}
 ```
 
 ```{r}
+
+#With baseline
+
 full_model = lm(
   total_regional_bioarea ~
     metaecosystem_type +
-    disturbance +
-    baseline_bioarea +
-    metaecosystem_type * disturbance,
-  data = data
+    baseline_bioarea,
+  data = filtered_data
   )
 
 null_model = lm(total_regional_bioarea ~
-                  disturbance +
                   baseline_bioarea,
-                data = data)
+                data = filtered_data)
 
 anova(full_model, null_model)
 AIC(full_model, null_model)
+
+par(mfrow=c(2,3))
+plot(full_model, which = 1:5)
 ```
 
 ```{r}
+
+#Without baseline
+
+full_model = lm(
+  total_regional_bioarea ~
+    metaecosystem_type,
+  data = filtered_data
+  )
+
+null_model = lm(total_regional_bioarea ~
+                  1,
+                data = filtered_data)
+
+anova(full_model, null_model)
+AIC(full_model, null_model)
+
 par(mfrow=c(2,3))
 plot(full_model, which = 1:5)
-
-R2_full = glance(full_model)$r.squared
-R2_null = glance(null_model)$r.squared
-R2_M = R2_full - R2_null
-
-R2_full = round(R2_full, digits = 2)
-R2_M = round(R2_M, digits = 2)
 ```
-
-The adjusted R squared of the model is `r R2_full` and the adjusted R squared of patch type is `r R2_M`.
 
 ##### Time point 5
 
@@ -567,25 +549,21 @@ Here there should be an effect of meta-ecosystem type.
 ```{r}
 chosen_time_point = 5
 
-data = ds_regional_biomass %>%
-                            filter(time_point == chosen_time_point) %>%
-                            filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L")
+filtered_data = ds_regional_biomass %>%
+                            filter(disturbance == "low",
+                                   metaecosystem_type %in% c("M_M", "S_L"),
+                                   time_point == chosen_time_point)
 ```
 
 ```{r}
-for(disturbance_input in c("low", "high")) {
-  print(
-    data %>%
-      filter(disturbance == disturbance_input) %>%
+filtered_data %>%
       ggplot (aes(x = metaecosystem_type,
                   y = total_regional_bioarea)) +
       geom_boxplot() +
       labs(
         title = paste0(
           "Time point = ",
-          chosen_time_point,
-          ", Disturbance = ",
-          disturbance_input
+          chosen_time_point
         ),
         x = "",
         y = "Meta-ecosystem Total Bioarea (µm²)",
@@ -602,39 +580,44 @@ for(disturbance_input in c("low", "high")) {
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank()
       )
-  )
-}
 ```
 
 ```{r}
+
+#With baseline
+
 full_model = lm(total_regional_bioarea ~
             metaecosystem_type +
-            disturbance +
-            baseline_bioarea +
-            metaecosystem_type * disturbance,
-          data = data)
+            baseline_bioarea,
+          data = filtered_data)
 
 null_model = lm(total_regional_bioarea ~
-            disturbance +
             baseline_bioarea,
-          data = data)
+          data = filtered_data)
 
 AIC(full_model, null_model)
+
+par(mfrow=c(2,3))
+plot(full_model, which = 1:5)
 ```
 
 ```{r}
+
+#Without baseline
+
+full_model = lm(total_regional_bioarea ~
+            metaecosystem_type,
+          data = filtered_data)
+
+null_model = lm(total_regional_bioarea ~
+            1,
+          data = filtered_data)
+
+AIC(full_model, null_model)
+
 par(mfrow=c(2,3))
 plot(full_model, which = 1:5)
-
-R2_full = glance(full_model)$r.squared
-R2_null = glance(null_model)$r.squared
-R2_M = R2_full - R2_null
-
-R2_full = round(R2_full, digits = 2)
-R2_M = round(R2_M, digits = 2)
 ```
-
-The adjusted R squared of the model is `r R2_full` and the adjusted R squared of patch type is `r R2_M`.
 
 ##### Time point 6
 
@@ -643,25 +626,21 @@ Here there should be an effect of meta-ecosystem type.
 ```{r}
 chosen_time_point = 6
 
-data = ds_regional_biomass %>%
-                            filter(time_point == chosen_time_point) %>%
-                            filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L")
+filtered_data = ds_regional_biomass %>%
+                            filter(disturbance == "low",
+                                   metaecosystem_type %in% c("M_M", "S_L"),
+                                   time_point == chosen_time_point)
 ```
 
 ```{r}
-for(disturbance_input in c("low", "high")) {
-  print(
-    data %>%
-      filter(disturbance == disturbance_input) %>%
+filtered_data %>%
       ggplot (aes(x = metaecosystem_type,
                   y = total_regional_bioarea)) +
       geom_boxplot() +
       labs(
         title = paste0(
           "Time point = ",
-          chosen_time_point,
-          ", Disturbance = ",
-          disturbance_input
+          chosen_time_point
         ),
         x = "",
         y = "Meta-ecosystem Total Bioarea (µm²)",
@@ -678,39 +657,44 @@ for(disturbance_input in c("low", "high")) {
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank()
       )
-  )
-}
 ```
 
 ```{r}
+
+#With baseline
+
 full_model = lm(total_regional_bioarea ~
             metaecosystem_type +
-            disturbance +
-            baseline_bioarea +
-            metaecosystem_type * disturbance,
-          data = data)
+            baseline_bioarea,
+          data = filtered_data)
 
 null_model = lm(total_regional_bioarea ~
-            disturbance +
             baseline_bioarea,
-          data = data)
+          data = filtered_data)
 
 AIC(full_model, null_model)
+
+par(mfrow=c(2,3))
+plot(full_model, which = 1:5)
 ```
 
 ```{r}
+
+#Without baseline
+
+full_model = lm(total_regional_bioarea ~
+            metaecosystem_type,
+          data = filtered_data)
+
+null_model = lm(total_regional_bioarea ~
+            1,
+          data = filtered_data)
+
+AIC(full_model, null_model)
+
 par(mfrow=c(2,3))
 plot(full_model, which = 1:5)
-
-R2_full = glance(full_model)$r.squared
-R2_null = glance(null_model)$r.squared
-R2_M = R2_full - R2_null
-
-R2_full = round(R2_full, digits = 2)
-R2_M = round(R2_M, digits = 2)
 ```
-
-The adjusted R squared of the model is `r R2_full` and the adjusted R squared of patch type is `r R2_M`.
 
 ##### Time point 7
 
@@ -719,25 +703,21 @@ Here there should be an effect of meta-ecosystem type.
 ```{r}
 chosen_time_point = 7
 
-data = ds_regional_biomass %>%
-                            filter(time_point == chosen_time_point) %>%
-                            filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L")
+filtered_data = ds_regional_biomass %>%
+                            filter(disturbance == "low",
+                                   metaecosystem_type %in% c("M_M", "S_L"),
+                                   time_point == chosen_time_point)
 ```
 
 ```{r}
-for(disturbance_input in c("low", "high")) {
-  print(
-    data %>%
-      filter(disturbance == disturbance_input) %>%
+filtered_data %>%
       ggplot (aes(x = metaecosystem_type,
                   y = total_regional_bioarea)) +
       geom_boxplot() +
       labs(
         title = paste0(
           "Time point = ",
-          chosen_time_point,
-          ", Disturbance = ",
-          disturbance_input
+          chosen_time_point
         ),
         x = "",
         y = "Meta-ecosystem Total Bioarea (µm²)",
@@ -754,36 +734,41 @@ for(disturbance_input in c("low", "high")) {
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank()
       )
-  )
-}
 ```
 
 ```{r}
+
+#With baseline
+
 full_model = lm(total_regional_bioarea ~
             metaecosystem_type +
-            disturbance +
-            baseline_bioarea +
-            metaecosystem_type * disturbance,
-          data = data)
+            baseline_bioarea,
+          data = filtered_data)
 
 null_model = lm(total_regional_bioarea ~
-            disturbance +
             baseline_bioarea,
-          data = data)
+          data = filtered_data)
 
 AIC(full_model, null_model)
+
+par(mfrow=c(2,3))
+plot(full_model, which = 1:5)
 ```
 
 ```{r}
+
+#Without baseline
+
+full_model = lm(total_regional_bioarea ~
+            metaecosystem_type,
+          data = filtered_data)
+
+null_model = lm(total_regional_bioarea ~
+            1,
+          data = filtered_data)
+
+AIC(full_model, null_model)
+
 par(mfrow=c(2,3))
 plot(full_model, which = 1:5)
-
-R2_full = glance(full_model)$r.squared
-R2_null = glance(null_model)$r.squared
-R2_M = R2_full - R2_null
-
-R2_full = round(R2_full, digits = 2)
-R2_M = round(R2_M, digits = 2)
 ```
-
-The adjusted R squared of the model is `r R2_full` and the adjusted R squared of patch type is `r R2_M`.

@@ -20,7 +20,7 @@ disturbance_input = "low"
 
 for (species_input in 1:n_protist_species) {
   print(
-    ds_biomass_abund %>%
+    ds_patches %>%
       pivot_longer(Ble:Tet, names_to = "species", values_to = "population_abundance") %>%
       filter(
         disturbance == disturbance_input,
@@ -77,7 +77,7 @@ disturbance_input = "high"
 
 for (species_input in 1:n_protist_species) {
   print(
-    ds_biomass_abund %>%
+    ds_patches %>%
       pivot_longer(Ble:Tet, names_to = "species", values_to = "population_abundance") %>%
       filter(
         disturbance == disturbance_input,

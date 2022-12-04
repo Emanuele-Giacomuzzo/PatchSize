@@ -6,15 +6,17 @@ editor_options:
   chunk_output_type: console
 ---
 
-### Meta-ecosystem biomass (`ds_regional_biomass`)
+### Meta-ecosystem biomass (`ds_metaecosystems`)
 
-Dataset of the total meta-ecosystem bioarea. It contains also the regional biomass of the combination of a small isolated and a large isolated patch (`metecosystem type = S_L_from_isolated`).
+-   Each row is a meta-ecosystem.
 
-```{r ds_regional_biomass-create-dataset}
+-   It contains also "fake" meta-ecosystems which I created from isolated patches (`metecosystem type = S_L_from_isolated`).
 
-#Create ds_regional_biomass
+```{r ds_metaecosystems-create-dataset}
 
-ds_regional_biomass = ds_biomass_abund %>%
+#Create ds_metaecosystems
+
+ds_metaecosystems = ds_patches %>%
   mutate(total_patch_bioarea = bioarea_per_volume * patch_size_volume) %>%
   filter(metaecosystem == "yes",!system_nr %in% metaecosystems_to_take_off) %>%
   group_by(culture_ID, 
@@ -36,26 +38,23 @@ ds_regional_biomass = ds_biomass_abund %>%
   summarise(total_regional_bioarea = sum(total_patch_bioarea_video_averaged))
 ```
 
-```{r ds_regional_biomass-create-SL_SL_from_isolated, message=FALSE, results='hide', eval = recompute_analyses}
+```{r ds_metaecosystems-create-SL_SL_from_isolated, message=FALSE, results='hide', eval = recompute_analyses}
 
-#Add to ds_regional_biomass also the Small-Large meta-ecosystems from isolated
+#Add Small-Large Meta-ecosystems from isolated
 
-isolated_S_and_L = ds_biomass_abund %>%
-  filter(eco_metaeco_type == "S" | eco_metaeco_type == "L") %>%
-  group_by(system_nr, time_point) %>%
-  mutate(bioarea_per_volume_across_videos = mean(bioarea_per_volume)) %>%
-  ungroup()
-
-isolated_S_low = isolated_S_and_L %>%
+isolated_S_low = ds_patches %>%
   filter(eco_metaeco_type == "S",
          disturbance == "low")
-isolated_L_low = isolated_S_and_L %>%
+
+isolated_L_low = ds_patches %>%
   filter(eco_metaeco_type == "L",
          disturbance == "low")
-isolated_S_high = isolated_S_and_L %>%
+
+isolated_S_high = ds_patches %>%
   filter(eco_metaeco_type == "S",
          disturbance == "high")
-isolated_L_high = isolated_S_and_L %>%
+
+isolated_L_high = ds_patches %>%
   filter(eco_metaeco_type == "L",
          disturbance == "high")
 
@@ -77,7 +76,7 @@ SL_from_isolated_all_combinations = NULL
 for (pair in 1:number_of_combinations){
   
   SL_from_isolated_one_combination = 
-    ds_biomass_abund %>%
+    ds_patches %>%
     filter(system_nr %in% system_nr_combinations[pair,]) %>%
     group_by(disturbance, day, time_point, system_nr) %>%
     summarise(regional_bioarea_across_videos = mean(bioarea_per_volume)) %>%
@@ -96,16 +95,16 @@ for (combination in 1:number_of_combinations){
     rbind(SL_from_isolated_all_combinations_together,
           SL_from_isolated_all_combinations[[pair]])}
 
-ds_regional_biomass = rbind(ds_regional_biomass, SL_from_isolated_all_combinations_together)
+ds_metaecosystems = rbind(ds_metaecosystems, SL_from_isolated_all_combinations_together)
 
-saveRDS(ds_regional_biomass, file = here("results", "ds_regional_biomass_isolated.RData"))
+saveRDS(ds_metaecosystems, file = here("results", "ds_metaecosystems_isolated.RData"))
 ```
 
-```{r ds_regional_biomass-calculate-beta-diversity}
+```{r ds_metaecosystems-calculate-beta-diversity}
 
 #Calculate beta diversity & gamma diversity
 
-ds_regional_biomass = ds_regional_biomass %>%
+ds_metaecosystems = ds_metaecosystems %>%
   mutate(jaccard_index = NA,
          bray_curtis = NA,
          metaecosystem_richness = NA)
@@ -118,7 +117,7 @@ for (system_nr_input in system_nr_metaecosystems) {
     
     #Vectors
     
-    species_vector_of_the_two_patches = ds_biomass_abund %>%
+    species_vector_of_the_two_patches = ds_patches %>%
       filter(system_nr == system_nr_input,
              time_point == time_point_input) %>%
       ungroup() %>%
@@ -155,17 +154,17 @@ for (system_nr_input in system_nr_metaecosystems) {
     
     #Add to dataset
     
-    ds_regional_biomass$jaccard_index[ds_regional_biomass$system_nr == system_nr_input &
-                                         ds_regional_biomass$time_point == time_point_input] = jaccard_index
+    ds_metaecosystems$jaccard_index[ds_metaecosystems$system_nr == system_nr_input &
+                                         ds_metaecosystems$time_point == time_point_input] = jaccard_index
     
-    ds_regional_biomass$bray_curtis[ds_regional_biomass$system_nr == system_nr_input &
-                                         ds_regional_biomass$time_point == time_point_input] = bray_curtis
+    ds_metaecosystems$bray_curtis[ds_metaecosystems$system_nr == system_nr_input &
+                                         ds_metaecosystems$time_point == time_point_input] = bray_curtis
     
-    ds_regional_biomass$metaecosystem_richness[ds_regional_biomass$system_nr == system_nr_input &
-                                          ds_regional_biomass$time_point == time_point_input] = metaecosystem_richness
+    ds_metaecosystems$metaecosystem_richness[ds_metaecosystems$system_nr == system_nr_input &
+                                          ds_metaecosystems$time_point == time_point_input] = metaecosystem_richness
     
-    ds_regional_biomass$gamma_shannon[ds_regional_biomass$system_nr == system_nr_input &
-                                          ds_regional_biomass$time_point == time_point_input] = gamma_shannon
+    ds_metaecosystems$gamma_shannon[ds_metaecosystems$system_nr == system_nr_input &
+                                          ds_metaecosystems$time_point == time_point_input] = gamma_shannon
     
     
   }
@@ -176,7 +175,7 @@ for (system_nr_input in system_nr_metaecosystems) {
 
 #Add baselines (from t1)
 
-baselines = ds_regional_biomass %>%
+baselines = ds_metaecosystems %>%
   ungroup() %>%
   filter(time_point == 1) %>%
   select(system_nr, 
@@ -191,15 +190,15 @@ baselines = ds_regional_biomass %>%
          baseline_metaecosystem_richness = metaecosystem_richness,
          baseline_gamma_shannon = gamma_shannon)
 
-ds_regional_biomass = full_join(ds_regional_biomass, baselines)
+ds_metaecosystems = full_join(ds_metaecosystems, baselines)
 ```
 
 ```{r}
-saveRDS(ds_regional_biomass, file = here("results", "ds_regional_biomass.RData"))
+saveRDS(ds_metaecosystems, file = here("results", "ds_metaecosystems.RData"))
 ```
 
-```{r ds_regional_biomass-datatable}
-datatable(ds_regional_biomass,
+```{r ds_metaecosystems-datatable}
+datatable(ds_metaecosystems,
           rownames = FALSE,
           options = list(scrollX = TRUE),
           filter = list(position = 'top', 
