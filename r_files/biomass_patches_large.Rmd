@@ -9,8 +9,6 @@ editor_options:
 
 ### Large patches {.tabset .tabset-pills}
 
-*Research question: how does biomass density change according to the size to which the patch is connected? (Does a small patch connected to a small patch have the same biomass density than a small patch connected to a large patch?)*
-
 #### Plots
 
 ```{r plot-single-ecosystems-large-patches}
@@ -171,7 +169,7 @@ for (disturbance_input in c("low", "high")) {
 ```{r plot-effect-size-of-biomass-of-small-patches}
 for (disturbance_input in c("low", "high")) {
   print(
-    ds_patches_averaged %>%
+    ds_patches_effect_size %>%
       filter(!time_point == 0,
              disturbance == disturbance_input,
              eco_metaeco_type == "S (S_S)" |
@@ -199,7 +197,7 @@ for (disturbance_input in c("low", "high")) {
         labels = c("Small connected to large",
                    "Small connnected to small")
       ) +
-      scale_x_continuous(breaks = unique(ds_patches_averaged$day)) +
+      scale_x_continuous(breaks = unique(ds_patches_effect_size$day)) +
       theme_bw() +
       theme(
         panel.grid.major = element_blank(),
@@ -268,38 +266,35 @@ P = patch type (connected to small vs connected to large)
 
 D = disturbance
 
-```{r choose-time-points-large-patches}
-first_time_point = 2
-last_time_point = 7
+```{r}
+disturbance_input = "low"
+first_time_point_model = 2
+last_time_point_model = 7
+```
 
-filtered_data = ds_patches_averaged %>%
-                         filter(time_point >= first_time_point,
-                                time_point <= last_time_point,
-                                eco_metaeco_type== "S (S_S)" | eco_metaeco_type == "S (S_L)")
+```{r}
+filtered_data = ds_patches_effect_size %>%
+                         filter(time_point >= first_time_point_model,
+                                time_point <= last_time_point_model,
+                                disturbance == disturbance_input,
+                                eco_metaeco_type %in% c("L (L_L)", "L (S_L)"))
 ```
 
 ```{r create-full-model-of-the-large-patches}
 full_model = lm(bioarea_per_volume_d ~                  
                   day + 
                   eco_metaeco_type + 
-                  disturbance +
-                  day : eco_metaeco_type +
-                  day : disturbance + 
-                  eco_metaeco_type : disturbance +
-                  baseline_bioarea + 
-                  day : baseline_bioarea,
+                  day : eco_metaeco_type,
                   data = filtered_data)
 
 null_model = lm(bioarea_per_volume_d ~                  
-                  day + 
-                  disturbance +
-                  day : disturbance + 
-                  baseline_bioarea + 
-                  day : baseline_bioarea,
+                  day,
                   data = filtered_data)
 
 anova(full_model, null_model)
 AIC(full_model, null_model)
+
+summary(full_model)
 ```
 
 Let's then do some model diagnostics.
@@ -311,14 +306,6 @@ plot(full_model, which = 1:5)
 
 ```{r}
 R2_full = glance(full_model)$r.squared
-no_patch_type = lm(bioarea_per_volume_d ~
-                  day + 
-                  disturbance,
-                  data = ds_patches_averaged %>%
-                         filter(time_point >= first_time_point) %>%
-                         filter(time_point <= last_time_point) %>%
-                         filter(eco_metaeco_type== "S (S_S)" | eco_metaeco_type == "S (S_L)"))
-
 R2_null = glance(null_model)$r.squared
 R2_P = R2_full - R2_null
 

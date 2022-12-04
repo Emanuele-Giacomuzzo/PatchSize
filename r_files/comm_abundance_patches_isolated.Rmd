@@ -104,7 +104,7 @@ We will exclude in the model the time point 0 and 1. At time point 0 all culture
 
 Let's see how linear is the time trend of bioarea and if we can make it more linear with a log10 transformation. We are lucky that during the modelling process we need to drop the first two time points, which would have made the biomass trend not linear.
 
-**Linearity of regional bioarea \~ time**
+**Linearity of metaecosystem bioarea \~ time**
 
 ```{r abundance-isolated-patches-plot-linearity}
 ds_patches %>%
@@ -320,8 +320,8 @@ saveRDS(R2_isolated_patches, file = here("results", "biomass", "R2_isolated_patc
 ```
 
 ```{r}
-R2_regional = readRDS(here("results", "biomass", "R2_isolated_patches.RData"))
-R2_regional$IR2
+R2_metaecosystem = readRDS(here("results", "biomass", "R2_isolated_patches.RData"))
+R2_metaecosystem$IR2
 ```
 
 Let's just assume that this model holds also for t2-t5. Then, let's recalculate the R squared.
@@ -369,8 +369,8 @@ saveRDS(R2_isolated_patches, file = here("results", "R2_isolated_patches_t2t5.RD
 ```
 
 ```{r}
-R2_regional = readRDS(here("results", "R2_isolated_patches_t2t5.RData"))
-R2_regional$IR2
+R2_metaecosystem = readRDS(here("results", "R2_isolated_patches_t2t5.RData"))
+R2_metaecosystem$IR2
 ```
 
 I could compute the single time points but I don't see the reason why I should do that.

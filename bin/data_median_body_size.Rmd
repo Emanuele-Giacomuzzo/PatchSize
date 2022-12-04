@@ -1,0 +1,28 @@
+---
+title: "Data Median Body Size"
+output: html_document
+date: "2022-11-22"
+---
+
+#### Median body size (`ds_median_body_size)`
+
+```{r ds_median_body_size-create}
+eco_metaeco_types = unique(culture_info$eco_metaeco_type)
+
+ds_median_body_size = ds_individuals %>%
+        group_by(culture_ID, time_point, replicate_video) %>%
+        mutate(median_body_size = median(mean_area)) %>%
+        ungroup()
+```
+
+```{r}
+saveRDS(ds_median_body_size, file = here("results", "ds_median_body_size.RData"))
+```
+
+```{r ds_median_body_size-datatable}
+datatable(ds_median_body_size,
+          rownames = FALSE,
+          options = list(scrollX = TRUE),
+          filter = list(position = 'top', 
+                        clear = FALSE))
+```

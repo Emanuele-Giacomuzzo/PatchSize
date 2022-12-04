@@ -21,7 +21,7 @@ include_graphics(here("gifs", "transition_day_L_high.gif"))
 ```{r}
 for(time_point_input in 0:7) {
   print(
-    ds_classes_averaged %>%
+    ds_classes_effect_size %>%
       filter(disturbance == "low",
              eco_metaeco_type == "L (L_L)" | eco_metaeco_type == "L (S_L)",
              day == time_point_input*4) %>%
@@ -71,7 +71,7 @@ for(time_point_input in 0:7) {
 ```{r}
 for(time_point_input in 0:7) {
   print(
-    ds_classes_averaged %>%
+    ds_classes_effect_size %>%
       filter(disturbance == "low",
              eco_metaeco_type == "L (L_L)" | eco_metaeco_type == "L (S_L)",
              day == time_point_input*4) %>%
@@ -117,7 +117,7 @@ for(time_point_input in 0:7) {
 ```{r}
 for(time_point_input in 0:7) {
   print(
-    ds_classes_averaged %>%
+    ds_classes_effect_size %>%
       filter(disturbance == "high") %>%
       filter(eco_metaeco_type == "L (L_L)" | eco_metaeco_type == "L (S_L)") %>%
       filter(day == time_point_input*4) %>%
@@ -167,7 +167,7 @@ for(time_point_input in 0:7) {
 ```{r}
 for(time_point_input in 0:7) {
   print(
-    ds_classes_averaged %>%
+    ds_classes_effect_size %>%
       filter(disturbance == "high",
              eco_metaeco_type == "L (L_L)" | eco_metaeco_type == "L (S_L)",
              day == time_point_input*4) %>%

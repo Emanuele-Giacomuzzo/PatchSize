@@ -17,28 +17,18 @@ editor_options:
 #Create ds_metaecosystems
 
 ds_metaecosystems = ds_patches %>%
+  filter(metaecosystem == "yes",
+         !system_nr %in% metaecosystems_to_take_off) %>%
   mutate(total_patch_bioarea = bioarea_per_volume * patch_size_volume) %>%
-  filter(metaecosystem == "yes",!system_nr %in% metaecosystems_to_take_off) %>%
-  group_by(culture_ID, 
-           patch_size,
-           patch_size_volume,
-           disturbance,
-           metaecosystem_type,
-           time_point,
-           day,
-           system_nr,
-           eco_metaeco_type) %>%
-  summarise(bioarea_per_volume_video_averaged = mean(bioarea_per_volume),
-            total_patch_bioarea_video_averaged = mean(total_patch_bioarea)) %>%
   group_by(system_nr, 
            time_point,
            disturbance,
            metaecosystem_type,
            day) %>%
-  summarise(total_regional_bioarea = sum(total_patch_bioarea_video_averaged))
+  summarise(total_metaecosystem_bioarea = sum(total_patch_bioarea))
 ```
 
-```{r ds_metaecosystems-create-SL_SL_from_isolated, message=FALSE, results='hide', eval = recompute_analyses}
+```{r ds_metaecosystems-create-SL_SL_from_isolated, message=FALSE, results='hide'}
 
 #Add Small-Large Meta-ecosystems from isolated
 
@@ -68,36 +58,27 @@ low_system_nrs_combination = expand.grid(S_low_system_nrs, L_low_system_nrs) %>%
 high_system_nrs_combination = expand.grid(S_high_system_nrs, L_high_system_nrs) %>%
   mutate(disturbance = "high")
 system_nr_combinations = rbind(low_system_nrs_combination, high_system_nrs_combination) %>%
-  rename(S_system_nr = Var1) %>%
-  rename(L_system_nr = Var2)
+  rename(S_system_nr = Var1,
+         L_system_nr = Var2)
 
 number_of_combinations = nrow(system_nr_combinations)
+
 SL_from_isolated_all_combinations = NULL
 for (pair in 1:number_of_combinations){
   
-  SL_from_isolated_one_combination = 
-    ds_patches %>%
+  SL_from_isolated_all_combinations[[pair]] = ds_patches %>%
     filter(system_nr %in% system_nr_combinations[pair,]) %>%
-    group_by(disturbance, day, time_point, system_nr) %>%
-    summarise(regional_bioarea_across_videos = mean(bioarea_per_volume)) %>%
     group_by(disturbance, day, time_point) %>%
-    summarise(total_regional_bioarea = sum(regional_bioarea_across_videos)) %>%
-    mutate(system_nr = 1000 + pair) %>%
-    mutate(metaecosystem_type = "S_L_from_isolated")
+    summarise(total_metaecosystem_bioarea = sum(bioarea_tot)) %>%
+    mutate(system_nr = 1000 + pair,
+           metaecosystem_type = "S_L_from_isolated")
   
-  SL_from_isolated_all_combinations[[pair]] = SL_from_isolated_one_combination}
+}
 
+SL_from_isolated_all_combinations = SL_from_isolated_all_combinations %>%
+  bind_rows()
 
-SL_from_isolated_all_combinations_together = NULL
-for (combination in 1:number_of_combinations){
- 
-  SL_from_isolated_all_combinations_together = 
-    rbind(SL_from_isolated_all_combinations_together,
-          SL_from_isolated_all_combinations[[pair]])}
-
-ds_metaecosystems = rbind(ds_metaecosystems, SL_from_isolated_all_combinations_together)
-
-saveRDS(ds_metaecosystems, file = here("results", "ds_metaecosystems_isolated.RData"))
+ds_metaecosystems = rbind(ds_metaecosystems, SL_from_isolated_all_combinations)
 ```
 
 ```{r ds_metaecosystems-calculate-beta-diversity}
@@ -179,12 +160,12 @@ baselines = ds_metaecosystems %>%
   ungroup() %>%
   filter(time_point == 1) %>%
   select(system_nr, 
-         total_regional_bioarea, 
+         total_metaecosystem_bioarea, 
          jaccard_index,
          bray_curtis,
          metaecosystem_richness,
          gamma_shannon) %>%
-  rename(baseline_bioarea = total_regional_bioarea,
+  rename(baseline_bioarea = total_metaecosystem_bioarea,
          baseline_jaccard_index = jaccard_index,
          baseline_bray_curtis = bray_curtis,
          baseline_metaecosystem_richness = metaecosystem_richness,

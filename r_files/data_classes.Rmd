@@ -1,0 +1,91 @@
+---
+title: "Data Classes Averaged"
+output: html_document
+date: "2022-11-22"
+editor_options: 
+  chunk_output_type: console
+---
+
+### Size classes (ds_classes)
+
+-   Each row is the size class of a culture at a certain time point
+
+I am here creating 12 size classes as in @Jacquet2020. However, for some reason it seems like our body size classes are really different.
+
+```{r nr_of_size_classes}
+nr_of_size_classes = 12
+
+largest_size = max(ds_individuals$mean_area)
+#largest_size = exp(11.4) To see what happens, let's set the largest size to the one of @Jacquet2020. 
+```
+
+The logarithm of the largest individual in the experiment was `r log(largest_size)` μm² compared to 11.4 in @Jacquet2020.
+
+```{r ds_classes_effect_size-create-ds_classes, eval = recompute_analyses}
+size_class_width = largest_size / nr_of_size_classes
+
+size_class_boundaries = seq(from = 0,
+                            to = largest_size,
+                            by = size_class_width)
+
+single_videos_rows = NULL
+row = 0
+for (class in 1:nr_of_size_classes) {
+  bin_lower_limit = size_class_boundaries[class]
+  bin_upper_limit = size_class_boundaries[class + 1]
+  mean_size = (size_class_boundaries[class] + size_class_boundaries[class + 1]) / 2
+  
+  
+  for (time_point_input in 0:last_time_point) {
+    for (culture_ID_input in 1:n_cultures) {
+      for (replicate_video_input in 1:nr_videos[time_point_input + 1]) {
+        row = row + 1
+        
+        video_class_abundance = ds_individuals %>%
+          filter(
+            bin_lower_limit <= mean_area,
+            mean_area <= bin_upper_limit,
+            time_point == time_point_input,
+            culture_ID == culture_ID_input,
+            replicate_video == replicate_video_input
+          ) %>%
+          summarise(size_class_abundance = n()) %>%
+          pull(size_class_abundance)
+        
+        single_videos_rows[[row]] = ds_patches %>%
+          filter(
+            time_point == time_point_input,
+            culture_ID == culture_ID_input
+          ) %>%
+          mutate(
+            replicate_video = replicate_video_input,
+            size_class_abundance = video_class_abundance,
+            size_class_n = class,
+            size_class = mean_size,
+            log_size_class = log(size_class),
+            log_abundance = log(size_class_abundance + 1)
+          )
+        
+      }
+    }
+  }
+}
+
+#Watch out: it contains 27468 rows instead of 27720 because we excluded already culture_ID = 60, which I spilled during the experiment.
+
+ds_classes = single_videos_rows %>%
+  bind_rows()
+
+```
+
+```{r}
+saveRDS(ds_classes, file = here("results", "ds_classes.RData"))
+```
+
+```{r ds_classes_effect_size-datatable}
+datatable(ds_classes,
+          rownames = FALSE,
+          options = list(scrollX = TRUE),
+          filter = list(position = 'top', 
+                        clear = FALSE))
+```

@@ -34,7 +34,8 @@ knitr::opts_chunk$set(message = FALSE, cache=TRUE)
 rm( list = ls(  ) )
 cat( "\014" )
 start_time = Sys.time()
-recompute_analyses = TRUE #Lengthy analyses have been suppressed. Set recompute_analyses = TRUE to redo them. 
+recompute_analyses = FALSE #Lengthy analyses have been suppressed. Set recompute_analyses = TRUE to redo them. 
+compute_n_display_datasets = FALSE
 ```
 
 ```{r packages, echo = FALSE, results = FALSE, message = FALSE, cache = FALSE}
@@ -91,10 +92,11 @@ conflict_prefer("select", "dplyr")
 
 culture_info = read.csv(here("data", "PatchSizePilot_culture_info.csv"), header = TRUE)
 ds_patches = readRDS(here("results", "ds_patches.RData"))
-ds_patches_averaged = readRDS(here("results", "ds_patches_averaged.RData"))
-ds_regional_biomass = readRDS(here("results", "ds_regional_biomass.RData"))
-ds_body_size = readRDS(here("results", "ds_body_size.RData"))
-ds_classes_averaged = readRDS(here("results", "ds_classes_averaged.RData"))
+ds_patches_effect_size = readRDS(here("results", "ds_patches_effect_size.RData"))
+ds_metaecosystems = readRDS(here("results", "ds_metaecosystems.RData"))
+ds_individuals = readRDS(here("results", "ds_individuals.RData"))
+ds_classes = readRDS(here("results", "ds_classes.RData"))
+ds_classes_effect_size = readRDS(here("results", "ds_classes_effect_size.RData"))
 ds_median_body_size = readRDS(here("results", "ds_median_body_size.RData"))
 ds_lnRR_median_body_size = readRDS(here("results", "ds_lnRR_median_body_size.RData"))
 ```
@@ -127,6 +129,12 @@ n_protist_species = length(protist_species)
 n_metaecosystems = 55
 n_cultures = 110
 culture_info = read.csv(here("data", "PatchSizePilot_culture_info.csv"), header = TRUE); eco_metaeco_types = unique(culture_info$eco_metaeco_type)
+
+first_time_point_model = 2
+last_time_point_model = 7
+disturbance_input = "low"
+
+include_non_clean_scripts = FALSE
 ```
 
 ```{r echo = FALSE}
@@ -161,140 +169,127 @@ colour_SL = "#438cbe" #Colour of the Small-Large meta-ecosystem
 
 ## Overview {.tabset .tabset-pills}
 
-```{r overview-experiment, child = here("r_files", "overview.Rmd")}
+```{r overview-experiment, child = here("r_files", "overview.Rmd"), eval = compute_n_display_datasets}
 ```
 
 ## Data {.tabset .tabset-dropdown}
 
-```{r child = here("r_files", "data_experimental_treatments.Rmd")}
+```{r child = here("r_files", "data_culture_info.Rmd"), eval = compute_n_display_datasets}
 ```
 
-```{r child = here("r_files", "data_biomass_abund.Rmd")}
+```{r child = here("r_files", "data_patches.Rmd"), eval = compute_n_display_datasets}
 ```
 
-```{r child = here("r_files", "data_patches_averaged.Rmd")}
+```{r child = here("r_files", "data_patches_effect_size.Rmd"), eval = compute_n_display_datasets}
 ```
 
-```{r child = here("r_files", "data_metaecosystems.Rmd")}
+```{r child = here("r_files", "data_metaecosystems.Rmd"), eval = compute_n_display_datasets}
 ```
 
-```{r child = here("r_files", "data_body_size.Rmd")}
+```{r child = here("r_files", "data_individuals.Rmd"), eval = compute_n_display_datasets}
 ```
 
-```{r child = here("r_files", "data_classes_averaged.Rmd")}
+```{r child = here("r_files", "data_classes.Rmd"), eval = compute_n_display_datasets}
 ```
 
-```{r child = here("r_files", "data_median_body_size.Rmd")}
+```{r child = here("r_files", "data_classes_effect_size.Rmd"), eval = compute_n_display_datasets}
 ```
 
-```{r child = here("r_files", "data_median_body_size_effect_size.Rmd")}
+## Meta-ecosystems {.tabset .tabset-dropdown}
+
+### All
+
+```{r child = here("r_files", "biomass_metaeco_all.Rmd"), eval = include_non_clean_scripts}
 ```
 
-## Meta-Ecosystem Biomass {.tabset .tabset-dropdown}
+### Equally sized {.tabset .tabset-pills}
 
-```{r child = here("r_files", "biomass_metaeco_all.Rmd")}
+```{r child = here("r_files", "biomass_metaeco_equally_sized.Rmd"), eval = include_non_clean_scripts}
 ```
 
-```{r child = here("r_files", "biomass_metaeco_MM_SL.Rmd")}
+```{r child = here("r_files", "beta_diversity_metaeco_equally_sized.Rmd"), eval = include_non_clean_scripts}
 ```
 
-```{r child = here("r_files", "biomass_metaeco_SL_SL_from_isolated.Rmd"), eval = FALSE}
+```{r child = here("r_files", "gamma_diversity_metaeco_equally_sized.Rmd"), eval = include_non_clean_scripts}
 ```
 
-```{r child = here("r_files", "biomass_metaeco_equally_sized.Rmd")}
+```{r child = here("r_files", "gamma_diversity_metaeco_equally_sized.Rmd"), eval = include_non_clean_scripts}
 ```
 
-## Patches: Biomass {.tabset .tabset-dropdown}
 
-```{r child = here("r_files", "biomass_patches_all.Rmd")}
+### MM vs SL {.tabset .tabset-pills}
+
+```{r child = here("r_files", "biomass_metaeco_MM_SL.Rmd"), eval = include_non_clean_scripts}
 ```
 
-```{r child = here("r_files", "biomass_patches_small.Rmd")}
+```{r child = here("r_files", "beta_diversity_metaeco_MM_SL.Rmd"), eval = include_non_clean_scripts}
 ```
 
-```{r child = here("r_files", "biomass_patches_large.Rmd")}
+```{r child = here("r_files", "gamma_diversity_metaeco_MM_SL.Rmd"), eval = include_non_clean_scripts}
 ```
 
-```{r child = here("r_files", "biomass_patches_isolated.Rmd")}
+### SL vs SL* {.tabset .tabset-pills}
+
+```{r child = here("r_files", "biomass_metaeco_SL_SL_from_isolated.Rmd"), eval = include_non_clean_scripts}
 ```
 
-## Patches: Community Abundance {.tabset .tabset-dropdown}
+## Patches {.tabset .tabset-dropdown}
 
-```{r child = here("r_files", "comm_abundance_patches_small.Rmd")}
+### All  {.tabset .tabset-pills}
+
+```{r child = here("r_files", "biomass_patches_all.Rmd"), eval = include_non_clean_scripts}
 ```
 
-```{r child = here("r_files", "comm_abundance_patches_large.Rmd")}
+### Isolated  {.tabset .tabset-pills}
+
+```{r child = here("r_files", "comm_abundance_patches_isolated.Rmd"), eval = include_non_clean_scripts}
 ```
 
-```{r child = here("r_files", "comm_abundance_patches_isolated.Rmd")}
+```{r child = here("r_files", "biomass_patches_isolated.Rmd"), eval = include_non_clean_scripts}
 ```
 
-## Patches: Population Abundances {.tabset .tabset-dropdown}
-
-```{r child = here("r_files", "population_abundances_patches_small.Rmd")}
-```
-
-```{r child = here("r_files", "population_abundances_patches_large.Rmd")}
-```
-
-```{r child = here("r_files", "population_abundances_patches_isolated.Rmd")}
-```
-
-## Biodiversity {.tabset .tabset-pills}
-
-### Alpha Diversity {.tabset .tabset-dropdown}
-
-```{r child = here("r_files", "alpha_diversity_patches_small.Rmd")}
-```
-
-```{r child = here("r_files", "alpha_diversity_patches_large.Rmd")}
+```{r child = here("r_files", "population_abundances_patches_isolated.Rmd"), eval = include_non_clean_scripts}
 ```
 
 ```{r child = here("r_files", "alpha_diversity_patches_isolated.Rmd")}
 ```
 
-### Beta Diversity {.tabset .tabset-dropdown}
-
-```{r child = here("r_files", "beta_diversity_metaeco_MM_SL.Rmd")}
+```{r child = here("r_files", "body_size_distribution_patches_isolated.Rmd"), eval = include_non_clean_scripts}
 ```
 
-```{r child = here("r_files", "beta_diversity_metaeco_equally_sized.Rmd")}
+
+### Small {.tabset .tabset-pills}
+
+```{r child = here("r_files", "biomass_patches_small.Rmd"), eval = include_non_clean_scripts}
 ```
 
-### Gamma Diversity {.tabset .tabset-dropdown}
-
-```{r child = here("r_files", "gamma_diversity_metaeco_MM_SL.Rmd")}
+```{r child = here("r_files", "comm_abundance_patches_small.Rmd"), eval = include_non_clean_scripts}
 ```
 
-```{r child = here("r_files", "gamma_diversity_metaeco_equally_sized.Rmd")}
+```{r child = here("r_files", "population_abundances_patches_small.Rmd"), eval = include_non_clean_scripts}
 ```
 
-## Body size distribution {.tabset .tabset-dropdown}
-
-```{r child = here("r_files", "body_size_distribution_gifs.Rmd"), eval = recompute_analyses}
+```{r child = here("r_files", "alpha_diversity_patches_small.Rmd")}
 ```
 
-```{r child = here("r_files", "body_size_distribution_patches_small.Rmd")}
+```{r child = here("r_files", "body_size_distribution_patches_small.Rmd"), eval = include_non_clean_scripts}
 ```
 
-```{r child = here("r_files", "body_size_distribution_patches_large.Rmd")}
+### Large {.tabset .tabset-pills}
+
+```{r child = here("r_files", "biomass_patches_large.Rmd"), eval = include_non_clean_scripts}
 ```
 
-```{r child = here("r_files", "body_size_distribution_patches_isolated.Rmd")}
+```{r child = here("r_files", "comm_abundance_patches_large.Rmd"), eval = include_non_clean_scripts}
 ```
 
-## Median body size {.tabset .tabset-dropdown}
-
-```{r child = here("r_files", "body_size_median_patches_all.Rmd")}
+```{r child = here("r_files", "population_abundances_patches_large.Rmd"), eval = include_non_clean_scripts}
 ```
 
-```{r child = here("r_files", "body_size_median_patches_small.Rmd")}
+```{r child = here("r_files", "alpha_diversity_patches_large.Rmd")}
 ```
 
-```{r child = here("r_files", "body_size_median_patches_large.Rmd")}
-```
-
-```{r child = here("r_files", "body_size_median_patches_isolated.Rmd")}
+```{r child = here("r_files", "body_size_distribution_patches_large.Rmd"), eval = include_non_clean_scripts}
 ```
 
 ## Evaporation {.tabset .tabset-pills}

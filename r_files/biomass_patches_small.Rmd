@@ -173,7 +173,7 @@ for (disturbance_input in c("low", "high")) {
 ```{r biomass-small-patches-effect-size}
 for (disturbance_input in c("low", "high")) {
   print(
-    ds_patches_averaged %>%
+    ds_patches_effect_size %>%
       filter(!time_point == 0,
              disturbance == disturbance_input,
              eco_metaeco_type %in% c("S (S_S)", "S (S_L)")) %>%
@@ -200,7 +200,7 @@ for (disturbance_input in c("low", "high")) {
         labels = c("Small connected to large",
                    "Small connnected to small")
       ) +
-      scale_x_continuous(breaks = unique(ds_patches_averaged$day)) +
+      scale_x_continuous(breaks = unique(ds_patches_effect_size$day)) +
       theme_bw() +
       theme(
         panel.grid.major = element_blank(),
@@ -270,13 +270,14 @@ P = patch type (connected to small vs connected to large)
 D = disturbance
 
 ```{r choose-time-points}
-first_time_point = 2
-last_time_point = 7
+first_time_point_model = 2
+last_time_point_model = 7
+disturbance_input = "low"
 
-filtered_data = ds_patches_averaged %>%
-                         filter(time_point >= first_time_point,
-                                time_point <= last_time_point,
-                                disturbance == "low",
+filtered_data = ds_patches_effect_size %>%
+                         filter(time_point >= first_time_point_model,
+                                time_point <= last_time_point_model,
+                                disturbance == disturbance_input,
                                 eco_metaeco_type %in% c("S (S_S)","S (S_L)"))
 ```
 
@@ -284,13 +285,11 @@ filtered_data = ds_patches_averaged %>%
 full_model = lm(bioarea_per_volume_d ~                  
                   day + 
                   eco_metaeco_type +
-                  eco_metaeco_type : day +
-                  baseline_bioarea,
+                  eco_metaeco_type : day,
                   data = filtered_data)
 
 null_model = lm(bioarea_per_volume_d ~                  
-                  day +
-                  baseline_bioarea,
+                  day,
                   data = filtered_data)
 
 AIC = AIC(full_model, null_model) #When I add baseline_bioarea : day, the AIC of the model stays the same when I take off the ecosystem type.
@@ -345,7 +344,7 @@ filtered_data %>%
   ) +
   scale_color_discrete(labels = c("Small connected to large",
                                   "Small connnected to small")) +
-  scale_x_continuous(breaks = unique(ds_patches_averaged$day)) +
+  scale_x_continuous(breaks = unique(ds_patches_effect_size$day)) +
   theme_bw() +
   theme(
     panel.grid.major = element_blank(),

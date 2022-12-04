@@ -10,7 +10,7 @@ editor_options:
 for(size_class_input in 1:nr_of_size_classes) {
   for (disturbance_input in c("low", "high")) {
     print(
-      ds_classes_averaged %>%
+      ds_classes_effect_size %>%
         filter(
           eco_metaeco_type %in% c("S (S_S)", ("S (S_L)")),!time_point == 0,
           size_class_n == size_class_input,
@@ -39,7 +39,7 @@ for(size_class_input in 1:nr_of_size_classes) {
           labels = c("Small connected to large",
                      "Small connnected to small")
         ) +
-        scale_x_continuous(breaks = unique(ds_patches_averaged$day)) +
+        scale_x_continuous(breaks = unique(ds_patches_effect_size$day)) +
         theme_bw() +
         theme(
           panel.grid.major = element_blank(),

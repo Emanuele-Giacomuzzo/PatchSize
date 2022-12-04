@@ -35,7 +35,7 @@ for (patch_size_input in c("S", "L")) {
                    disturbance_input,
                    ")")
     
-    p[[n]] <- ds_classes_averaged %>%
+    p[[n]] <- ds_classes_effect_size %>%
       filter(disturbance == disturbance_input) %>%
       filter(patch_size == patch_size_input) %>%
       filter(!eco_metaeco_type == patch_size_input) %>%

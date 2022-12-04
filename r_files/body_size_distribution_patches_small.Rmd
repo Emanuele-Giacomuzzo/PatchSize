@@ -21,7 +21,7 @@ include_graphics(here("gifs", "transition_day_S_high.gif"))
 ```{r}
 for(time_point_input in 0:7) {
   print(
-    ds_classes_averaged %>%
+    ds_classes_effect_size %>%
       filter(disturbance == "low",
              eco_metaeco_type == "S (S_S)" | eco_metaeco_type == "S (S_L)",
              day == time_point_input*4) %>%
@@ -71,7 +71,7 @@ for(time_point_input in 0:7) {
 ```{r}
 for(time_point_input in 0:7) {
   print(
-    ds_classes_averaged %>%
+    ds_classes_effect_size %>%
       filter(disturbance == "high",
              eco_metaeco_type == "S (S_S)" | eco_metaeco_type == "S (S_L)",
              day == time_point_input*4) %>%
@@ -123,7 +123,7 @@ for(time_point_input in 0:7) {
 ```{r}
 for(time_point_input in 0:7) {
   print(
-    ds_classes_averaged %>%
+    ds_classes_effect_size %>%
       filter(disturbance == "low",
              eco_metaeco_type %in% c("S (S_S)", "S (S_L)"),
              day == time_point_input * 4) %>%
@@ -180,7 +180,7 @@ for(time_point_input in 0:7) {
 ```{r}
 for(time_point_input in 0:7) {
   print(
-    ds_classes_averaged %>%
+    ds_classes_effect_size %>%
       filter(disturbance == "high",
              eco_metaeco_type %in% c("S (S_S)", "S (S_L)"),
              day == time_point_input * 4) %>%
@@ -235,7 +235,7 @@ for(time_point_input in 0:7) {
 ```{r}
 for (chosen_size_class in 1:nr_of_size_classes) {
   print(
-    ds_classes_averaged %>%
+    ds_classes_effect_size %>%
       filter(
         eco_metaeco_type %in% c("S (S_S)", "S (S_L)"),
         disturbance == "low",
@@ -293,7 +293,7 @@ for (chosen_size_class in 1:nr_of_size_classes) {
 ```{r}
 for (chosen_size_class in 1:nr_of_size_classes) {
   print(
-    ds_classes_averaged %>%
+    ds_classes_effect_size %>%
       filter(
         eco_metaeco_type %in% c("S (S_S)", "S (S_L)"),
         disturbance == "high",
@@ -379,7 +379,7 @@ chosen_size_class = 1
 
 ```{r}
 for (disturbance_input in c("low", "high")) {
-  print(ds_classes_averaged %>%
+  print(ds_classes_effect_size %>%
     filter(
       day > 0,
       eco_metaeco_type %in% c("S (S_S)", "S (S_L)"),
@@ -430,7 +430,7 @@ for (disturbance_input in c("low", "high")) {
 ```
 
 ```{r}
-filtered_data = ds_classes_averaged %>%
+filtered_data = ds_classes_effect_size %>%
   filter(
     eco_metaeco_type %in% c("S (S_S)", "S (S_L)"),
     time_point >= first_time_point,
@@ -480,7 +480,7 @@ chosen_size_class = 2
 
 ```{r}
 for (disturbance_input in c("low", "high")) {
-  print(ds_classes_averaged %>%
+  print(ds_classes_effect_size %>%
     filter(
       day > 0,
       eco_metaeco_type %in% c("S (S_S)", "S (S_L)"),
@@ -531,7 +531,7 @@ for (disturbance_input in c("low", "high")) {
 ```
 
 ```{r}
-filtered_data = ds_classes_averaged %>%
+filtered_data = ds_classes_effect_size %>%
   filter(
     eco_metaeco_type %in% c("S (S_S)", "S (S_L)"),
     time_point >= first_time_point,
@@ -550,7 +550,7 @@ chosen_size_class = 3
 ```{r}
 for (disturbance_input in c("low", "high")) {
   print(
-    ds_classes_averaged %>%
+    ds_classes_effect_size %>%
       filter(size_class_n == chosen_size_class) %>%
       filter(eco_metaeco_type == "S (S_S)" |
                eco_metaeco_type == "S (S_L)") %>%
@@ -594,7 +594,7 @@ for (disturbance_input in c("low", "high")) {
 ```
 
 ```{r}
-filtered_data = ds_classes_averaged %>%
+filtered_data = ds_classes_effect_size %>%
   filter(
     eco_metaeco_type %in% c("S (S_S)", "S (S_L)"),
     time_point >= first_time_point,
@@ -613,7 +613,7 @@ chosen_size_class = 4
 ```{r}
 for (disturbance_input in c("low", "high")) {
   print(
-    ds_classes_averaged %>%
+    ds_classes_effect_size %>%
       filter(size_class_n == chosen_size_class) %>%
       filter(eco_metaeco_type == "S (S_S)" |
                eco_metaeco_type == "S (S_L)") %>%
@@ -657,7 +657,7 @@ for (disturbance_input in c("low", "high")) {
 ```
 
 ```{r}
-filtered_data = ds_classes_averaged %>%
+filtered_data = ds_classes_effect_size %>%
   filter(
     eco_metaeco_type %in% c("S (S_S)", "S (S_L)"),
     time_point >= first_time_point,
@@ -676,7 +676,7 @@ chosen_size_class = 5
 ```{r}
 for (disturbance_input in c("low", "high")) {
   print(
-    ds_classes_averaged %>%
+    ds_classes_effect_size %>%
       filter(size_class_n == chosen_size_class) %>%
       filter(eco_metaeco_type == "S (S_S)" |
                eco_metaeco_type == "S (S_L)") %>%
@@ -720,7 +720,7 @@ for (disturbance_input in c("low", "high")) {
 ```
 
 ```{r}
-filtered_data = ds_classes_averaged %>%
+filtered_data = ds_classes_effect_size %>%
   filter(
     eco_metaeco_type %in% c("S (S_S)", "S (S_L)"),
     time_point >= first_time_point,
@@ -741,7 +741,7 @@ chosen_size_class = 6
 ```{r}
 for (disturbance_input in c("low", "high")) {
   print(
-    ds_classes_averaged %>%
+    ds_classes_effect_size %>%
       filter(size_class_n == chosen_size_class) %>%
       filter(eco_metaeco_type == "S (S_S)" |
                eco_metaeco_type == "S (S_L)") %>%
@@ -785,7 +785,7 @@ for (disturbance_input in c("low", "high")) {
 ```
 
 ```{r}
-filtered_data = ds_classes_averaged %>%
+filtered_data = ds_classes_effect_size %>%
   filter(
     eco_metaeco_type %in% c("S (S_S)", "S (S_L)"),
     time_point >= first_time_point,
@@ -806,7 +806,7 @@ chosen_size_class = 7
 ```{r}
 for (disturbance_input in c("low", "high")) {
   print(
-    ds_classes_averaged %>%
+    ds_classes_effect_size %>%
       filter(size_class_n == chosen_size_class) %>%
       filter(eco_metaeco_type == "S (S_S)" |
                eco_metaeco_type == "S (S_L)") %>%
@@ -850,7 +850,7 @@ for (disturbance_input in c("low", "high")) {
 ```
 
 ```{r}
-filtered_data = ds_classes_averaged %>%
+filtered_data = ds_classes_effect_size %>%
   filter(
     eco_metaeco_type %in% c("S (S_S)", "S (S_L)"),
     time_point >= first_time_point,
@@ -871,7 +871,7 @@ chosen_size_class = 8
 ```{r}
 for (disturbance_input in c("low", "high")) {
   print(
-    ds_classes_averaged %>%
+    ds_classes_effect_size %>%
       filter(size_class_n == chosen_size_class) %>%
       filter(eco_metaeco_type == "S (S_S)" |
                eco_metaeco_type == "S (S_L)") %>%
@@ -915,7 +915,7 @@ for (disturbance_input in c("low", "high")) {
 ```
 
 ```{r}
-filtered_data = ds_classes_averaged %>%
+filtered_data = ds_classes_effect_size %>%
   filter(
     eco_metaeco_type %in% c("S (S_S)", "S (S_L)"),
     time_point >= first_time_point,
@@ -936,7 +936,7 @@ chosen_size_class = 9
 ```{r}
 for (disturbance_input in c("low", "high")) {
   print(
-    ds_classes_averaged %>%
+    ds_classes_effect_size %>%
       filter(size_class_n == chosen_size_class) %>%
       filter(eco_metaeco_type == "S (S_S)" |
                eco_metaeco_type == "S (S_L)") %>%
@@ -980,7 +980,7 @@ for (disturbance_input in c("low", "high")) {
 ```
 
 ```{r}
-filtered_data = ds_classes_averaged %>%
+filtered_data = ds_classes_effect_size %>%
   filter(
     eco_metaeco_type %in% c("S (S_S)", "S (S_L)"),
     time_point >= first_time_point,
@@ -1001,7 +1001,7 @@ chosen_size_class = 10
 ```{r}
 for (disturbance_input in c("low", "high")) {
   print(
-    ds_classes_averaged %>%
+    ds_classes_effect_size %>%
       filter(size_class_n == chosen_size_class) %>%
       filter(eco_metaeco_type == "S (S_S)" |
                eco_metaeco_type == "S (S_L)") %>%
@@ -1045,7 +1045,7 @@ for (disturbance_input in c("low", "high")) {
 ```
 
 ```{r}
-filtered_data = ds_classes_averaged %>%
+filtered_data = ds_classes_effect_size %>%
   filter(
     eco_metaeco_type %in% c("S (S_S)", "S (S_L)"),
     time_point >= first_time_point,
@@ -1066,7 +1066,7 @@ chosen_size_class = 11
 ```{r}
 for (disturbance_input in c("low", "high")) {
   print(
-    ds_classes_averaged %>%
+    ds_classes_effect_size %>%
       filter(size_class_n == chosen_size_class) %>%
       filter(eco_metaeco_type == "S (S_S)" |
                eco_metaeco_type == "S (S_L)") %>%
@@ -1110,7 +1110,7 @@ for (disturbance_input in c("low", "high")) {
 ```
 
 ```{r}
-filtered_data = ds_classes_averaged %>%
+filtered_data = ds_classes_effect_size %>%
   filter(
     eco_metaeco_type %in% c("S (S_S)", "S (S_L)"),
     time_point >= first_time_point,
@@ -1129,7 +1129,7 @@ chosen_size_class = 12
 ```{r}
 for (disturbance_input in c("low", "high")) {
   print(
-    ds_classes_averaged %>%
+    ds_classes_effect_size %>%
       filter(size_class_n == chosen_size_class) %>%
       filter(eco_metaeco_type == "S (S_S)" |
                eco_metaeco_type == "S (S_L)") %>%
@@ -1173,7 +1173,7 @@ for (disturbance_input in c("low", "high")) {
 ```
 
 ```{r}
-filtered_data = ds_classes_averaged %>%
+filtered_data = ds_classes_effect_size %>%
   filter(
     eco_metaeco_type %in% c("S (S_S)", "S (S_L)"),
     time_point >= first_time_point,

@@ -9,22 +9,16 @@ editor_options:
 
 ### Medium-Medium vs Small-Large {.tabset .tabset-pills}
 
-*Research question: do meta-ecosystems with the same total size but with patches that are either the same size or of different size have a different biomass density? (i.e., do the medium-medium and small-large meta-ecosystems have different biomass density?)*
-
 #### Plots
 
 ```{r}
-for (disturbance_input in c("low", "high")) {
-  print(
-    ds_regional_biomass %>%
-      filter (disturbance == disturbance_input) %>%
-      filter (metaecosystem_type == "S_L" |
-                metaecosystem_type == "M_M") %>%
-      
+ds_metaecosystems %>%
+      filter (disturbance == disturbance_input,
+              metaecosystem_type %in% c("S_L", "M_M")) %>%
       ggplot (
         aes(
           x = day,
-          y = total_regional_bioarea,
+          y = total_metaecosystem_bioarea,
           group = system_nr,
           fill = system_nr,
           color = system_nr,
@@ -33,7 +27,6 @@ for (disturbance_input in c("low", "high")) {
       ) +
       geom_line () +
       labs(
-        title = paste("Disturbance =", disturbance_input),
         x = "Day",
         y = "Meta-ecosystem Total Bioarea (µm²)",
         fill = "System nr",
@@ -48,7 +41,7 @@ for (disturbance_input in c("low", "high")) {
         panel.grid.minor = element_blank(),
         legend.position = "bottom"
       ) +
-      scale_x_continuous(breaks = unique(ds_regional_biomass$day)) +
+      scale_x_continuous(breaks = unique(ds_metaecosystems$day)) +
       geom_vline(
         xintercept = resource_flow_days[1] + 0.7,
         linetype = "dotdash",
@@ -86,28 +79,22 @@ for (disturbance_input in c("low", "high")) {
         size = 0.7
       ) +
       labs(caption = "Vertical grey line: resource flow")
-  )
-}
 ```
 
 ```{r}
-for (disturbance_input in c("low", "high")) {
-  print(
-    ds_regional_biomass %>%
-      filter(disturbance == disturbance_input) %>%
-      filter (metaecosystem_type == "S_L" |
-                metaecosystem_type == "M_M") %>%
+ds_metaecosystems %>%
+      filter(disturbance == disturbance_input,
+             metaecosystem_type %in% c("S_L", "M_M")) %>%
       ggplot (
         aes(
           x = day,
-          y = total_regional_bioarea,
+          y = total_metaecosystem_bioarea,
           group = interaction(day, metaecosystem_type),
           fill = metaecosystem_type
         )
       ) +
       geom_boxplot() +
       labs(
-        title = paste("Disturbance =", disturbance_input),
         x = "Day",
         y = "Meta-ecosystem Total Bioarea (µm²)",
         color = '',
@@ -124,7 +111,7 @@ for (disturbance_input in c("low", "high")) {
         panel.grid.minor = element_blank(),
         legend.position = "bottom"
       )  +
-      scale_x_continuous(breaks = unique(ds_regional_biomass$day)) +
+      scale_x_continuous(breaks = unique(ds_metaecosystems$day)) +
       geom_vline(
         xintercept = resource_flow_days[1] + 0.7,
         linetype = "dotdash",
@@ -162,8 +149,6 @@ for (disturbance_input in c("low", "high")) {
         size = 0.7
       ) +
       labs(caption = "Vertical grey line: resource flow")
-  )
-}
 ```
 
 #### Model Time Series {.tabset .tabset-pills}
@@ -179,17 +164,17 @@ $$
 t Day M Meta-ecosystem type D Disturbance B Baseline system nr Meta-ecosystem nr
 
 ```{r}
-filtered_data = ds_regional_biomass %>%
+filtered_data = ds_metaecosystems %>%
     filter(metaecosystem_type %in% c("M_M", "S_L"),
-           disturbance == "low",
-           time_point >= 2)
+           disturbance == disturbance_input,
+           time_point >= first_time_point_model,
+           time_point <= last_time_point_model)
 ```
 
 ```{r}
 full_model = lmer(
-  total_regional_bioarea ~
+  total_metaecosystem_bioarea ~
     day +
-    baseline_bioarea + 
     metaecosystem_type +
     metaecosystem_type : day +
     (day | system_nr),
@@ -199,9 +184,8 @@ full_model = lmer(
 )
 
 null_model = lmer(
-  total_regional_bioarea ~
+  total_metaecosystem_bioarea ~
     day +
-    baseline_bioarea + 
     (day | system_nr),
   data = filtered_data,
   REML = FALSE,
@@ -248,8 +232,8 @@ Let's start by looking at whether meta-ecosystem type and disturbance had an eff
 ```{r}
 chosen_time_point = 1
 
-filtered_data = ds_regional_biomass %>%
-                            filter(disturbance == "low",
+filtered_data = ds_metaecosystems %>%
+                            filter(disturbance == disturbance_input,
                                    metaecosystem_type %in% c("M_M", "S_L"),
                                    time_point == chosen_time_point)
 ```
@@ -257,7 +241,7 @@ filtered_data = ds_regional_biomass %>%
 ```{r}
 filtered_data %>%
       ggplot (aes(x = metaecosystem_type,
-                  y = total_regional_bioarea)) +
+                  y = total_metaecosystem_bioarea)) +
       geom_boxplot() +
       labs(
         title = paste0(
@@ -282,11 +266,11 @@ filtered_data %>%
 ```
 
 ```{r}
-full_model = lm(total_regional_bioarea ~
+full_model = lm(total_metaecosystem_bioarea ~
             metaecosystem_type,
           data = filtered_data)
 
-null_model = lm(total_regional_bioarea ~
+null_model = lm(total_metaecosystem_bioarea ~
             1,
           data = filtered_data)
 
@@ -302,8 +286,8 @@ Here there should be an effect of meta-ecosystem type.
 ```{r}
 chosen_time_point = 2
 
-filtered_data = ds_regional_biomass %>%
-                            filter(disturbance == "low",
+filtered_data = ds_metaecosystems %>%
+                            filter(disturbance == disturbance_input,
                                    metaecosystem_type %in% c("M_M", "S_L"),
                                    time_point == chosen_time_point)
 ```
@@ -311,7 +295,7 @@ filtered_data = ds_regional_biomass %>%
 ```{r}
 filtered_data %>%
       ggplot (aes(x = metaecosystem_type,
-                  y = total_regional_bioarea)) +
+                  y = total_metaecosystem_bioarea)) +
       geom_boxplot() +
       labs(
         title = paste0(
@@ -336,13 +320,12 @@ filtered_data %>%
 ```
 
 ```{r}
-full_model = lm(total_regional_bioarea ~
+full_model = lm(total_metaecosystem_bioarea ~
             metaecosystem_type +
-            baseline_bioarea +
-            metaecosystem_type * disturbance,
+            baseline_bioarea,
           data = filtered_data)
 
-null_model = lm(total_regional_bioarea ~
+null_model = lm(total_metaecosystem_bioarea ~
             baseline_bioarea,
           data = filtered_data)
 
@@ -371,8 +354,8 @@ Here there should be an effect of meta-ecosystem type.
 ```{r}
 chosen_time_point = 3
 
-filtered_data = ds_regional_biomass %>%
-                            filter(disturbance == "low",
+filtered_data = ds_metaecosystems %>%
+                            filter(disturbance == disturbance_input,
                                    metaecosystem_type %in% c("M_M", "S_L"),
                                    time_point == chosen_time_point)
 ```
@@ -380,7 +363,7 @@ filtered_data = ds_regional_biomass %>%
 ```{r}
 filtered_data %>%
       ggplot (aes(x = metaecosystem_type,
-                  y = total_regional_bioarea)) +
+                  y = total_metaecosystem_bioarea)) +
       geom_boxplot() +
       labs(
         title = paste0(
@@ -408,12 +391,12 @@ filtered_data %>%
 
 #With baseline
 
-full_model = lm(total_regional_bioarea ~
+full_model = lm(total_metaecosystem_bioarea ~
             metaecosystem_type +
             baseline_bioarea,
           data = filtered_data)
 
-null_model = lm(total_regional_bioarea ~
+null_model = lm(total_metaecosystem_bioarea ~
             baseline_bioarea,
           data = filtered_data)
 
@@ -435,11 +418,11 @@ R2_M = round(R2_M, digits = 2)
 
 #Without baseline
 
-full_model = lm(total_regional_bioarea ~
+full_model = lm(total_metaecosystem_bioarea ~
             metaecosystem_type,
           data = filtered_data)
 
-null_model = lm(total_regional_bioarea ~
+null_model = lm(total_metaecosystem_bioarea ~
                   1,
           data = filtered_data)
 
@@ -466,8 +449,8 @@ Here there should be an effect of meta-ecosystem type.
 ```{r}
 chosen_time_point = 4
 
-filtered_data = ds_regional_biomass %>%
-                            filter(disturbance == "low",
+filtered_data = ds_metaecosystems %>%
+                            filter(disturbance == disturbance_input,
                                    metaecosystem_type %in% c("M_M", "S_L"),
                                    time_point == chosen_time_point)
 ```
@@ -475,7 +458,7 @@ filtered_data = ds_regional_biomass %>%
 ```{r}
 filtered_data %>%
       ggplot (aes(x = metaecosystem_type,
-                  y = total_regional_bioarea)) +
+                  y = total_metaecosystem_bioarea)) +
       geom_boxplot() +
       labs(
         title = paste0(
@@ -504,13 +487,13 @@ filtered_data %>%
 #With baseline
 
 full_model = lm(
-  total_regional_bioarea ~
+  total_metaecosystem_bioarea ~
     metaecosystem_type +
     baseline_bioarea,
   data = filtered_data
   )
 
-null_model = lm(total_regional_bioarea ~
+null_model = lm(total_metaecosystem_bioarea ~
                   baseline_bioarea,
                 data = filtered_data)
 
@@ -526,12 +509,12 @@ plot(full_model, which = 1:5)
 #Without baseline
 
 full_model = lm(
-  total_regional_bioarea ~
+  total_metaecosystem_bioarea ~
     metaecosystem_type,
   data = filtered_data
   )
 
-null_model = lm(total_regional_bioarea ~
+null_model = lm(total_metaecosystem_bioarea ~
                   1,
                 data = filtered_data)
 
@@ -549,8 +532,8 @@ Here there should be an effect of meta-ecosystem type.
 ```{r}
 chosen_time_point = 5
 
-filtered_data = ds_regional_biomass %>%
-                            filter(disturbance == "low",
+filtered_data = ds_metaecosystems %>%
+                            filter(disturbance == disturbance_input,
                                    metaecosystem_type %in% c("M_M", "S_L"),
                                    time_point == chosen_time_point)
 ```
@@ -558,7 +541,7 @@ filtered_data = ds_regional_biomass %>%
 ```{r}
 filtered_data %>%
       ggplot (aes(x = metaecosystem_type,
-                  y = total_regional_bioarea)) +
+                  y = total_metaecosystem_bioarea)) +
       geom_boxplot() +
       labs(
         title = paste0(
@@ -586,12 +569,12 @@ filtered_data %>%
 
 #With baseline
 
-full_model = lm(total_regional_bioarea ~
+full_model = lm(total_metaecosystem_bioarea ~
             metaecosystem_type +
             baseline_bioarea,
           data = filtered_data)
 
-null_model = lm(total_regional_bioarea ~
+null_model = lm(total_metaecosystem_bioarea ~
             baseline_bioarea,
           data = filtered_data)
 
@@ -605,11 +588,11 @@ plot(full_model, which = 1:5)
 
 #Without baseline
 
-full_model = lm(total_regional_bioarea ~
+full_model = lm(total_metaecosystem_bioarea ~
             metaecosystem_type,
           data = filtered_data)
 
-null_model = lm(total_regional_bioarea ~
+null_model = lm(total_metaecosystem_bioarea ~
             1,
           data = filtered_data)
 
@@ -626,8 +609,8 @@ Here there should be an effect of meta-ecosystem type.
 ```{r}
 chosen_time_point = 6
 
-filtered_data = ds_regional_biomass %>%
-                            filter(disturbance == "low",
+filtered_data = ds_metaecosystems %>%
+                            filter(disturbance == disturbance_input,
                                    metaecosystem_type %in% c("M_M", "S_L"),
                                    time_point == chosen_time_point)
 ```
@@ -635,7 +618,7 @@ filtered_data = ds_regional_biomass %>%
 ```{r}
 filtered_data %>%
       ggplot (aes(x = metaecosystem_type,
-                  y = total_regional_bioarea)) +
+                  y = total_metaecosystem_bioarea)) +
       geom_boxplot() +
       labs(
         title = paste0(
@@ -663,12 +646,12 @@ filtered_data %>%
 
 #With baseline
 
-full_model = lm(total_regional_bioarea ~
+full_model = lm(total_metaecosystem_bioarea ~
             metaecosystem_type +
             baseline_bioarea,
           data = filtered_data)
 
-null_model = lm(total_regional_bioarea ~
+null_model = lm(total_metaecosystem_bioarea ~
             baseline_bioarea,
           data = filtered_data)
 
@@ -682,11 +665,11 @@ plot(full_model, which = 1:5)
 
 #Without baseline
 
-full_model = lm(total_regional_bioarea ~
+full_model = lm(total_metaecosystem_bioarea ~
             metaecosystem_type,
           data = filtered_data)
 
-null_model = lm(total_regional_bioarea ~
+null_model = lm(total_metaecosystem_bioarea ~
             1,
           data = filtered_data)
 
@@ -703,8 +686,8 @@ Here there should be an effect of meta-ecosystem type.
 ```{r}
 chosen_time_point = 7
 
-filtered_data = ds_regional_biomass %>%
-                            filter(disturbance == "low",
+filtered_data = ds_metaecosystems %>%
+                            filter(disturbance == disturbance_input,
                                    metaecosystem_type %in% c("M_M", "S_L"),
                                    time_point == chosen_time_point)
 ```
@@ -712,7 +695,7 @@ filtered_data = ds_regional_biomass %>%
 ```{r}
 filtered_data %>%
       ggplot (aes(x = metaecosystem_type,
-                  y = total_regional_bioarea)) +
+                  y = total_metaecosystem_bioarea)) +
       geom_boxplot() +
       labs(
         title = paste0(
@@ -740,12 +723,12 @@ filtered_data %>%
 
 #With baseline
 
-full_model = lm(total_regional_bioarea ~
+full_model = lm(total_metaecosystem_bioarea ~
             metaecosystem_type +
             baseline_bioarea,
           data = filtered_data)
 
-null_model = lm(total_regional_bioarea ~
+null_model = lm(total_metaecosystem_bioarea ~
             baseline_bioarea,
           data = filtered_data)
 
@@ -759,11 +742,11 @@ plot(full_model, which = 1:5)
 
 #Without baseline
 
-full_model = lm(total_regional_bioarea ~
+full_model = lm(total_metaecosystem_bioarea ~
             metaecosystem_type,
           data = filtered_data)
 
-null_model = lm(total_regional_bioarea ~
+null_model = lm(total_metaecosystem_bioarea ~
             1,
           data = filtered_data)
 

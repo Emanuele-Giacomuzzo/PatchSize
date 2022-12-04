@@ -9,7 +9,7 @@ editor_options:
 
 ### Small-Large vs Small-Large from isolated {.tabset .tabset-pills}
 
-Do a meta-ecosystem with patches of the same size and a meta-ecosystems with patches of different size have different regional biomass density because of their resource flow? Or would we see this also with small and large ecosystems that are not connected? *(Do the small-large meta-ecosystems have different biomass density from two isolated small and large patches?)*
+Do a meta-ecosystem with patches of the same size and a meta-ecosystems with patches of different size have different metaecosystem biomass density because of their resource flow? Or would we see this also with small and large ecosystems that are not connected? *(Do the small-large meta-ecosystems have different biomass density from two isolated small and large patches?)*
 
 ##### Plots
 
@@ -21,7 +21,7 @@ for (disturbance_input in c("low", "high")){
           filter (metaecosystem_type == "S_L" | 
                   metaecosystem_type == "S_L_from_isolated") %>%
           ggplot (aes(x = day,
-                      y = total_regional_bioarea,
+                      y = total_metaecosystem_bioarea,
                       group = system_nr,
                       fill = system_nr,
                       color = system_nr,
@@ -57,7 +57,7 @@ for (disturbance_input in c("low", "high")){
           filter(metaecosystem_type == "S_L" | 
                  metaecosystem_type == "S_L_from_isolated") %>%
           ggplot(aes(x = day,
-                     y = total_regional_bioarea,
+                     y = total_metaecosystem_bioarea,
                      group = interaction(day, metaecosystem_type),
                      fill = metaecosystem_type)) +
           geom_boxplot() +
@@ -113,7 +113,7 @@ for (combination_nr in 1:total_nr_of_combinations){
     filter(metaecosystem_type == "Ma_Mh" | system_nr %in% combination)
   
   full_model = lmer(
-    total_regional_bioarea ~
+    total_metaecosystem_bioarea ~
       day +
       metaecosystem_type +
       day:metaecosystem_type +
@@ -122,7 +122,7 @@ for (combination_nr in 1:total_nr_of_combinations){
     REML = FALSE
   )
   
-  no_metaecosystem_type = lmer(total_regional_bioarea ~
+  no_metaecosystem_type = lmer(total_metaecosystem_bioarea ~
                                  day +
                                  (day | system_nr),
                                data = ds_equally_dominated_with_combination,

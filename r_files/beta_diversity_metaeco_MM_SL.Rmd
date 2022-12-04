@@ -12,13 +12,10 @@ editor_options:
 ##### Differently sized patches
 
 ```{r}
-for (disturbance_input in c("low", "high")) {
-  print(
-    ds_regional_biomass %>%
-      filter (disturbance == disturbance_input) %>%
-      filter (metaecosystem_type == "S_L" |
-                metaecosystem_type == "M_M") %>%
-      
+ds_metaecosystems %>%
+      filter (disturbance == disturbance_input,
+              metaecosystem_type %in% c("S_L", "M_M")
+              ) %>%
       ggplot (
         aes(
           x = day,
@@ -31,12 +28,12 @@ for (disturbance_input in c("low", "high")) {
       ) +
       geom_line () +
       labs(
-        title = paste("Disturbance =", disturbance_input),
         x = "Day",
         y = "Beta Diversity (Jaccard Index)",
         fill = "System nr",
         color = "System nr",
-        linetype = ""
+        linetype = "",
+        caption = "Vertical grey line: resource flow"
       ) +
       scale_linetype_discrete(labels = c("Medium-Medium",
                                          "Small-Large")) +
@@ -46,7 +43,7 @@ for (disturbance_input in c("low", "high")) {
         panel.grid.minor = element_blank(),
         legend.position = "bottom"
       ) +
-      scale_x_continuous(breaks = unique(ds_regional_biomass$day)) +
+      scale_x_continuous(breaks = unique(ds_metaecosystems$day)) +
       geom_vline(
         xintercept = resource_flow_days[1] + 0.7,
         linetype = "dotdash",
@@ -82,19 +79,13 @@ for (disturbance_input in c("low", "high")) {
         linetype = "dotdash",
         color = "grey",
         size = 0.7
-      ) +
-      labs(caption = "Vertical grey line: resource flow")
-  )
-}
+      )
 ```
 
 ```{r}
-for (disturbance_input in c("low", "high")) {
-  print(
-    ds_regional_biomass %>%
-      filter(disturbance == disturbance_input) %>%
-      filter (metaecosystem_type == "S_L" |
-                metaecosystem_type == "M_M") %>%
+ds_metaecosystems %>%
+      filter(disturbance == disturbance_input,
+             metaecosystem_type %in% c("S_L", "M_M")) %>%
       ggplot (
         aes(
           x = day,
@@ -128,8 +119,6 @@ for (disturbance_input in c("low", "high")) {
         size = 0.7
       ) +
       labs(caption = "Vertical grey line: first perturbation")
-  )
-}
 ```
 
 ###### Model Time Series
@@ -145,10 +134,11 @@ $$
 t Day M Meta-ecosystem type D Disturbance B Baseline system nr Meta-ecosystem nr
 
 ```{r}
-data = ds_regional_biomass %>%
-    filter(time_point >= 2) %>%
-    filter(metaecosystem_type == "M_M" |
-             metaecosystem_type == "S_L")
+filtered_data = ds_metaecosystems %>%
+    filter(time_point >= first_time_point_model,
+           time_point <= last_time_point_model,
+           disturbance == disturbance_input,
+           metaecosystem_type %in% c("M_M", "S_L"))
 ```
 
 ```{r}
@@ -157,14 +147,9 @@ full_model = lmer(
   jaccard_index ~
     day +
     metaecosystem_type +
-    disturbance +
-    baseline_jaccard_index + 
-    day * metaecosystem_type +
-    day * disturbance +
-    day * baseline_jaccard_index +
-    metaecosystem_type * disturbance + 
+    metaecosystem_type : day + 
     (day | system_nr),
-  data = data,
+  data = filtered_data,
   REML = FALSE,
   control = lmerControl(optimizer = "Nelder_Mead")
 )
@@ -172,12 +157,8 @@ full_model = lmer(
 null_model = lmer(
   jaccard_index ~
     day +
-    disturbance +
-    baseline_jaccard_index + 
-    day * disturbance +
-    day * baseline_jaccard_index +
     (day | system_nr),
-  data = data,
+  data = filtered_data,
   REML = FALSE,
   control = lmerControl(optimizer = "Nelder_Mead")
 )
@@ -220,7 +201,7 @@ Let's start by looking at whether meta-ecosystem type and disturbance had an eff
 ```{r}
 chosen_time_point = 1
 
-data = ds_regional_biomass %>%
+filtered_data = ds_metaecosystems %>%
                             filter(time_point == chosen_time_point) %>%
                             filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L")
 ```
@@ -228,7 +209,7 @@ data = ds_regional_biomass %>%
 ```{r}
 for(disturbance_input in c("low", "high")) {
   print(
-    data %>%
+    filtered_data %>%
       filter(disturbance == disturbance_input) %>%
       ggplot (aes(x = metaecosystem_type,
                   y = jaccard_index)) +
@@ -282,7 +263,7 @@ Here there should be an effect of meta-ecosystem type.
 ```{r}
 chosen_time_point = 2
 
-data = ds_regional_biomass %>%
+data = ds_metaecosystems %>%
                             filter(time_point == chosen_time_point) %>%
                             filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L")
 ```
@@ -358,7 +339,7 @@ Here there should be an effect of meta-ecosystem type.
 ```{r}
 chosen_time_point = 3
 
-data = ds_regional_biomass %>%
+data = ds_metaecosystems %>%
                             filter(time_point == chosen_time_point) %>%
                             filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L")
 ```
@@ -434,7 +415,7 @@ Here there should be an effect of meta-ecosystem type.
 ```{r}
 chosen_time_point = 4
 
-data = ds_regional_biomass %>%
+data = ds_metaecosystems %>%
                             filter(time_point == chosen_time_point) %>%
                             filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L")
 ```
@@ -510,7 +491,7 @@ Here there should be an effect of meta-ecosystem type.
 ```{r}
 chosen_time_point = 5
 
-data = ds_regional_biomass %>%
+data = ds_metaecosystems %>%
                             filter(time_point == chosen_time_point) %>%
                             filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L")
 ```
@@ -586,7 +567,7 @@ Here there should be an effect of meta-ecosystem type.
 ```{r}
 chosen_time_point = 6
 
-data = ds_regional_biomass %>%
+data = ds_metaecosystems %>%
                             filter(time_point == chosen_time_point) %>%
                             filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L")
 ```
@@ -662,7 +643,7 @@ Here there should be an effect of meta-ecosystem type.
 ```{r}
 chosen_time_point = 7
 
-data = ds_regional_biomass %>%
+data = ds_metaecosystems %>%
                             filter(time_point == chosen_time_point) %>%
                             filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L")
 ```
@@ -738,7 +719,7 @@ The adjusted R squared of the model is `r R2_full` and the adjusted R squared of
 ```{r}
 for (disturbance_input in c("low", "high")) {
   print(
-    ds_regional_biomass %>%
+    ds_metaecosystems %>%
       filter (disturbance == disturbance_input) %>%
       filter (metaecosystem_type == "S_L" |
                 metaecosystem_type == "M_M") %>%
@@ -770,7 +751,7 @@ for (disturbance_input in c("low", "high")) {
         panel.grid.minor = element_blank(),
         legend.position = "bottom"
       ) +
-      scale_x_continuous(breaks = unique(ds_regional_biomass$day)) +
+      scale_x_continuous(breaks = unique(ds_metaecosystems$day)) +
       geom_vline(
         xintercept = resource_flow_days[1] + 0.7,
         linetype = "dotdash",
@@ -815,7 +796,7 @@ for (disturbance_input in c("low", "high")) {
 ```{r}
 for (disturbance_input in c("low", "high")) {
   print(
-    ds_regional_biomass %>%
+    ds_metaecosystems %>%
       filter(disturbance == disturbance_input) %>%
       filter (metaecosystem_type == "S_L" |
                 metaecosystem_type == "M_M") %>%
@@ -869,7 +850,7 @@ $$
 t Day M Meta-ecosystem type D Disturbance B Baseline system nr Meta-ecosystem nr
 
 ```{r}
-data = ds_regional_biomass %>%
+data = ds_metaecosystems %>%
     filter(time_point >= 2) %>%
     filter(metaecosystem_type == "M_M" |
              metaecosystem_type == "S_L")
@@ -944,7 +925,7 @@ Let's start by looking at whether meta-ecosystem type and disturbance had an eff
 ```{r}
 chosen_time_point = 1
 
-data = ds_regional_biomass %>%
+data = ds_metaecosystems %>%
                             filter(time_point == chosen_time_point) %>%
                             filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L")
 ```
@@ -1006,7 +987,7 @@ Here there should be an effect of meta-ecosystem type.
 ```{r}
 chosen_time_point = 2
 
-data = ds_regional_biomass %>%
+data = ds_metaecosystems %>%
                             filter(time_point == chosen_time_point) %>%
                             filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L")
 ```
@@ -1082,7 +1063,7 @@ Here there should be an effect of meta-ecosystem type.
 ```{r}
 chosen_time_point = 3
 
-data = ds_regional_biomass %>%
+data = ds_metaecosystems %>%
                             filter(time_point == chosen_time_point) %>%
                             filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L")
 ```
@@ -1158,7 +1139,7 @@ Here there should be an effect of meta-ecosystem type.
 ```{r}
 chosen_time_point = 4
 
-data = ds_regional_biomass %>%
+data = ds_metaecosystems %>%
                             filter(time_point == chosen_time_point) %>%
                             filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L")
 ```
@@ -1234,7 +1215,7 @@ Here there should be an effect of meta-ecosystem type.
 ```{r}
 chosen_time_point = 5
 
-data = ds_regional_biomass %>%
+data = ds_metaecosystems %>%
                             filter(time_point == chosen_time_point) %>%
                             filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L")
 ```
@@ -1310,7 +1291,7 @@ Here there should be an effect of meta-ecosystem type.
 ```{r}
 chosen_time_point = 6
 
-data = ds_regional_biomass %>%
+data = ds_metaecosystems %>%
                             filter(time_point == chosen_time_point) %>%
                             filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L")
 ```
@@ -1386,7 +1367,7 @@ Here there should be an effect of meta-ecosystem type.
 ```{r}
 chosen_time_point = 7
 
-data = ds_regional_biomass %>%
+data = ds_metaecosystems %>%
                             filter(time_point == chosen_time_point) %>%
                             filter(metaecosystem_type == "M_M" | metaecosystem_type == "S_L")
 ```
