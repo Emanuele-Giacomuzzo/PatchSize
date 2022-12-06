@@ -7,116 +7,76 @@ editor_options:
   chunk_output_type: console
 ---
 
-### Meta-ecosystems with equally sized patches {.tabset .tabset-pills}
+#### Biomass {.tabset .tabset-pills}
 
-*Research question: how does the biomass density of meta-ecosystems change according to the size of their patches?*
+```{r}
+p_boxplots = ds_metaecosystems %>%
+  mutate(metaecosystem_type = fct_reorder(metaecosystem_type, total_metaecosystem_bioarea)) %>%
+  filter(disturbance == disturbance_input,
+         metaecosystem_type %in% c("S_S", "M_M", "L_L")) %>%
+  ggplot (
+    aes(
+      x = day,
+      y = total_metaecosystem_bioarea,
+      group = interaction(day, metaecosystem_type),
+      fill = metaecosystem_type
+    )
+  ) +
+  geom_boxplot() +
+  labs(x = "Day",
+       y = "Meta-ecosystem Total Bioarea (µm²)",
+       color = '',
+       fill = '') +
+  scale_fill_manual(
+    values = c(colour_small, colour_medium, colour_large),
+    labels = c("Small-Small",
+               "Medium-Medium",
+               "Large-Large")
+  ) +
+  theme_bw() +
+  theme(
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    legend.position = "bottom"
+  )  +
+  scale_x_continuous(breaks = unique(ds_metaecosystems$day)) +
+  geom_vline(
+    xintercept = resource_flow_days[1] + 0.7,
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_vline(
+    xintercept = resource_flow_days[2] + 0.7,
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_vline(
+    xintercept = resource_flow_days[3] + 0.7,
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_vline(
+    xintercept = resource_flow_days[4] + 0.7,
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_vline(
+    xintercept = resource_flow_days[5] + 0.7,
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_vline(
+    xintercept = resource_flow_days[6] + 0.7,
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  labs(caption = "Vertical grey line: resource flow")
 
-#### Plots
-
-```{r metaecosystem-different-size-single-systems}
-for (disturbance_input in c("low", "high")) {
-  print(
-    ds_metaecosystems %>%
-      filter (disturbance == disturbance_input) %>%
-      filter(!metaecosystem_type == "S_L") %>%
-      filter(!metaecosystem_type == "S_L_from_isolated") %>%
-      ggplot (
-        aes(
-          x = day,
-          y = total_metaecosystem_bioarea,
-          group = system_nr,
-          fill = system_nr,
-          color = system_nr,
-          linetype = metaecosystem_type
-        )
-      ) +
-      geom_line () +
-      labs(
-        title = paste("Disturbance =", disturbance_input),
-        x = "Day",
-        y = "Regional bioarea (µm²)",
-        fill = "System nr",
-        linetype = ""
-      ) +
-      scale_colour_continuous(guide = "none") +
-      theme_bw() +
-      theme(
-        panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(),
-        legend.position = c(.95, .95),
-        legend.justification = c("right", "top"),
-        legend.box.just = "right",
-        legend.margin = margin(6, 6, 6, 6)
-      ) +
-      scale_linetype_discrete(labels = c(
-        "large-large",
-        "medium-medium",
-        "small-small"
-      ))  +
-      geom_vline(
-        xintercept = first_perturbation_day,
-        linetype = "dotdash",
-        color = "grey",
-        size = 0.7
-      ) +
-      labs(caption = "Vertical grey line: first perturbation")
-  )
-}
+p_boxplots
 ```
-
-```{r metaecos-different-size-boxplots}
-for (disturbance_input in c("low", "high")) {
-  print(
-    ds_metaecosystems %>%
-      filter(disturbance == disturbance_input) %>%
-      filter(!metaecosystem_type == "S_L") %>%
-      filter(!metaecosystem_type == "S_L_from_isolated") %>%
-      ggplot(
-        aes(
-          x = day,
-          y = total_metaecosystem_bioarea,
-          group = interaction(day, metaecosystem_type),
-          fill = metaecosystem_type
-        )
-      ) +
-      geom_boxplot() +
-      labs(
-        title = "Disturbance = low",
-        x = "Day",
-        y = "Regional bioarea (µm²)",
-        fill = ""
-      ) +
-      theme_bw() +
-      theme(
-        panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(),
-        legend.position = c(.95, .95),
-        legend.justification = c("right", "top"),
-        legend.box.just = "right",
-        legend.margin = margin(6, 6, 6, 6)
-      ) +
-      scale_fill_manual(
-        values = c(colour_large, colour_medium, colour_small),
-        labels = c(
-        "Large-Large",
-        "Medium-Medium",
-        "Small-Small"
-      )) +
-      geom_vline(
-        xintercept = first_perturbation_day + 0.7,
-        linetype = "dotdash",
-        color = "grey",
-        size = 0.7
-      ) +
-      labs(caption = "Vertical grey line: first perturbation")
-  )
-}
-```
-
-#### Model Time Series
-
-[I'm not sure how I would model it because I would have three meta-ecosystem types. Better not to model it, as I don't see a reason to do it.]{.underline}
-
-#### Model Time Points
-
-[I don't see a reason to model how total bioarea changes across (i) small-small, (ii) medium-medium, and (iii) large-large meta-ecosystems.]{.underline}

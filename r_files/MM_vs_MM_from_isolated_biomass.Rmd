@@ -1,0 +1,117 @@
+---
+title: "biomass_metaeco_MM_vs_MM_from_isolated"
+output: html_document
+date: "2022-12-06"
+editor_options: 
+  chunk_output_type: console
+---
+
+### Biomass
+
+Do a meta-ecosystem with patches of the same size and a meta-ecosystems with patches of different size have different metaecosystem biomass density because of their resource flow? Or would we see this also with small and large ecosystems that are not connected? *(Do the small-large meta-ecosystems have different biomass density from two isolated small and large patches?)*
+
+##### Plots
+
+```{r S_L_from_isolated-single-systems-plots, message=FALSE}
+ds_metaecosystems %>%
+      filter (disturbance == disturbance_input,
+              metaecosystem_type %in% c("M_M", "M_M_from_isolated")) %>%
+      ggplot (
+        aes(
+          x = day,
+          y = total_metaecosystem_bioarea,
+          group = system_nr,
+          fill = system_nr,
+          color = system_nr,
+          linetype = metaecosystem_type
+        )
+      ) +
+      geom_line () +
+      labs(
+        x = "Day",
+        y = "Meta-ecosystem Total Bioarea (µm²)",
+        fill = "System nr",
+        color = "System nr",
+        linetype = ""
+      ) +
+      scale_linetype_discrete(labels = c("Medium-Medium",
+                                          "Medium-Medium from isolated")) +
+      theme_bw() +
+      theme(
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        legend.position = "bottom"
+      ) +
+      scale_x_continuous(breaks = unique(ds_metaecosystems$day)) +
+      geom_vline(
+        xintercept = resource_flow_days[1] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = resource_flow_days[2] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = resource_flow_days[3] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = resource_flow_days[4] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = resource_flow_days[5] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = resource_flow_days[6] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      labs(caption = "Vertical grey line: resource flow")
+```
+
+```{r S_L_from_isolated-single-boxplots}
+ds_metaecosystems %>%
+  filter(
+    disturbance == disturbance_input,
+    metaecosystem_type %in% c("M_M", "M_M_from_isolated")
+  ) %>%
+  ggplot(
+    aes(
+      x = day,
+      y = total_metaecosystem_bioarea,
+      group = interaction(day, metaecosystem_type),
+      fill = metaecosystem_type
+    )
+  ) +
+  geom_boxplot() +
+  labs(x = "Day",
+       y = "Regional bioarea (µm²)",
+       fill = "") +
+  scale_fill_discrete(labels = c("Medium-Medium", "Medium-Medium from isolated")) +
+  theme_bw() +
+  theme(
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    legend.position = "bottom"
+  ) +
+  geom_vline(
+    xintercept = first_perturbation_day + 0.7,
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  labs(caption = "Vertical grey line: first perturbation")
+```

@@ -19,66 +19,126 @@ editor_options:
 ds_metaecosystems = ds_patches %>%
   filter(metaecosystem == "yes",
          !system_nr %in% metaecosystems_to_take_off) %>%
-  mutate(total_patch_bioarea = bioarea_per_volume * patch_size_volume) %>%
   group_by(system_nr, 
            time_point,
            disturbance,
            metaecosystem_type,
            day) %>%
-  summarise(total_metaecosystem_bioarea = sum(total_patch_bioarea))
+  summarise(total_metaecosystem_bioarea = sum(bioarea_tot))
 ```
 
-```{r ds_metaecosystems-create-SL_SL_from_isolated, message=FALSE, results='hide'}
+```{r ds_metaecosystems-create-SL_SL_from_isolated, message = FALSE, results = 'hide'}
 
-#Add Small-Large Meta-ecosystems from isolated
+### Add "Small-Large from isolated" to the metaecosystem dataset
 
-isolated_S_low = ds_patches %>%
+culture_ID_of_isolated_S_low = ds_patches %>%
   filter(eco_metaeco_type == "S",
-         disturbance == "low")
+         disturbance == "low") %>%
+  pull(culture_ID) %>%
+  unique()
 
-isolated_L_low = ds_patches %>%
+culture_ID_of_isolated_L_low = ds_patches %>%
   filter(eco_metaeco_type == "L",
-         disturbance == "low")
+         disturbance == "low") %>%
+  pull(culture_ID) %>%
+  unique()
 
-isolated_S_high = ds_patches %>%
+culture_ID_of_isolated_S_high = ds_patches %>%
   filter(eco_metaeco_type == "S",
-         disturbance == "high")
+         disturbance == "high") %>%
+  pull(culture_ID) %>%
+  unique()
 
-isolated_L_high = ds_patches %>%
+culture_ID_of_isolated_L_high = ds_patches %>%
   filter(eco_metaeco_type == "L",
-         disturbance == "high")
+         disturbance == "high") %>%
+  pull(culture_ID) %>%
+  unique()
 
-S_low_system_nrs = unique(isolated_S_low$system_nr)
-S_high_system_nrs = unique(isolated_S_high$system_nr)
-L_low_system_nrs = unique(isolated_L_low$system_nr)
-L_high_system_nrs = unique(isolated_L_high$system_nr)
 
-low_system_nrs_combination = expand.grid(S_low_system_nrs, L_low_system_nrs) %>%
+combinations_S_and_L_low = expand.grid(culture_ID_of_isolated_S_low,
+                                       culture_ID_of_isolated_L_low) %>%
   mutate(disturbance = "low")
-high_system_nrs_combination = expand.grid(S_high_system_nrs, L_high_system_nrs) %>%
+
+combinations_S_and_L_high = expand.grid(culture_ID_of_isolated_S_high,
+                                       culture_ID_of_isolated_L_high) %>%
   mutate(disturbance = "high")
-system_nr_combinations = rbind(low_system_nrs_combination, high_system_nrs_combination) %>%
-  rename(S_system_nr = Var1,
-         L_system_nr = Var2)
 
-number_of_combinations = nrow(system_nr_combinations)
+combinations_of_S_and_L = rbind(combinations_S_and_L_low, 
+                               combinations_S_and_L_high) %>%
+  rename(S_culture_ID = Var1,
+         L_culture_ID = Var2)
 
-SL_from_isolated_all_combinations = NULL
-for (pair in 1:number_of_combinations){
+number_of_combinations_of_S_and_L = nrow(combinations_of_S_and_L)
+
+SL_from_isolated_single_row = NULL
+for (combination in 1:number_of_combinations_of_S_and_L){
   
-  SL_from_isolated_all_combinations[[pair]] = ds_patches %>%
-    filter(system_nr %in% system_nr_combinations[pair,]) %>%
-    group_by(disturbance, day, time_point) %>%
-    summarise(total_metaecosystem_bioarea = sum(bioarea_tot)) %>%
-    mutate(system_nr = 1000 + pair,
+  SL_from_isolated_single_row[[combination]] = ds_patches %>%
+    filter(culture_ID %in% combinations_of_S_and_L[combination,]) %>%
+    group_by(disturbance, 
+             day, 
+             time_point) %>%
+    summarise(total_metaecosystem_bioarea = sum(bioarea_tot)) %>% #Add gamma & beta
+    mutate(system_nr = 1000 + combination,
            metaecosystem_type = "S_L_from_isolated")
   
 }
 
-SL_from_isolated_all_combinations = SL_from_isolated_all_combinations %>%
+SL_from_isolated = SL_from_isolated_single_row %>%
   bind_rows()
 
-ds_metaecosystems = rbind(ds_metaecosystems, SL_from_isolated_all_combinations)
+ds_metaecosystems = rbind(ds_metaecosystems, 
+                          SL_from_isolated)
+
+### Add "Medium-Medium from isolated" to the metaecosystem dataset
+
+culture_ID_of_isolated_M_low = ds_patches %>%
+  filter(eco_metaeco_type == "M",
+         disturbance == "low") %>%
+  pull(culture_ID) %>%
+  unique()
+
+culture_ID_of_isolated_M_high = ds_patches %>%
+  filter(eco_metaeco_type == "M",
+         disturbance == "high") %>%
+  pull(culture_ID) %>%
+  unique()
+
+combinations_M_and_M_low = expand.grid(culture_ID_of_isolated_M_low,
+                                       culture_ID_of_isolated_M_low) %>%
+  mutate(disturbance = "low")
+
+combinations_M_and_M_high = expand.grid(culture_ID_of_isolated_M_high,
+                                       culture_ID_of_isolated_M_high) %>%
+  mutate(disturbance = "high")
+
+combinations_of_M_and_M = rbind(combinations_M_and_M_low, 
+                               combinations_M_and_M_high) %>%
+  rename(S_culture_ID = Var1,
+         L_culture_ID = Var2)
+
+number_of_combinations_of_M_and_M = nrow(combinations_of_M_and_M)
+
+MM_from_isolated_single_row = NULL
+for (combination in 1:number_of_combinations_of_S_and_L){
+  
+  MM_from_isolated_single_row[[combination]] = ds_patches %>%
+    filter(culture_ID %in% combinations_of_M_and_M[combination,]) %>%
+    group_by(disturbance, 
+             day, 
+             time_point) %>%
+    summarise(total_metaecosystem_bioarea = sum(bioarea_tot)) %>% #Add gamma & beta
+    mutate(system_nr = 1000 + combination,
+           metaecosystem_type = "M_M_from_isolated")
+  
+}
+
+MM_from_isolated = MM_from_isolated_single_row %>%
+  bind_rows()
+
+ds_metaecosystems = rbind(ds_metaecosystems, 
+                          MM_from_isolated)
 ```
 
 ```{r ds_metaecosystems-calculate-beta-diversity}
@@ -120,7 +180,7 @@ for (system_nr_input in system_nr_metaecosystems) {
     
     #Beta diversity
   
-    all_jaccard_indices = beta.pair(presence_absence_two_patches, 
+    all_jaccard_indices = beta.combination(presence_absence_two_patches, 
                                      index.family = "jaccard")
     
     jaccard_index = all_jaccard_indices$beta.jac

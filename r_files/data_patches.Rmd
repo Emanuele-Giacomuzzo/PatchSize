@@ -132,8 +132,8 @@ ds_patches$day[ds_patches$time_point== 6] = 24
 ds_patches$day[ds_patches$time_point== 7] = 28
 
 ds_patches = ds_patches %>%
-  mutate(bioarea_tot = bioarea_per_volume * (patch_size_volume * 1000)) %>% #bioarea_per_volume in µm2, patch_size_vol in ml 
-  mutate(indiv_tot = indiv_per_volume * (patch_size_volume * 1000))
+  mutate(bioarea_tot = bioarea_per_volume * (patch_size_volume * 1000)) %>% #multiply by 1000 because bioarea_per_volume is in µm2 and patch_size_vol is in ml 
+  mutate(indiv_tot = indiv_per_volume * (patch_size_volume * 1000)) #multiply by 1000 because indiv_per_volume is in µm2 and patch_size_vol is in ml 
 
 ds_for_evaporation = ds_patches #Keep this dataset for the evaporation effects
 
@@ -273,6 +273,7 @@ ds_patches = full_join(ds_patches, baselines)
 ```
 
 ```{r save_ds_biomas_abund}
+saveRDS(ds_for_evaporation, file = here("results", "ds_for_evaporation.RData"))
 saveRDS(ds_patches, file = here("results", "ds_patches.RData"))
 ```
 

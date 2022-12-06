@@ -168,8 +168,8 @@ ds_patches_effect_size = ds_patches %>%
 
 ```{r}
 treatments_and_controls = data.frame(
-  treatment = c("S (S_S)", "S (S_L)", "L (L_L)", "L (S_L)"),
-  control = c("S", "S", "L", "L")
+  treatment = c("S (S_S)", "S (S_L)", "M (M_M)", "L (L_L)", "L (S_L)"),
+  control = c("S", "S", "M", "L", "L")
 )
 
 n_of_treatments = nrow(treatments_and_controls)

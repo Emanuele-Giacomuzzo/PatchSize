@@ -30,7 +30,7 @@ editor_options:
 
 #Set up the environment. 
 
-knitr::opts_chunk$set(message = FALSE, cache=TRUE)
+knitr::opts_chunk$set(message = FALSE, cache = FALSE)
 rm( list = ls(  ) )
 cat( "\014" )
 start_time = Sys.time()
@@ -97,8 +97,7 @@ ds_metaecosystems = readRDS(here("results", "ds_metaecosystems.RData"))
 ds_individuals = readRDS(here("results", "ds_individuals.RData"))
 ds_classes = readRDS(here("results", "ds_classes.RData"))
 ds_classes_effect_size = readRDS(here("results", "ds_classes_effect_size.RData"))
-ds_median_body_size = readRDS(here("results", "ds_median_body_size.RData"))
-ds_lnRR_median_body_size = readRDS(here("results", "ds_lnRR_median_body_size.RData"))
+ds_for_evaporation = readRDS(here("results", "ds_for_evaporation.RData"))
 ```
 
 ```{r functions, echo = FALSE}
@@ -135,18 +134,19 @@ last_time_point_model = 7
 disturbance_input = "low"
 
 include_non_clean_scripts = FALSE
+save_figures = TRUE
 ```
 
 ```{r echo = FALSE}
 
 #Handle figures. 
 
-include_GIFS = FALSE
+include_GIFS = TRUE
 
 publication_width = 12
 publication_height = 12
 publication_unit = "cm"
-presentation_size = 20
+presentation_size = 15
 ```
 
 
@@ -157,9 +157,9 @@ presentation_size = 20
 colour_isolated = "#d9cbbe"
 colour_different_size = "#4992c6"
 colour_same_size = "#bc9960"
-colour_small = "#ffff00"
-colour_medium = "#ff9933"
-colour_large = "#ff0000"
+colour_small = "#ffeda0"
+colour_medium = "#feb24c"
+colour_large = "#f03b20"
 colour_MM = "#dd7f42" #Colour of the Medium-Medium meta-ecosystem
 colour_SL = "#438cbe" #Colour of the Small-Large meta-ecosystem 
 ```
@@ -204,33 +204,34 @@ colour_SL = "#438cbe" #Colour of the Small-Large meta-ecosystem
 
 ### Equally sized {.tabset .tabset-pills}
 
-```{r child = here("r_files", "biomass_metaeco_equally_sized.Rmd"), eval = include_non_clean_scripts}
+```{r child = here("r_files", "biomass_metaeco_equally_sized.Rmd")}
 ```
 
-```{r child = here("r_files", "beta_diversity_metaeco_equally_sized.Rmd"), eval = include_non_clean_scripts}
+```{r child = here("r_files", "beta_diversity_metaeco_equally_sized.Rmd")}
 ```
 
-```{r child = here("r_files", "gamma_diversity_metaeco_equally_sized.Rmd"), eval = include_non_clean_scripts}
+```{r child = here("r_files", "gamma_diversity_metaeco_equally_sized.Rmd")}
 ```
-
-```{r child = here("r_files", "gamma_diversity_metaeco_equally_sized.Rmd"), eval = include_non_clean_scripts}
-```
-
 
 ### MM vs SL {.tabset .tabset-pills}
 
-```{r child = here("r_files", "biomass_metaeco_MM_SL.Rmd"), eval = include_non_clean_scripts}
+```{r child = here("r_files", "biomass_metaeco_MM_SL.Rmd")}
 ```
 
-```{r child = here("r_files", "beta_diversity_metaeco_MM_SL.Rmd"), eval = include_non_clean_scripts}
+```{r child = here("r_files", "beta_diversity_metaeco_MM_SL.Rmd")}
 ```
 
-```{r child = here("r_files", "gamma_diversity_metaeco_MM_SL.Rmd"), eval = include_non_clean_scripts}
+```{r child = here("r_files", "gamma_diversity_metaeco_MM_SL.Rmd")}
 ```
 
-### SL vs SL* {.tabset .tabset-pills}
+### SL vs SL from isolated {.tabset .tabset-pills}
 
-```{r child = here("r_files", "biomass_metaeco_SL_SL_from_isolated.Rmd"), eval = include_non_clean_scripts}
+```{r child = here("r_files", "SL_vs_SL_from_isolated_biomass.Rmd"), eval = include_non_clean_scripts}
+```
+
+### MM vs MM from isolated {.tabset .tabset-pills}
+
+```{r child = here("r_files", "MM_vs_MM_from_isolated_biomass.Rmd"), eval = include_non_clean_scripts}
 ```
 
 ## Patches {.tabset .tabset-dropdown}
@@ -242,16 +243,13 @@ colour_SL = "#438cbe" #Colour of the Small-Large meta-ecosystem
 
 ### Isolated  {.tabset .tabset-pills}
 
-```{r child = here("r_files", "comm_abundance_patches_isolated.Rmd"), eval = include_non_clean_scripts}
+```{r child = here("r_files", "isolated_patches_biomass.Rmd")}
 ```
 
-```{r child = here("r_files", "biomass_patches_isolated.Rmd"), eval = include_non_clean_scripts}
+```{r child = here("r_files", "isolated_patches_alpha_diversity.Rmd")}
 ```
 
-```{r child = here("r_files", "population_abundances_patches_isolated.Rmd"), eval = include_non_clean_scripts}
-```
-
-```{r child = here("r_files", "alpha_diversity_patches_isolated.Rmd")}
+```{r child = here("r_files", "isolated_patches_species_densities.Rmd")}
 ```
 
 ```{r child = here("r_files", "body_size_distribution_patches_isolated.Rmd"), eval = include_non_clean_scripts}
@@ -260,33 +258,35 @@ colour_SL = "#438cbe" #Colour of the Small-Large meta-ecosystem
 
 ### Small {.tabset .tabset-pills}
 
-```{r child = here("r_files", "biomass_patches_small.Rmd"), eval = include_non_clean_scripts}
-```
-
-```{r child = here("r_files", "comm_abundance_patches_small.Rmd"), eval = include_non_clean_scripts}
-```
-
-```{r child = here("r_files", "population_abundances_patches_small.Rmd"), eval = include_non_clean_scripts}
+```{r child = here("r_files", "biomass_patches_small.Rmd")}
 ```
 
 ```{r child = here("r_files", "alpha_diversity_patches_small.Rmd")}
 ```
 
+```{r child = here("r_files", "species_densities_patches_small.Rmd")}
+```
+
 ```{r child = here("r_files", "body_size_distribution_patches_small.Rmd"), eval = include_non_clean_scripts}
+```
+
+```{r child = here("r_files", "size_classes_patches_small.Rmd"), eval = include_non_clean_scripts}
+```
+
+### Medium {.tabset .tabset-pills}
+
+```{r child = here("r_files", "medium_patches_biomass.Rmd")}
 ```
 
 ### Large {.tabset .tabset-pills}
 
-```{r child = here("r_files", "biomass_patches_large.Rmd"), eval = include_non_clean_scripts}
-```
-
-```{r child = here("r_files", "comm_abundance_patches_large.Rmd"), eval = include_non_clean_scripts}
-```
-
-```{r child = here("r_files", "population_abundances_patches_large.Rmd"), eval = include_non_clean_scripts}
+```{r child = here("r_files", "biomass_patches_large.Rmd")}
 ```
 
 ```{r child = here("r_files", "alpha_diversity_patches_large.Rmd")}
+```
+
+```{r child = here("r_files", "population_abundances_patches_large.Rmd"), eval = include_non_clean_scripts}
 ```
 
 ```{r child = here("r_files", "body_size_distribution_patches_large.Rmd"), eval = include_non_clean_scripts}
@@ -306,6 +306,11 @@ colour_SL = "#438cbe" #Colour of the Small-Large meta-ecosystem
 ```
 
 ```{r child = here("r_files", "parameterisation.Rmd")}
+```
+
+## Figures
+
+```{r child = here("r_files", "figures_save.Rmd"), eval = save_figures}
 ```
 
 ## Running time

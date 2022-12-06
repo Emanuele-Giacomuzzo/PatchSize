@@ -92,7 +92,6 @@ ds_patches %>%
   )) +
   geom_boxplot() +
   labs(
-    title = paste("Disturbance =", disturbance_input),
     x = "Day",
     y = "Shannon Index",
     fill = "",
@@ -152,7 +151,7 @@ ds_patches %>%
 ```
 
 ```{r}
-ds_patches_effect_size %>%
+p_effect_size = ds_patches_effect_size %>%
   filter(
     !time_point == 0,
     disturbance == disturbance_input,
@@ -214,7 +213,6 @@ ds_patches_effect_size %>%
   ) +
   scale_x_continuous(breaks = unique(ds_patches_effect_size$day)) +
   labs(
-    title = paste("Disturbance =", disturbance_input),
     x = "Day",
     y = "Shannon Index Effect Size (Hedge's d)",
     color = ""
@@ -227,59 +225,55 @@ ds_patches_effect_size %>%
     panel.grid.minor = element_blank(),
     legend.position = "bottom"
   )
+
+p_effect_size
 ```
 
-Let's test our hypothesis that small patches connected to large had more species richness. To do so, we will use a linear model. As we are using an effect size (control = isolated small), we have pulled all the replicates together and we cannot include random effects. We will exclude time point 0 because there all the cultures were the same (we did not measure each culture at day 0, but we measured the large bottle from which we created all cultures). We excluded the data points of time point = 1 because disturbance and ecosystem type couldn't have had an effect, but we included them as baselines. We are now including both baselines and their interaction with time, as baselines should have less of an effect as time goes by.
-
-$$
-Species \: Richness \: (Hedge's \: d) = B + t + P + D + t*P + t*D + P*D + t*B
-$$
-
-B = baseline_shannon (bioarea at t1, before the first resource flow)
-
-t = time
-
-P = patch type (connected to small vs connected to large)
-
-D = disturbance
-
-```{r choose-time-points-for-alpha-diversity-of-large-patches}
+```{r}
 filtered_data = ds_patches_effect_size %>%
                          filter(time_point >= first_time_point_model,
                                 time_point <= last_time_point_model,
                                 disturbance == disturbance_input,
-                                eco_metaeco_type %in% c("S (S_S)", "S (S_L)"))
-```
-
-```{r create-full-model-large-alpha}
-full_model = lm(shannon_d ~                  
-                  day + 
-                  eco_metaeco_type + 
-                  day : eco_metaeco_type,
-                  data = filtered_data)
-
-null_model = lm(shannon_d ~                  
-                  day,
-                  data = filtered_data)
-
-anova(full_model, null_model)
-AIC(full_model, null_model)
-```
-
-Let's then do some model diagnostics.
-
-```{r large-t2-t7-best-model-small-alpha}
-par(mfrow = c(2,3))
-plot(full_model, which = 1:5)
+                                eco_metaeco_type %in% c("L (L_L)", "L (S_L)"))
 ```
 
 ```{r}
+full_model = lm(shannon_d ~                  
+                  eco_metaeco_type + 
+                  eco_metaeco_type : day,
+                  data = filtered_data)
+
+summary(full_model)
+par(mfrow = c(2,3))
+plot(full_model, which = 1:5)
+
+null_model = lm(shannon_d ~                  
+                  1,
+                  data = filtered_data)
+
+anova = anova(full_model, null_model)
+AIC = AIC(full_model, null_model)
+
+anova
+AIC
+
+p_value = anova$`Pr(>F)`[2]
+
+AIC_full = AIC$AIC[1]
+AIC_null = AIC$AIC[2]
+deltaAIC =  AIC_full - AIC_null
+
 R2_full = glance(full_model)$r.squared
 R2_null = glance(null_model)$r.squared
 R2_P = R2_full - R2_null
 
+p_value = round(p_value, digits = 2)
 R2_full = round(R2_full, digits = 2)
 R2_P = round(R2_P, digits = 2)
+deltaAIC = round(deltaAIC, digits = 2)
 ```
 
-The adjusted R squared of the model is `r R2_full` and the adjusted R squared of patch type is `r R2_P` (which includes also its interaction with disturbance). I don't think it's necessary to look at effect sizes at different time points.
+```{r}
+p_effect_size +
+  labs(title = paste0("ΔAIC = ", deltaAIC, ", p = ", p_value, ", R2 (pach type) = ", R2_P))
+```

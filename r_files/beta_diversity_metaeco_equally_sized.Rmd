@@ -6,80 +6,75 @@ editor_options:
   chunk_output_type: console
 ---
 
-#### Equally sized patches
+#### Beta Diversity
 
 ```{r}
-for (disturbance_input in c("low", "high")) {
-  print(
-    ds_metaecosystems %>%
-      filter(disturbance == disturbance_input,
-             !metaecosystem_type == "S_L",
-             !metaecosystem_type == "S_L_from_isolated") %>%
-      ggplot(
-        aes(
-          x = day,
-          y = jaccard_index,
-          group = interaction(day, metaecosystem_type),
-          fill = metaecosystem_type
-        )
-      ) +
-      geom_boxplot() +
-      geom_vline(
-        xintercept = resource_flow_days[1] + 0.7,
-        linetype = "dotdash",
-        color = "grey",
-        size = 0.7
-      ) +
-      geom_vline(
-        xintercept = resource_flow_days[2] + 0.7,
-        linetype = "dotdash",
-        color = "grey",
-        size = 0.7
-      ) +
-      geom_vline(
-        xintercept = resource_flow_days[3] + 0.7,
-        linetype = "dotdash",
-        color = "grey",
-        size = 0.7
-      ) +
-      geom_vline(
-        xintercept = resource_flow_days[4] + 0.7,
-        linetype = "dotdash",
-        color = "grey",
-        size = 0.7
-      ) +
-      geom_vline(
-        xintercept = resource_flow_days[5] + 0.7,
-        linetype = "dotdash",
-        color = "grey",
-        size = 0.7
-      ) +
-      geom_vline(
-        xintercept = resource_flow_days[6] + 0.7,
-        linetype = "dotdash",
-        color = "grey",
-        size = 0.7
-      ) +
-      labs(
-        title = paste0("Disturbance = ", disturbance_input),
-        x = "Day",
-        y = "Beta diversity (Jaccard index)",
-        fill = "",
-        caption = "Vertical grey line: resource flow"
-      ) +
-      scale_fill_manual(
-        values = c(colour_large, colour_medium, colour_small),
-        labels = c(
-        "Large-Large",
-        "Medium-Medium",
-        "Small-Small"
-      )) +
-      theme_bw() +
-      theme(
-        panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(),
-        legend.position = "bottom"
-      )
+p_boxplots = ds_metaecosystems %>%
+  mutate(metaecosystem_type = fct_reorder(metaecosystem_type, total_metaecosystem_bioarea)) %>%
+  filter(disturbance == disturbance_input,
+         metaecosystem_type %in% c("S_S", "M_M", "L_L")) %>%
+  ggplot (aes(
+    x = day,
+    y = bray_curtis,
+    group = interaction(day, metaecosystem_type),
+    fill = metaecosystem_type
+  )) +
+  geom_boxplot() +
+  geom_vline(
+    xintercept = resource_flow_days[1] + 0.7,
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_vline(
+    xintercept = resource_flow_days[2] + 0.7,
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_vline(
+    xintercept = resource_flow_days[3] + 0.7,
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_vline(
+    xintercept = resource_flow_days[4] + 0.7,
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_vline(
+    xintercept = resource_flow_days[5] + 0.7,
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_vline(
+    xintercept = resource_flow_days[6] + 0.7,
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) + 
+  labs(
+    x = "Day",
+    y = "Beta diversity (Bray-Curtis Index)",
+    color = '',
+    fill = '',
+    caption = "Vertical grey line: resource flow"
+  ) +
+   scale_fill_manual(
+     values = c(colour_small, colour_medium, colour_large),
+     labels = c("Small-Small",
+                "Medium-Medium",
+                "Large-Large")
+   ) +
+  theme_bw() +
+  theme(
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    legend.position = "bottom"
   )
-}
+
+p_boxplots
 ```

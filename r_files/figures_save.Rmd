@@ -7,241 +7,124 @@ editor_options:
 ---
 
 ```{r save-figures, echo  = FALSE}
-small_patches_presentation = ds_patches_effect_size %>%
-      filter(!time_point == 0,
-             disturbance == "low",
-             eco_metaeco_type %in% c("S (S_S)", "S (S_L)")) %>%
-      ggplot(aes(
-        x = day,
-        y = bioarea_per_volume_d,
-        color = eco_metaeco_type
-      )) +
-      geom_point(position = position_dodge(0.5)) +
-      geom_line(position = position_dodge(0.5)) +
-      geom_errorbar(
-        aes(ymin = bioarea_per_volume_d_lower,
-            ymax = bioarea_per_volume_d_upper),
-        width = .2,
-        position = position_dodge(0.5)
-      ) +
-      labs(
-        x = "Day",
-        y = "Bioarea Density Effect Size (Hedge's d)",
-        color = ""
-      ) +
-      scale_color_discrete(
-        labels = c("Small connected to large",
-                   "Small connnected to small")
-      ) +
-      scale_x_continuous(breaks = unique(ds_patches_effect_size$day)) +
-      theme_bw() +
-      theme(
-        panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(),
-        legend.position = "none"
-      ) +
-      geom_vline(
-        xintercept = resource_flow_days[1] + 0.7,
-        linetype = "dotdash",
-        color = "grey",
-        size = 0.7
-      ) +
-      geom_vline(
-        xintercept = resource_flow_days[2] + 0.7,
-        linetype = "dotdash",
-        color = "grey",
-        size = 0.7
-      ) +
-      geom_vline(
-        xintercept = resource_flow_days[3] + 0.7,
-        linetype = "dotdash",
-        color = "grey",
-        size = 0.7
-      ) +
-      geom_vline(
-        xintercept = resource_flow_days[4] + 0.7,
-        linetype = "dotdash",
-        color = "grey",
-        size = 0.7
-      ) +
-      geom_vline(
-        xintercept = resource_flow_days[5] + 0.7,
-        linetype = "dotdash",
-        color = "grey",
-        size = 0.7
-      ) +
-      geom_vline(
-        xintercept = resource_flow_days[6] + 0.7,
-        linetype = "dotdash",
-        color = "grey",
-        size = 0.7
-      ) +
-      geom_hline(
-        yintercept = 0,
-        linetype = "dotted",
-        color = "black",
-        size = 0.7
-      )
+density_Ble_small +
+  theme_bw(base_size = presentation_size) +
+  theme(
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    legend.position = "none"
+  ) +
+  labs(caption = "")
 
-small_patches_presentation
+ggsave(here("results", "presentations", "density_Ble_small.png"))
 
-large_patches_presentation = ds_patches_effect_size %>%
-      filter(!time_point == 0,
-             disturbance == "low",
-             eco_metaeco_type %in% c("L (L_L)", "L (S_L)")) %>%
-      ggplot(aes(
-        x = day,
-        y = bioarea_per_volume_d,
-        color = eco_metaeco_type
-      )) +
-      geom_point(position = position_dodge(0.5)) +
-      geom_line(position = position_dodge(0.5)) +
-      geom_errorbar(
-        aes(ymin = bioarea_per_volume_d_lower,
-            ymax = bioarea_per_volume_d_upper),
-        width = .2,
-        position = position_dodge(0.5)
-      ) +
-      labs(
-        x = "Day",
-        y = "Bioarea Density Effect Size (Hedge's d)",
-        color = ""
-      ) +
-      scale_color_discrete(
-        labels = c("Large connected to large",
-                   "Large connnected to small")
-      ) +
-      scale_x_continuous(breaks = unique(ds_patches_effect_size$day)) +
-      theme_bw() +
-      theme(
-        panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(),
-        legend.position = "none"
-      ) +
-      geom_vline(
-        xintercept = resource_flow_days[1] + 0.7,
-        linetype = "dotdash",
-        color = "grey",
-        size = 0.7
-      ) +
-      geom_vline(
-        xintercept = resource_flow_days[2] + 0.7,
-        linetype = "dotdash",
-        color = "grey",
-        size = 0.7
-      ) +
-      geom_vline(
-        xintercept = resource_flow_days[3] + 0.7,
-        linetype = "dotdash",
-        color = "grey",
-        size = 0.7
-      ) +
-      geom_vline(
-        xintercept = resource_flow_days[4] + 0.7,
-        linetype = "dotdash",
-        color = "grey",
-        size = 0.7
-      ) +
-      geom_vline(
-        xintercept = resource_flow_days[5] + 0.7,
-        linetype = "dotdash",
-        color = "grey",
-        size = 0.7
-      ) +
-      geom_vline(
-        xintercept = resource_flow_days[6] + 0.7,
-        linetype = "dotdash",
-        color = "grey",
-        size = 0.7
-      ) +
-      geom_hline(
-        yintercept = 0,
-        linetype = "dotted",
-        color = "black",
-        size = 0.7
-      )
+density_Cep_small +
+  theme_bw(base_size = presentation_size) +
+  theme(
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    legend.position = "none"
+  ) +
+  labs(caption = "")
 
-large_patches_presentation
+ggsave(here("results", "presentations", "density_Cep_small.png"))
 
-ggsave(here("results", "presentation", "presentation_small_patches.jpg"), 
-       small_patches_presentation + labs(title = ""), 
-       units = publication_unit,
-       width = 17, 
-       height = publication_height)
+density_Col_small +
+  theme_bw(base_size = presentation_size) +
+  theme(
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    legend.position = "none"
+  ) +
+  labs(caption = "")
 
-metaecos_presentation = ds_metaecosystems %>%
-      filter(disturbance == "low") %>%
-      filter (metaecosystem_type == "S_L" |
-                metaecosystem_type == "M_M") %>%
-      ggplot (
-        aes(
-          x = day,
-          y = total_metaecosystem_bioarea,
-          group = interaction(day, metaecosystem_type),
-          fill = metaecosystem_type
-        )
-      ) +
-      geom_boxplot() +
-      labs(
-        x = "Day",
-        y = "Meta-ecosystem Total Bioarea (µm²)",
-        color = '',
-        fill = ''
-      ) +
-      scale_fill_manual(
-        values = c(colour_MM, colour_SL),
-        labels = c("Medium-Medium",
-                   "Small-Large")
-      ) +
-      theme_bw() +
-      theme(
-        panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(),
-        legend.position = "none"
-      )  +
-      scale_x_continuous(breaks = unique(ds_metaecosystems$day)) +
-      geom_vline(
-        xintercept = resource_flow_days[1] + 0.7,
-        linetype = "dotdash",
-        color = "grey",
-        size = 0.7
-      ) +
-      geom_vline(
-        xintercept = resource_flow_days[2] + 0.7,
-        linetype = "dotdash",
-        color = "grey",
-        size = 0.7
-      ) +
-      geom_vline(
-        xintercept = resource_flow_days[3] + 0.7,
-        linetype = "dotdash",
-        color = "grey",
-        size = 0.7
-      ) +
-      geom_vline(
-        xintercept = resource_flow_days[4] + 0.7,
-        linetype = "dotdash",
-        color = "grey",
-        size = 0.7
-      ) +
-      geom_vline(
-        xintercept = resource_flow_days[5] + 0.7,
-        linetype = "dotdash",
-        color = "grey",
-        size = 0.7
-      ) +
-      geom_vline(
-        xintercept = resource_flow_days[6] + 0.7,
-        linetype = "dotdash",
-        color = "grey",
-        size = 0.7
-      )
+ggsave(here("results", "presentations", "density_Col_small.png"))
 
-metaecos_presentation
-  
-ggsave(here("results", "presentation", "presentation_metaecos.jpg"), 
-       metaecos_presentation + labs(title = ""), 
-       units = publication_unit,
-       width = 17, 
-       height = publication_height)
+density_Eug_small +
+  theme_bw(base_size = presentation_size) +
+  theme(
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    legend.position = "none"
+  ) +
+  labs(caption = "")
+
+ggsave(here("results", "presentations", "density_Eug_small.png"))
+
+density_Eup_small +
+  theme_bw(base_size = presentation_size) +
+  theme(
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    legend.position = "none"
+  ) +
+  labs(caption = "")
+
+ggsave(here("results", "presentations", "density_Eup_small.png"))
+
+density_Lox_small +
+  theme_bw(base_size = presentation_size) +
+  theme(
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    legend.position = "none"
+  ) +
+  labs(caption = "")
+
+ggsave(here("results", "presentations", "density_Lox_small.png"))
+
+density_Pau_small +
+  theme_bw(base_size = presentation_size) +
+  theme(
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    legend.position = "none"
+  ) +
+  labs(caption = "")
+
+ggsave(here("results", "presentations", "density_Pau_small.png"))
+
+density_Pca_small +
+  theme_bw(base_size = presentation_size) +
+  theme(
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    legend.position = "none"
+  ) +
+  labs(caption = "")
+
+ggsave(here("results", "presentations", "density_Pca_small.png"))
+
+density_Spi_small +
+  theme_bw(base_size = presentation_size) +
+  theme(
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    legend.position = "none"
+  ) +
+  labs(caption = "")
+
+ggsave(here("results", "presentations", "density_Spi_small.png"))
+
+density_Spi_te_small +
+  theme_bw(base_size = presentation_size) +
+  theme(
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    legend.position = "none"
+  ) +
+  labs(caption = "")
+
+ggsave(here("results", "presentations", "density_Spi_te_small.png"))
+
+density_Tet_small +
+  theme_bw(base_size = presentation_size) +
+  theme(
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    legend.position = "none"
+  ) +
+  labs(caption = "")
+
+ggsave(here("results", "presentations", "density_Tet_small.png"))
 ```
