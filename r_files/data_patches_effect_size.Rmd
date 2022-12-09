@@ -733,7 +733,7 @@ for (disturbance_input in c("low", "high")) {
 saveRDS(ds_patches_effect_size, file = here("results", "ds_patches_effect_size.RData"))
 ```
 
-```{r ds_patches_effect_size-datatable}
+```{r ds_patches_effect_size-datatable, eval = displays_datasets}
 datatable(ds_patches_effect_size,
           rownames = FALSE,
           options = list(scrollX = TRUE),

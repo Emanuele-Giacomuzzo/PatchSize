@@ -94,7 +94,8 @@ ds_patches %>%
   labs(
     x = "Day",
     y = "Patch Bioarea (µm²/μl)",
-    fill = ""
+    fill = "",
+    caption = "Vertical grey line: resource flow"
   ) +
   theme_bw() +
   theme(
@@ -103,12 +104,11 @@ ds_patches %>%
     legend.position = "bottom"
   ) +
   scale_fill_manual(
-    values = c(colour_isolated, colour_different_size, colour_same_size),
+    values = c(colour_isolated, colour_same_size, colour_different_size),
     labels = c(
-      "Small isolated",
-      "Small connected to large",
-      "Small connected to small",
-      caption = "Vertical grey line: resource flow"
+      "Large isolated",
+      "Large connected to large",
+      "Large connected to small"
     )
   ) +
   scale_x_continuous(breaks = unique(ds_patches$day)) +
@@ -173,8 +173,8 @@ p_effect_size = ds_patches_effect_size %>%
     y = "Bioarea Density Effect Size (Hedge's d)",
     color = ""
   ) +
-  scale_color_discrete(labels = c("Small connected to large",
-                                  "Small connnected to small")) +
+  scale_color_discrete(labels = c("Large connected to large",
+                                  "Large connnected to small")) +
   scale_x_continuous(breaks = unique(ds_patches_effect_size$day)) +
   theme_bw() +
   theme(
@@ -239,7 +239,7 @@ filtered_data = ds_patches_effect_size %>%
 ```{r create-full-model-of-the-large-patches}
 full_model = lm(bioarea_per_volume_d ~                  
                   eco_metaeco_type + 
-                  day : eco_metaeco_type,
+                  eco_metaeco_type : day,
                   data = filtered_data)
 
 summary(full_model)
@@ -247,7 +247,7 @@ par(mfrow = c(2,3))
 plot(full_model, which = 1:5)
 
 null_model = lm(bioarea_per_volume_d ~                  
-                  day,
+                  1,
                   data = filtered_data)
 
 AIC = AIC(full_model, null_model)

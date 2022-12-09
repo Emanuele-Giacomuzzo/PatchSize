@@ -1,0 +1,203 @@
+---
+title: "SL vs SL from isolated - Gamma Diversity"
+output: html_document
+date: "2022-12-09"
+editor_options: 
+  chunk_output_type: console
+---
+
+#### Gamma Diversity
+
+```{r}
+ds_metaecosystems %>%
+  filter (disturbance == disturbance_input,
+          metaecosystem_type %in% c("S_L", "SL_from_isolated")) %>%
+  
+  ggplot (
+    aes(
+      x = day,
+      y = gamma_shannon,
+      group = system_nr,
+      fill = system_nr,
+      color = system_nr,
+      linetype = metaecosystem_type
+    )
+  ) +
+  geom_line () +
+  labs(
+    x = "Day",
+    y = name_y_axis_gamma_diversity,
+    fill = "System nr",
+    color = "System nr",
+    linetype = "",
+    caption = "Vertical grey line: resource flow"
+  ) +
+  scale_linetype_discrete(labels = c(name_SL,
+                                     name_SL_from_isolated)) +
+  theme_bw() +
+  theme(
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    legend.position = "bottom"
+  ) +
+  scale_x_continuous(breaks = unique(ds_metaecosystems$day)) +
+  geom_vline(
+    xintercept = resource_flow_days[1] + 0.7,
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_vline(
+    xintercept = resource_flow_days[2] + 0.7,
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_vline(
+    xintercept = resource_flow_days[3] + 0.7,
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_vline(
+    xintercept = resource_flow_days[4] + 0.7,
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_vline(
+    xintercept = resource_flow_days[5] + 0.7,
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_vline(
+    xintercept = resource_flow_days[6] + 0.7,
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  )
+```
+
+```{r}
+p_boxplots = ds_metaecosystems %>%
+  filter(disturbance == disturbance_input,
+         metaecosystem_type %in% c("S_L", "SL_from_isolated")) %>%
+  ggplot (aes(
+    x = day,
+    y = gamma_shannon,
+    group = interaction(day, metaecosystem_type),
+    fill = metaecosystem_type
+  )) +
+  geom_boxplot() +
+  geom_vline(
+    xintercept = resource_flow_days[1] + 0.7,
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_vline(
+    xintercept = resource_flow_days[2] + 0.7,
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_vline(
+    xintercept = resource_flow_days[3] + 0.7,
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_vline(
+    xintercept = resource_flow_days[4] + 0.7,
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_vline(
+    xintercept = resource_flow_days[5] + 0.7,
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_vline(
+    xintercept = resource_flow_days[6] + 0.7,
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  labs(
+    x = "Day",
+    y = name_y_axis_gamma_diversity,
+    color = '',
+    fill = '',
+    caption = "Vertical grey line: resource flow"
+  ) +
+  scale_fill_manual(
+    values = c(colour_MM, colour_SL),
+    labels = c(name_SL,
+               name_SL_from_isolated)
+  ) +
+  theme_bw() +
+  theme(
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    legend.position = "bottom"
+  )
+  
+p_boxplots
+```
+
+```{r}
+filtered_data = ds_metaecosystems %>%
+    filter(time_point >= 2,
+           disturbance == disturbance_input,
+           metaecosystem_type %in% c("SL_from_isolated", "S_L"))
+```
+
+```{r}
+full_model = lmer(
+  gamma_shannon ~
+    day +
+    metaecosystem_type +
+    metaecosystem_type : day +
+    (day | system_nr),
+  data = filtered_data,
+  REML = FALSE,
+  control = lmerControl(optimizer = "Nelder_Mead")
+)
+
+summary(full_model)
+plot(full_model)
+qqnorm(resid(full_model))
+
+null_model = lmer(
+  gamma_shannon ~
+    day +
+    (day | system_nr),
+  data = filtered_data,
+  REML = FALSE,
+  control = lmerControl(optimizer = "Nelder_Mead")
+)
+
+AIC = AIC(full_model, null_model)
+AIC
+
+AIC_full = AIC$AIC[1]
+AIC_null = AIC$AIC[2]
+deltaAIC = AIC_full - AIC_null
+deltaAIC = round(deltaAIC, digits = 2)
+
+anova = anova(full_model, null_model)
+anova
+
+p_value = anova$`Pr(>Chisq)`[2]
+p_value = round(p_value, digits = 3)
+```
+
+```{r}
+MM_SL_gamma_diversity = p_boxplots + 
+  labs(title = paste0("ΔAIC = ", deltaAIC , ", p = ", p_value))
+
+MM_SL_gamma_diversity
+```

@@ -76,13 +76,14 @@ for (class in 1:nr_of_size_classes) {
 ds_classes = single_videos_rows %>%
   bind_rows()
 
-```
-
-```{r}
 saveRDS(ds_classes, file = here("results", "ds_classes.RData"))
 ```
 
-```{r ds_classes_effect_size-datatable}
+```{r}
+ds_classes = readRDS(here("results", "ds_classes.RData"))
+```
+
+```{r ds_classes_effect_size-datatable, eval = displays_datasets}
 datatable(ds_classes,
           rownames = FALSE,
           options = list(scrollX = TRUE),

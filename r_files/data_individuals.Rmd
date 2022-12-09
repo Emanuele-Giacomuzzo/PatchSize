@@ -109,7 +109,7 @@ saveRDS(ds_individuals, file = here("results", "ds_individuals.RData"))
 
 I'm not showing the whole dataset because it's too large.
 
-```{r ds_individuals-datatable}
+```{r ds_individuals-datatable, eval = displays_datasets}
 datatable(head(ds_individuals),
           rownames = FALSE,
           options = list(scrollX = TRUE),

@@ -1,8 +1,7 @@
 ---
-title: "metaecosystems"
-author: "Emanuele Giacomuzzo"
-date: "2022-10-18"
+title: "SL vs SL from isolated - Beta diversity"
 output: html_document
+date: "2022-12-09"
 editor_options: 
   chunk_output_type: console
 ---
@@ -12,7 +11,7 @@ editor_options:
 ```{r}
 ds_metaecosystems %>%
   filter (disturbance == disturbance_input,
-          metaecosystem_type %in% c("S_L", "M_M")) %>%
+          metaecosystem_type %in% c("S_L_from_isolated", "M_M_from_isolated")) %>%
   
   ggplot (
     aes(
@@ -26,16 +25,15 @@ ds_metaecosystems %>%
   ) +
   geom_line () +
   labs(
-    title = paste("Disturbance =", disturbance_input),
     x = "Day",
-    y = "Beta Diversity (Bray-Curtis Index)",
+    y = name_y_axis_beta_diversity,
     fill = "System nr",
     color = "System nr",
     linetype = "",
     caption = "Vertical grey line: resource flow"
   ) +
-  scale_linetype_discrete(labels = c("Medium-Medium",
-                                     "Small-Large")) +
+  scale_linetype_discrete(labels = c(name_MM_from_isolated,
+                                     name_SL_from_isolated)) +
   theme_bw() +
   theme(
     panel.grid.major = element_blank(),
@@ -84,7 +82,7 @@ ds_metaecosystems %>%
 ```{r}
 p_boxplots = ds_metaecosystems %>%
   filter(disturbance == disturbance_input,
-         metaecosystem_type %in% c("S_L", "M_M")) %>%
+         metaecosystem_type %in% c("S_L_from_isolated", "M_M_from_isolated")) %>%
   ggplot (aes(
     x = day,
     y = bray_curtis,
@@ -130,15 +128,15 @@ p_boxplots = ds_metaecosystems %>%
   ) + 
   labs(
     x = "Day",
-    y = "Beta diversity (Bray-Curtis Index)",
+    y = name_y_axis_beta_diversity,
     color = '',
     fill = '',
     caption = "Vertical grey line: resource flow"
   ) +
   scale_fill_manual(
     values = c(colour_MM, colour_SL),
-    labels = c("Medium-Medium",
-               "Small-Large")
+    labels = c(name_MM_from_isolated,
+               name_SL_from_isolated)
   ) +
   theme_bw() +
   theme(
@@ -154,7 +152,7 @@ p_boxplots
 filtered_data = ds_metaecosystems %>%
     filter(time_point >= 2,
            disturbance == disturbance_input,
-           metaecosystem_type %in% c("M_M", "S_L"))
+           metaecosystem_type %in% c("M_M_from_isolated", "S_L_from_isolated"))
 ```
 
 ```{r}

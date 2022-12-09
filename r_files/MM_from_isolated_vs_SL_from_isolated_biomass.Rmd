@@ -1,0 +1,152 @@
+---
+title: "SL from isolated vs MM from isolated"
+output: html_document
+date: "2022-12-09"
+editor_options: 
+  chunk_output_type: console
+---
+
+#### Biomass {.tabset .tabset-pills}
+
+```{r}
+ds_metaecosystems %>%
+      filter (disturbance == disturbance_input,
+              metaecosystem_type %in% c("S_L_from_isolated", "M_M_from_isolated")) %>%
+      ggplot (
+        aes(
+          x = day,
+          y = total_metaecosystem_bioarea,
+          group = system_nr,
+          fill = system_nr,
+          color = system_nr,
+          linetype = metaecosystem_type
+        )
+      ) +
+      geom_line () +
+      labs(
+        x = "Day",
+        y = "Meta-ecosystem Total Bioarea (µm²)",
+        fill = "System nr",
+        color = "System nr",
+        linetype = ""
+      ) +
+      scale_linetype_discrete(labels = c("Medium-Medium from isolated",
+                                         "Small-Large from isolated")) +
+      theme_bw() +
+      theme(
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        legend.position = "bottom"
+      ) +
+      scale_x_continuous(breaks = unique(ds_metaecosystems$day)) +
+      #scale_y_continuous(labels = comma) + 
+      geom_vline(
+        xintercept = resource_flow_days[1] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = resource_flow_days[2] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = resource_flow_days[3] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = resource_flow_days[4] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = resource_flow_days[5] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = resource_flow_days[6] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      labs(caption = "Vertical grey line: resource flow")
+```
+
+```{r}
+p_boxplots = ds_metaecosystems %>%
+      filter(disturbance == disturbance_input,
+             metaecosystem_type %in% c("S_L_from_isolated", "M_M_from_isolated")) %>%
+      ggplot (
+        aes(
+          x = day,
+          y = total_metaecosystem_bioarea,
+          group = interaction(day, metaecosystem_type),
+          fill = metaecosystem_type
+        )
+      ) +
+      geom_boxplot() +
+      labs(
+        x = "Day",
+        y = "Meta-ecosystem Total Bioarea (µm²)",
+        color = '',
+        fill = ''
+      ) +
+      scale_fill_manual(
+        values = c(colour_MM, colour_SL),
+        labels = c("Medium-Medium from isolated",
+                   "Small-Large from isolated")
+      ) +
+      theme_bw() +
+      theme(
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        legend.position = "bottom"
+      )  +
+      scale_x_continuous(breaks = unique(ds_metaecosystems$day)) +
+      geom_vline(
+        xintercept = resource_flow_days[1] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = resource_flow_days[2] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = resource_flow_days[3] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = resource_flow_days[4] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = resource_flow_days[5] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = resource_flow_days[6] + 0.7,
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      labs(caption = "Vertical grey line: resource flow")
+
+p_boxplots
+```

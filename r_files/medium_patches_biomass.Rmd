@@ -5,6 +5,9 @@ date: "2022-12-06"
 editor_options: 
   chunk_output_type: console
 ---
+
+#### Biomass
+
 ```{r}
 ds_patches %>%
       filter(disturbance == disturbance_input,
@@ -153,7 +156,7 @@ ds_patches_effect_size %>%
   filter(
     !time_point == 0,
     disturbance == disturbance_input,
-    eco_metaeco_type == "M_M"
+    eco_metaeco_type == "M (M_M)"
   ) %>%
   ggplot(aes(x = day,
              y = bioarea_per_volume_d,
@@ -171,7 +174,7 @@ ds_patches_effect_size %>%
     y = "Bioarea Density Effect Size (Hedge's d)",
     color = ""
   ) +
-  scale_color_discrete(labels = c("Medium connected to medium")) +
+  scale_color_discrete(labels = "Medium connected to medium") +
   scale_x_continuous(breaks = unique(ds_patches_effect_size$day)) +
   theme_bw() +
   theme(
@@ -221,6 +224,4 @@ ds_patches_effect_size %>%
     color = "black",
     size = 0.7
   )
-
 ```
-

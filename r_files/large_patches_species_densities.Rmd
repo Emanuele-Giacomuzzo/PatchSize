@@ -1,0 +1,10 @@
+---
+title: "large_patches"
+author: "Emanuele Giacomuzzo"
+date: "2022-10-17"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+### Species Densities {.tabset .tabset-pills}

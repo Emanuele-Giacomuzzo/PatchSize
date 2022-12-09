@@ -1,0 +1,225 @@
+---
+title: "Medium Patches - Alpha Diversity"
+output: html_document
+date: "2022-12-09"
+editor_options: 
+  chunk_output_type: console
+---
+
+#### Alpha Diversity {.tabset .tabset-pills}
+
+```{r plot-alpha-diversity-of-medium-patches-with-single-replicates}
+ds_patches %>%
+  filter(disturbance == disturbance_input,
+         patch_size == "M") %>%
+  ggplot(
+    aes(
+      x = day,
+      y = shannon,
+      group = culture_ID,
+      fill = culture_ID,
+      color = culture_ID,
+      linetype = eco_metaeco_type
+    )
+  ) +
+  geom_line(stat = "summary", fun = "mean") +
+  geom_vline(
+    xintercept = resource_flow_days[1] + 0.7,
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_vline(
+    xintercept = resource_flow_days[2] + 0.7,
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_vline(
+    xintercept = resource_flow_days[3] + 0.7,
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_vline(
+    xintercept = resource_flow_days[4] + 0.7,
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_vline(
+    xintercept = resource_flow_days[5] + 0.7,
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_vline(
+    xintercept = resource_flow_days[6] + 0.7,
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  labs(
+    x = "Day",
+    y = "Shannon Index",
+    linetype = "",
+    caption = "Vertical grey line: resource flow"
+  ) +
+  scale_linetype_discrete(labels = c(
+    "Medium isolated",
+    "Medium connected to medium"
+  ))  +
+  scale_x_continuous(breaks = unique(ds_patches$day)) +
+  theme_bw() +
+  theme(
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    legend.position = "bottom"
+  )
+```
+
+```{r}
+ds_patches %>%
+  filter(disturbance == disturbance_input,
+         patch_size == "M") %>%
+  ggplot(aes(
+    x = day,
+    y = shannon,
+    group = interaction(day, eco_metaeco_type),
+    fill = eco_metaeco_type
+  )) +
+  geom_boxplot() +
+  labs(
+    x = "Day",
+    y = "Alpha Diversity (Shannon Index)",
+    fill = "",
+    caption = "Vertical grey line: resource flow"
+  ) +
+  theme_bw() +
+  theme(
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    legend.position = "bottom"
+  ) +
+  scale_fill_manual(
+    values = c(colour_isolated, colour_different_size),
+    labels = c(
+      "Medium isolated",
+      "Medium connected to medium"
+    )
+  ) +
+  scale_x_continuous(breaks = unique(ds_patches$day)) +
+  geom_vline(
+    xintercept = resource_flow_days[1] + 0.7,
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_vline(
+    xintercept = resource_flow_days[2] + 0.7,
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_vline(
+    xintercept = resource_flow_days[3] + 0.7,
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_vline(
+    xintercept = resource_flow_days[4] + 0.7,
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_vline(
+    xintercept = resource_flow_days[5] + 0.7,
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_vline(
+    xintercept = resource_flow_days[6] + 0.7,
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  )
+```
+
+```{r}
+p_effect_size = ds_patches_effect_size %>%
+  filter(
+    !time_point == 0,
+    disturbance == disturbance_input,
+    eco_metaeco_type == "M (M_M)"
+  ) %>%
+  ggplot(aes(x = day,
+             y = shannon_d,
+             color = eco_metaeco_type)) +
+  geom_point(position = position_dodge(0.5)) +
+  geom_line(position = position_dodge(0.5)) +
+  geom_errorbar(
+    aes(ymin = shannon_d_lower,
+        ymax = shannon_d_upper),
+    width = .2,
+    position = position_dodge(0.5)
+  ) +
+  geom_vline(
+    xintercept = resource_flow_days[1] + 0.7,
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_vline(
+    xintercept = resource_flow_days[2] + 0.7,
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_vline(
+    xintercept = resource_flow_days[3] + 0.7,
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_vline(
+    xintercept = resource_flow_days[4] + 0.7,
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_vline(
+    xintercept = resource_flow_days[5] + 0.7,
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_vline(
+    xintercept = resource_flow_days[6] + 0.7,
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_hline(
+    yintercept = 0,
+    linetype = "dotted",
+    color = "black",
+    size = 0.7
+  ) +
+  labs(
+    x = "Day",
+    y = "Shannon Index Effect Size (Hedge's d)",
+    color = ""
+  ) +
+  scale_color_discrete(labels = c("Medium connected to medium")) +
+  scale_x_continuous(breaks = unique(ds_patches_effect_size$day)) +
+  theme_bw() +
+  theme(
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    legend.position = "bottom"
+  ) 
+
+p_effect_size
+```

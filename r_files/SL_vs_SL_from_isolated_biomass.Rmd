@@ -7,7 +7,7 @@ editor_options:
   chunk_output_type: console
 ---
 
-### Biomass
+#### Biomass
 
 Do a meta-ecosystem with patches of the same size and a meta-ecosystems with patches of different size have different metaecosystem biomass density because of their resource flow? Or would we see this also with small and large ecosystems that are not connected? *(Do the small-large meta-ecosystems have different biomass density from two isolated small and large patches?)*
 
@@ -84,7 +84,7 @@ ds_metaecosystems %>%
 ```
 
 ```{r S_L_from_isolated-single-boxplots}
-ds_metaecosystems %>%
+p_boxplots = ds_metaecosystems %>%
   filter(
     disturbance == disturbance_input,
     metaecosystem_type %in% c("S_L", "S_L_from_isolated")
@@ -98,27 +98,61 @@ ds_metaecosystems %>%
     )
   ) +
   geom_boxplot() +
-  labs(title = "Disturbance = low",
-       x = "Day",
-       y = "Regional bioarea (µm²)",
-       fill = "",
-       caption = "Vertical grey line: first perturbation") +
-  scale_fill_discrete(labels = c("Small-Large", "Small-Large from isolated")) +
+  geom_vline(
+    xintercept = resource_flow_days[1] + 0.7,
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_vline(
+    xintercept = resource_flow_days[2] + 0.7,
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_vline(
+    xintercept = resource_flow_days[3] + 0.7,
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_vline(
+    xintercept = resource_flow_days[4] + 0.7,
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_vline(
+    xintercept = resource_flow_days[5] + 0.7,
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_vline(
+    xintercept = resource_flow_days[6] + 0.7,
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  labs(
+    x = "Day",
+    y = "Regional bioarea (µm²)",
+    fill = "",
+    caption = "Vertical grey line: resouce flow"
+  ) +
+  scale_fill_manual(values = c(colour_SL, colour_isolated),
+                    labels = c("Small-Large", "Small-Large from isolated")) +
   theme_bw() +
   theme(
     panel.grid.major = element_blank(),
     panel.grid.minor = element_blank(),
     legend.position = "bottom"
-  ) +
-  geom_vline(
-    xintercept = first_perturbation_day + 0.7,
-    linetype = "dotdash",
-    color = "grey",
-    size = 0.7
   )
+
+p_boxplots
 ```
 
-```{r}
+```{r }
 
 ##Bootstrap from all combinations the p value and delta AIC
 
@@ -136,19 +170,42 @@ n_of_SL_metaecos = ds_metaecosystems %>%
   length()
 
 possible_combinations = combn(x = system_nr_SL_from_isolated,
-                              m = n_of_SL_metaecos)
+                              m = n_of_SL_metaecos) %>%
+                        t()
 
-n_combinations = ncol(possible_combinations)
+n_combinations = nrow(possible_combinations)
 
-n_iterations = 200
+n_subsamples = 2000
 
+random_subset_of_combinations = sample(1:n_combinations, 
+                                       n_subsamples, 
+                                       replace = FALSE)
+
+subsetted_combinations = possible_combinations[random_subset_of_combinations,]
+```
+
+```{r eval = recompute_analyses}
 statistics = NULL
-for (combination_nr in 1:n_iterations){
-
-  combination = possible_combinations[, combination_nr]
+for (combination_nr in 1:n_subsamples){
+  
+  combination = subsetted_combinations[combination_nr,]
   
   filtered_ds = ds_metaecosystems %>%
-    filter(metaecosystem_type == "SL" | system_nr %in% combination)
+    filter(disturbance == disturbance_input,
+           metaecosystem_type == "S_L" | system_nr %in% combination,
+           time_point >= first_time_point_model,
+           time_point <= last_time_point_model)
+  
+  # filtered_ds %>%
+  #   ggplot(
+  #     aes(
+  #       x = day,
+  #       y = total_metaecosystem_bioarea,
+  #       group = interaction(day, metaecosystem_type),
+  #       fill = metaecosystem_type
+  #     )
+  #   ) +
+  #   geom_boxplot()
   
   full_model = lmer(
     total_metaecosystem_bioarea ~
@@ -158,8 +215,7 @@ for (combination_nr in 1:n_iterations){
       (day | system_nr),
     data = filtered_ds,
     REML = FALSE,
-    control = lmerControl(optimizer = 'optimx', 
-                          optCtrl = list(method = 'L-BFGS-B'))
+    control = lmerControl (optimizer = "Nelder_Mead")
   )
   
   null_model = lmer(
@@ -168,8 +224,7 @@ for (combination_nr in 1:n_iterations){
       (day | system_nr),
     data = filtered_ds,
     REML = FALSE,
-    control = lmerControl(optimizer = 'optimx', 
-                          optCtrl = list(method = 'L-BFGS-B'))
+    control = lmerControl (optimizer = "Nelder_Mead")
   )
   
   anova = anova(full_model, null_model)
@@ -189,24 +244,51 @@ for (combination_nr in 1:n_iterations){
   statistics[[combination_nr]] = data.frame(p_value = p_value,
                                             delta_AIC = delta_AIC)
   
+  print(paste0(combination_nr, "/", n_subsamples, " done"))
+  
 }
 
 statistics = statistics %>%
   bind_rows()
 
+write.csv(statistics, here("results", "statistics_SL_from_isolated.csv"))
+```
+
+```{r}
+statistics = read.csv(here("results", "statistics_SL_from_isolated.csv"))
+
 confidence_interval = 95
 
-percentage_iterations_to_take_off = 100 - confidence_interval
-ratio_iterations_to_take_off = percentage_iterations_to_take_off / 100
-n_iterations_to_take_off = n_iterations * ratio_iterations_to_take_off
+percentage_subsamples_to_take_off = 100 - confidence_interval
+ratio_subsamples_to_take_off = percentage_subsamples_to_take_off / 100
+n_subsamples_to_take_off = n_subsamples * ratio_subsamples_to_take_off
 
-upper_bound = n_iterations - (n_iterations_to_take_off / 2)
-lower_bound = (n_iterations_to_take_off / 2)
+upper_bound = n_subsamples - (n_subsamples_to_take_off / 2) %>%
+              ceiling()
+
+lower_bound = 1 + (n_subsamples_to_take_off / 2) %>%
+              floor()
 
 p_values = statistics$p_value %>%
   sort(decreasing = TRUE)
-p_values_for_CI = p_values[lower_bound:upper_bound]
 
+delta_AIC_values = statistics$delta_AIC %>%
+  sort(decreasing = TRUE)
 
+bootstrapped_statistics = data.frame(
+  p_values_mean = mean(p_values),
+  p_values_upper_CI = p_values[upper_bound],
+  p_values_lower_CI = p_values[lower_bound],
+  delta_AIC_mean = mean(delta_AIC_values),
+  delta_AIC_upper_CI = delta_AIC_values[upper_bound],
+  delta_AIC_lower_CI = delta_AIC_values[lower_bound]
+)
+```
 
+```{r}
+p_value = round(bootstrapped_statistics$p_values_mean, digits = 3)
+delta_AIC = round(bootstrapped_statistics$delta_AIC_mean, digits = 2)
+
+p_boxplots + 
+  labs(title = paste0("p = ", p_value, ", ΔAIC = ", delta_AIC))
 ```

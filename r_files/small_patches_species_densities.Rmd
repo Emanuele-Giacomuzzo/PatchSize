@@ -32,7 +32,7 @@ ds_patches %>%
       geom_boxplot() +
       labs(
         x = "Day",
-        y = "Ble Density (indiv/μl ?)",
+        y = "Ble Density (indiv/ml)",
         fill = "",
         caption = "Vertical grey line: resource flow"
       ) +
@@ -92,7 +92,7 @@ ds_patches %>%
 ```{r}
 p_effect_size = ds_patches_effect_size %>%
       filter(disturbance == disturbance_input,
-             eco_metaeco_type %in% c("S (S_L)", "S (S_S)"),
+             patch_size == patch_size_input,
              day > 0) %>%
       ggplot(aes(
         x = day,
@@ -236,7 +236,7 @@ ds_patches %>%
       geom_boxplot() +
       labs(
         x = "Day",
-        y = "Cep Density (indiv/μl ?)",
+        y = "Cep Density (indiv/ml)",
         fill = "",
         caption = "Vertical grey line: resource flow"
       ) +
@@ -296,7 +296,7 @@ ds_patches %>%
 ```{r}
 p_effect_size = ds_patches_effect_size %>%
       filter(disturbance == disturbance_input,
-             eco_metaeco_type %in% c("S (S_L)", "S (S_S)"),
+             patch_size == patch_size_input,
              day > 0) %>%
       ggplot(aes(
         x = day,
@@ -440,7 +440,7 @@ ds_patches %>%
       geom_boxplot() +
       labs(
         x = "Day",
-        y = "Col Density (indiv/μl ?)",
+        y = "Col Density (indiv/ml)",
         fill = "",
         caption = "Vertical grey line: resource flow"
       ) +
@@ -500,7 +500,7 @@ ds_patches %>%
 ```{r}
 p_effect_size = ds_patches_effect_size %>%
       filter(disturbance == disturbance_input,
-             eco_metaeco_type %in% c("S (S_L)", "S (S_S)"),
+             patch_size == patch_size_input,
              day > 0) %>%
       ggplot(aes(
         x = day,
@@ -644,7 +644,7 @@ ds_patches %>%
       geom_boxplot() +
       labs(
         x = "Day",
-        y = "Eug Density (indiv/μl ?)",
+        y = "Eug Density (indiv/ml)",
         fill = "",
         caption = "Vertical grey line: resource flow"
       ) +
@@ -704,7 +704,7 @@ ds_patches %>%
 ```{r}
 p_effect_size = ds_patches_effect_size %>%
       filter(disturbance == disturbance_input,
-             eco_metaeco_type %in% c("S (S_L)", "S (S_S)"),
+             patch_size == patch_size_input,
              day > 0) %>%
       ggplot(aes(
         x = day,
@@ -781,7 +781,7 @@ p_effect_size = ds_patches_effect_size %>%
 p_effect_size
 ```
 
-```{r}
+```{r eval = include_incomplete_time_series}
 filtered_data = ds_patches_effect_size %>%
   filter(patch_size == patch_size_input,
          disturbance == disturbance_input,
@@ -789,7 +789,7 @@ filtered_data = ds_patches_effect_size %>%
          time_point <= last_time_point_model)
 ```
 
-```{r}
+```{r eval = include_incomplete_time_series}
 full_model = lm(Eug_d ~                  
                   eco_metaeco_type +
                   eco_metaeco_type : day,
@@ -822,7 +822,7 @@ R2_P =  R2_full - R2_null
 R2_P = round(R2_P, digits = 2)
 ```
 
-```{r}
+```{r eval = include_incomplete_time_series}
 density_Eug_small = p_effect_size +
   labs(title = paste0("ΔAIC = ", deltaAIC , ", p = ", p_value, ", Adjusted R2 = ", R2_P))
 
@@ -848,7 +848,7 @@ ds_patches %>%
       geom_boxplot() +
       labs(
         x = "Day",
-        y = "Eup Density (indiv/μl ?)",
+        y = "Eup Density (indiv/ml)",
         fill = "",
         caption = "Vertical grey line: resource flow"
       ) +
@@ -908,7 +908,7 @@ ds_patches %>%
 ```{r}
 p_effect_size = ds_patches_effect_size %>%
       filter(disturbance == disturbance_input,
-             eco_metaeco_type %in% c("S (S_L)", "S (S_S)"),
+             patch_size == patch_size_input,
              day > 0) %>%
       ggplot(aes(
         x = day,
@@ -1052,7 +1052,7 @@ ds_patches %>%
       geom_boxplot() +
       labs(
         x = "Day",
-        y = "Lox Density (indiv/μl ?)",
+        y = "Lox Density (indiv/ml)",
         fill = "",
         caption = "Vertical grey line: resource flow"
       ) +
@@ -1112,7 +1112,7 @@ ds_patches %>%
 ```{r}
 p_effect_size = ds_patches_effect_size %>%
       filter(disturbance == disturbance_input,
-             eco_metaeco_type %in% c("S (S_L)", "S (S_S)"),
+             patch_size == patch_size_input,
              day > 0) %>%
       ggplot(aes(
         x = day,
@@ -1256,7 +1256,7 @@ ds_patches %>%
       geom_boxplot() +
       labs(
         x = "Day",
-        y = "Pau Density (indiv/μl ?)",
+        y = "Pau Density (indiv/ml)",
         fill = "",
         caption = "Vertical grey line: resource flow"
       ) +
@@ -1316,7 +1316,7 @@ ds_patches %>%
 ```{r}
 p_effect_size = ds_patches_effect_size %>%
       filter(disturbance == disturbance_input,
-             eco_metaeco_type %in% c("S (S_L)", "S (S_S)"),
+             patch_size == patch_size_input,
              day > 0) %>%
       ggplot(aes(
         x = day,
@@ -1460,7 +1460,7 @@ ds_patches %>%
       geom_boxplot() +
       labs(
         x = "Day",
-        y = "Pca Density (indiv/μl ?)",
+        y = "Pca Density (indiv/ml)",
         fill = "",
         caption = "Vertical grey line: resource flow"
       ) +
@@ -1520,7 +1520,7 @@ ds_patches %>%
 ```{r}
 p_effect_size = ds_patches_effect_size %>%
       filter(disturbance == disturbance_input,
-             eco_metaeco_type %in% c("S (S_L)", "S (S_S)"),
+             patch_size == patch_size_input,
              day > 0) %>%
       ggplot(aes(
         x = day,
@@ -1664,7 +1664,7 @@ ds_patches %>%
       geom_boxplot() +
       labs(
         x = "Day",
-        y = "Spi Density (indiv/μl ?)",
+        y = "Spi Density (indiv/ml)",
         fill = "",
         caption = "Vertical grey line: resource flow"
       ) +
@@ -1724,7 +1724,7 @@ ds_patches %>%
 ```{r}
 p_effect_size = ds_patches_effect_size %>%
       filter(disturbance == disturbance_input,
-             eco_metaeco_type %in% c("S (S_L)", "S (S_S)"),
+             patch_size == patch_size_input,
              day > 0) %>%
       ggplot(aes(
         x = day,
@@ -1868,7 +1868,7 @@ ds_patches %>%
       geom_boxplot() +
       labs(
         x = "Day",
-        y = "Spi_te Density (indiv/μl ?)",
+        y = "Spi_te Density (indiv/ml)",
         fill = "",
         caption = "Vertical grey line: resource flow"
       ) +
@@ -1928,7 +1928,7 @@ ds_patches %>%
 ```{r}
 p_effect_size = ds_patches_effect_size %>%
       filter(disturbance == disturbance_input,
-             eco_metaeco_type %in% c("S (S_L)", "S (S_S)"),
+             patch_size == patch_size_input,
              day > 0) %>%
       ggplot(aes(
         x = day,
@@ -2072,7 +2072,7 @@ ds_patches %>%
       geom_boxplot() +
       labs(
         x = "Day",
-        y = "Tet Density (indiv/μl ?)",
+        y = "Tet Density (indiv/ml)",
         fill = "",
         caption = "Vertical grey line: resource flow"
       ) +
@@ -2132,7 +2132,7 @@ ds_patches %>%
 ```{r}
 p_effect_size = ds_patches_effect_size %>%
       filter(disturbance == disturbance_input,
-             eco_metaeco_type %in% c("S (S_L)", "S (S_S)"),
+             patch_size == patch_size_input,
              day > 0) %>%
       ggplot(aes(
         x = day,
@@ -2209,7 +2209,7 @@ p_effect_size = ds_patches_effect_size %>%
 p_effect_size
 ```
 
-```{r}
+```{r eval = include_incomplete_time_series}
 filtered_data = ds_patches_effect_size %>%
   filter(patch_size == patch_size_input,
          disturbance == disturbance_input,
@@ -2217,7 +2217,7 @@ filtered_data = ds_patches_effect_size %>%
          time_point <= last_time_point_model)
 ```
 
-```{r}
+```{r eval = include_incomplete_time_series}
 full_model = lm(Tet_d ~                  
                   eco_metaeco_type +
                   eco_metaeco_type : day,
@@ -2250,7 +2250,7 @@ R2_P =  R2_full - R2_null
 R2_P = round(R2_P, digits = 2)
 ```
 
-```{r}
+```{r eval = include_incomplete_time_series}
 density_Tet_small = p_effect_size +
   labs(title = paste0("ΔAIC = ", deltaAIC , ", p = ", p_value, ", Adjusted R2 = ", R2_P))
 

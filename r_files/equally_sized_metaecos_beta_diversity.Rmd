@@ -10,7 +10,8 @@ editor_options:
 
 ```{r}
 p_boxplots = ds_metaecosystems %>%
-  mutate(metaecosystem_type = fct_reorder(metaecosystem_type, total_metaecosystem_bioarea)) %>%
+  mutate(metaecosystem_type = fct_reorder(metaecosystem_type, 
+                                          total_metaecosystem_bioarea)) %>%
   filter(disturbance == disturbance_input,
          metaecosystem_type %in% c("S_S", "M_M", "L_L")) %>%
   ggplot (aes(
