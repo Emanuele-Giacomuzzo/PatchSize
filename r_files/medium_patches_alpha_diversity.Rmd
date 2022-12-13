@@ -63,10 +63,10 @@ ds_patches %>%
     x = "Day",
     y = "Shannon Index",
     linetype = "",
-    caption = "Vertical grey line: resource flow"
+    caption = caption_resource_flow
   ) +
   scale_linetype_discrete(labels = c(
-    "Medium isolated",
+    name_M_isolated,
     "Medium connected to medium"
   ))  +
   scale_x_continuous(breaks = unique(ds_patches$day)) +
@@ -93,7 +93,7 @@ ds_patches %>%
     x = "Day",
     y = "Alpha Diversity (Shannon Index)",
     fill = "",
-    caption = "Vertical grey line: resource flow"
+    caption = caption_resource_flow
   ) +
   theme_bw() +
   theme(
@@ -104,7 +104,7 @@ ds_patches %>%
   scale_fill_manual(
     values = c(colour_isolated, colour_different_size),
     labels = c(
-      "Medium isolated",
+      name_M_isolated,
       "Medium connected to medium"
     )
   ) +

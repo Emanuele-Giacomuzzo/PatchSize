@@ -29,13 +29,11 @@ ds_metaecosystems %>%
       geom_line () +
       labs(
         x = "Day",
-        y = "Meta-ecosystem Total Bioarea (µm²)",
-        fill = "System nr",
-        color = "System nr",
+        y = name_y_axis_total_bioarea,
         linetype = ""
       ) +
-      scale_linetype_discrete(labels = c("Medium-Medium",
-                                          "Medium-Medium from isolated")) +
+      scale_linetype_discrete(labels = c(name_MM,
+                                          name_MM_from_isolated)) +
       theme_bw() +
       theme(
         panel.grid.major = element_blank(),
@@ -79,7 +77,7 @@ ds_metaecosystems %>%
         color = "grey",
         size = 0.7
       ) +
-      labs(caption = "Vertical grey line: resource flow")
+      labs(caption = caption_resource_flow)
 ```
 
 ```{r M_M_from_isolated-single-boxplots}
@@ -134,22 +132,16 @@ p_boxplots = ds_metaecosystems %>%
     size = 0.7
   ) +
   labs(x = "Day",
-       y = "Regional bioarea (µm²)",
+       y = name_y_axis_total_bioarea,
        fill = "",
-       caption = "Vertical grey line: first perturbation") +
+       caption = caption_resource_flow) +
   scale_fill_manual(values = c(colour_SL, colour_isolated),
-                      labels = c("Medium-Medium", "Medium-Medium from isolated")) +
+                      labels = c(name_MM, name_MM_from_isolated)) +
   theme_bw() +
   theme(
     panel.grid.major = element_blank(),
     panel.grid.minor = element_blank(),
     legend.position = "bottom"
-  ) +
-  geom_vline(
-    xintercept = first_perturbation_day + 0.7,
-    linetype = "dotdash",
-    color = "grey",
-    size = 0.7
   )
 
 p_boxplots
@@ -180,7 +172,7 @@ n_subsamples = nrow(possible_combinations)
 subsetted_combinations = possible_combinations #There are only 252 possible combinations
 ```
 
-```{r, eval = recompute_analyses}
+```{r}
 statistics = NULL
 for (combination_nr in 1:n_subsamples){
   
@@ -192,22 +184,13 @@ for (combination_nr in 1:n_subsamples){
            time_point >= first_time_point_model,
            time_point <= last_time_point_model)
   
-  # filtered_ds %>%
-  #   ggplot(
-  #     aes(
-  #       x = day,
-  #       y = total_metaecosystem_bioarea,
-  #       group = interaction(day, metaecosystem_type),
-  #       fill = metaecosystem_type
-  #     )
-  #   ) +
-  #   geom_boxplot()
-  
   full_model = lmer(
     total_metaecosystem_bioarea ~
       day +
       metaecosystem_type +
-      day:metaecosystem_type +
+      metaecosystem_type : day +
+      baseline_bioarea + 
+      baseline_bioarea : day +
       (day | system_nr),
     data = filtered_ds,
     REML = FALSE,
@@ -217,6 +200,8 @@ for (combination_nr in 1:n_subsamples){
   null_model = lmer(
     total_metaecosystem_bioarea ~
       day +
+      baseline_bioarea +
+      baseline_bioarea : day +
       (day | system_nr),
     data = filtered_ds,
     REML = FALSE,
@@ -246,12 +231,6 @@ for (combination_nr in 1:n_subsamples){
 
 statistics = statistics %>%
   bind_rows()
-
-write.csv(statistics, here("results", "statistics_MM_from_isolated.csv"))
-```
-
-```{r}
-statistics = read.csv(here("results", "statistics_MM_from_isolated.csv"))
 
 confidence_interval = 95
 
@@ -290,4 +269,3 @@ delta_AIC = round(bootstrapped_statistics$delta_AIC_mean, digits = 2)
 p_boxplots + 
   labs(title = paste0("p = ", p_value, ", ΔAIC = ", delta_AIC))
 ```
-

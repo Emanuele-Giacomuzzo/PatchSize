@@ -33,7 +33,7 @@ ds_patches %>%
         x = "Day",
         y = "Ble Density (indiv/ml)",
         fill = "",
-        caption = "Vertical grey line: resource flow"
+        caption = caption_resource_flow
       ) +
       theme_bw() +
       theme(
@@ -44,7 +44,7 @@ ds_patches %>%
       scale_fill_manual(
         values = c(colour_isolated, colour_different_size, colour_same_size),
         labels = c(
-          "Medium isolated",
+          name_M_isolated,
           "Medium connected to medium"
         )
       )  +
@@ -236,7 +236,7 @@ ds_patches %>%
         x = "Day",
         y = "Cep Density (indiv/ml)",
         fill = "",
-        caption = "Vertical grey line: resource flow"
+        caption = caption_resource_flow
       ) +
       theme_bw() +
       theme(
@@ -247,7 +247,7 @@ ds_patches %>%
       scale_fill_manual(
         values = c(colour_isolated, colour_different_size, colour_same_size),
         labels = c(
-          "Medium isolated",
+          name_M_isolated,
           "Medium connected to medium"
           
         )
@@ -440,7 +440,7 @@ ds_patches %>%
         x = "Day",
         y = "Col Density (indiv/ml)",
         fill = "",
-        caption = "Vertical grey line: resource flow"
+        caption = caption_resource_flow
       ) +
       theme_bw() +
       theme(
@@ -451,7 +451,7 @@ ds_patches %>%
       scale_fill_manual(
         values = c(colour_isolated, colour_different_size, colour_same_size),
         labels = c(
-          "Medium isolated",
+          name_M_isolated,
           "Medium connected to medium"
           
         )
@@ -644,7 +644,7 @@ ds_patches %>%
         x = "Day",
         y = "Eug Density (indiv/ml)",
         fill = "",
-        caption = "Vertical grey line: resource flow"
+        caption = caption_resource_flow
       ) +
       theme_bw() +
       theme(
@@ -655,7 +655,7 @@ ds_patches %>%
       scale_fill_manual(
         values = c(colour_isolated, colour_different_size, colour_same_size),
         labels = c(
-          "Medium isolated",
+          name_M_isolated,
           "Medium connected to medium"
           
         )
@@ -848,7 +848,7 @@ ds_patches %>%
         x = "Day",
         y = "Eup Density (indiv/ml)",
         fill = "",
-        caption = "Vertical grey line: resource flow"
+        caption = caption_resource_flow
       ) +
       theme_bw() +
       theme(
@@ -859,7 +859,7 @@ ds_patches %>%
       scale_fill_manual(
         values = c(colour_isolated, colour_different_size, colour_same_size),
         labels = c(
-          "Medium isolated",
+          name_M_isolated,
           "Medium connected to medium"
           
         )
@@ -1052,7 +1052,7 @@ ds_patches %>%
         x = "Day",
         y = "Lox Density (indiv/ml)",
         fill = "",
-        caption = "Vertical grey line: resource flow"
+        caption = caption_resource_flow
       ) +
       theme_bw() +
       theme(
@@ -1063,7 +1063,7 @@ ds_patches %>%
       scale_fill_manual(
         values = c(colour_isolated, colour_different_size, colour_same_size),
         labels = c(
-          "Medium isolated",
+          name_M_isolated,
           "Medium connected to medium"
           
         )
@@ -1256,7 +1256,7 @@ ds_patches %>%
         x = "Day",
         y = "Pau Density (indiv/ml)",
         fill = "",
-        caption = "Vertical grey line: resource flow"
+        caption = caption_resource_flow
       ) +
       theme_bw() +
       theme(
@@ -1267,7 +1267,7 @@ ds_patches %>%
       scale_fill_manual(
         values = c(colour_isolated, colour_different_size, colour_same_size),
         labels = c(
-          "Medium isolated",
+          name_M_isolated,
           "Medium connected to medium"
           
         )
@@ -1460,7 +1460,7 @@ ds_patches %>%
         x = "Day",
         y = "Pca Density (indiv/ml)",
         fill = "",
-        caption = "Vertical grey line: resource flow"
+        caption = caption_resource_flow
       ) +
       theme_bw() +
       theme(
@@ -1471,7 +1471,7 @@ ds_patches %>%
       scale_fill_manual(
         values = c(colour_isolated, colour_different_size, colour_same_size),
         labels = c(
-          "Medium isolated",
+          name_M_isolated,
           "Medium connected to medium"
           
         )
@@ -1664,7 +1664,7 @@ ds_patches %>%
         x = "Day",
         y = "Spi Density (indiv/ml)",
         fill = "",
-        caption = "Vertical grey line: resource flow"
+        caption = caption_resource_flow
       ) +
       theme_bw() +
       theme(
@@ -1675,7 +1675,7 @@ ds_patches %>%
       scale_fill_manual(
         values = c(colour_isolated, colour_different_size, colour_same_size),
         labels = c(
-          "Medium isolated",
+          name_M_isolated,
           "Medium connected to medium"
           
         )
@@ -1868,7 +1868,7 @@ ds_patches %>%
         x = "Day",
         y = "Spi_te Density (indiv/ml)",
         fill = "",
-        caption = "Vertical grey line: resource flow"
+        caption = caption_resource_flow
       ) +
       theme_bw() +
       theme(
@@ -1879,7 +1879,7 @@ ds_patches %>%
       scale_fill_manual(
         values = c(colour_isolated, colour_different_size, colour_same_size),
         labels = c(
-          "Medium isolated",
+          name_M_isolated,
           "Medium connected to medium"
           
         )
@@ -2072,7 +2072,7 @@ ds_patches %>%
         x = "Day",
         y = "Tet Density (indiv/ml)",
         fill = "",
-        caption = "Vertical grey line: resource flow"
+        caption = caption_resource_flow
       ) +
       theme_bw() +
       theme(
@@ -2083,7 +2083,7 @@ ds_patches %>%
       scale_fill_manual(
         values = c(colour_isolated, colour_different_size, colour_same_size),
         labels = c(
-          "Medium isolated",
+          name_M_isolated,
           "Medium connected to medium"
           
         )

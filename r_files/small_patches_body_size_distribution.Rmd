@@ -54,8 +54,8 @@ for(time_point_input in 0:7) {
       ) +
       scale_color_manual(
         values = c(colour_different_size, colour_same_size),
-        labels = c("Small connected to large",
-                   "Small connected to small")
+        labels = c(name_S_connected_to_L,
+                   name_S_connected_to_S)
       ) +
       theme_bw() +
       theme(
@@ -102,8 +102,8 @@ for(time_point_input in 0:7) {
       ) +
       scale_color_manual(
         values = c(colour_different_size, colour_same_size),
-        labels = c("Small connected to large",
-                   "Small connected to small")
+        labels = c(name_S_connected_to_L,
+                   name_S_connected_to_S)
       ) +
       theme_bw() +
       theme(

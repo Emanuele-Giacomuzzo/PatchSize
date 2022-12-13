@@ -26,13 +26,13 @@ ds_metaecosystems %>%
       geom_line () +
       labs(
         x = "Day",
-        y = "Meta-ecosystem Total Bioarea (µm²)",
+        y = name_y_axis_total_bioarea,
         fill = "System nr",
         color = "System nr",
         linetype = ""
       ) +
-      scale_linetype_discrete(labels = c("Medium-Medium",
-                                         "Small-Large")) +
+      scale_linetype_discrete(labels = c(name_MM,
+                                         name_SL)) +
       theme_bw() +
       theme(
         panel.grid.major = element_blank(),
@@ -76,7 +76,7 @@ ds_metaecosystems %>%
         color = "grey",
         size = 0.7
       ) +
-      labs(caption = "Vertical grey line: resource flow")
+      labs(caption = caption_resource_flow)
 ```
 
 ```{r}
@@ -94,14 +94,14 @@ p_boxplots = ds_metaecosystems %>%
       geom_boxplot() +
       labs(
         x = "Day",
-        y = "Meta-ecosystem Total Bioarea (µm²)",
+        y = name_y_axis_total_bioarea,
         color = '',
         fill = ''
       ) +
       scale_fill_manual(
         values = c(colour_MM, colour_SL),
-        labels = c("Medium-Medium",
-                   "Small-Large")
+        labels = c(name_MM,
+                   name_SL)
       ) +
       theme_bw() +
       theme(
@@ -146,7 +146,7 @@ p_boxplots = ds_metaecosystems %>%
         color = "grey",
         size = 0.7
       ) +
-      labs(caption = "Vertical grey line: resource flow")
+      labs(caption = caption_resource_flow)
 
 p_boxplots
 ```
@@ -230,14 +230,14 @@ time_point_1 = filtered_data %>%
           chosen_time_point
         ),
         x = "",
-        y = "Meta-ecosystem Total Bioarea (µm²)",
+        y = name_y_axis_total_bioarea,
         color = '',
         fill = ''
       ) +
       scale_fill_manual(
         values = c(colour_MM, colour_SL),
-        labels = c("Medium-Medium",
-                   "Small-Large")
+        labels = c(name_MM,
+                   name_SL)
       ) +
       theme_bw() +
       theme(
@@ -321,14 +321,14 @@ time_point_2 = filtered_data %>%
           chosen_time_point
         ),
         x = "",
-        y = "Meta-ecosystem Total Bioarea (µm²)",
+        y = name_y_axis_total_bioarea,
         color = '',
         fill = ''
       ) +
       scale_fill_manual(
         values = c(colour_MM, colour_SL),
-        labels = c("Medium-Medium",
-                   "Small-Large")
+        labels = c(name_MM,
+                   name_SL)
       ) +
       theme_bw() +
       theme(
@@ -412,14 +412,14 @@ time_point_3 = filtered_data %>%
           chosen_time_point
         ),
         x = "",
-        y = "Meta-ecosystem Total Bioarea (µm²)",
+        y = name_y_axis_total_bioarea,
         color = '',
         fill = ''
       ) +
       scale_fill_manual(
         values = c(colour_MM, colour_SL),
-        labels = c("Medium-Medium",
-                   "Small-Large")
+        labels = c(name_MM,
+                   name_SL)
       ) +
       theme_bw() +
       theme(
@@ -503,14 +503,14 @@ time_point_4 = filtered_data %>%
           chosen_time_point
         ),
         x = "",
-        y = "Meta-ecosystem Total Bioarea (µm²)",
+        y = name_y_axis_total_bioarea,
         color = '',
         fill = ''
       ) +
       scale_fill_manual(
         values = c(colour_MM, colour_SL),
-        labels = c("Medium-Medium",
-                   "Small-Large")
+        labels = c(name_MM,
+                   name_SL)
       ) +
       theme_bw() +
       theme(
@@ -594,14 +594,14 @@ time_point_5 = filtered_data %>%
           chosen_time_point
         ),
         x = "",
-        y = "Meta-ecosystem Total Bioarea (µm²)",
+        y = name_y_axis_total_bioarea,
         color = '',
         fill = ''
       ) +
       scale_fill_manual(
         values = c(colour_MM, colour_SL),
-        labels = c("Medium-Medium",
-                   "Small-Large")
+        labels = c(name_MM,
+                   name_SL)
       ) +
       theme_bw() +
       theme(
@@ -685,14 +685,14 @@ time_point_6 = filtered_data %>%
           chosen_time_point
         ),
         x = "",
-        y = "Meta-ecosystem Total Bioarea (µm²)",
+        y = name_y_axis_total_bioarea,
         color = '',
         fill = ''
       ) +
       scale_fill_manual(
         values = c(colour_MM, colour_SL),
-        labels = c("Medium-Medium",
-                   "Small-Large")
+        labels = c(name_MM,
+                   name_SL)
       ) +
       theme_bw() +
       theme(
@@ -776,14 +776,14 @@ time_point_7 = filtered_data %>%
           chosen_time_point
         ),
         x = "",
-        y = "Meta-ecosystem Total Bioarea (µm²)",
+        y = name_y_axis_total_bioarea,
         color = '',
         fill = ''
       ) +
       scale_fill_manual(
         values = c(colour_MM, colour_SL),
-        labels = c("Medium-Medium",
-                   "Small-Large")
+        labels = c(name_MM,
+                   name_SL)
       ) +
       theme_bw() +
       theme(

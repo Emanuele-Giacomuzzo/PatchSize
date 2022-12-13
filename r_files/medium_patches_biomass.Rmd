@@ -27,7 +27,7 @@ ds_patches %>%
         x = "Day",
         y = "Patch Bioarea (µm²/μl)",
         linetype = "",
-        caption = "Vertical grey line: resource flow"
+        caption = caption_resource_flow
       ) +
       theme_bw() +
       theme(
@@ -37,7 +37,7 @@ ds_patches %>%
       ) +
        scale_linetype_discrete(
          labels = c(
-           "Medium isolated",
+           name_M_isolated,
            "Medium connected to medium"
          )
        )  +
@@ -97,7 +97,7 @@ ds_patches %>%
         x = "Day",
         y = "Patch Bioarea (µm²/μl)",
         fill = "",
-        caption = "Vertical grey line: resource flow"
+        caption = caption_resource_flow
       ) +
       theme_bw() +
       theme(
@@ -108,7 +108,7 @@ ds_patches %>%
       scale_fill_manual(
         values = c(colour_isolated, colour_different_size, colour_same_size),
         labels = c(
-          "Medium isolated",
+          name_M_isolated,
           "Medium connected to medium"
         )
       ) +

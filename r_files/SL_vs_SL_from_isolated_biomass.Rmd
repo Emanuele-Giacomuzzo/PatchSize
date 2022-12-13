@@ -30,13 +30,13 @@ ds_metaecosystems %>%
       geom_line () +
       labs(
         x = "Day",
-        y = "Meta-ecosystem Total Bioarea (µm²)",
+        y = name_y_axis_total_bioarea,
         fill = "System nr",
         color = "System nr",
         linetype = ""
       ) +
-       scale_linetype_discrete(labels = c("Small-Large",
-                                          "Small-Large from isolated")) +
+       scale_linetype_discrete(labels = c(name_SL,
+                                          name_SL_from_isolated)) +
       theme_bw() +
       theme(
         panel.grid.major = element_blank(),
@@ -80,7 +80,7 @@ ds_metaecosystems %>%
         color = "grey",
         size = 0.7
       ) +
-      labs(caption = "Vertical grey line: resource flow")
+      labs(caption = caption_resource_flow)
 ```
 
 ```{r S_L_from_isolated-single-boxplots}
@@ -136,12 +136,12 @@ p_boxplots = ds_metaecosystems %>%
   ) +
   labs(
     x = "Day",
-    y = "Regional bioarea (µm²)",
+    y = name_y_axis_total_bioarea,
     fill = "",
     caption = "Vertical grey line: resouce flow"
   ) +
   scale_fill_manual(values = c(colour_SL, colour_isolated),
-                    labels = c("Small-Large", "Small-Large from isolated")) +
+                    labels = c(name_SL, name_SL_from_isolated)) +
   theme_bw() +
   theme(
     panel.grid.major = element_blank(),
@@ -196,22 +196,13 @@ for (combination_nr in 1:n_subsamples){
            time_point >= first_time_point_model,
            time_point <= last_time_point_model)
   
-  # filtered_ds %>%
-  #   ggplot(
-  #     aes(
-  #       x = day,
-  #       y = total_metaecosystem_bioarea,
-  #       group = interaction(day, metaecosystem_type),
-  #       fill = metaecosystem_type
-  #     )
-  #   ) +
-  #   geom_boxplot()
-  
   full_model = lmer(
     total_metaecosystem_bioarea ~
       day +
+      baseline_bioarea +
+      baseline_bioarea : day + 
       metaecosystem_type +
-      day:metaecosystem_type +
+      metaecosystem_type : day+
       (day | system_nr),
     data = filtered_ds,
     REML = FALSE,
@@ -221,6 +212,8 @@ for (combination_nr in 1:n_subsamples){
   null_model = lmer(
     total_metaecosystem_bioarea ~
       day +
+      baseline_bioarea +
+      baseline_bioarea : day + 
       (day | system_nr),
     data = filtered_ds,
     REML = FALSE,

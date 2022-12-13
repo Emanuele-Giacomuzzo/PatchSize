@@ -40,9 +40,9 @@ for(time_point_input in 0:7) {
       ) +
       scale_color_manual(
         values = c(colour_large, colour_medium, colour_small),
-        labels = c("Large isolated",
-                   "Medium isolated",
-                   "Small isolated")
+        labels = c(name_L_isolated,
+                   name_M_isolated,
+                   name_S_isolated)
       ) +
       theme_bw() +
       theme(
@@ -94,9 +94,9 @@ for(time_point_input in 0:7) {
       ) +
       scale_color_manual(
         values = c(colour_large, colour_medium, colour_small),
-        labels = c("Large isolated",
-                   "Medium isolated",
-                   "Small isolated")
+        labels = c(name_L_isolated,
+                   name_M_isolated,
+                   name_S_isolated)
       ) +
       labs(
         title = paste0("Day = ", (time_point_input*4)),

@@ -102,10 +102,18 @@ library("glmulti")
 library("metafor")
 library("job")
 library("scales")
+library("Rmisc")
+library("ggpubr")
+
 
 conflict_prefer("load", "base")
+conflict_prefer("here", "here")
 conflict_prefer("filter", "dplyr")
 conflict_prefer("select", "dplyr")
+conflict_prefer("mutate", "dplyr")
+conflict_prefer("arrange", "dplyr")
+conflict_prefer("summarise", "dplyr")
+conflict_prefer("rename", "dplyr")
 
 source(here("r_files", "functions", "calculate.hedges_d.R"))
 ```
@@ -131,7 +139,8 @@ protist_species = c("Ble", "Cep", "Col", "Eug", "Eup", "Lox", "Pau", "Pca", "Spi
 n_protist_species = length(protist_species)
 n_metaecosystems = 55
 n_cultures = 110
-culture_info = read.csv(here("data", "PatchSizePilot_culture_info.csv"), header = TRUE); eco_metaeco_types = unique(culture_info$eco_metaeco_type)
+culture_info = read.csv(here("data", "PatchSizePilot_culture_info.csv"), header = TRUE)
+eco_metaeco_types = unique(culture_info$eco_metaeco_type)
 
 first_time_point_model = 2
 last_time_point_model = 7
@@ -141,24 +150,44 @@ publication_height = 12
 publication_unit = "cm"
 presentation_size = 15
 
-name_MM = "Medium-Medium"
-name_MM_from_isolated = "Medium-Medium from isolated"
-name_SL_from_isolated = "Small-Large from isolated"
-name_SL = "Small-Large"
+name_SS = "Small-Small connected"
+name_MM = "Medium-Medium connected"
+name_LL = "Large-Large connected"
+name_SL = "Small-Large connected"
+name_MM_from_isolated = "Medium-Medium isolated"
+name_SL_from_isolated = "Small-Large isolated"
 
+name_S_isolated = "Small isolated"
+name_S_connected_to_S = "Small connected to small"
+name_S_connected_to_L = "Small connected to large"
+name_M_isolated = "Medium isolated"
+name_M_connected_to_M = "Medium connected to medium"
+name_L_isolated = "Large isolated"
+name_L_connected_to_L = "Large connected to large"
+name_L_connected_to_S = "Large connected to small"
+
+name_y_axis_bioarea_density = "Bioarea Density (µm²/ml)"
+name_y_axis_total_bioarea = "Total Bioarea (µm²)"
+name_y_axis_alpha_diversity = "Alpha Diversity (Shannon Index)"
 name_y_axis_beta_diversity = "Beta Diversity (Bray-Curtis Index)"
 name_y_axis_gamma_diversity = "Gamma Diversity (Shannon Index)"
 
+name_y_axis_size_class_effect_size = 'Abundance Effect Size (Hedge\'s d)'
+
+caption_resource_flow = "Vertical grey line: resource flow"
+
 #Choose colours. 
 
-colour_isolated = "#d9cbbe"
+colour_isolated = "#d9d9d9"
 colour_different_size = "#4992c6"
 colour_same_size = "#bc9960"
 colour_small = "#ffeda0"
 colour_medium = "#feb24c"
 colour_large = "#f03b20"
 colour_MM = "#dd7f42" #Colour of the Medium-Medium meta-ecosystem
+colour_MM_from_isolated = "#ffeda0"
 colour_SL = "#438cbe" #Colour of the Small-Large meta-ecosystem 
+colour_SL_from_isolated = "#9ecae1"
 ```
 
 # {.tabset}
@@ -195,7 +224,7 @@ colour_SL = "#438cbe" #Colour of the Small-Large meta-ecosystem
 
 ### All
 
-```{r child = here("r_files", "biomass_metaeco_all.Rmd"), eval = include_non_clean_scripts}
+```{r child = here("r_files", "all_metaecos_biomass.Rmd")}
 ```
 
 ### Equally sized {.tabset .tabset-pills}
@@ -207,6 +236,17 @@ colour_SL = "#438cbe" #Colour of the Small-Large meta-ecosystem
 ```
 
 ```{r child = here("r_files", "equally_sized_metaecos_gamma_diversity.Rmd")}
+```
+
+### MM (and isolated) vs SL (and isolated) {.tabset .tabset-pills}
+
+```{r child = here("r_files", "MM_all_vs_SL_all_biomass.Rmd")}
+```
+
+```{r child = here("r_files", "MM_all_vs_SL_all_beta_diversity.Rmd")}
+```
+
+```{r child = here("r_files", "MM_all_vs_SL_all_gamma_diversity.Rmd")}
 ```
 
 ### MM vs SL {.tabset .tabset-pills}
@@ -263,6 +303,17 @@ colour_SL = "#438cbe" #Colour of the Small-Large meta-ecosystem
 ```
 
 ```{r child = here("r_files", "MM_from_isolated_vs_SL_from_isolated_species_total.Rmd")}
+```
+
+### SL {.tabset .tabset-pills}
+
+```{r child = here("r_files", "SL_biomass.Rmd")}
+```
+
+```{r child = here("r_files", "SL_alpha_diversity.Rmd")}
+```
+
+```{r child = here("r_files", "SL_species_densities.Rmd")}
 ```
 
 ## Patches {.tabset .tabset-dropdown}
@@ -344,7 +395,30 @@ colour_SL = "#438cbe" #Colour of the Small-Large meta-ecosystem
 
 ## Figures
 
-```{r child = here("r_files", "figures_save.Rmd"), eval = save_figures}
+```{r}
+p_local_biomass_SL
+p_local_alpha_SL
+#p_local_body_size_distribution
+ggarrange(p_local_Ble_SL,
+          p_local_Cep_SL,
+          p_local_Col_SL,
+          p_local_Eup_SL,
+          common.legend = TRUE)
+
+ggarrange(p_local_Pau_SL,
+          p_local_Pca_SL,
+          p_local_Spi_SL,
+          p_local_Spi_te_SL,
+          common.legend = TRUE)
+
+ggarrange(p_local_Lox_SL,
+          p_local_Eug_SL,
+          p_local_Tet_SL,
+          common.legend = TRUE)
+
+p_all_metaecos_biomass
+p_all_metaecos_beta
+p_all_metaecos_gamma
 ```
 
 ## Running time

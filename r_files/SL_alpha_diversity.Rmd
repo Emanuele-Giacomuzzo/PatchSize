@@ -1,0 +1,88 @@
+---
+title: "SL - Shannon"
+output: html_document
+date: "2022-12-13"
+editor_options: 
+  chunk_output_type: console
+---
+
+#### Alpha Diversity {.tabset .tabset-pills}
+
+```{r}
+p_local_alpha_SL = ds_patches_effect_size %>%
+  filter(
+    !time_point == 0,
+    disturbance == disturbance_input,
+    eco_metaeco_type %in% c("S (S_L)", "L (S_L)")
+  ) %>%
+  ggplot(aes(x = day,
+             y = shannon_d,
+             color = eco_metaeco_type)) +
+  geom_point(position = position_dodge(0.5)) +
+  geom_line(position = position_dodge(0.5)) +
+  geom_errorbar(
+    aes(ymin = shannon_d_lower,
+        ymax = shannon_d_upper),
+    width = .2,
+    position = position_dodge(0.5)
+  ) +
+  labs(
+    x = "Day",
+    y = name_y_axis_alpha_diversity,
+    color = "",
+    caption = caption_resource_flow
+  ) +
+  scale_color_discrete(labels = c("Large patch",
+                                  "Small patch")) +
+  scale_x_continuous(breaks = unique(ds_patches_effect_size$day)) +
+  theme_bw() +
+  theme(
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    legend.position = "bottom"
+  ) +
+  geom_vline(
+    xintercept = resource_flow_days[1] + 0.7,
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_vline(
+    xintercept = resource_flow_days[2] + 0.7,
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_vline(
+    xintercept = resource_flow_days[3] + 0.7,
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_vline(
+    xintercept = resource_flow_days[4] + 0.7,
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_vline(
+    xintercept = resource_flow_days[5] + 0.7,
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_vline(
+    xintercept = resource_flow_days[6] + 0.7,
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_hline(
+    yintercept = 0,
+    linetype = "dotted",
+    color = "black",
+    size = 0.7
+  )
+
+p_local_alpha_SL
+```

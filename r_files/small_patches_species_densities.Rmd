@@ -34,7 +34,7 @@ ds_patches %>%
         x = "Day",
         y = "Ble Density (indiv/ml)",
         fill = "",
-        caption = "Vertical grey line: resource flow"
+        caption = caption_resource_flow
       ) +
       theme_bw() +
       theme(
@@ -45,9 +45,9 @@ ds_patches %>%
       scale_fill_manual(
         values = c(colour_isolated, colour_different_size, colour_same_size),
         labels = c(
-          "Small isolated",
-          "Small connected to large",
-          "Small connected to small"
+          name_S_isolated,
+          name_S_connected_to_L,
+          name_S_connected_to_S
         )
       )  +
       scale_x_continuous(breaks = unique(ds_patches$day)) +
@@ -113,8 +113,8 @@ p_effect_size = ds_patches_effect_size %>%
         color = ""
       ) +
        scale_color_discrete(
-         labels = c("Small connected to large",
-                    "Small connnected to small")
+         labels = c(name_S_connected_to_L,
+                    name_S_connected_to_S)
        ) +
       scale_x_continuous(breaks = unique(ds_patches_effect_size$day)) +
       theme_bw() +
@@ -238,7 +238,7 @@ ds_patches %>%
         x = "Day",
         y = "Cep Density (indiv/ml)",
         fill = "",
-        caption = "Vertical grey line: resource flow"
+        caption = caption_resource_flow
       ) +
       theme_bw() +
       theme(
@@ -249,9 +249,9 @@ ds_patches %>%
       scale_fill_manual(
         values = c(colour_isolated, colour_different_size, colour_same_size),
         labels = c(
-          "Small isolated",
-          "Small connected to large",
-          "Small connected to small"
+          name_S_isolated,
+          name_S_connected_to_L,
+          name_S_connected_to_S
         )
       )  +
       scale_x_continuous(breaks = unique(ds_patches$day)) +
@@ -317,8 +317,8 @@ p_effect_size = ds_patches_effect_size %>%
         color = ""
       ) +
        scale_color_discrete(
-         labels = c("Small connected to large",
-                    "Small connnected to small")
+         labels = c(name_S_connected_to_L,
+                    name_S_connected_to_S)
        ) +
       scale_x_continuous(breaks = unique(ds_patches_effect_size$day)) +
       theme_bw() +
@@ -442,7 +442,7 @@ ds_patches %>%
         x = "Day",
         y = "Col Density (indiv/ml)",
         fill = "",
-        caption = "Vertical grey line: resource flow"
+        caption = caption_resource_flow
       ) +
       theme_bw() +
       theme(
@@ -453,9 +453,9 @@ ds_patches %>%
       scale_fill_manual(
         values = c(colour_isolated, colour_different_size, colour_same_size),
         labels = c(
-          "Small isolated",
-          "Small connected to large",
-          "Small connected to small"
+          name_S_isolated,
+          name_S_connected_to_L,
+          name_S_connected_to_S
         )
       )  +
       scale_x_continuous(breaks = unique(ds_patches$day)) +
@@ -521,8 +521,8 @@ p_effect_size = ds_patches_effect_size %>%
         color = ""
       ) +
        scale_color_discrete(
-         labels = c("Small connected to large",
-                    "Small connnected to small")
+         labels = c(name_S_connected_to_L,
+                    name_S_connected_to_S)
        ) +
       scale_x_continuous(breaks = unique(ds_patches_effect_size$day)) +
       theme_bw() +
@@ -646,7 +646,7 @@ ds_patches %>%
         x = "Day",
         y = "Eug Density (indiv/ml)",
         fill = "",
-        caption = "Vertical grey line: resource flow"
+        caption = caption_resource_flow
       ) +
       theme_bw() +
       theme(
@@ -657,9 +657,9 @@ ds_patches %>%
       scale_fill_manual(
         values = c(colour_isolated, colour_different_size, colour_same_size),
         labels = c(
-          "Small isolated",
-          "Small connected to large",
-          "Small connected to small"
+          name_S_isolated,
+          name_S_connected_to_L,
+          name_S_connected_to_S
         )
       )  +
       scale_x_continuous(breaks = unique(ds_patches$day)) +
@@ -725,8 +725,8 @@ p_effect_size = ds_patches_effect_size %>%
         color = ""
       ) +
        scale_color_discrete(
-         labels = c("Small connected to large",
-                    "Small connnected to small")
+         labels = c(name_S_connected_to_L,
+                    name_S_connected_to_S)
        ) +
       scale_x_continuous(breaks = unique(ds_patches_effect_size$day)) +
       theme_bw() +
@@ -850,7 +850,7 @@ ds_patches %>%
         x = "Day",
         y = "Eup Density (indiv/ml)",
         fill = "",
-        caption = "Vertical grey line: resource flow"
+        caption = caption_resource_flow
       ) +
       theme_bw() +
       theme(
@@ -861,9 +861,9 @@ ds_patches %>%
       scale_fill_manual(
         values = c(colour_isolated, colour_different_size, colour_same_size),
         labels = c(
-          "Small isolated",
-          "Small connected to large",
-          "Small connected to small"
+          name_S_isolated,
+          name_S_connected_to_L,
+          name_S_connected_to_S
         )
       )  +
       scale_x_continuous(breaks = unique(ds_patches$day)) +
@@ -929,8 +929,8 @@ p_effect_size = ds_patches_effect_size %>%
         color = ""
       ) +
        scale_color_discrete(
-         labels = c("Small connected to large",
-                    "Small connnected to small")
+         labels = c(name_S_connected_to_L,
+                    name_S_connected_to_S)
        ) +
       scale_x_continuous(breaks = unique(ds_patches_effect_size$day)) +
       theme_bw() +
@@ -1054,7 +1054,7 @@ ds_patches %>%
         x = "Day",
         y = "Lox Density (indiv/ml)",
         fill = "",
-        caption = "Vertical grey line: resource flow"
+        caption = caption_resource_flow
       ) +
       theme_bw() +
       theme(
@@ -1065,9 +1065,9 @@ ds_patches %>%
       scale_fill_manual(
         values = c(colour_isolated, colour_different_size, colour_same_size),
         labels = c(
-          "Small isolated",
-          "Small connected to large",
-          "Small connected to small"
+          name_S_isolated,
+          name_S_connected_to_L,
+          name_S_connected_to_S
         )
       )  +
       scale_x_continuous(breaks = unique(ds_patches$day)) +
@@ -1133,8 +1133,8 @@ p_effect_size = ds_patches_effect_size %>%
         color = ""
       ) +
        scale_color_discrete(
-         labels = c("Small connected to large",
-                    "Small connnected to small")
+         labels = c(name_S_connected_to_L,
+                    name_S_connected_to_S)
        ) +
       scale_x_continuous(breaks = unique(ds_patches_effect_size$day)) +
       theme_bw() +
@@ -1258,7 +1258,7 @@ ds_patches %>%
         x = "Day",
         y = "Pau Density (indiv/ml)",
         fill = "",
-        caption = "Vertical grey line: resource flow"
+        caption = caption_resource_flow
       ) +
       theme_bw() +
       theme(
@@ -1269,9 +1269,9 @@ ds_patches %>%
       scale_fill_manual(
         values = c(colour_isolated, colour_different_size, colour_same_size),
         labels = c(
-          "Small isolated",
-          "Small connected to large",
-          "Small connected to small"
+          name_S_isolated,
+          name_S_connected_to_L,
+          name_S_connected_to_S
         )
       )  +
       scale_x_continuous(breaks = unique(ds_patches$day)) +
@@ -1337,8 +1337,8 @@ p_effect_size = ds_patches_effect_size %>%
         color = ""
       ) +
        scale_color_discrete(
-         labels = c("Small connected to large",
-                    "Small connnected to small")
+         labels = c(name_S_connected_to_L,
+                    name_S_connected_to_S)
        ) +
       scale_x_continuous(breaks = unique(ds_patches_effect_size$day)) +
       theme_bw() +
@@ -1462,7 +1462,7 @@ ds_patches %>%
         x = "Day",
         y = "Pca Density (indiv/ml)",
         fill = "",
-        caption = "Vertical grey line: resource flow"
+        caption = caption_resource_flow
       ) +
       theme_bw() +
       theme(
@@ -1473,9 +1473,9 @@ ds_patches %>%
       scale_fill_manual(
         values = c(colour_isolated, colour_different_size, colour_same_size),
         labels = c(
-          "Small isolated",
-          "Small connected to large",
-          "Small connected to small"
+          name_S_isolated,
+          name_S_connected_to_L,
+          name_S_connected_to_S
         )
       )  +
       scale_x_continuous(breaks = unique(ds_patches$day)) +
@@ -1541,8 +1541,8 @@ p_effect_size = ds_patches_effect_size %>%
         color = ""
       ) +
        scale_color_discrete(
-         labels = c("Small connected to large",
-                    "Small connnected to small")
+         labels = c(name_S_connected_to_L,
+                    name_S_connected_to_S)
        ) +
       scale_x_continuous(breaks = unique(ds_patches_effect_size$day)) +
       theme_bw() +
@@ -1666,7 +1666,7 @@ ds_patches %>%
         x = "Day",
         y = "Spi Density (indiv/ml)",
         fill = "",
-        caption = "Vertical grey line: resource flow"
+        caption = caption_resource_flow
       ) +
       theme_bw() +
       theme(
@@ -1677,9 +1677,9 @@ ds_patches %>%
       scale_fill_manual(
         values = c(colour_isolated, colour_different_size, colour_same_size),
         labels = c(
-          "Small isolated",
-          "Small connected to large",
-          "Small connected to small"
+          name_S_isolated,
+          name_S_connected_to_L,
+          name_S_connected_to_S
         )
       )  +
       scale_x_continuous(breaks = unique(ds_patches$day)) +
@@ -1745,8 +1745,8 @@ p_effect_size = ds_patches_effect_size %>%
         color = ""
       ) +
        scale_color_discrete(
-         labels = c("Small connected to large",
-                    "Small connnected to small")
+         labels = c(name_S_connected_to_L,
+                    name_S_connected_to_S)
        ) +
       scale_x_continuous(breaks = unique(ds_patches_effect_size$day)) +
       theme_bw() +
@@ -1870,7 +1870,7 @@ ds_patches %>%
         x = "Day",
         y = "Spi_te Density (indiv/ml)",
         fill = "",
-        caption = "Vertical grey line: resource flow"
+        caption = caption_resource_flow
       ) +
       theme_bw() +
       theme(
@@ -1881,9 +1881,9 @@ ds_patches %>%
       scale_fill_manual(
         values = c(colour_isolated, colour_different_size, colour_same_size),
         labels = c(
-          "Small isolated",
-          "Small connected to large",
-          "Small connected to small"
+          name_S_isolated,
+          name_S_connected_to_L,
+          name_S_connected_to_S
         )
       )  +
       scale_x_continuous(breaks = unique(ds_patches$day)) +
@@ -1949,8 +1949,8 @@ p_effect_size = ds_patches_effect_size %>%
         color = ""
       ) +
        scale_color_discrete(
-         labels = c("Small connected to large",
-                    "Small connnected to small")
+         labels = c(name_S_connected_to_L,
+                    name_S_connected_to_S)
        ) +
       scale_x_continuous(breaks = unique(ds_patches_effect_size$day)) +
       theme_bw() +
@@ -2074,7 +2074,7 @@ ds_patches %>%
         x = "Day",
         y = "Tet Density (indiv/ml)",
         fill = "",
-        caption = "Vertical grey line: resource flow"
+        caption = caption_resource_flow
       ) +
       theme_bw() +
       theme(
@@ -2085,9 +2085,9 @@ ds_patches %>%
       scale_fill_manual(
         values = c(colour_isolated, colour_different_size, colour_same_size),
         labels = c(
-          "Small isolated",
-          "Small connected to large",
-          "Small connected to small"
+          name_S_isolated,
+          name_S_connected_to_L,
+          name_S_connected_to_S
         )
       )  +
       scale_x_continuous(breaks = unique(ds_patches$day)) +
@@ -2153,8 +2153,8 @@ p_effect_size = ds_patches_effect_size %>%
         color = ""
       ) +
        scale_color_discrete(
-         labels = c("Small connected to large",
-                    "Small connnected to small")
+         labels = c(name_S_connected_to_L,
+                    name_S_connected_to_S)
        ) +
       scale_x_continuous(breaks = unique(ds_patches_effect_size$day)) +
       theme_bw() +

@@ -31,7 +31,7 @@ ds_metaecosystems %>%
     fill = "System nr",
     color = "System nr",
     linetype = "",
-    caption = "Vertical grey line: resource flow"
+    caption = caption_resource_flow
   ) +
   scale_linetype_discrete(labels = c(name_MM,
                                      name_SL)) +
@@ -132,7 +132,7 @@ p_boxplots = ds_metaecosystems %>%
     y = name_y_axis_beta_diversity,
     color = '',
     fill = '',
-    caption = "Vertical grey line: resource flow"
+    caption = caption_resource_flow
   ) +
   scale_fill_manual(
     values = c(colour_MM, colour_SL),
@@ -151,17 +151,20 @@ p_boxplots
 
 ```{r}
 filtered_data = ds_metaecosystems %>%
-    filter(time_point >= 2,
+    filter(time_point >= first_time_point_model,
+           time_point <= last_time_point_model,
            disturbance == disturbance_input,
            metaecosystem_type %in% c("M_M", "S_L"))
 ```
 
-```{r}
+```{r eval = FALSE}
 full_model = lmer(
   bray_curtis ~
     day +
-    metaecosystem_type +
-    metaecosystem_type : day +
+     metaecosystem_type +
+     metaecosystem_type : day +
+     baseline_bray_curtis +
+     baseline_bray_curtis : day +
     (day | system_nr),
   data = filtered_data,
   REML = FALSE,
@@ -175,6 +178,8 @@ qqnorm(resid(full_model))
 null_model = lmer(
   bray_curtis ~
     day +
+    baseline_bray_curtis +
+    baseline_bray_curtis : day +
     (day | system_nr),
   data = filtered_data,
   REML = FALSE,
@@ -196,7 +201,7 @@ p_value = anova$`Pr(>Chisq)`[2]
 p_value = round(p_value, digits = 3)
 ```
 
-```{r}
+```{r eval = FALSE}
 MM_SL_beta_diversity = p_boxplots + 
   labs(title = paste0("ΔAIC = ", deltaAIC , ", p = ", p_value))
 

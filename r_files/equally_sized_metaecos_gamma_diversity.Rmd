@@ -61,13 +61,13 @@ p_boxplots = ds_metaecosystems %>%
     y = "Gamma diversity (Shannon Index)",
     color = '',
     fill = '',
-    caption = "Vertical grey line: resource flow"
+    caption = caption_resource_flow
   ) +
    scale_fill_manual(
      values = c(colour_small, colour_medium, colour_large),
-     labels = c("Small-Small",
-                "Medium-Medium",
-                "Large-Large")
+     labels = c(name_SS,
+                name_MM,
+                name_LL)
    ) +
   theme_bw() +
   theme(

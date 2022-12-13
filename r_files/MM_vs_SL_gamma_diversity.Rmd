@@ -32,10 +32,10 @@ ds_metaecosystems %>%
     fill = "System nr",
     color = "System nr",
     linetype = "",
-    caption = "Vertical grey line: resource flow"
+    caption = caption_resource_flow
   ) +
-  scale_linetype_discrete(labels = c("Medium-Medium",
-                                     "Small-Large")) +
+  scale_linetype_discrete(labels = c(name_MM,
+                                     name_SL)) +
   theme_bw() +
   theme(
     panel.grid.major = element_blank(),
@@ -133,12 +133,12 @@ p_boxplots = ds_metaecosystems %>%
     y = "Gamma diversity (Shannon Index)",
     color = '',
     fill = '',
-    caption = "Vertical grey line: resource flow"
+    caption = caption_resource_flow
   ) +
   scale_fill_manual(
     values = c(colour_MM, colour_SL),
-    labels = c("Medium-Medium",
-               "Small-Large")
+    labels = c(name_MM,
+               name_SL)
   ) +
   theme_bw() +
   theme(

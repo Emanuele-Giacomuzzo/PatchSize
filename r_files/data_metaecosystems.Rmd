@@ -6,41 +6,15 @@ editor_options:
   chunk_output_type: console
 ---
 
-### Meta-ecosystem biomass (`ds_metaecosystems`)
+### Meta-ecosystems (`ds_metaecosystems`)
 
 -   Each row is a meta-ecosystem.
 
--   It contains also "fake" meta-ecosystems which I created from isolated patches (`metecosystem type = S_L_from_isolated`).
+-   It contains also "fake" meta-ecosystems which I created from isolated patches (`metecosystem type = S_L_from_isolated` & `metecosystem type = M_M_from_isolated`).
 
-```{r create-ds_metaecosystems}
+```{r}
 
-#Create ds_metaecosystems
-
-ds_metaecosystems = ds_patches %>%
-  filter(metaecosystem == "yes",
-         !system_nr %in% metaecosystems_to_take_off) %>%
-  group_by(system_nr, 
-           time_point,
-           disturbance,
-           metaecosystem_type,
-           day) %>%
-  summarise(total_metaecosystem_bioarea = sum(bioarea_tot),
-              total_metaecosystem_Ble = sum(Ble_tot),
-              total_metaecosystem_Cep = sum(Cep_tot),
-              total_metaecosystem_Col = sum(Col_tot),
-              total_metaecosystem_Eug = sum(Eug_tot),
-              total_metaecosystem_Eup = sum(Eup_tot),
-              total_metaecosystem_Lox = sum(Lox_tot),
-              total_metaecosystem_Pau = sum(Pau_tot),
-              total_metaecosystem_Pca = sum(Pca_tot),
-              total_metaecosystem_Spi = sum(Spi_tot),
-              total_metaecosystem_Spi_te = sum(Spi_te_tot),
-              total_metaecosystem_Tet = sum(Tet_tot))
-```
-
-```{r add-SL_from_isolated}
-
-### Add "Small-Large from isolated" to the metaecosystem dataset
+### Create a data frame with all the experimental meta-ecosystems and all the possible meta-ecosystems from isolated
 
 culture_ID_of_isolated_S_low = ds_patches %>%
   filter(eco_metaeco_type == "S",
@@ -66,129 +40,6 @@ culture_ID_of_isolated_L_high = ds_patches %>%
   pull(culture_ID) %>%
   unique()
 
-combinations_S_and_L_low = crossing(culture_ID_of_isolated_S_low,
-                                    culture_ID_of_isolated_L_low) %>%
-                            mutate(disturbance = "low") %>%
-                            rename(ID_S = culture_ID_of_isolated_S_low,
-                                   ID_L = culture_ID_of_isolated_L_low)
-
-combinations_S_and_L_high = crossing(culture_ID_of_isolated_S_high,
-                                    culture_ID_of_isolated_L_high) %>%
-                            mutate(disturbance = "high") %>%
-                            rename(ID_S = culture_ID_of_isolated_S_high,
-                                   ID_L = culture_ID_of_isolated_L_high)
-
-combinations_of_S_and_L = rbind(combinations_S_and_L_low, 
-                                combinations_S_and_L_high)
-
-number_of_combinations_of_S_and_L = nrow(combinations_of_S_and_L)
-
-SL_from_isolated_single_rows = NULL
-for (combination in 1:number_of_combinations_of_S_and_L){
-  
-  current_system_nr = 1000 + combination
-  
-  SL_from_isolated_single_rows[[combination]] = ds_patches %>%
-    filter(culture_ID %in% combinations_of_S_and_L[combination,]) %>%
-    group_by(day, 
-             time_point) %>%
-    summarise(total_metaecosystem_bioarea = sum(bioarea_tot),
-              total_metaecosystem_Ble = sum(Ble_tot),
-              total_metaecosystem_Cep = sum(Cep_tot),
-              total_metaecosystem_Col = sum(Col_tot),
-              total_metaecosystem_Eug = sum(Eug_tot),
-              total_metaecosystem_Eup = sum(Eup_tot),
-              total_metaecosystem_Lox = sum(Lox_tot),
-              total_metaecosystem_Pau = sum(Pau_tot),
-              total_metaecosystem_Pca = sum(Pca_tot),
-              total_metaecosystem_Spi = sum(Spi_tot),
-              total_metaecosystem_Spi_te = sum(Spi_te_tot),
-              total_metaecosystem_Tet = sum(Tet_tot)) %>% #Add gamma & beta
-    mutate(system_nr = current_system_nr,
-           metaecosystem_type = "S_L_from_isolated",
-           disturbance = combinations_of_S_and_L[combination,]$disturbance)
-  
-  for (time_point_input in first_time_point:last_time_point){
-      
-    species_total_of_the_two_patches = ds_patches %>%
-      filter(culture_ID %in% combinations_of_S_and_L[combination,],
-             time_point == time_point_input) %>%
-      ungroup() %>%
-      select(Ble_tot:Tet_tot)
-    
-    #Beta diversity: Jaccard
-
-    jaccard_index = vegdist(species_total_of_the_two_patches, 
-                            method = "jaccard")
-    
-    #Beta diversity: Bray Curtis
-    
-    bray_curtis = vegdist(species_total_of_the_two_patches, 
-                          method = "bray")
-    
-    #Gamma diversity: Meta-ecosystem richness
-    
-    presence_absence_two_patches = ifelse(test = species_total_of_the_two_patches > 0,
-                                          yes = 1,
-                                          no = 0)
-    
-    summed_columns = colSums(presence_absence_two_patches)
-    
-    presence_absence_metaecosystem = ifelse(test = summed_columns > 0,
-                              yes = 1,
-                              no = 0)
-    
-    metaecosystem_richness = sum(presence_absence_metaecosystem)
-    
-    #Gamma diversity: Shannon
-    
-    species_total_of_the_two_patches = ds_patches %>%
-      filter(system_nr == system_nr_input,
-             time_point == time_point_input) %>%
-      ungroup() %>%
-      select(Ble_tot:Tet_tot) %>%
-      map_dbl(function(x) if(is.numeric(x)) sum(x) else NA)
-      
-    gamma_shannon = diversity(species_total_of_the_two_patches, 
-                              index = "shannon")
-    
-    #Add to dataset
-    
-    ds_metaecosystems$jaccard_index[
-      ds_metaecosystems$system_nr == current_system_nr &
-      ds_metaecosystems$time_point == time_point_input] = 
-      jaccard_index
-    
-    ds_metaecosystems$bray_curtis[
-      ds_metaecosystems$system_nr == current_system_nr &
-      ds_metaecosystems$time_point == time_point_input] = 
-      bray_curtis
-    
-    ds_metaecosystems$metaecosystem_richness[
-      ds_metaecosystems$system_nr == current_system_nr &
-      ds_metaecosystems$time_point == time_point_input] = 
-      metaecosystem_richness
-    
-    ds_metaecosystems$gamma_shannon[
-      ds_metaecosystems$system_nr == current_system_nr &
-      ds_metaecosystems$time_point == time_point_input] = 
-      gamma_shannon
-    
-    }
-  
-}
-
-SL_from_isolated = SL_from_isolated_single_rows %>%
-  bind_rows()
-
-ds_metaecosystems = rbind(ds_metaecosystems, 
-                          SL_from_isolated)
-```
-
-```{r add-MM_from_isolated}
-
-### Add "Medium-Medium from isolated" to the metaecosystem dataset
-
 culture_ID_of_isolated_M_low = ds_patches %>%
   filter(eco_metaeco_type == "M",
          disturbance == "low") %>%
@@ -201,41 +52,124 @@ culture_ID_of_isolated_M_high = ds_patches %>%
   pull(culture_ID) %>%
   unique()
 
+
+combinations_S_and_L_low = crossing(culture_ID_of_isolated_S_low,
+                                    culture_ID_of_isolated_L_low) %>%
+                            mutate(disturbance = "low",
+                                   metaecosystem_type = "S_L_from_isolated") %>%
+                            rename(ID_first_patch = culture_ID_of_isolated_S_low,
+                                   ID_second_patch = culture_ID_of_isolated_L_low)
+
+combinations_S_and_L_high = crossing(culture_ID_of_isolated_S_high,
+                                    culture_ID_of_isolated_L_high) %>%
+                            mutate(disturbance = "high",
+                                   metaecosystem_type = "S_L_from_isolated") %>%
+                            rename(ID_first_patch = culture_ID_of_isolated_S_high,
+                                   ID_second_patch = culture_ID_of_isolated_L_high)
+
 combinations_M_and_M_low = combn(unique(culture_ID_of_isolated_M_low,
                                         culture_ID_of_isolated_M_low),
                                  m = 2) %>%
                             t() %>%
                             as.data.frame() %>%
-                            mutate(disturbance = "low") %>%
-                            rename(first_M_ID = V1,
-                                 second_M_ID = V2)
+                            mutate(disturbance = "low",
+                                   metaecosystem_type = "M_M_from_isolated") %>%
+                            rename(ID_first_patch = V1,
+                                   ID_second_patch = V2)
 
 combinations_M_and_M_high = combn(unique(culture_ID_of_isolated_M_high,
                                          culture_ID_of_isolated_M_high),
                                   m = 2) %>%
                             t() %>%
                             as.data.frame() %>%
-                            mutate(disturbance = "high") %>%
-                            rename(first_M_ID = V1,
-                                   second_M_ID = V2)
-                            
+                            mutate(disturbance = "high",
+                                   metaecosystem_type = "M_M_from_isolated") %>%
+                            rename(ID_first_patch = V1,
+                                   ID_second_patch = V2)
 
-combinations_of_M_and_M = rbind(combinations_M_and_M_low, 
-                                combinations_M_and_M_high)
+ID_combinations_isolated = rbind(
+  combinations_S_and_L_low,
+  combinations_S_and_L_high,
+  combinations_M_and_M_low,
+  combinations_M_and_M_high
+) 
 
-number_of_combinations_of_M_and_M = nrow(combinations_of_M_and_M)
+ID_combinations_isolated = ID_combinations_isolated %>%
+  mutate(system_nr = 1001:(1000 + nrow(ID_combinations_isolated)))
 
-MM_from_isolated_single_rows = NULL
-for (combination in 1:number_of_combinations_of_M_and_M){
-  
-  
-  current_system_nr = 2000 + combination
-  
-  MM_from_isolated_single_rows[[combination]] = ds_patches %>%
-    filter(culture_ID %in% combinations_of_M_and_M[combination,]) %>%
-    group_by(disturbance, 
-             day, 
-             time_point) %>%
+ID_combinations_metaecos = read.csv(here("data", "ID_combinations_metaecos.csv"))
+
+ID_combinations = rbind(ID_combinations_isolated,
+                         ID_combinations_metaecos)
+
+number_of_combinations = nrow(ID_combinations)
+```
+
+```{r}
+
+#Compute meta-ecosystems 
+
+ds_metaecosystems_single_rows = NULL
+row_n = 0
+for (combination in 1:number_of_combinations){
+  for (time_point_input in first_time_point:last_time_point) {
+    
+    row_n = row_n + 1
+    
+    current_system_nr = ID_combinations[combination,]$system_nr
+    current_IDs = ID_combinations[combination,1:2]
+    current_disturbance = ID_combinations[combination,]$disturbance
+    current_metaeco_type = ID_combinations[combination,]$metaecosystem_type
+    current_day = sampling_days[time_point_input+1]
+    
+    if (current_system_nr %in% metaecosystems_to_take_off)
+      next
+    
+    species_density_of_the_two_patches = ds_patches %>%
+      filter(culture_ID %in% current_IDs,
+             time_point == time_point_input) %>%
+      ungroup() %>%
+      select(Ble:Tet)
+    
+    #Beta diversity: Jaccard
+
+    jaccard_index = vegdist(species_density_of_the_two_patches, 
+                            method = "jaccard") %>%
+                    as.numeric()
+    
+    #Beta diversity: Bray Curtis
+    
+    bray_curtis = vegdist(species_density_of_the_two_patches, 
+                          method = "bray") %>%
+                    as.numeric()
+    
+    #Gamma diversity: Meta-ecosystem richness
+    
+    presence_absence_two_patches = ifelse(test = species_density_of_the_two_patches > 0,
+                                          yes = 1,
+                                          no = 0)
+    
+    summed_columns = colSums(presence_absence_two_patches)
+    
+    presence_absence_metaecosystem = ifelse(test = summed_columns > 0,
+                              yes = 1,
+                              no = 0)
+    
+    metaecosystem_richness = sum(presence_absence_metaecosystem)
+    
+    #Gamma diversity: Shannon
+    
+    averaged_species_density_of_the_two_patches = species_density_of_the_two_patches %>%
+      map_dbl(function(x) if(is.numeric(x)) mean(x) else NA)
+      
+    gamma_shannon = diversity(averaged_species_density_of_the_two_patches, 
+                              index = "shannon")
+    
+    #Put everything together
+    
+    ds_metaecosystems_single_rows[[row_n]] = ds_patches %>%
+    filter(culture_ID %in% current_IDs,
+           time_point == time_point_input) %>%
     summarise(total_metaecosystem_bioarea = sum(bioarea_tot),
               total_metaecosystem_Ble = sum(Ble_tot),
               total_metaecosystem_Cep = sum(Cep_tot),
@@ -247,203 +181,25 @@ for (combination in 1:number_of_combinations_of_M_and_M){
               total_metaecosystem_Pca = sum(Pca_tot),
               total_metaecosystem_Spi = sum(Spi_tot),
               total_metaecosystem_Spi_te = sum(Spi_te_tot),
-              total_metaecosystem_Tet = sum(Tet_tot)) %>% #Add gamma & beta
+              total_metaecosystem_Tet = sum(Tet_tot)) %>% 
     mutate(system_nr = current_system_nr,
-           metaecosystem_type = "M_M_from_isolated")
-    
-    for (time_point_input in first_time_point:last_time_point){
-      
-    species_total_of_the_two_patches = ds_patches %>%
-      filter(culture_ID %in% combinations_of_M_and_M[combination,],
-             time_point == time_point_input) %>%
-      ungroup() %>%
-      select(Ble_tot:Tet_tot)
-    
-    #Beta diversity: Jaccard
-
-    jaccard_index = vegdist(species_total_of_the_two_patches, 
-                            method = "jaccard")
-    
-    #Beta diversity: Bray Curtis
-    
-    bray_curtis = vegdist(species_total_of_the_two_patches, 
-                          method = "bray")
-    
-    #Gamma diversity: Meta-ecosystem richness
-    
-    presence_absence_two_patches = ifelse(test = species_total_of_the_two_patches > 0,
-                                          yes = 1,
-                                          no = 0)
-    
-    summed_columns = colSums(presence_absence_two_patches)
-    
-    presence_absence_metaecosystem = ifelse(test = summed_columns > 0,
-                              yes = 1,
-                              no = 0)
-    
-    metaecosystem_richness = sum(presence_absence_metaecosystem)
-    
-    #Gamma diversity: Shannon
-    
-    species_total_of_the_two_patches = ds_patches %>%
-      filter(system_nr == system_nr_input,
-             time_point == time_point_input) %>%
-      ungroup() %>%
-      select(Ble_tot:Tet_tot) %>%
-      map_dbl(function(x) if(is.numeric(x)) sum(x) else NA)
-      
-    gamma_shannon = diversity(species_total_of_the_two_patches, 
-                              index = "shannon")
-    
-    #Add to dataset
-    
-    ds_metaecosystems$jaccard_index[
-      ds_metaecosystems$system_nr == current_system_nr &
-      ds_metaecosystems$time_point == time_point_input] = 
-      jaccard_index
-    
-    ds_metaecosystems$bray_curtis[
-      ds_metaecosystems$system_nr == current_system_nr &
-      ds_metaecosystems$time_point == time_point_input] = 
-      bray_curtis
-    
-    ds_metaecosystems$metaecosystem_richness[
-      ds_metaecosystems$system_nr == current_system_nr &
-      ds_metaecosystems$time_point == time_point_input] = 
-      metaecosystem_richness
-    
-    ds_metaecosystems$gamma_shannon[
-      ds_metaecosystems$system_nr == current_system_nr &
-      ds_metaecosystems$time_point == time_point_input] = 
-      gamma_shannon
-    
-    }
-}
-
-MM_from_isolated = MM_from_isolated_single_rows %>%
-  bind_rows()
-
-ds_metaecosystems = rbind(ds_metaecosystems, 
-                          MM_from_isolated)
-
-ds_metaecosystems %>%
-      filter (disturbance == disturbance_input,
-              metaecosystem_type %in% c("M_M", "M_M_from_isolated")) %>%
-      ggplot (
-        aes(
-          x = day,
-          y = total_metaecosystem_bioarea,
-          group = system_nr,
-          fill = system_nr,
-          color = system_nr,
-          linetype = metaecosystem_type
-        )
-      ) +
-      geom_line ()
-```
-
-```{r add-beta-and-gamma-diversity}
-
-#Calculate beta diversity & gamma diversity
-
-ds_metaecosystems = ds_metaecosystems %>%
-  mutate(jaccard_index = NA,
-         bray_curtis = NA,
-         metaecosystem_richness = NA)
-
-
-system_nr_SL_from_isolated = ds_metaecosystems %>%
-                                      ungroup() %>%
-                                      filter(metaecosystem_type == "S_L_from_isolated") %>%
-                                      select(system_nr) %>%
-                                      unique() %>%
-                                      pull()
-
-system_nr_MM_from_isolated = ds_metaecosystems %>%
-                                      ungroup() %>%
-                                      filter(metaecosystem_type == "M_M_from_isolated") %>%
-                                      select(system_nr) %>%
-                                      unique() %>%
-                                      pull()
-
-system_nr_metaecosystems = c(system_nr_metaecosystems,
-                             system_nr_SL_from_isolated,
-                             system_nr_MM_from_isolated)
-
-for (system_nr_input in system_nr_metaecosystems) {
-  for (time_point_input in first_time_point:last_time_point) {
-    
-    if (system_nr_input %in% metaecosystems_to_take_off)
-      next
-    
-    species_total_of_the_two_patches = ds_patches %>%
-      filter(system_nr == system_nr_input,
-             time_point == time_point_input) %>%
-      ungroup() %>%
-      select(Ble_tot:Tet_tot)
-    
-    #Beta diversity: Jaccard
-
-    jaccard_index = vegdist(species_total_of_the_two_patches, 
-                            method = "jaccard")
-    
-    #Beta diversity: Bray Curtis
-    
-    bray_curtis = vegdist(species_total_of_the_two_patches, 
-                          method = "bray")
-    
-    #Gamma diversity: Meta-ecosystem richness
-    
-    presence_absence_two_patches = ifelse(test = species_total_of_the_two_patches > 0,
-                                          yes = 1,
-                                          no = 0)
-    
-    summed_columns = colSums(presence_absence_two_patches)
-    
-    presence_absence_metaecosystem = ifelse(test = summed_columns > 0,
-                              yes = 1,
-                              no = 0)
-    
-    metaecosystem_richness = sum(presence_absence_metaecosystem)
-    
-    #Gamma diversity: Shannon
-    
-    species_total_of_the_two_patches = ds_patches %>%
-      filter(system_nr == system_nr_input,
-             time_point == time_point_input) %>%
-      ungroup() %>%
-      select(Ble_tot:Tet_tot) %>%
-      map_dbl(function(x) if(is.numeric(x)) sum(x) else NA)
-      
-    gamma_shannon = diversity(species_total_of_the_two_patches, 
-                              index = "shannon")
-    
-    #Add to dataset
-    
-    ds_metaecosystems$jaccard_index[
-      ds_metaecosystems$system_nr == system_nr_input &
-      ds_metaecosystems$time_point == time_point_input] = 
-      jaccard_index
-    
-    ds_metaecosystems$bray_curtis[
-      ds_metaecosystems$system_nr == system_nr_input &
-      ds_metaecosystems$time_point == time_point_input] = 
-      bray_curtis
-    
-    ds_metaecosystems$metaecosystem_richness[
-      ds_metaecosystems$system_nr == system_nr_input &
-      ds_metaecosystems$time_point == time_point_input] = 
-      metaecosystem_richness
-    
-    ds_metaecosystems$gamma_shannon[
-      ds_metaecosystems$system_nr == system_nr_input &
-      ds_metaecosystems$time_point == time_point_input] = 
-      gamma_shannon
-    
+           metaecosystem_type = current_metaeco_type,
+           disturbance = current_disturbance,
+           time_point = time_point_input,
+           day = current_day,
+           jaccard_index = jaccard_index,
+           bray_curtis = bray_curtis,
+           metaecosystem_richness = metaecosystem_richness,
+           gamma_shannon = gamma_shannon) %>%
+      ungroup()
     
   }
 }
+
+ds_metaecosystems = ds_metaecosystems_single_rows %>%
+  bind_rows()
 ```
+
 
 ```{r add-baselines-(ds_metaecosystems)}
 
@@ -465,6 +221,10 @@ baselines = ds_metaecosystems %>%
          baseline_gamma_shannon = gamma_shannon)
 
 ds_metaecosystems = full_join(ds_metaecosystems, baselines)
+```
+
+```{r}
+ds_metaecosystems = as.data.frame(ds_metaecosystems)
 ```
 
 ```{r save-ds_metaecosystems}

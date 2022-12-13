@@ -59,16 +59,16 @@ p_boxplots = ds_metaecosystems %>%
   ) + 
   labs(
     x = "Day",
-    y = "Beta diversity (Bray-Curtis Index)",
+    y = name_y_axis_beta_diversity,
     color = '',
     fill = '',
-    caption = "Vertical grey line: resource flow"
+    caption = caption_resource_flow
   ) +
    scale_fill_manual(
      values = c(colour_small, colour_medium, colour_large),
-     labels = c("Small-Small",
-                "Medium-Medium",
-                "Large-Large")
+     labels = c(name_SS,
+                name_MM,
+                name_LL)
    ) +
   theme_bw() +
   theme(

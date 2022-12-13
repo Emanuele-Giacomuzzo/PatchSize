@@ -1,0 +1,171 @@
+---
+title: '...'
+output: html_document
+date: "2022-12-13"
+editor_options: 
+  chunk_output_type: console
+---
+
+#### Gamma Diversity {.tabset .tabset-pills}
+
+```{r}
+ds_metaecosystems %>%
+  filter(
+    disturbance == disturbance_input,
+    metaecosystem_type %in% c("S_L", "S_L_from_isolated", "M_M", "M_M")
+  ) %>%
+  ggplot(
+    aes(
+      x = day,
+      y = gamma_shannon,
+      group = interaction(day, metaecosystem_type),
+      fill = metaecosystem_type
+    )
+  ) +
+  geom_boxplot() +
+  geom_vline(
+    xintercept = resource_flow_days[1] + 0.7,
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_vline(
+    xintercept = resource_flow_days[2] + 0.7,
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_vline(
+    xintercept = resource_flow_days[3] + 0.7,
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_vline(
+    xintercept = resource_flow_days[4] + 0.7,
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_vline(
+    xintercept = resource_flow_days[5] + 0.7,
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_vline(
+    xintercept = resource_flow_days[6] + 0.7,
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  labs(
+    x = "Day",
+    y = name_y_axis_gamma_diversity,
+    fill = "",
+    caption = caption_resource_flow
+  ) +
+  # scale_fill_manual(values = c(colour_SL, colour_SL_from_isolated),
+  #                   labels = c(name_SL, name_SL_from_isolated)) +
+  theme_bw() +
+  theme(
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    legend.position = "bottom"
+  )
+```
+
+```{r}
+p_all_metaecos_gamma = ds_metaecosystems %>%
+  filter(disturbance == disturbance_input) %>%
+  summarySE(measurevar = "gamma_shannon",
+            groupvars = c("day", "metaecosystem_type")) %>%
+  filter(
+    day > 5,
+    metaecosystem_type %in% c("S_L",
+                              "S_L_from_isolated",
+                              "M_M",
+                              "M_M_from_isolated")
+  ) %>%
+  ggplot(aes(
+    x = day,
+    y = gamma_shannon,
+    group = interaction(day, metaecosystem_type),
+    color = metaecosystem_type
+  )) +
+  geom_point(stat = "summary",
+             fun = "mean",
+             position = position_dodge(1)) +
+  geom_line(
+    stat = "summary",
+    fun = "mean",
+    aes(group = metaecosystem_type),
+    position = position_dodge(1)
+  ) +
+  geom_errorbar(
+    aes(ymax = gamma_shannon + ci,
+        ymin = gamma_shannon - ci),
+    width = .2,
+    position = position_dodge(1)
+  ) +
+  geom_vline(
+    xintercept = resource_flow_days[1] + 0.7,
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_vline(
+    xintercept = resource_flow_days[2] + 0.7,
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_vline(
+    xintercept = resource_flow_days[3] + 0.7,
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_vline(
+    xintercept = resource_flow_days[4] + 0.7,
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_vline(
+    xintercept = resource_flow_days[5] + 0.7,
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_vline(
+    xintercept = resource_flow_days[6] + 0.7,
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  labs(
+    x = "Day",
+    y = name_y_axis_gamma_diversity,
+    color = "",
+    caption = caption_resource_flow
+  ) +
+   scale_color_manual(
+     values = c(colour_MM,
+                colour_MM_from_isolated,
+                colour_SL,
+                colour_SL_from_isolated),
+     labels = c(name_MM,
+                name_MM_from_isolated,
+                name_SL,
+                name_SL_from_isolated)
+   ) +
+  theme_bw() +
+  theme(
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    legend.position = "bottom"
+  )
+
+p_all_metaecos_gamma
+```

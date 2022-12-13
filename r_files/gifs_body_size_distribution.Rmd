@@ -14,16 +14,16 @@ start = Sys.time()
 p = list()
 n = 0
 first_level = c(
-  "Small connected to large",
-  "Small connected to large",
-  "Large connected to large",
-  "Large connected to large"
+  name_S_connected_to_L,
+  name_S_connected_to_L,
+  name_L_connected_to_L,
+  name_L_connected_to_L
 )
 second_level = c(
-  "Small connected to small",
-  "Small connected to small",
-  "Large connected to small",
-  "Large connected to small"
+  name_S_connected_to_S,
+  name_S_connected_to_S,
+  name_L_connected_to_S,
+  name_L_connected_to_S
 )
 
 for (patch_size_input in c("S", "L")) {

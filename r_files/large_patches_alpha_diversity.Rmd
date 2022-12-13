@@ -28,7 +28,7 @@ ds_patches %>%
     x = "Day",
     y = "Shannon Index",
     linetype = "",
-    caption = "Vertical grey line: resource flow"
+    caption = caption_resource_flow
   ) +
   theme_bw() +
   theme(
@@ -37,9 +37,9 @@ ds_patches %>%
     legend.position = "bottom"
   ) +
   scale_linetype_discrete(labels = c(
-    "Large isolated",
-    "Large connected to large",
-    "Large connected to small"
+    name_L_isolated,
+    name_L_connected_to_L,
+    name_L_connected_to_S
   ))  +
   scale_x_continuous(breaks = unique(ds_patches$day)) +
   geom_vline(
@@ -95,7 +95,7 @@ ds_patches %>%
     x = "Day",
     y = "Shannon Index",
     fill = "",
-    caption = "Vertical grey line: resource flow"
+    caption = caption_resource_flow
   ) +
   theme_bw() +
   theme(
@@ -106,9 +106,9 @@ ds_patches %>%
   scale_fill_manual(
     values = c(colour_isolated, colour_same_size, colour_different_size),
     labels = c(
-      "Small isolated",
-      "Large connected to large",
-      "Large connected to small"
+      name_S_isolated,
+      name_L_connected_to_L,
+      name_L_connected_to_S
     )
   ) +
   scale_x_continuous(breaks = unique(ds_patches$day)) +
@@ -217,8 +217,8 @@ p_effect_size = ds_patches_effect_size %>%
     y = "Shannon Index Effect Size (Hedge's d)",
     color = ""
   ) +
-  scale_color_discrete(labels = c("Large connected to large",
-                                  "Large connected to small")) +
+  scale_color_discrete(labels = c(name_L_connected_to_L,
+                                  name_L_connected_to_S)) +
   theme_bw() +
   theme(
     panel.grid.major = element_blank(),

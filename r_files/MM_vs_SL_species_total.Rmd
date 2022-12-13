@@ -29,7 +29,7 @@ ds_metaecosystems %>%
         x = "Day",
         y = "Ble Total Individuals",
         fill = "",
-        caption = "Vertical grey line: resource flow"
+        caption = caption_resource_flow
       ) +
       theme_bw() +
       theme(
@@ -40,8 +40,8 @@ ds_metaecosystems %>%
        scale_fill_manual(
          values = c(colour_MM, colour_SL),
          labels = c(
-           "Medium-Medium",
-           "Small-Large"
+           name_MM,
+           name_SL
          )
        )  +
       scale_x_continuous(breaks = unique(ds_metaecosystems$day)) +
@@ -104,7 +104,7 @@ ds_metaecosystems %>%
         x = "Day",
         y = "Cep Total Individuals",
         fill = "",
-        caption = "Vertical grey line: resource flow"
+        caption = caption_resource_flow
       ) +
       theme_bw() +
       theme(
@@ -115,8 +115,8 @@ ds_metaecosystems %>%
        scale_fill_manual(
          values = c(colour_MM, colour_SL),
          labels = c(
-           "Medium-Medium",
-           "Small-Large"
+           name_MM,
+           name_SL
          )
        )  +
       scale_x_continuous(breaks = unique(ds_metaecosystems$day)) +
@@ -179,7 +179,7 @@ ds_metaecosystems %>%
         x = "Day",
         y = "Col Total Individuals",
         fill = "",
-        caption = "Vertical grey line: resource flow"
+        caption = caption_resource_flow
       ) +
       theme_bw() +
       theme(
@@ -190,8 +190,8 @@ ds_metaecosystems %>%
        scale_fill_manual(
          values = c(colour_MM, colour_SL),
          labels = c(
-           "Medium-Medium",
-           "Small-Large"
+           name_MM,
+           name_SL
          )
        )  +
       scale_x_continuous(breaks = unique(ds_metaecosystems$day)) +
@@ -254,7 +254,7 @@ ds_metaecosystems %>%
         x = "Day",
         y = "Eug Total Individuals",
         fill = "",
-        caption = "Vertical grey line: resource flow"
+        caption = caption_resource_flow
       ) +
       theme_bw() +
       theme(
@@ -265,8 +265,8 @@ ds_metaecosystems %>%
        scale_fill_manual(
          values = c(colour_MM, colour_SL),
          labels = c(
-           "Medium-Medium",
-           "Small-Large"
+           name_MM,
+           name_SL
          )
        )  +
       scale_x_continuous(breaks = unique(ds_metaecosystems$day)) +
@@ -329,7 +329,7 @@ ds_metaecosystems %>%
         x = "Day",
         y = "Eup Total Individuals",
         fill = "",
-        caption = "Vertical grey line: resource flow"
+        caption = caption_resource_flow
       ) +
       theme_bw() +
       theme(
@@ -340,8 +340,8 @@ ds_metaecosystems %>%
        scale_fill_manual(
          values = c(colour_MM, colour_SL),
          labels = c(
-           "Medium-Medium",
-           "Small-Large"
+           name_MM,
+           name_SL
          )
        )  +
       scale_x_continuous(breaks = unique(ds_metaecosystems$day)) +
@@ -404,7 +404,7 @@ ds_metaecosystems %>%
         x = "Day",
         y = "Lox Total Individuals",
         fill = "",
-        caption = "Vertical grey line: resource flow"
+        caption = caption_resource_flow
       ) +
       theme_bw() +
       theme(
@@ -415,8 +415,8 @@ ds_metaecosystems %>%
        scale_fill_manual(
          values = c(colour_MM, colour_SL),
          labels = c(
-           "Medium-Medium",
-           "Small-Large"
+           name_MM,
+           name_SL
          )
        )  +
       scale_x_continuous(breaks = unique(ds_metaecosystems$day)) +
@@ -479,7 +479,7 @@ ds_metaecosystems %>%
         x = "Day",
         y = "Pau Total Individuals",
         fill = "",
-        caption = "Vertical grey line: resource flow"
+        caption = caption_resource_flow
       ) +
       theme_bw() +
       theme(
@@ -490,8 +490,8 @@ ds_metaecosystems %>%
        scale_fill_manual(
          values = c(colour_MM, colour_SL),
          labels = c(
-           "Medium-Medium",
-           "Small-Large"
+           name_MM,
+           name_SL
          )
        )  +
       scale_x_continuous(breaks = unique(ds_metaecosystems$day)) +
@@ -554,7 +554,7 @@ ds_metaecosystems %>%
         x = "Day",
         y = "Pca Total Individuals",
         fill = "",
-        caption = "Vertical grey line: resource flow"
+        caption = caption_resource_flow
       ) +
       theme_bw() +
       theme(
@@ -565,8 +565,8 @@ ds_metaecosystems %>%
        scale_fill_manual(
          values = c(colour_MM, colour_SL),
          labels = c(
-           "Medium-Medium",
-           "Small-Large"
+           name_MM,
+           name_SL
          )
        )  +
       scale_x_continuous(breaks = unique(ds_metaecosystems$day)) +
@@ -629,7 +629,7 @@ ds_metaecosystems %>%
         x = "Day",
         y = "Spi Total Individuals",
         fill = "",
-        caption = "Vertical grey line: resource flow"
+        caption = caption_resource_flow
       ) +
       theme_bw() +
       theme(
@@ -640,8 +640,8 @@ ds_metaecosystems %>%
        scale_fill_manual(
          values = c(colour_MM, colour_SL),
          labels = c(
-           "Medium-Medium",
-           "Small-Large"
+           name_MM,
+           name_SL
          )
        )  +
       scale_x_continuous(breaks = unique(ds_metaecosystems$day)) +
@@ -704,7 +704,7 @@ ds_metaecosystems %>%
         x = "Day",
         y = "Spi te Total Individuals",
         fill = "",
-        caption = "Vertical grey line: resource flow"
+        caption = caption_resource_flow
       ) +
       theme_bw() +
       theme(
@@ -715,8 +715,8 @@ ds_metaecosystems %>%
        scale_fill_manual(
          values = c(colour_MM, colour_SL),
          labels = c(
-           "Medium-Medium",
-           "Small-Large"
+           name_MM,
+           name_SL
          )
        )  +
       scale_x_continuous(breaks = unique(ds_metaecosystems$day)) +
@@ -779,7 +779,7 @@ ds_metaecosystems %>%
         x = "Day",
         y = "Tet Total Individuals",
         fill = "",
-        caption = "Vertical grey line: resource flow"
+        caption = caption_resource_flow
       ) +
       theme_bw() +
       theme(
@@ -790,8 +790,8 @@ ds_metaecosystems %>%
        scale_fill_manual(
          values = c(colour_MM, colour_SL),
          labels = c(
-           "Medium-Medium",
-           "Small-Large"
+           name_MM,
+           name_SL
          )
        )  +
       scale_x_continuous(breaks = unique(ds_metaecosystems$day)) +

@@ -24,14 +24,14 @@ p_boxplots = ds_metaecosystems %>%
   ) +
   geom_boxplot() +
   labs(x = "Day",
-       y = "Meta-ecosystem Total Bioarea (µm²)",
+       y = name_y_axis_total_bioarea,
        color = '',
        fill = '') +
   scale_fill_manual(
     values = c(colour_small, colour_medium, colour_large),
-    labels = c("Small-Small",
-               "Medium-Medium",
-               "Large-Large")
+    labels = c(name_SS,
+               name_MM,
+               name_LL)
   ) +
   theme_bw() +
   theme(
@@ -76,7 +76,7 @@ p_boxplots = ds_metaecosystems %>%
     color = "grey",
     size = 0.7
   ) +
-  labs(caption = "Vertical grey line: resource flow")
+  labs(caption = caption_resource_flow)
 
 p_boxplots
 ```

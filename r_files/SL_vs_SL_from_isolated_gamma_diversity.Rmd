@@ -11,7 +11,7 @@ editor_options:
 ```{r}
 ds_metaecosystems %>%
   filter (disturbance == disturbance_input,
-          metaecosystem_type %in% c("S_L", "SL_from_isolated")) %>%
+          metaecosystem_type %in% c("S_L", "S_L_from_isolated")) %>%
   
   ggplot (
     aes(
@@ -30,10 +30,10 @@ ds_metaecosystems %>%
     fill = "System nr",
     color = "System nr",
     linetype = "",
-    caption = "Vertical grey line: resource flow"
+    caption = caption_resource_flow
   ) +
   scale_linetype_discrete(labels = c(name_SL,
-                                     name_SL_from_isolated)) +
+                                     name_S_L_from_isolated)) +
   theme_bw() +
   theme(
     panel.grid.major = element_blank(),
@@ -82,7 +82,7 @@ ds_metaecosystems %>%
 ```{r}
 p_boxplots = ds_metaecosystems %>%
   filter(disturbance == disturbance_input,
-         metaecosystem_type %in% c("S_L", "SL_from_isolated")) %>%
+         metaecosystem_type %in% c("S_L", "S_L_from_isolated")) %>%
   ggplot (aes(
     x = day,
     y = gamma_shannon,
@@ -131,10 +131,11 @@ p_boxplots = ds_metaecosystems %>%
     y = name_y_axis_gamma_diversity,
     color = '',
     fill = '',
-    caption = "Vertical grey line: resource flow"
+    caption = caption_resource_flow
   ) +
   scale_fill_manual(
-    values = c(colour_MM, colour_SL),
+    values = c(colour_SL, 
+               colour_isolated),
     labels = c(name_SL,
                name_SL_from_isolated)
   ) +
@@ -150,15 +151,18 @@ p_boxplots
 
 ```{r}
 filtered_data = ds_metaecosystems %>%
-    filter(time_point >= 2,
+    filter(time_point >= first_time_point_model,
+           time_point <= last_time_point_model,
            disturbance == disturbance_input,
-           metaecosystem_type %in% c("SL_from_isolated", "S_L"))
+           metaecosystem_type %in% c("S_L_from_isolated", "S_L"))
 ```
 
 ```{r}
 full_model = lmer(
   gamma_shannon ~
     day +
+    baseline_gamma_shannon +
+    baseline_gamma_shannon : day + 
     metaecosystem_type +
     metaecosystem_type : day +
     (day | system_nr),
@@ -174,6 +178,8 @@ qqnorm(resid(full_model))
 null_model = lmer(
   gamma_shannon ~
     day +
+    baseline_gamma_shannon +
+    baseline_gamma_shannon : day + 
     (day | system_nr),
   data = filtered_data,
   REML = FALSE,

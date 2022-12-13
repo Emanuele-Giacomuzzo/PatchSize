@@ -7,32 +7,38 @@ editor_options:
   chunk_output_type: console
 ---
 
-### All meta-ecosystems {.tabset .tabset-pills}
+#### Biomass {.tabset .tabset-pills}
 
 ```{r}
 ds_metaecosystems %>%
-          filter(disturbance == disturbance_input,
-                 !metaecosystem_type == "S_L_from_isolated") %>%
-          ggplot(aes(x = day,
-                     y = total_metaecosystem_bioarea,
-                     group = interaction(day, metaecosystem_type),
-                     fill = metaecosystem_type)) +
-          geom_boxplot() +
-          labs(x = "Day",
-               y = "Regional bioarea (µm²)",
-               fill = "") +
-          theme_bw() +
-          theme(panel.grid.major = element_blank(),
-                panel.grid.minor = element_blank(),
-                legend.position = "bottom"
-                ) +
-          scale_fill_discrete(labels = c("large-large",
-                                         "medium-medium",
-                                         "small-large",
-                                         "small-small")) +
-          geom_vline(xintercept = first_perturbation_day + 0.5,
-                     linetype="dotdash",
-                     color = "grey",
-                     size=0.7) +
-          labs(caption = "Vertical grey line: first perturbation")
+  filter(
+    disturbance == disturbance_input,!metaecosystem_type %in% c("S_L_from_isolated", "M_M_from_isolated")
+  ) %>%
+  ggplot(
+    aes(
+      x = day,
+      y = total_metaecosystem_bioarea,
+      group = interaction(day, metaecosystem_type),
+      fill = metaecosystem_type
+    )
+  ) +
+  geom_boxplot() +
+  labs(
+    x = "Day",
+    y = name_y_axis_total_bioarea,
+    fill = "",
+    caption = caption_resource_flow
+  ) +
+  theme_bw() +
+  theme(
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    legend.position = "bottom"
+  ) +
+  geom_vline(
+    xintercept = first_perturbation_day + 0.5,
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  )
 ```

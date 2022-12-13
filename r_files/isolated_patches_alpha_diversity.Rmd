@@ -61,13 +61,13 @@ ds_patches %>%
     x = "Day",
     y = "Alpha Diversity (Shannon Index)",
     fill = "",
-    caption = "Vertical grey line: resource flow"
+    caption = caption_resource_flow
   ) +
   scale_fill_manual(
     values = c(colour_small, colour_medium, colour_large),
-    labels = c("Small isolated",
-               "Medium isolated",
-               "Large isolated")
+    labels = c(name_S_isolated,
+               name_M_isolated,
+               name_L_isolated)
   ) +
   theme_bw() +
   theme(

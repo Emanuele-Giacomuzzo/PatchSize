@@ -63,13 +63,13 @@ ds_patches %>%
     x = "Day",
     y = "Ble Density (indiv/μl ?)",
     fill = "",
-    caption = "Vertical grey line: resource flow"
+    caption = caption_resource_flow
   ) +
   scale_fill_manual(
     values = c(colour_small, colour_medium, colour_large),
-    labels = c("Small isolated",
-               "Medium isolated",
-               "Large isolated")
+    labels = c(name_S_isolated,
+               name_M_isolated,
+               name_L_isolated)
   ) +
   theme_bw() +
   theme(
@@ -133,13 +133,13 @@ ds_patches %>%
     x = "Day",
     y = "Cep Density (indiv/μl ?)",
     fill = "",
-    caption = "Vertical grey line: resource flow"
+    caption = caption_resource_flow
   ) +
   scale_fill_manual(
     values = c(colour_small, colour_medium, colour_large),
-    labels = c("Small isolated",
-               "Medium isolated",
-               "Large isolated")
+    labels = c(name_S_isolated,
+               name_M_isolated,
+               name_L_isolated)
   ) +
   theme_bw() +
   theme(
@@ -203,13 +203,13 @@ ds_patches %>%
     x = "Day",
     y = "Col Density (indiv/μl ?)",
     fill = "",
-    caption = "Vertical grey line: resource flow"
+    caption = caption_resource_flow
   ) +
   scale_fill_manual(
     values = c(colour_small, colour_medium, colour_large),
-    labels = c("Small isolated",
-               "Medium isolated",
-               "Large isolated")
+    labels = c(name_S_isolated,
+               name_M_isolated,
+               name_L_isolated)
   ) +
   theme_bw() +
   theme(
@@ -273,13 +273,13 @@ ds_patches %>%
     x = "Day",
     y = "Eug Density (indiv/μl ?)",
     fill = "",
-    caption = "Vertical grey line: resource flow"
+    caption = caption_resource_flow
   ) +
   scale_fill_manual(
     values = c(colour_small, colour_medium, colour_large),
-    labels = c("Small isolated",
-               "Medium isolated",
-               "Large isolated")
+    labels = c(name_S_isolated,
+               name_M_isolated,
+               name_L_isolated)
   ) +
   theme_bw() +
   theme(
@@ -343,13 +343,13 @@ ds_patches %>%
     x = "Day",
     y = "Eup Density (indiv/μl ?)",
     fill = "",
-    caption = "Vertical grey line: resource flow"
+    caption = caption_resource_flow
   ) +
   scale_fill_manual(
     values = c(colour_small, colour_medium, colour_large),
-    labels = c("Small isolated",
-               "Medium isolated",
-               "Large isolated")
+    labels = c(name_S_isolated,
+               name_M_isolated,
+               name_L_isolated)
   ) +
   theme_bw() +
   theme(
@@ -413,13 +413,13 @@ ds_patches %>%
     x = "Day",
     y = "Lox Density (indiv/μl ?)",
     fill = "",
-    caption = "Vertical grey line: resource flow"
+    caption = caption_resource_flow
   ) +
   scale_fill_manual(
     values = c(colour_small, colour_medium, colour_large),
-    labels = c("Small isolated",
-               "Medium isolated",
-               "Large isolated")
+    labels = c(name_S_isolated,
+               name_M_isolated,
+               name_L_isolated)
   ) +
   theme_bw() +
   theme(
@@ -483,13 +483,13 @@ ds_patches %>%
     x = "Day",
     y = "Pau Density (indiv/μl ?)",
     fill = "",
-    caption = "Vertical grey line: resource flow"
+    caption = caption_resource_flow
   ) +
   scale_fill_manual(
     values = c(colour_small, colour_medium, colour_large),
-    labels = c("Small isolated",
-               "Medium isolated",
-               "Large isolated")
+    labels = c(name_S_isolated,
+               name_M_isolated,
+               name_L_isolated)
   ) +
   theme_bw() +
   theme(
@@ -553,13 +553,13 @@ ds_patches %>%
     x = "Day",
     y = "Pca Density (indiv/μl ?)",
     fill = "",
-    caption = "Vertical grey line: resource flow"
+    caption = caption_resource_flow
   ) +
   scale_fill_manual(
     values = c(colour_small, colour_medium, colour_large),
-    labels = c("Small isolated",
-               "Medium isolated",
-               "Large isolated")
+    labels = c(name_S_isolated,
+               name_M_isolated,
+               name_L_isolated)
   ) +
   theme_bw() +
   theme(
@@ -623,13 +623,13 @@ ds_patches %>%
     x = "Day",
     y = "Spi Density (indiv/μl ?)",
     fill = "",
-    caption = "Vertical grey line: resource flow"
+    caption = caption_resource_flow
   ) +
   scale_fill_manual(
     values = c(colour_small, colour_medium, colour_large),
-    labels = c("Small isolated",
-               "Medium isolated",
-               "Large isolated")
+    labels = c(name_S_isolated,
+               name_M_isolated,
+               name_L_isolated)
   ) +
   theme_bw() +
   theme(
@@ -693,13 +693,13 @@ ds_patches %>%
     x = "Day",
     y = "Spi_te Density (indiv/μl ?)",
     fill = "",
-    caption = "Vertical grey line: resource flow"
+    caption = caption_resource_flow
   ) +
   scale_fill_manual(
     values = c(colour_small, colour_medium, colour_large),
-    labels = c("Small isolated",
-               "Medium isolated",
-               "Large isolated")
+    labels = c(name_S_isolated,
+               name_M_isolated,
+               name_L_isolated)
   ) +
   theme_bw() +
   theme(
@@ -763,13 +763,13 @@ ds_patches %>%
     x = "Day",
     y = "Tet Density (indiv/μl ?)",
     fill = "",
-    caption = "Vertical grey line: resource flow"
+    caption = caption_resource_flow
   ) +
   scale_fill_manual(
     values = c(colour_small, colour_medium, colour_large),
-    labels = c("Small isolated",
-               "Medium isolated",
-               "Large isolated")
+    labels = c(name_S_isolated,
+               name_M_isolated,
+               name_L_isolated)
   ) +
   theme_bw() +
   theme(
