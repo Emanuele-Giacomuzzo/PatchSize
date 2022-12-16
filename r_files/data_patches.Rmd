@@ -35,21 +35,47 @@ t7 = pop_output
 rm(pop_output)
 
 species_ID_t0 = read.csv(here("data", "population_species_ID", "species_ID_t0.csv")) %>%
-  select(file, Ble:Tet)
+  select(file, Cep:Tet)
 species_ID_t1 = read.csv(here("data", "population_species_ID", "species_ID_t1.csv")) %>%
-  select(file, Ble:Tet)
+  select(file, Cep:Tet)
 species_ID_t2 = read.csv(here("data", "population_species_ID", "species_ID_t2.csv")) %>%
-  select(file, Ble:Tet)
+  select(file, Cep:Tet)
 species_ID_t3 = read.csv(here("data", "population_species_ID", "species_ID_t3.csv")) %>%
-  select(file, Ble:Tet)
+  select(file, Cep:Tet)
 species_ID_t4 = read.csv(here("data", "population_species_ID", "species_ID_t4.csv")) %>%
-  select(file, Ble:Tet)
+  select(file, Cep:Tet)
 species_ID_t5 = read.csv(here("data", "population_species_ID", "species_ID_t5.csv")) %>%
-  select(file, Ble:Tet)
+  select(file, Cep:Tet)
 species_ID_t6 = read.csv(here("data", "population_species_ID", "species_ID_t6.csv")) %>%
-  select(file, Ble:Tet)
+  select(file, Cep:Tet)
 species_ID_t7 = read.csv(here("data", "population_species_ID", "species_ID_t7.csv")) %>%
-  select(file, Ble:Tet)
+  select(file, Cep:Tet)
+
+species_ID_t0_Ble = read.csv(here("data", "population_species_ID_Ble", "species_ID_t0.csv")) %>%
+  select(file, Ble)
+species_ID_t1_Ble = read.csv(here("data", "population_species_ID_Ble", "species_ID_t1.csv")) %>%
+  select(file, Ble)
+species_ID_t2_Ble = read.csv(here("data", "population_species_ID_Ble", "species_ID_t2.csv")) %>%
+  select(file, Ble)
+species_ID_t3_Ble = read.csv(here("data", "population_species_ID_Ble", "species_ID_t3.csv")) %>%
+  select(file, Ble)
+species_ID_t4_Ble = read.csv(here("data", "population_species_ID_Ble", "species_ID_t4.csv")) %>%
+  select(file, Ble)
+species_ID_t5_Ble = read.csv(here("data", "population_species_ID_Ble", "species_ID_t5.csv")) %>%
+  select(file, Ble)
+species_ID_t6_Ble = read.csv(here("data", "population_species_ID_Ble", "species_ID_t6.csv")) %>%
+  select(file, Ble)
+species_ID_t7_Ble = read.csv(here("data", "population_species_ID_Ble", "species_ID_t7.csv")) %>%
+  select(file, Ble)
+
+species_ID_t0 = merge(species_ID_t0, species_ID_t0_Ble, by = "file")
+species_ID_t1 = merge(species_ID_t1, species_ID_t1_Ble, by = "file")
+species_ID_t2 = merge(species_ID_t2, species_ID_t2_Ble, by = "file")
+species_ID_t3 = merge(species_ID_t3, species_ID_t3_Ble, by = "file")
+species_ID_t4 = merge(species_ID_t4, species_ID_t4_Ble, by = "file")
+species_ID_t5 = merge(species_ID_t5, species_ID_t5_Ble, by = "file")
+species_ID_t6 = merge(species_ID_t6, species_ID_t6_Ble, by = "file")
+species_ID_t7 = merge(species_ID_t7, species_ID_t7_Ble, by = "file")
 
 t0 = merge(t0, species_ID_t0, by = "file")
 t1 = merge(t1, species_ID_t1, by = "file")
@@ -59,6 +85,7 @@ t4 = merge(t4, species_ID_t4, by = "file")
 t5 = merge(t5, species_ID_t5, by = "file")
 t6 = merge(t6, species_ID_t6, by = "file")
 t7 = merge(t7, species_ID_t7, by = "file")
+
 rm(
   species_ID_t0,
   species_ID_t1,

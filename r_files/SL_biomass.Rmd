@@ -9,11 +9,11 @@ editor_options:
 #### Biomass {.tabset .tabset-pills}
 
 ```{r}
-p_local_biomass_SL = ds_patches_effect_size %>%
+p_connected_biomass_effect_size = ds_patches_effect_size %>%
   filter(
     !time_point == 0,
     disturbance == disturbance_input,
-    eco_metaeco_type %in% c("S (S_L)", "L (S_L)")
+    eco_metaeco_type %in% c("S (S_L)", "M (M_M)", "L (S_L)")
   ) %>%
   ggplot(aes(x = day,
              y = bioarea_per_volume_d,
@@ -32,8 +32,12 @@ p_local_biomass_SL = ds_patches_effect_size %>%
     color = "",
     caption = caption_resource_flow
   ) +
-  scale_color_discrete(labels = c("Large patch",
-                                  "Small patch")) +
+  scale_color_manual(values = c(colour_large,
+                                colour_medium,
+                                colour_small),
+                     labels = c(name_L_connected_to_S,
+                                name_M_connected_to_M,
+                                name_S_connected_to_L)) +
   scale_x_continuous(breaks = unique(ds_patches_effect_size$day)) +
   theme_bw() +
   theme(
@@ -84,5 +88,5 @@ p_local_biomass_SL = ds_patches_effect_size %>%
     size = 0.7
   )
 
-p_local_biomass_SL
+p_connected_biomass_effect_size
 ```

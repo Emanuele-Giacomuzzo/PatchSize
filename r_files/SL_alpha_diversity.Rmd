@@ -9,7 +9,7 @@ editor_options:
 #### Alpha Diversity {.tabset .tabset-pills}
 
 ```{r}
-p_local_alpha_SL = ds_patches_effect_size %>%
+p_connected_alpha_effect_size = ds_patches_effect_size %>%
   filter(
     !time_point == 0,
     disturbance == disturbance_input,
@@ -28,12 +28,14 @@ p_local_alpha_SL = ds_patches_effect_size %>%
   ) +
   labs(
     x = "Day",
-    y = name_y_axis_alpha_diversity,
+    y = name_y_axis_alpha_diversity_effect_size,
     color = "",
     caption = caption_resource_flow
   ) +
-  scale_color_discrete(labels = c("Large patch",
-                                  "Small patch")) +
+  scale_color_manual(values = c(colour_large,
+                                colour_small),
+                     labels = c(name_L_connected_to_S,
+                                name_S_connected_to_L)) +
   scale_x_continuous(breaks = unique(ds_patches_effect_size$day)) +
   theme_bw() +
   theme(
@@ -84,5 +86,5 @@ p_local_alpha_SL = ds_patches_effect_size %>%
     size = 0.7
   )
 
-p_local_alpha_SL
+p_connected_alpha_effect_size
 ```

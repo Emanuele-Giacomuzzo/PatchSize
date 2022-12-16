@@ -145,7 +145,7 @@ p_all_metaecos_beta = ds_metaecosystems %>%
   ) +
   labs(
     x = "Day",
-    y = name_y_axis_total_bioarea,
+    y = name_y_axis_beta_diversity,
     color = "",
     caption = caption_resource_flow
   ) +

@@ -1,0 +1,166 @@
+---
+title: "MM vs SL - alpha diversity"
+output: html_document
+date: "2022-12-15"
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+ds_patches %>%
+  filter(disturbance == disturbance_input,
+       eco_metaeco_type %in% c("S (S_L)", "M (M_M)", "L (S_L)")) %>%
+  mutate(eco_metaeco_type = fct_reorder(eco_metaeco_type, patch_size_volume)) %>%
+  ggplot(aes(
+    x = day,
+    y = shannon,
+    group = interaction(day, eco_metaeco_type),
+    fill = eco_metaeco_type
+  )) +
+  geom_boxplot() +
+  geom_vline(
+    xintercept = resource_flow_days[1] + 0.7,
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_vline(
+    xintercept = resource_flow_days[2] + 0.7,
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_vline(
+    xintercept = resource_flow_days[3] + 0.7,
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_vline(
+    xintercept = resource_flow_days[4] + 0.7,
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_vline(
+    xintercept = resource_flow_days[5] + 0.7,
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_vline(
+    xintercept = resource_flow_days[6] + 0.7,
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  labs(
+    x = "Day",
+    y = name_y_axis_alpha_diversity,
+    fill = "",
+    caption = caption_resource_flow
+  ) +
+  scale_fill_manual(
+    values = c(colour_small, colour_medium, colour_large),
+    labels = c(name_S_connected_to_L,
+               name_M_connected_to_M,
+               name_L_connected_to_S)
+  ) +
+  theme_bw() +
+  theme(
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    legend.position = "bottom"
+  )
+```
+
+```{r}
+p_connected_alpha = ds_patches %>%
+  filter(disturbance == disturbance_input) %>%
+  summarySE(measurevar = "shannon", 
+            groupvars = c("day", "eco_metaeco_type")) %>%
+  filter(day > 5,
+         eco_metaeco_type %in% c("S (S_L)", 
+                                 "M (M_M)", 
+                                 "L (S_L)")
+  ) %>%
+  ggplot(
+    aes(
+      x = day,
+      y = shannon,
+      group = interaction(day, eco_metaeco_type),
+      color = eco_metaeco_type
+    )
+  ) +
+  geom_point(stat = "summary", 
+             fun = "mean",
+             position = position_dodge(1)) +
+  geom_line(stat = "summary",
+            fun = "mean",
+            aes(group = eco_metaeco_type),
+            position = position_dodge(1)) +
+  geom_errorbar(
+    aes(ymax = shannon + ci,
+        ymin = shannon - ci),
+    width = .2,
+    position = position_dodge(1)
+  ) +
+  geom_vline(
+    xintercept = resource_flow_days[1] + 0.7,
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_vline(
+    xintercept = resource_flow_days[2] + 0.7,
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_vline(
+    xintercept = resource_flow_days[3] + 0.7,
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_vline(
+    xintercept = resource_flow_days[4] + 0.7,
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_vline(
+    xintercept = resource_flow_days[5] + 0.7,
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_vline(
+    xintercept = resource_flow_days[6] + 0.7,
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  labs(
+    x = "Day",
+    y = name_y_axis_alpha_diversity,
+    color = "",
+    caption = caption_resource_flow
+  ) +
+   scale_color_manual(
+     values = c(colour_large,
+                colour_medium,
+                colour_small),
+     labels = c(name_L_connected_to_S,
+                name_M_connected_to_M,
+                name_S_connected_to_L)
+   ) +
+  theme_bw() +
+  theme(
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    legend.position = "bottom"
+  )
+
+p_connected_alpha
+```
