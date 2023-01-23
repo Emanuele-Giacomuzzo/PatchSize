@@ -29,7 +29,7 @@ ds_patches %>%
           fill = eco_metaeco_type
         )
       ) +
-      geom_boxplot() +
+      geom_boxplot(width = boxplot_width) +
       labs(
         x = "Day",
         y = "Ble Density (indiv/ml)",
@@ -43,7 +43,9 @@ ds_patches %>%
         legend.position = "bottom"
       ) +
       scale_fill_manual(
-        values = c(colour_isolated, colour_different_size, colour_same_size),
+        values = c(colour_isolated, 
+                   colour_different_size, 
+                   colour_same_size),
         labels = c(
           name_S_isolated,
           name_S_connected_to_L,
@@ -52,37 +54,37 @@ ds_patches %>%
       )  +
       scale_x_continuous(breaks = unique(ds_patches$day)) +
       geom_vline(
-        xintercept = resource_flow_days[1] + 0.7,
+        xintercept = resource_flow_days[1],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[2] + 0.7,
+        xintercept = resource_flow_days[2],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[3] + 0.7,
+        xintercept = resource_flow_days[3],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[4] + 0.7,
+        xintercept = resource_flow_days[4],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[5] + 0.7,
+        xintercept = resource_flow_days[5],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[6] + 0.7,
+        xintercept = resource_flow_days[6],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
@@ -124,37 +126,37 @@ p_effect_size = ds_patches_effect_size %>%
         legend.position = "bottom"
       ) +
       geom_vline(
-        xintercept = resource_flow_days[1] + 0.7,
+        xintercept = resource_flow_days[1],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[2] + 0.7,
+        xintercept = resource_flow_days[2],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[3] + 0.7,
+        xintercept = resource_flow_days[3],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[4] + 0.7,
+        xintercept = resource_flow_days[4],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[5] + 0.7,
+        xintercept = resource_flow_days[5],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[6] + 0.7,
+        xintercept = resource_flow_days[6],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
@@ -233,7 +235,7 @@ ds_patches %>%
           fill = eco_metaeco_type
         )
       ) +
-      geom_boxplot() +
+      geom_boxplot(width = boxplot_width) +
       labs(
         x = "Day",
         y = "Cep Density (indiv/ml)",
@@ -256,37 +258,37 @@ ds_patches %>%
       )  +
       scale_x_continuous(breaks = unique(ds_patches$day)) +
       geom_vline(
-        xintercept = resource_flow_days[1] + 0.7,
+        xintercept = resource_flow_days[1],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[2] + 0.7,
+        xintercept = resource_flow_days[2],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[3] + 0.7,
+        xintercept = resource_flow_days[3],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[4] + 0.7,
+        xintercept = resource_flow_days[4],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[5] + 0.7,
+        xintercept = resource_flow_days[5],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[6] + 0.7,
+        xintercept = resource_flow_days[6],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
@@ -328,37 +330,37 @@ p_effect_size = ds_patches_effect_size %>%
         legend.position = "bottom"
       ) +
       geom_vline(
-        xintercept = resource_flow_days[1] + 0.7,
+        xintercept = resource_flow_days[1],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[2] + 0.7,
+        xintercept = resource_flow_days[2],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[3] + 0.7,
+        xintercept = resource_flow_days[3],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[4] + 0.7,
+        xintercept = resource_flow_days[4],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[5] + 0.7,
+        xintercept = resource_flow_days[5],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[6] + 0.7,
+        xintercept = resource_flow_days[6],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
@@ -437,7 +439,7 @@ ds_patches %>%
           fill = eco_metaeco_type
         )
       ) +
-      geom_boxplot() +
+      geom_boxplot(width = boxplot_width) +
       labs(
         x = "Day",
         y = "Col Density (indiv/ml)",
@@ -460,37 +462,37 @@ ds_patches %>%
       )  +
       scale_x_continuous(breaks = unique(ds_patches$day)) +
       geom_vline(
-        xintercept = resource_flow_days[1] + 0.7,
+        xintercept = resource_flow_days[1],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[2] + 0.7,
+        xintercept = resource_flow_days[2],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[3] + 0.7,
+        xintercept = resource_flow_days[3],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[4] + 0.7,
+        xintercept = resource_flow_days[4],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[5] + 0.7,
+        xintercept = resource_flow_days[5],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[6] + 0.7,
+        xintercept = resource_flow_days[6],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
@@ -532,37 +534,37 @@ p_effect_size = ds_patches_effect_size %>%
         legend.position = "bottom"
       ) +
       geom_vline(
-        xintercept = resource_flow_days[1] + 0.7,
+        xintercept = resource_flow_days[1],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[2] + 0.7,
+        xintercept = resource_flow_days[2],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[3] + 0.7,
+        xintercept = resource_flow_days[3],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[4] + 0.7,
+        xintercept = resource_flow_days[4],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[5] + 0.7,
+        xintercept = resource_flow_days[5],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[6] + 0.7,
+        xintercept = resource_flow_days[6],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
@@ -641,7 +643,7 @@ ds_patches %>%
           fill = eco_metaeco_type
         )
       ) +
-      geom_boxplot() +
+      geom_boxplot(width = boxplot_width) +
       labs(
         x = "Day",
         y = "Eug Density (indiv/ml)",
@@ -664,37 +666,37 @@ ds_patches %>%
       )  +
       scale_x_continuous(breaks = unique(ds_patches$day)) +
       geom_vline(
-        xintercept = resource_flow_days[1] + 0.7,
+        xintercept = resource_flow_days[1],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[2] + 0.7,
+        xintercept = resource_flow_days[2],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[3] + 0.7,
+        xintercept = resource_flow_days[3],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[4] + 0.7,
+        xintercept = resource_flow_days[4],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[5] + 0.7,
+        xintercept = resource_flow_days[5],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[6] + 0.7,
+        xintercept = resource_flow_days[6],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
@@ -736,37 +738,37 @@ p_effect_size = ds_patches_effect_size %>%
         legend.position = "bottom"
       ) +
       geom_vline(
-        xintercept = resource_flow_days[1] + 0.7,
+        xintercept = resource_flow_days[1],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[2] + 0.7,
+        xintercept = resource_flow_days[2],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[3] + 0.7,
+        xintercept = resource_flow_days[3],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[4] + 0.7,
+        xintercept = resource_flow_days[4],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[5] + 0.7,
+        xintercept = resource_flow_days[5],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[6] + 0.7,
+        xintercept = resource_flow_days[6],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
@@ -845,7 +847,7 @@ ds_patches %>%
           fill = eco_metaeco_type
         )
       ) +
-      geom_boxplot() +
+      geom_boxplot(width = boxplot_width) +
       labs(
         x = "Day",
         y = "Eup Density (indiv/ml)",
@@ -868,37 +870,37 @@ ds_patches %>%
       )  +
       scale_x_continuous(breaks = unique(ds_patches$day)) +
       geom_vline(
-        xintercept = resource_flow_days[1] + 0.7,
+        xintercept = resource_flow_days[1],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[2] + 0.7,
+        xintercept = resource_flow_days[2],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[3] + 0.7,
+        xintercept = resource_flow_days[3],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[4] + 0.7,
+        xintercept = resource_flow_days[4],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[5] + 0.7,
+        xintercept = resource_flow_days[5],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[6] + 0.7,
+        xintercept = resource_flow_days[6],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
@@ -940,37 +942,37 @@ p_effect_size = ds_patches_effect_size %>%
         legend.position = "bottom"
       ) +
       geom_vline(
-        xintercept = resource_flow_days[1] + 0.7,
+        xintercept = resource_flow_days[1],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[2] + 0.7,
+        xintercept = resource_flow_days[2],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[3] + 0.7,
+        xintercept = resource_flow_days[3],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[4] + 0.7,
+        xintercept = resource_flow_days[4],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[5] + 0.7,
+        xintercept = resource_flow_days[5],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[6] + 0.7,
+        xintercept = resource_flow_days[6],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
@@ -1049,7 +1051,7 @@ ds_patches %>%
           fill = eco_metaeco_type
         )
       ) +
-      geom_boxplot() +
+      geom_boxplot(width = boxplot_width) +
       labs(
         x = "Day",
         y = "Lox Density (indiv/ml)",
@@ -1072,37 +1074,37 @@ ds_patches %>%
       )  +
       scale_x_continuous(breaks = unique(ds_patches$day)) +
       geom_vline(
-        xintercept = resource_flow_days[1] + 0.7,
+        xintercept = resource_flow_days[1],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[2] + 0.7,
+        xintercept = resource_flow_days[2],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[3] + 0.7,
+        xintercept = resource_flow_days[3],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[4] + 0.7,
+        xintercept = resource_flow_days[4],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[5] + 0.7,
+        xintercept = resource_flow_days[5],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[6] + 0.7,
+        xintercept = resource_flow_days[6],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
@@ -1144,37 +1146,37 @@ p_effect_size = ds_patches_effect_size %>%
         legend.position = "bottom"
       ) +
       geom_vline(
-        xintercept = resource_flow_days[1] + 0.7,
+        xintercept = resource_flow_days[1],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[2] + 0.7,
+        xintercept = resource_flow_days[2],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[3] + 0.7,
+        xintercept = resource_flow_days[3],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[4] + 0.7,
+        xintercept = resource_flow_days[4],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[5] + 0.7,
+        xintercept = resource_flow_days[5],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[6] + 0.7,
+        xintercept = resource_flow_days[6],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
@@ -1253,7 +1255,7 @@ ds_patches %>%
           fill = eco_metaeco_type
         )
       ) +
-      geom_boxplot() +
+      geom_boxplot(width = boxplot_width) +
       labs(
         x = "Day",
         y = "Pau Density (indiv/ml)",
@@ -1276,37 +1278,37 @@ ds_patches %>%
       )  +
       scale_x_continuous(breaks = unique(ds_patches$day)) +
       geom_vline(
-        xintercept = resource_flow_days[1] + 0.7,
+        xintercept = resource_flow_days[1],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[2] + 0.7,
+        xintercept = resource_flow_days[2],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[3] + 0.7,
+        xintercept = resource_flow_days[3],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[4] + 0.7,
+        xintercept = resource_flow_days[4],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[5] + 0.7,
+        xintercept = resource_flow_days[5],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[6] + 0.7,
+        xintercept = resource_flow_days[6],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
@@ -1348,37 +1350,37 @@ p_effect_size = ds_patches_effect_size %>%
         legend.position = "bottom"
       ) +
       geom_vline(
-        xintercept = resource_flow_days[1] + 0.7,
+        xintercept = resource_flow_days[1],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[2] + 0.7,
+        xintercept = resource_flow_days[2],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[3] + 0.7,
+        xintercept = resource_flow_days[3],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[4] + 0.7,
+        xintercept = resource_flow_days[4],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[5] + 0.7,
+        xintercept = resource_flow_days[5],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[6] + 0.7,
+        xintercept = resource_flow_days[6],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
@@ -1457,7 +1459,7 @@ ds_patches %>%
           fill = eco_metaeco_type
         )
       ) +
-      geom_boxplot() +
+      geom_boxplot(width = boxplot_width) +
       labs(
         x = "Day",
         y = "Pca Density (indiv/ml)",
@@ -1480,37 +1482,37 @@ ds_patches %>%
       )  +
       scale_x_continuous(breaks = unique(ds_patches$day)) +
       geom_vline(
-        xintercept = resource_flow_days[1] + 0.7,
+        xintercept = resource_flow_days[1],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[2] + 0.7,
+        xintercept = resource_flow_days[2],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[3] + 0.7,
+        xintercept = resource_flow_days[3],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[4] + 0.7,
+        xintercept = resource_flow_days[4],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[5] + 0.7,
+        xintercept = resource_flow_days[5],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[6] + 0.7,
+        xintercept = resource_flow_days[6],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
@@ -1552,37 +1554,37 @@ p_effect_size = ds_patches_effect_size %>%
         legend.position = "bottom"
       ) +
       geom_vline(
-        xintercept = resource_flow_days[1] + 0.7,
+        xintercept = resource_flow_days[1],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[2] + 0.7,
+        xintercept = resource_flow_days[2],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[3] + 0.7,
+        xintercept = resource_flow_days[3],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[4] + 0.7,
+        xintercept = resource_flow_days[4],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[5] + 0.7,
+        xintercept = resource_flow_days[5],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[6] + 0.7,
+        xintercept = resource_flow_days[6],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
@@ -1661,7 +1663,7 @@ ds_patches %>%
           fill = eco_metaeco_type
         )
       ) +
-      geom_boxplot() +
+      geom_boxplot(width = boxplot_width) +
       labs(
         x = "Day",
         y = "Spi Density (indiv/ml)",
@@ -1684,37 +1686,37 @@ ds_patches %>%
       )  +
       scale_x_continuous(breaks = unique(ds_patches$day)) +
       geom_vline(
-        xintercept = resource_flow_days[1] + 0.7,
+        xintercept = resource_flow_days[1],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[2] + 0.7,
+        xintercept = resource_flow_days[2],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[3] + 0.7,
+        xintercept = resource_flow_days[3],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[4] + 0.7,
+        xintercept = resource_flow_days[4],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[5] + 0.7,
+        xintercept = resource_flow_days[5],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[6] + 0.7,
+        xintercept = resource_flow_days[6],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
@@ -1756,37 +1758,37 @@ p_effect_size = ds_patches_effect_size %>%
         legend.position = "bottom"
       ) +
       geom_vline(
-        xintercept = resource_flow_days[1] + 0.7,
+        xintercept = resource_flow_days[1],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[2] + 0.7,
+        xintercept = resource_flow_days[2],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[3] + 0.7,
+        xintercept = resource_flow_days[3],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[4] + 0.7,
+        xintercept = resource_flow_days[4],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[5] + 0.7,
+        xintercept = resource_flow_days[5],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[6] + 0.7,
+        xintercept = resource_flow_days[6],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
@@ -1865,7 +1867,7 @@ ds_patches %>%
           fill = eco_metaeco_type
         )
       ) +
-      geom_boxplot() +
+      geom_boxplot(width = boxplot_width) +
       labs(
         x = "Day",
         y = "Spi_te Density (indiv/ml)",
@@ -1888,37 +1890,37 @@ ds_patches %>%
       )  +
       scale_x_continuous(breaks = unique(ds_patches$day)) +
       geom_vline(
-        xintercept = resource_flow_days[1] + 0.7,
+        xintercept = resource_flow_days[1],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[2] + 0.7,
+        xintercept = resource_flow_days[2],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[3] + 0.7,
+        xintercept = resource_flow_days[3],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[4] + 0.7,
+        xintercept = resource_flow_days[4],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[5] + 0.7,
+        xintercept = resource_flow_days[5],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[6] + 0.7,
+        xintercept = resource_flow_days[6],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
@@ -1960,37 +1962,37 @@ p_effect_size = ds_patches_effect_size %>%
         legend.position = "bottom"
       ) +
       geom_vline(
-        xintercept = resource_flow_days[1] + 0.7,
+        xintercept = resource_flow_days[1],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[2] + 0.7,
+        xintercept = resource_flow_days[2],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[3] + 0.7,
+        xintercept = resource_flow_days[3],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[4] + 0.7,
+        xintercept = resource_flow_days[4],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[5] + 0.7,
+        xintercept = resource_flow_days[5],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[6] + 0.7,
+        xintercept = resource_flow_days[6],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
@@ -2069,7 +2071,7 @@ ds_patches %>%
           fill = eco_metaeco_type
         )
       ) +
-      geom_boxplot() +
+      geom_boxplot(width = boxplot_width) +
       labs(
         x = "Day",
         y = "Tet Density (indiv/ml)",
@@ -2092,37 +2094,37 @@ ds_patches %>%
       )  +
       scale_x_continuous(breaks = unique(ds_patches$day)) +
       geom_vline(
-        xintercept = resource_flow_days[1] + 0.7,
+        xintercept = resource_flow_days[1],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[2] + 0.7,
+        xintercept = resource_flow_days[2],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[3] + 0.7,
+        xintercept = resource_flow_days[3],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[4] + 0.7,
+        xintercept = resource_flow_days[4],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[5] + 0.7,
+        xintercept = resource_flow_days[5],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[6] + 0.7,
+        xintercept = resource_flow_days[6],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
@@ -2164,37 +2166,37 @@ p_effect_size = ds_patches_effect_size %>%
         legend.position = "bottom"
       ) +
       geom_vline(
-        xintercept = resource_flow_days[1] + 0.7,
+        xintercept = resource_flow_days[1],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[2] + 0.7,
+        xintercept = resource_flow_days[2],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[3] + 0.7,
+        xintercept = resource_flow_days[3],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[4] + 0.7,
+        xintercept = resource_flow_days[4],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[5] + 0.7,
+        xintercept = resource_flow_days[5],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[6] + 0.7,
+        xintercept = resource_flow_days[6],
         linetype = "dotdash",
         color = "grey",
         size = 0.7

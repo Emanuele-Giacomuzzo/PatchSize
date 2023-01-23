@@ -22,7 +22,7 @@ ds_metaecosystems %>%
       fill = metaecosystem_type
     )
   ) +
-  geom_boxplot() +
+  geom_boxplot(width = boxplot_width) +
   labs(
     x = "Day",
     y = name_y_axis_total_bioarea,

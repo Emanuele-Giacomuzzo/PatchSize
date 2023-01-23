@@ -22,39 +22,39 @@ ds_metaecosystems %>%
       fill = metaecosystem_type
     )
   ) +
-  geom_boxplot() +
+  geom_boxplot(width = boxplot_width) +
   geom_vline(
-    xintercept = resource_flow_days[1] + 0.7,
+    xintercept = resource_flow_days[1],
     linetype = "dotdash",
     color = "grey",
     size = 0.7
   ) +
   geom_vline(
-    xintercept = resource_flow_days[2] + 0.7,
+    xintercept = resource_flow_days[2],
     linetype = "dotdash",
     color = "grey",
     size = 0.7
   ) +
   geom_vline(
-    xintercept = resource_flow_days[3] + 0.7,
+    xintercept = resource_flow_days[3],
     linetype = "dotdash",
     color = "grey",
     size = 0.7
   ) +
   geom_vline(
-    xintercept = resource_flow_days[4] + 0.7,
+    xintercept = resource_flow_days[4],
     linetype = "dotdash",
     color = "grey",
     size = 0.7
   ) +
   geom_vline(
-    xintercept = resource_flow_days[5] + 0.7,
+    xintercept = resource_flow_days[5],
     linetype = "dotdash",
     color = "grey",
     size = 0.7
   ) +
   geom_vline(
-    xintercept = resource_flow_days[6] + 0.7,
+    xintercept = resource_flow_days[6],
     linetype = "dotdash",
     color = "grey",
     size = 0.7
@@ -95,51 +95,51 @@ p_all_metaecos_gamma = ds_metaecosystems %>%
   )) +
   geom_point(stat = "summary",
              fun = "mean",
-             position = position_dodge(1)) +
+             position = position_dodge(dodging)) +
   geom_line(
     stat = "summary",
     fun = "mean",
     aes(group = metaecosystem_type),
-    position = position_dodge(1)
+    position = position_dodge(dodging)
   ) +
   geom_errorbar(
     aes(ymax = gamma_shannon + ci,
         ymin = gamma_shannon - ci),
     width = .2,
-    position = position_dodge(1)
+    position = position_dodge(dodging)
   ) +
   geom_vline(
-    xintercept = resource_flow_days[1] + 0.7,
+    xintercept = resource_flow_days[1],
     linetype = "dotdash",
     color = "grey",
     size = 0.7
   ) +
   geom_vline(
-    xintercept = resource_flow_days[2] + 0.7,
+    xintercept = resource_flow_days[2],
     linetype = "dotdash",
     color = "grey",
     size = 0.7
   ) +
   geom_vline(
-    xintercept = resource_flow_days[3] + 0.7,
+    xintercept = resource_flow_days[3],
     linetype = "dotdash",
     color = "grey",
     size = 0.7
   ) +
   geom_vline(
-    xintercept = resource_flow_days[4] + 0.7,
+    xintercept = resource_flow_days[4],
     linetype = "dotdash",
     color = "grey",
     size = 0.7
   ) +
   geom_vline(
-    xintercept = resource_flow_days[5] + 0.7,
+    xintercept = resource_flow_days[5],
     linetype = "dotdash",
     color = "grey",
     size = 0.7
   ) +
   geom_vline(
-    xintercept = resource_flow_days[6] + 0.7,
+    xintercept = resource_flow_days[6],
     linetype = "dotdash",
     color = "grey",
     size = 0.7

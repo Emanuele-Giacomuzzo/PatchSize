@@ -7,15 +7,16 @@ editor_options:
   chunk_output_type: console
 ---
 
-### Isolated patches {.tabset .tabset-pill}
-
-#### Low disturbance
+#### Body Size Distribution {.tabset .tabset-pills}
 
 ```{r}
+
+#Body Size Distribution mean + 95% CI
+
 for(time_point_input in 0:7) {
   print(
     ds_classes_effect_size %>%
-      filter(disturbance == "low",
+      filter(disturbance == disturbance_input,
              metaecosystem == "no",
              day == time_point_input*4) %>%
       ggplot(
@@ -39,77 +40,27 @@ for(time_point_input in 0:7) {
         position = position_dodge(0.05)
       ) +
       scale_color_manual(
-        values = c(colour_large, colour_medium, colour_small),
+        values = c(colour_L,
+                   colour_M, 
+                   colour_S),
         labels = c(name_L_isolated,
                    name_M_isolated,
                    name_S_isolated)
-      ) +
-      theme_bw() +
-      theme(
-        panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(),
-        legend.position = c(.95, .95),
-        legend.justification = c("right", "top"),
-        legend.box.just = "right",
-        legend.margin = margin(6, 6, 6, 6)
-      ) +
-      labs(
-        title = paste0("Day = ", (time_point_input*4)),
-        x = 'Log size (μm2)',
-        y = 'Log abundance + 1 (indiv/μm2)',
-        color = ""
-      )
-  )
-}
-```
-
-#### High disturbance
-
-```{r}
-for(time_point_input in 0:7) {
-  print(
-    ds_classes_effect_size %>%
-      filter(disturbance == "high",
-             metaecosystem == "no",
-             day == time_point_input*4) %>%
-      ggplot(
-        aes(
-          x = log_size_class,
-          y = log_abundance,
-          group = interaction(log_size_class, eco_metaeco_type),
-          color = eco_metaeco_type
-        )
-      ) +
-      geom_point(stat = "summary", fun = "mean") +
-      geom_line(
-        stat = "summary",
-        fun = "mean",
-        aes(group = eco_metaeco_type)
-      ) +
-      geom_errorbar(
-        aes(ymax = log_abundance_upper_ci,
-            ymin = log_abundance_lower_ci),
-        width = .2,
-        position = position_dodge(0.05)
-      ) +
-      scale_color_manual(
-        values = c(colour_large, colour_medium, colour_small),
-        labels = c(name_L_isolated,
-                   name_M_isolated,
-                   name_S_isolated)
-      ) +
-      labs(
-        title = paste0("Day = ", (time_point_input*4)),
-        x = 'Log size (μm2)',
-        y = 'Log abundance + 1 (indiv/μm2)',
-        color = ""
       ) +
       theme_bw() +
       theme(
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
         legend.position = "bottom"
+      ) +
+      labs(
+        title = paste0("Day = ", (time_point_input*4)),
+        x = name_x_axis_size_class,
+        y = 'Log abundance + 1 (indiv/μm2)',
+        color = ""
       )
+      # ) +
+      # scale_x_continuous(breaks = unique(round(ds_classes_effect_size$log_size_class, digits = 1)))
   )
 }
 ```

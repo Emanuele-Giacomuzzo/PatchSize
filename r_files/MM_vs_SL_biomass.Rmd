@@ -20,39 +20,39 @@ ds_patches %>%
     group = interaction(day, eco_metaeco_type),
     fill = eco_metaeco_type
   )) +
-  geom_boxplot() +
+  geom_boxplot(width = boxplot_width) +
   geom_vline(
-    xintercept = resource_flow_days[1] + 0.7,
+    xintercept = resource_flow_days[1],
     linetype = "dotdash",
     color = "grey",
     size = 0.7
   ) +
   geom_vline(
-    xintercept = resource_flow_days[2] + 0.7,
+    xintercept = resource_flow_days[2],
     linetype = "dotdash",
     color = "grey",
     size = 0.7
   ) +
   geom_vline(
-    xintercept = resource_flow_days[3] + 0.7,
+    xintercept = resource_flow_days[3],
     linetype = "dotdash",
     color = "grey",
     size = 0.7
   ) +
   geom_vline(
-    xintercept = resource_flow_days[4] + 0.7,
+    xintercept = resource_flow_days[4],
     linetype = "dotdash",
     color = "grey",
     size = 0.7
   ) +
   geom_vline(
-    xintercept = resource_flow_days[5] + 0.7,
+    xintercept = resource_flow_days[5],
     linetype = "dotdash",
     color = "grey",
     size = 0.7
   ) +
   geom_vline(
-    xintercept = resource_flow_days[6] + 0.7,
+    xintercept = resource_flow_days[6],
     linetype = "dotdash",
     color = "grey",
     size = 0.7
@@ -64,7 +64,7 @@ ds_patches %>%
     caption = caption_resource_flow
   ) +
   scale_fill_manual(
-    values = c(colour_small, colour_medium, colour_large),
+    values = c(colour_S, colour_M, colour_L),
     labels = c(name_S_connected_to_L,
                name_M_connected_to_M,
                name_L_connected_to_S)
@@ -97,49 +97,49 @@ p_connected_biomass = ds_patches %>%
   ) +
   geom_point(stat = "summary", 
              fun = "mean",
-             position = position_dodge(1)) +
+             position = position_dodge(dodging)) +
   geom_line(stat = "summary",
             fun = "mean",
             aes(group = eco_metaeco_type),
-            position = position_dodge(1)) +
+            position = position_dodge(dodging)) +
   geom_errorbar(
     aes(ymax = bioarea_per_volume + ci,
         ymin = bioarea_per_volume - ci),
     width = .2,
-    position = position_dodge(1)
+    position = position_dodge(dodging)
   ) +
   geom_vline(
-    xintercept = resource_flow_days[1] + 0.7,
+    xintercept = resource_flow_days[1],
     linetype = "dotdash",
     color = "grey",
     size = 0.7
   ) +
   geom_vline(
-    xintercept = resource_flow_days[2] + 0.7,
+    xintercept = resource_flow_days[2],
     linetype = "dotdash",
     color = "grey",
     size = 0.7
   ) +
   geom_vline(
-    xintercept = resource_flow_days[3] + 0.7,
+    xintercept = resource_flow_days[3],
     linetype = "dotdash",
     color = "grey",
     size = 0.7
   ) +
   geom_vline(
-    xintercept = resource_flow_days[4] + 0.7,
+    xintercept = resource_flow_days[4],
     linetype = "dotdash",
     color = "grey",
     size = 0.7
   ) +
   geom_vline(
-    xintercept = resource_flow_days[5] + 0.7,
+    xintercept = resource_flow_days[5],
     linetype = "dotdash",
     color = "grey",
     size = 0.7
   ) +
   geom_vline(
-    xintercept = resource_flow_days[6] + 0.7,
+    xintercept = resource_flow_days[6],
     linetype = "dotdash",
     color = "grey",
     size = 0.7
@@ -151,9 +151,9 @@ p_connected_biomass = ds_patches %>%
     caption = caption_resource_flow
   ) +
    scale_color_manual(
-     values = c(colour_large,
-                colour_medium,
-                colour_small),
+     values = c(colour_L,
+                colour_M,
+                colour_S),
      labels = c(name_L_connected_to_S,
                 name_M_connected_to_M,
                 name_S_connected_to_L)
@@ -163,7 +163,8 @@ p_connected_biomass = ds_patches %>%
     panel.grid.major = element_blank(),
     panel.grid.minor = element_blank(),
     legend.position = "bottom"
-  )
+  ) +
+  scale_x_continuous(breaks = unique(ds_patches$day))
 
 p_connected_biomass
 ```
@@ -200,37 +201,37 @@ ds_metaecosystems %>%
       ) +
       scale_x_continuous(breaks = unique(ds_metaecosystems$day)) +
       geom_vline(
-        xintercept = resource_flow_days[1] + 0.7,
+        xintercept = resource_flow_days[1],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[2] + 0.7,
+        xintercept = resource_flow_days[2],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[3] + 0.7,
+        xintercept = resource_flow_days[3],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[4] + 0.7,
+        xintercept = resource_flow_days[4],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[5] + 0.7,
+        xintercept = resource_flow_days[5],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[6] + 0.7,
+        xintercept = resource_flow_days[6],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
@@ -250,7 +251,7 @@ p_boxplots = ds_metaecosystems %>%
           fill = metaecosystem_type
         )
       ) +
-      geom_boxplot() +
+      geom_boxplot(width = boxplot_width) +
       labs(
         x = "Day",
         y = name_y_axis_total_bioarea,
@@ -270,37 +271,37 @@ p_boxplots = ds_metaecosystems %>%
       )  +
       scale_x_continuous(breaks = unique(ds_metaecosystems$day)) +
       geom_vline(
-        xintercept = resource_flow_days[1] + 0.7,
+        xintercept = resource_flow_days[1],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[2] + 0.7,
+        xintercept = resource_flow_days[2],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[3] + 0.7,
+        xintercept = resource_flow_days[3],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[4] + 0.7,
+        xintercept = resource_flow_days[4],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[5] + 0.7,
+        xintercept = resource_flow_days[5],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[6] + 0.7,
+        xintercept = resource_flow_days[6],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
@@ -308,6 +309,99 @@ p_boxplots = ds_metaecosystems %>%
       labs(caption = caption_resource_flow)
 
 p_boxplots
+```
+
+```{r}
+p_MM_SL_biomass = ds_metaecosystems %>%
+  filter(disturbance == disturbance_input) %>%
+  summarySE(measurevar = "total_metaecosystem_bioarea",
+            groupvars = c("day", "metaecosystem_type")) %>%
+  filter(day > 5,
+         metaecosystem_type %in% c("S_L",
+                                   "M_M")) %>%
+  ggplot(
+    aes(
+      x = day,
+      y = total_metaecosystem_bioarea,
+      group = interaction(day, metaecosystem_type),
+      color = metaecosystem_type
+    )
+  ) +
+  geom_point(stat = "summary",
+             fun = "mean",
+             position = position_dodge(dodging)) +
+  geom_line(
+    stat = "summary",
+    fun = "mean",
+    aes(group = metaecosystem_type),
+    position = position_dodge(dodging)
+  ) +
+  geom_errorbar(
+    aes(ymax = total_metaecosystem_bioarea + ci,
+        ymin = total_metaecosystem_bioarea - ci),
+    width = .2,
+    position = position_dodge(dodging)
+  ) +
+  geom_vline(
+    xintercept = resource_flow_days[1],
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_vline(
+    xintercept = resource_flow_days[2],
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_vline(
+    xintercept = resource_flow_days[3],
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_vline(
+    xintercept = resource_flow_days[4],
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_vline(
+    xintercept = resource_flow_days[5],
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_vline(
+    xintercept = resource_flow_days[6],
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  labs(
+    x = "Day",
+    y = name_y_axis_total_bioarea,
+    color = "",
+    caption = caption_resource_flow
+  ) +
+  scale_color_manual(
+    values = c(
+      colour_MM,
+      colour_SL
+    ),
+    labels = c(
+      name_MM,
+      name_SL
+    )
+  ) +
+  theme_bw() +
+  theme(
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    legend.position = "bottom"
+  )
+
+p_MM_SL_biomass
 ```
 
 ```{r}
@@ -324,680 +418,44 @@ full_model = lmer(
     day +
     metaecosystem_type +
     metaecosystem_type : day +
+    baseline_bioarea + 
+    baseline_bioarea : day + 
     (day | system_nr),
   data = filtered_data,
   REML = FALSE,
   control = lmerControl(optimizer = "Nelder_Mead")
 )
 
+summary(full_model)
 plot(full_model)
 qqnorm(resid(full_model))
+```
 
+```{r}
 null_model = lmer(
   total_metaecosystem_bioarea ~
     day +
+    baseline_bioarea + 
+    baseline_bioarea : day + 
     (day | system_nr),
   data = filtered_data,
   REML = FALSE,
   control = lmerControl(optimizer = "Nelder_Mead")
 )
 
-AIC = AIC(full_model, null_model) #When I add baseline_bioarea : day, the AIC of the model stays the same when I take off the ecosystem type.
-
+AIC = AIC(full_model, null_model)
 AIC
-
 AIC_full = AIC$AIC[1]
 AIC_null = AIC$AIC[2]
 deltaAIC = AIC_full - AIC_null
-deltaAIC = round(deltaAIC, digits = 2)
+deltaAIC_MM_SL_biomass = round(deltaAIC, digits = 2)
 
 anova = anova(full_model, null_model)
 anova
-
 p_value = anova$`Pr(>Chisq)`[2]
-p_value = round(p_value, digits = 3)
-```
-
-```{r}
-p_boxplots + 
-  labs(title = paste0("ΔAIC = ", deltaAIC , ", p = ", p_value))
-```
-
-##### Time point 1
-
-Let's start by looking at whether meta-ecosystem type and disturbance had an effect at time point = 1. At this time point, no disturbance event had yet occurred. Therefore, we would not expect an effect of disturbance. In regards to meta-ecosystem type, there might be an effect if it comes from just the sizes of the two ecosystems.
-
-```{r}
-chosen_time_point = 1
-
-filtered_data = ds_metaecosystems %>%
-                            filter(disturbance == disturbance_input,
-                                   metaecosystem_type %in% c("M_M", "S_L"),
-                                   time_point == chosen_time_point)
-
-day_of_time_point = unique(filtered_data$day)
-```
-
-```{r}
-time_point_1 = filtered_data %>%
-      ggplot (aes(x = metaecosystem_type,
-                  y = total_metaecosystem_bioarea)) +
-      geom_boxplot() +
-      labs(
-        title = paste0(
-          "Time point = ",
-          chosen_time_point
-        ),
-        x = "",
-        y = name_y_axis_total_bioarea,
-        color = '',
-        fill = ''
-      ) +
-      scale_fill_manual(
-        values = c(colour_MM, colour_SL),
-        labels = c(name_MM,
-                   name_SL)
-      ) +
-      theme_bw() +
-      theme(
-        panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank()
-      )
-
-time_point_1
-```
-
-```{r}
-
-full_model = lm(total_metaecosystem_bioarea ~
-            metaecosystem_type,
-          data = filtered_data)
-
-par(mfrow=c(2,3))
-plot(full_model, which = 1:5)
-
-null_model = lm(total_metaecosystem_bioarea ~
-                  1,
-          data = filtered_data)
-
-
-AIC = AIC(full_model, null_model)
-AIC
-AIC_full = AIC$AIC[1]
-AIC_null = AIC$AIC[2]
-deltaAIC = AIC_full - AIC_null
-deltaAIC = round(deltaAIC, digits = 2)
-
-anova = anova(full_model, null_model)
-anova
-
-p_value = anova$`Pr(>F)`[2]
-p_value = round(p_value, digits = 3)
-
-R2_full = glance(full_model)$r.squared
-R2_null = glance(null_model)$r.squared
-R2_P =  R2_full - R2_null
-R2_P = round(R2_P, digits = 2)
-```
-
-```{r}
-time_point_1 +
-  labs(
-    title = paste0(
-      "Day = ",
-      day_of_time_point,
-      ", ΔAIC = ",
-      deltaAIC ,
-      ", p = ",
-      p_value,
-      ", Adjusted R2 = ",
-      R2_P
-    )
-  )
-```
-
-##### Time point 2
-
-```{r}
-chosen_time_point = 2
-
-filtered_data = ds_metaecosystems %>%
-                            filter(disturbance == disturbance_input,
-                                   metaecosystem_type %in% c("M_M", "S_L"),
-                                   time_point == chosen_time_point)
-
-day_of_time_point = unique(filtered_data$day)
-```
-
-```{r}
-time_point_2 = filtered_data %>%
-      ggplot (aes(x = metaecosystem_type,
-                  y = total_metaecosystem_bioarea)) +
-      geom_boxplot() +
-      labs(
-        title = paste0(
-          "Time point = ",
-          chosen_time_point
-        ),
-        x = "",
-        y = name_y_axis_total_bioarea,
-        color = '',
-        fill = ''
-      ) +
-      scale_fill_manual(
-        values = c(colour_MM, colour_SL),
-        labels = c(name_MM,
-                   name_SL)
-      ) +
-      theme_bw() +
-      theme(
-        panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank()
-      )
-
-time_point_2
-```
-
-```{r}
-
-full_model = lm(total_metaecosystem_bioarea ~
-            metaecosystem_type,
-          data = filtered_data)
-
-par(mfrow=c(2,3))
-plot(full_model, which = 1:5)
-
-null_model = lm(total_metaecosystem_bioarea ~
-                  1,
-          data = filtered_data)
-
-
-AIC = AIC(full_model, null_model)
-AIC
-AIC_full = AIC$AIC[1]
-AIC_null = AIC$AIC[2]
-deltaAIC = AIC_full - AIC_null
-deltaAIC = round(deltaAIC, digits = 2)
-
-anova = anova(full_model, null_model)
-anova
-
-p_value = anova$`Pr(>F)`[2]
-p_value = round(p_value, digits = 3)
-
-R2_full = glance(full_model)$r.squared
-R2_null = glance(null_model)$r.squared
-R2_P =  R2_full - R2_null
-R2_P = round(R2_P, digits = 2)
-```
-
-```{r}
-time_point_2 +
-  labs(
-    title = paste0(
-      "Day = ",
-      day_of_time_point,
-      ", ΔAIC = ",
-      deltaAIC ,
-      ", p = ",
-      p_value,
-      ", Adjusted R2 = ",
-      R2_P
-    )
-  )
-```
-
-##### Time point 3
-
-```{r}
-chosen_time_point = 3
-
-filtered_data = ds_metaecosystems %>%
-                            filter(disturbance == disturbance_input,
-                                   metaecosystem_type %in% c("M_M", "S_L"),
-                                   time_point == chosen_time_point)
-
-day_of_time_point = unique(filtered_data$day)
-```
-
-```{r}
-time_point_3 = filtered_data %>%
-      ggplot (aes(x = metaecosystem_type,
-                  y = total_metaecosystem_bioarea)) +
-      geom_boxplot() +
-      labs(
-        title = paste0(
-          "Time point = ",
-          chosen_time_point
-        ),
-        x = "",
-        y = name_y_axis_total_bioarea,
-        color = '',
-        fill = ''
-      ) +
-      scale_fill_manual(
-        values = c(colour_MM, colour_SL),
-        labels = c(name_MM,
-                   name_SL)
-      ) +
-      theme_bw() +
-      theme(
-        panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank()
-      )
-
-time_point_3
-```
-
-```{r}
-
-full_model = lm(total_metaecosystem_bioarea ~
-            metaecosystem_type,
-          data = filtered_data)
-
-par(mfrow=c(2,3))
-plot(full_model, which = 1:5)
-
-null_model = lm(total_metaecosystem_bioarea ~
-                  1,
-          data = filtered_data)
-
-
-AIC = AIC(full_model, null_model)
-AIC
-AIC_full = AIC$AIC[1]
-AIC_null = AIC$AIC[2]
-deltaAIC = AIC_full - AIC_null
-deltaAIC = round(deltaAIC, digits = 2)
-
-anova = anova(full_model, null_model)
-anova
-
-p_value = anova$`Pr(>F)`[2]
-p_value = round(p_value, digits = 3)
-
-R2_full = glance(full_model)$r.squared
-R2_null = glance(null_model)$r.squared
-R2_P =  R2_full - R2_null
-R2_P = round(R2_P, digits = 2)
-```
-
-```{r}
-time_point_3 +
-  labs(
-    title = paste0(
-      "Day = ",
-      day_of_time_point,
-      ", ΔAIC = ",
-      deltaAIC ,
-      ", p = ",
-      p_value,
-      ", Adjusted R2 = ",
-      R2_P
-    )
-  )
-```
-
-##### Time point 4
-
-```{r}
-chosen_time_point = 4
-
-filtered_data = ds_metaecosystems %>%
-                            filter(disturbance == disturbance_input,
-                                   metaecosystem_type %in% c("M_M", "S_L"),
-                                   time_point == chosen_time_point)
-
-day_of_time_point = unique(filtered_data$day)
-```
-
-```{r}
-time_point_4 = filtered_data %>%
-      ggplot (aes(x = metaecosystem_type,
-                  y = total_metaecosystem_bioarea)) +
-      geom_boxplot() +
-      labs(
-        title = paste0(
-          "Time point = ",
-          chosen_time_point
-        ),
-        x = "",
-        y = name_y_axis_total_bioarea,
-        color = '',
-        fill = ''
-      ) +
-      scale_fill_manual(
-        values = c(colour_MM, colour_SL),
-        labels = c(name_MM,
-                   name_SL)
-      ) +
-      theme_bw() +
-      theme(
-        panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank()
-      )
-
-time_point_4
-```
-
-```{r}
-
-full_model = lm(total_metaecosystem_bioarea ~
-            metaecosystem_type,
-          data = filtered_data)
-
-par(mfrow=c(2,3))
-plot(full_model, which = 1:5)
-
-null_model = lm(total_metaecosystem_bioarea ~
-                  1,
-          data = filtered_data)
-
-
-AIC = AIC(full_model, null_model)
-AIC
-AIC_full = AIC$AIC[1]
-AIC_null = AIC$AIC[2]
-deltaAIC = AIC_full - AIC_null
-deltaAIC = round(deltaAIC, digits = 2)
-
-anova = anova(full_model, null_model)
-anova
-
-p_value = anova$`Pr(>F)`[2]
-p_value = round(p_value, digits = 3)
-
-R2_full = glance(full_model)$r.squared
-R2_null = glance(null_model)$r.squared
-R2_P =  R2_full - R2_null
-R2_P = round(R2_P, digits = 2)
-```
-
-```{r}
-time_point_4 +
-  labs(
-    title = paste0(
-      "Day = ",
-      day_of_time_point,
-      ", ΔAIC = ",
-      deltaAIC ,
-      ", p = ",
-      p_value,
-      ", Adjusted R2 = ",
-      R2_P
-    )
-  )
-```
-
-##### Time point 5
-
-```{r}
-chosen_time_point = 5
-
-filtered_data = ds_metaecosystems %>%
-                            filter(disturbance == disturbance_input,
-                                   metaecosystem_type %in% c("M_M", "S_L"),
-                                   time_point == chosen_time_point)
-
-day_of_time_point = unique(filtered_data$day)
-```
-
-```{r}
-time_point_5 = filtered_data %>%
-      ggplot (aes(x = metaecosystem_type,
-                  y = total_metaecosystem_bioarea)) +
-      geom_boxplot() +
-      labs(
-        title = paste0(
-          "Time point = ",
-          chosen_time_point
-        ),
-        x = "",
-        y = name_y_axis_total_bioarea,
-        color = '',
-        fill = ''
-      ) +
-      scale_fill_manual(
-        values = c(colour_MM, colour_SL),
-        labels = c(name_MM,
-                   name_SL)
-      ) +
-      theme_bw() +
-      theme(
-        panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank()
-      )
-
-time_point_5
-```
-
-```{r}
-
-full_model = lm(total_metaecosystem_bioarea ~
-            metaecosystem_type,
-          data = filtered_data)
-
-par(mfrow=c(2,3))
-plot(full_model, which = 1:5)
-
-null_model = lm(total_metaecosystem_bioarea ~
-                  1,
-          data = filtered_data)
-
-
-AIC = AIC(full_model, null_model)
-AIC
-AIC_full = AIC$AIC[1]
-AIC_null = AIC$AIC[2]
-deltaAIC = AIC_full - AIC_null
-deltaAIC = round(deltaAIC, digits = 2)
-
-anova = anova(full_model, null_model)
-anova
-
-p_value = anova$`Pr(>F)`[2]
-p_value = round(p_value, digits = 3)
-
-R2_full = glance(full_model)$r.squared
-R2_null = glance(null_model)$r.squared
-R2_P =  R2_full - R2_null
-R2_P = round(R2_P, digits = 2)
-```
-
-```{r}
-time_point_5 +
-  labs(
-    title = paste0(
-      "Day = ",
-      day_of_time_point,
-      ", ΔAIC = ",
-      deltaAIC ,
-      ", p = ",
-      p_value,
-      ", Adjusted R2 = ",
-      R2_P
-    )
-  )
-```
-
-##### Time point 6
-
-```{r}
-chosen_time_point = 6
-
-filtered_data = ds_metaecosystems %>%
-                            filter(disturbance == disturbance_input,
-                                   metaecosystem_type %in% c("M_M", "S_L"),
-                                   time_point == chosen_time_point)
-
-day_of_time_point = unique(filtered_data$day)
-```
-
-```{r}
-time_point_6 = filtered_data %>%
-      ggplot (aes(x = metaecosystem_type,
-                  y = total_metaecosystem_bioarea)) +
-      geom_boxplot() +
-      labs(
-        title = paste0(
-          "Time point = ",
-          chosen_time_point
-        ),
-        x = "",
-        y = name_y_axis_total_bioarea,
-        color = '',
-        fill = ''
-      ) +
-      scale_fill_manual(
-        values = c(colour_MM, colour_SL),
-        labels = c(name_MM,
-                   name_SL)
-      ) +
-      theme_bw() +
-      theme(
-        panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank()
-      )
-
-time_point_6
-```
-
-```{r}
-
-full_model = lm(total_metaecosystem_bioarea ~
-            metaecosystem_type,
-          data = filtered_data)
-
-par(mfrow=c(2,3))
-plot(full_model, which = 1:5)
-
-null_model = lm(total_metaecosystem_bioarea ~
-                  1,
-          data = filtered_data)
-
-
-AIC = AIC(full_model, null_model)
-AIC
-AIC_full = AIC$AIC[1]
-AIC_null = AIC$AIC[2]
-deltaAIC = AIC_full - AIC_null
-deltaAIC = round(deltaAIC, digits = 2)
-
-anova = anova(full_model, null_model)
-anova
-
-p_value = anova$`Pr(>F)`[2]
-p_value = round(p_value, digits = 3)
-
-R2_full = glance(full_model)$r.squared
-R2_null = glance(null_model)$r.squared
-R2_P =  R2_full - R2_null
-R2_P = round(R2_P, digits = 2)
-```
-
-```{r}
-time_point_6 +
-  labs(
-    title = paste0(
-      "Day = ",
-      day_of_time_point,
-      ", ΔAIC = ",
-      deltaAIC ,
-      ", p = ",
-      p_value,
-      ", Adjusted R2 = ",
-      R2_P
-    )
-  )
-```
-
-##### Time point 7
-
-```{r}
-chosen_time_point = 7
-
-filtered_data = ds_metaecosystems %>%
-                            filter(disturbance == disturbance_input,
-                                   metaecosystem_type %in% c("M_M", "S_L"),
-                                   time_point == chosen_time_point)
-
-day_of_time_point = unique(filtered_data$day)
-```
-
-```{r}
-time_point_7 = filtered_data %>%
-      ggplot (aes(x = metaecosystem_type,
-                  y = total_metaecosystem_bioarea)) +
-      geom_boxplot() +
-      labs(
-        title = paste0(
-          "Time point = ",
-          chosen_time_point
-        ),
-        x = "",
-        y = name_y_axis_total_bioarea,
-        color = '',
-        fill = ''
-      ) +
-      scale_fill_manual(
-        values = c(colour_MM, colour_SL),
-        labels = c(name_MM,
-                   name_SL)
-      ) +
-      theme_bw() +
-      theme(
-        panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank()
-      )
-
-time_point_7
-```
-
-```{r}
-
-full_model = lm(total_metaecosystem_bioarea ~
-            metaecosystem_type,
-          data = filtered_data)
-
-par(mfrow=c(2,3))
-plot(full_model, which = 1:5)
-
-null_model = lm(total_metaecosystem_bioarea ~
-                  1,
-          data = filtered_data)
-
-
-AIC = AIC(full_model, null_model)
-AIC
-AIC_full = AIC$AIC[1]
-AIC_null = AIC$AIC[2]
-deltaAIC = AIC_full - AIC_null
-deltaAIC = round(deltaAIC, digits = 2)
-
-anova = anova(full_model, null_model)
-anova
-
-p_value = anova$`Pr(>F)`[2]
-p_value = round(p_value, digits = 3)
-
-R2_full = glance(full_model)$r.squared
-R2_null = glance(null_model)$r.squared
-R2_P =  R2_full - R2_null
-R2_P = round(R2_P, digits = 2)
-```
-
-```{r}
-time_point_7 +
-  labs(
-    title = paste0(
-      "Day = ",
-      day_of_time_point,
-      ", ΔAIC = ",
-      deltaAIC ,
-      ", p = ",
-      p_value,
-      ", Adjusted R2 = ",
-      R2_P
-    )
-  )
+if(p_value == 0){
+  p_value_MM_SL_biomass = "< 0.001"
+} else {
+  p_value_MM_SL_biomass = round(p_value, digits = 3)
+}
 ```

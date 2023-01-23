@@ -1,0 +1,69 @@
+---
+title: "size_classes_patches_small"
+output: html_document
+date: "2022-12-05"
+editor_options: 
+  chunk_output_type: console
+---
+
+#### Size Classes {.tabset .tabset-pills}
+
+```{r}
+filtered_data = ds_classes %>%
+  filter(disturbance == disturbance_input,
+         metaecosystem == "no") %>%
+  ungroup() %>%
+  summarySE(measurevar = "size_class_abundance",
+            groupvars = c("day", 
+                          "size_class_n",
+                          "eco_metaeco_type"))
+
+for(size_class_input in 1:nr_of_size_classes) {
+
+  p = filtered_data %>%
+    filter(size_class_n == size_class_input) %>%
+    ggplot(aes(x = day,
+               y = size_class_abundance,
+               color = eco_metaeco_type)) +
+    geom_point(position = position_dodge(0.5)) +
+    geom_line(position = position_dodge(0.5)) +
+    geom_errorbar(
+      aes(ymin = size_class_abundance + ci,
+          ymax = size_class_abundance - ci),
+      width = .2,
+      position = position_dodge(0.5)
+    ) +
+    geom_hline(
+      yintercept = 0,
+      linetype = "dotted",
+      color = "black",
+      size = 0.7
+    ) +
+    labs(
+      x = name_time_axis,
+      y = paste0(
+        "Class ",
+        size_class_input,
+        " ",
+        name_y_axis_size_class_effect_size
+      ),
+      color = ""
+    ) +
+    scale_color_manual(
+      values = c(colour_L,
+                 colour_M,
+                 colour_S),
+      labels = c(name_L,
+                 name_M,
+                 name_S)
+    ) +
+    theme_bw() +
+    theme(
+      panel.grid.major = element_blank(),
+      panel.grid.minor = element_blank(),
+      legend.position = "bottom"
+    )
+  
+  print(p)
+}
+```

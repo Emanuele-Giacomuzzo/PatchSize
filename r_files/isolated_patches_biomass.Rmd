@@ -20,39 +20,39 @@ ds_patches %>%
     group = interaction(day, eco_metaeco_type),
     fill = eco_metaeco_type
   )) +
-  geom_boxplot() +
+  geom_boxplot(width = boxplot_width) +
   geom_vline(
-    xintercept = resource_flow_days[1] + 0.7,
+    xintercept = resource_flow_days[1],
     linetype = "dotdash",
     color = "grey",
     size = 0.7
   ) +
   geom_vline(
-    xintercept = resource_flow_days[2] + 0.7,
+    xintercept = resource_flow_days[2],
     linetype = "dotdash",
     color = "grey",
     size = 0.7
   ) +
   geom_vline(
-    xintercept = resource_flow_days[3] + 0.7,
+    xintercept = resource_flow_days[3],
     linetype = "dotdash",
     color = "grey",
     size = 0.7
   ) +
   geom_vline(
-    xintercept = resource_flow_days[4] + 0.7,
+    xintercept = resource_flow_days[4],
     linetype = "dotdash",
     color = "grey",
     size = 0.7
   ) +
   geom_vline(
-    xintercept = resource_flow_days[5] + 0.7,
+    xintercept = resource_flow_days[5],
     linetype = "dotdash",
     color = "grey",
     size = 0.7
   ) +
   geom_vline(
-    xintercept = resource_flow_days[6] + 0.7,
+    xintercept = resource_flow_days[6],
     linetype = "dotdash",
     color = "grey",
     size = 0.7
@@ -64,7 +64,7 @@ ds_patches %>%
     caption = caption_resource_flow
   ) +
   scale_fill_manual(
-    values = c(colour_small, colour_medium, colour_large),
+    values = c(colour_S, colour_M, colour_L),
     labels = c(name_S_isolated,
                name_M_isolated,
                name_L_isolated)
@@ -97,49 +97,49 @@ p_isolated_biomass = ds_patches %>%
   ) +
   geom_point(stat = "summary", 
              fun = "mean",
-             position = position_dodge(1)) +
+             position = position_dodge(dodging)) +
   geom_line(stat = "summary",
             fun = "mean",
             aes(group = eco_metaeco_type),
-            position = position_dodge(1)) +
+            position = position_dodge(dodging)) +
   geom_errorbar(
     aes(ymax = bioarea_per_volume + ci,
         ymin = bioarea_per_volume - ci),
     width = .2,
-    position = position_dodge(1)
+    position = position_dodge(dodging)
   ) +
   geom_vline(
-    xintercept = resource_flow_days[1] + 0.7,
+    xintercept = resource_flow_days[1],
     linetype = "dotdash",
     color = "grey",
     size = 0.7
   ) +
   geom_vline(
-    xintercept = resource_flow_days[2] + 0.7,
+    xintercept = resource_flow_days[2],
     linetype = "dotdash",
     color = "grey",
     size = 0.7
   ) +
   geom_vline(
-    xintercept = resource_flow_days[3] + 0.7,
+    xintercept = resource_flow_days[3],
     linetype = "dotdash",
     color = "grey",
     size = 0.7
   ) +
   geom_vline(
-    xintercept = resource_flow_days[4] + 0.7,
+    xintercept = resource_flow_days[4],
     linetype = "dotdash",
     color = "grey",
     size = 0.7
   ) +
   geom_vline(
-    xintercept = resource_flow_days[5] + 0.7,
+    xintercept = resource_flow_days[5],
     linetype = "dotdash",
     color = "grey",
     size = 0.7
   ) +
   geom_vline(
-    xintercept = resource_flow_days[6] + 0.7,
+    xintercept = resource_flow_days[6],
     linetype = "dotdash",
     color = "grey",
     size = 0.7
@@ -151,9 +151,9 @@ p_isolated_biomass = ds_patches %>%
     caption = caption_resource_flow
   ) +
    scale_color_manual(
-     values = c(colour_large,
-                colour_medium,
-                colour_small),
+     values = c(colour_L,
+                colour_M,
+                colour_S),
      labels = c(name_L,
                 name_M,
                 name_S)
@@ -166,4 +166,63 @@ p_isolated_biomass = ds_patches %>%
   )
 
 p_isolated_biomass
+```
+
+```{r}
+filtered_data = ds_patches %>%
+  filter(
+    disturbance == disturbance_input,
+    metaecosystem == "no",
+    time_point >= first_time_point_model,
+    time_point <= last_time_point_model
+  )
+```
+
+```{r}
+full_model = lmer(
+  bioarea_per_volume ~
+    day +
+    patch_size_volume +
+    patch_size_volume : day +
+    baseline_bioarea + 
+    baseline_bioarea : day +
+    (day | culture_ID),
+  data = filtered_data,
+  REML = FALSE,
+  control = lmerControl(optimizer = "Nelder_Mead")
+)
+
+summary(full_model)
+
+plot(full_model)
+qqnorm(resid(full_model))
+```
+
+```{r}
+null_model = lmer(
+  bioarea_per_volume ~
+    day +
+    baseline_bioarea + 
+    baseline_bioarea : day +
+    (day | culture_ID),
+  data = filtered_data,
+  REML = FALSE,
+  control = lmerControl(optimizer = "Nelder_Mead")
+)
+
+AIC = AIC(full_model, null_model)
+AIC
+AIC_full = AIC$AIC[1]
+AIC_null = AIC$AIC[2]
+deltaAIC = AIC_full - AIC_null
+deltaAIC_isolated_biomass = round(deltaAIC, digits = 2)
+
+anova = anova(full_model, null_model)
+anova
+p_value = anova$`Pr(>Chisq)`[2]
+if(p_value == 0){
+  p_value_isolated_biomass = "< 0.001"
+} else {
+  p_value_isolated_biomass = round(p_value, digits = 3)
+}
 ```

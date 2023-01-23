@@ -9,18 +9,7 @@ editor_options:
 
 #### Body Size Distribution {.tabset .tabset-pills}
 
-##### Mean (GIFS)
-
-```{r echo = FALSE, eval = include_GIFS}
-
-if(disturbance_input == "low"){
-include_graphics(here("gifs", "transition_day_S_low.gif"))}
-
-if(disturbance_input == "high"){
-include_graphics(here("gifs", "transition_day_S_high.gif"))}
-```
-
-##### Mean (Static)
+##### Mean & 95% CI
 
 ```{r}
 
@@ -30,7 +19,7 @@ for(time_point_input in 0:7) {
   print(
     ds_classes_effect_size %>%
       filter(disturbance == disturbance_input,
-             eco_metaeco_type == "S (S_S)" | eco_metaeco_type == "S (S_L)",
+             eco_metaeco_type %in% c("S", "S (S_S)", "S (S_L)"),
              day == time_point_input*4) %>%
       ggplot(
         aes(
@@ -53,8 +42,11 @@ for(time_point_input in 0:7) {
         position = position_dodge(0.05)
       ) +
       scale_color_manual(
-        values = c(colour_different_size, colour_same_size),
-        labels = c(name_S_connected_to_L,
+        values = c(colour_S,
+                   colour_different_size, 
+                   colour_same_size),
+        labels = c(name_S_isolated,
+                   name_S_connected_to_L,
                    name_S_connected_to_S)
       ) +
       theme_bw() +
@@ -65,10 +57,12 @@ for(time_point_input in 0:7) {
       ) +
       labs(
         title = paste0("Day = ", (time_point_input*4)),
-        x = 'Log size (μm2)',
+        x = name_x_axis_size_class,
         y = 'Log abundance + 1 (indiv/μm2)',
         color = ""
       )
+      # ) +
+      # scale_x_continuous(breaks = unique(round(ds_classes_effect_size$log_size_class, digits = 1)))
   )
 }
 ```
@@ -113,8 +107,8 @@ for(time_point_input in 0:7) {
       ) +
       labs(
         title = paste0("Day = ", (time_point_input * 4)),
-        x = 'Log size (μm2)',
-        y = 'Abundance Effect Size (Hedge\'s d)',
+        x = name_x_axis_size_class,
+        y = name_y_axis_size_class_effect_size,
         color = ""
       ) +
       geom_hline(

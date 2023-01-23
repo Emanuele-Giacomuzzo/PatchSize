@@ -45,37 +45,37 @@ ds_metaecosystems %>%
       ) +
       scale_x_continuous(breaks = unique(ds_metaecosystems$day)) +
       geom_vline(
-        xintercept = resource_flow_days[1] + 0.7,
+        xintercept = resource_flow_days[1],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[2] + 0.7,
+        xintercept = resource_flow_days[2],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[3] + 0.7,
+        xintercept = resource_flow_days[3],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[4] + 0.7,
+        xintercept = resource_flow_days[4],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[5] + 0.7,
+        xintercept = resource_flow_days[5],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[6] + 0.7,
+        xintercept = resource_flow_days[6],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
@@ -97,39 +97,39 @@ p_boxplots = ds_metaecosystems %>%
       fill = metaecosystem_type
     )
   ) +
-  geom_boxplot() +
+  geom_boxplot(width = boxplot_width) +
   geom_vline(
-    xintercept = resource_flow_days[1] + 0.7,
+    xintercept = resource_flow_days[1],
     linetype = "dotdash",
     color = "grey",
     size = 0.7
   ) +
   geom_vline(
-    xintercept = resource_flow_days[2] + 0.7,
+    xintercept = resource_flow_days[2],
     linetype = "dotdash",
     color = "grey",
     size = 0.7
   ) +
   geom_vline(
-    xintercept = resource_flow_days[3] + 0.7,
+    xintercept = resource_flow_days[3],
     linetype = "dotdash",
     color = "grey",
     size = 0.7
   ) +
   geom_vline(
-    xintercept = resource_flow_days[4] + 0.7,
+    xintercept = resource_flow_days[4],
     linetype = "dotdash",
     color = "grey",
     size = 0.7
   ) +
   geom_vline(
-    xintercept = resource_flow_days[5] + 0.7,
+    xintercept = resource_flow_days[5],
     linetype = "dotdash",
     color = "grey",
     size = 0.7
   ) +
   geom_vline(
-    xintercept = resource_flow_days[6] + 0.7,
+    xintercept = resource_flow_days[6],
     linetype = "dotdash",
     color = "grey",
     size = 0.7
@@ -151,6 +151,100 @@ p_boxplots = ds_metaecosystems %>%
 
 p_boxplots
 ```
+
+```{r}
+p_SL_SL_isolated_biomass = ds_metaecosystems %>%
+  filter(disturbance == disturbance_input) %>%
+  summarySE(measurevar = "total_metaecosystem_bioarea",
+            groupvars = c("day", "metaecosystem_type")) %>%
+  filter(day > 5,
+         metaecosystem_type %in% c("S_L",
+                                   "S_L_from_isolated")) %>%
+  ggplot(
+    aes(
+      x = day,
+      y = total_metaecosystem_bioarea,
+      group = interaction(day, metaecosystem_type),
+      color = metaecosystem_type
+    )
+  ) +
+  geom_point(stat = "summary",
+             fun = "mean",
+             position = position_dodge(dodging)) +
+  geom_line(
+    stat = "summary",
+    fun = "mean",
+    aes(group = metaecosystem_type),
+    position = position_dodge(dodging)
+  ) +
+  geom_errorbar(
+    aes(ymax = total_metaecosystem_bioarea + ci,
+        ymin = total_metaecosystem_bioarea - ci),
+    width = .2,
+    position = position_dodge(dodging)
+  ) +
+  geom_vline(
+    xintercept = resource_flow_days[1],
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_vline(
+    xintercept = resource_flow_days[2],
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_vline(
+    xintercept = resource_flow_days[3],
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_vline(
+    xintercept = resource_flow_days[4],
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_vline(
+    xintercept = resource_flow_days[5],
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_vline(
+    xintercept = resource_flow_days[6],
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  labs(
+    x = "Day",
+    y = name_y_axis_total_bioarea,
+    color = "",
+    caption = caption_resource_flow
+  ) +
+  scale_color_manual(
+    values = c(
+      colour_SL,
+      colour_SL_from_isolated
+    ),
+    labels = c(
+      name_SL,
+      name_SL_from_isolated
+    )
+  ) +
+  theme_bw() +
+  theme(
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    legend.position = "bottom"
+  )
+
+p_SL_SL_isolated_biomass
+```
+
 
 ```{r }
 
@@ -279,9 +373,6 @@ bootstrapped_statistics = data.frame(
 ```
 
 ```{r}
-p_value = round(bootstrapped_statistics$p_values_mean, digits = 3)
-delta_AIC = round(bootstrapped_statistics$delta_AIC_mean, digits = 2)
-
-p_boxplots + 
-  labs(title = paste0("p = ", p_value, ", ΔAIC = ", delta_AIC))
+p_value_SL_SL_isolated_biomass = round(bootstrapped_statistics$p_values_mean, digits = 3)
+delta_AIC_SL_SL_isolated_biomass = round(bootstrapped_statistics$delta_AIC_mean, digits = 2)
 ```

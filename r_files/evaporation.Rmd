@@ -44,7 +44,7 @@ ds_for_evaporation %>%
   filter(disturbance == disturbance) %>%
   ggplot(aes(x = as.character(nr_of_tubes_in_rack),
              y = evaporation)) + 
-  geom_boxplot() + 
+  geom_boxplot(width = boxplot_width) + 
   labs(x = "Number of tubes in rack", 
        y = "Evaporation (ml)")
 
@@ -52,7 +52,7 @@ ds_for_evaporation %>%
   filter(disturbance == disturbance) %>%
   ggplot(aes(x = as.character(patch_size),
              y = evaporation)) + 
-  geom_boxplot() + 
+  geom_boxplot(width = boxplot_width) + 
   labs(x = "Patch size", 
        y = "Evaporation (ml)")
 
@@ -60,7 +60,7 @@ ds_for_evaporation %>%
   filter(disturbance == disturbance) %>%
   ggplot(aes(x = as.character(day),
              y = evaporation)) + 
-  geom_boxplot() + 
+  geom_boxplot(width = boxplot_width) + 
   labs(x = "Day", 
        y = "Evaporation (ml)")
 
@@ -68,7 +68,7 @@ ds_for_evaporation %>%
   filter(disturbance == disturbance) %>%
   ggplot(aes(x = disturbance,
              y = evaporation)) + 
-  geom_boxplot() + 
+  geom_boxplot(width = boxplot_width) + 
   labs(x = "Disturbance", 
        y = "Evaporation (ml)")
 ```

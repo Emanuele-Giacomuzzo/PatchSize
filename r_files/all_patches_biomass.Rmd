@@ -21,7 +21,7 @@ ds_patches %>%
              y = bioarea_per_volume,
              group = interaction(day, eco_metaeco_type),
              fill = eco_metaeco_type)) +
-          geom_boxplot() +
+          geom_boxplot(width = boxplot_width) +
           labs(x = "Day",
                y = name_y_axis_bioarea_density,
                fill = "") +
@@ -50,7 +50,7 @@ ds_patches %>%
       fill = eco_metaeco_type
     )
   ) +
-  geom_boxplot() +
+  geom_boxplot(width = boxplot_width) +
   labs(
     x = "Day",
     y = name_y_axis_total_bioarea,

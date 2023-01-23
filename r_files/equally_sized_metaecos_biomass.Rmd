@@ -22,13 +22,13 @@ p_boxplots = ds_metaecosystems %>%
       fill = metaecosystem_type
     )
   ) +
-  geom_boxplot() +
+  geom_boxplot(width = boxplot_width) +
   labs(x = "Day",
        y = name_y_axis_total_bioarea,
        color = '',
        fill = '') +
   scale_fill_manual(
-    values = c(colour_small, colour_medium, colour_large),
+    values = c(colour_S, colour_M, colour_L),
     labels = c(name_SS,
                name_MM,
                name_LL)
@@ -41,37 +41,37 @@ p_boxplots = ds_metaecosystems %>%
   )  +
   scale_x_continuous(breaks = unique(ds_metaecosystems$day)) +
   geom_vline(
-    xintercept = resource_flow_days[1] + 0.7,
+    xintercept = resource_flow_days[1],
     linetype = "dotdash",
     color = "grey",
     size = 0.7
   ) +
   geom_vline(
-    xintercept = resource_flow_days[2] + 0.7,
+    xintercept = resource_flow_days[2],
     linetype = "dotdash",
     color = "grey",
     size = 0.7
   ) +
   geom_vline(
-    xintercept = resource_flow_days[3] + 0.7,
+    xintercept = resource_flow_days[3],
     linetype = "dotdash",
     color = "grey",
     size = 0.7
   ) +
   geom_vline(
-    xintercept = resource_flow_days[4] + 0.7,
+    xintercept = resource_flow_days[4],
     linetype = "dotdash",
     color = "grey",
     size = 0.7
   ) +
   geom_vline(
-    xintercept = resource_flow_days[5] + 0.7,
+    xintercept = resource_flow_days[5],
     linetype = "dotdash",
     color = "grey",
     size = 0.7
   ) +
   geom_vline(
-    xintercept = resource_flow_days[6] + 0.7,
+    xintercept = resource_flow_days[6],
     linetype = "dotdash",
     color = "grey",
     size = 0.7

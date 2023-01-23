@@ -45,37 +45,37 @@ ds_patches %>%
       )  +
       scale_x_continuous(breaks = unique(ds_patches$day)) +
       geom_vline(
-        xintercept = resource_flow_days[1] + 0.7,
+        xintercept = resource_flow_days[1],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[2] + 0.7,
+        xintercept = resource_flow_days[2],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[3] + 0.7,
+        xintercept = resource_flow_days[3],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[4] + 0.7,
+        xintercept = resource_flow_days[4],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[5] + 0.7,
+        xintercept = resource_flow_days[5],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[6] + 0.7,
+        xintercept = resource_flow_days[6],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
@@ -94,7 +94,7 @@ ds_patches %>%
           fill = eco_metaeco_type
         )
       ) +
-      geom_boxplot() +
+      geom_boxplot(width = boxplot_width) +
       labs(
         x = "Day",
         y = "Patch Bioarea (µm²/μl)",
@@ -117,37 +117,37 @@ ds_patches %>%
       ) +
       scale_x_continuous(breaks = unique(ds_patches$day)) +
       geom_vline(
-        xintercept = resource_flow_days[1] + 0.7,
+        xintercept = resource_flow_days[1],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[2] + 0.7,
+        xintercept = resource_flow_days[2],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[3] + 0.7,
+        xintercept = resource_flow_days[3],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[4] + 0.7,
+        xintercept = resource_flow_days[4],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[5] + 0.7,
+        xintercept = resource_flow_days[5],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
       ) +
       geom_vline(
-        xintercept = resource_flow_days[6] + 0.7,
+        xintercept = resource_flow_days[6],
         linetype = "dotdash",
         color = "grey",
         size = 0.7
@@ -187,37 +187,37 @@ p_effect_size = ds_patches_effect_size %>%
     legend.position = "bottom"
   ) +
   geom_vline(
-    xintercept = resource_flow_days[1] + 0.7,
+    xintercept = resource_flow_days[1],
     linetype = "dotdash",
     color = "grey",
     size = 0.7
   ) +
   geom_vline(
-    xintercept = resource_flow_days[2] + 0.7,
+    xintercept = resource_flow_days[2],
     linetype = "dotdash",
     color = "grey",
     size = 0.7
   ) +
   geom_vline(
-    xintercept = resource_flow_days[3] + 0.7,
+    xintercept = resource_flow_days[3],
     linetype = "dotdash",
     color = "grey",
     size = 0.7
   ) +
   geom_vline(
-    xintercept = resource_flow_days[4] + 0.7,
+    xintercept = resource_flow_days[4],
     linetype = "dotdash",
     color = "grey",
     size = 0.7
   ) +
   geom_vline(
-    xintercept = resource_flow_days[5] + 0.7,
+    xintercept = resource_flow_days[5],
     linetype = "dotdash",
     color = "grey",
     size = 0.7
   ) +
   geom_vline(
-    xintercept = resource_flow_days[6] + 0.7,
+    xintercept = resource_flow_days[6],
     linetype = "dotdash",
     color = "grey",
     size = 0.7
@@ -243,14 +243,17 @@ filtered_data = ds_patches_effect_size %>%
 ```{r small-patches-full-model}
 full_model = lm(bioarea_per_volume_d ~                  
                   eco_metaeco_type +
-                  eco_metaeco_type : day,
+                  eco_metaeco_type : day +
+                  baseline_bioarea + 
+                  baseline_bioarea : day,
                   data = filtered_data)
 
 par(mfrow = c(2,3))
 plot(full_model, which = 1:5)
 
 null_model = lm(bioarea_per_volume_d ~                  
-                  1,
+                  baseline_bioarea + 
+                  baseline_bioarea : day,
                   data = filtered_data)
 
 AIC = AIC(full_model, null_model)
@@ -270,9 +273,4 @@ R2_full = glance(full_model)$r.squared
 R2_null = glance(null_model)$r.squared
 R2_P =  R2_full - R2_null
 R2_P = round(R2_P, digits = 2)
-```
-
-```{r}
-p_effect_size +
-  labs(title = paste0("ΔAIC = ", deltaAIC , ", p = ", p_value, ", Adjusted R2 = ", R2_P))
 ```

@@ -7,23 +7,19 @@ editor_options:
   chunk_output_type: console
 ---
 
-### Large patches {.tabset .tabset-pills}
+#### Body Size Distribution {.tabset .tabset-pills}
 
-```{r eval = include_GIFS}
-include_graphics(here("gifs", "transition_day_L_low.gif"))
-include_graphics(here("gifs", "transition_day_L_high.gif"))
-```
-
-#### Low disturbance {.tabset .tabset-pills}
-
-##### Boxplots
+##### Mean & 95% CI
 
 ```{r}
+
+#Body Size Distribution mean + 95% CI
+
 for(time_point_input in 0:7) {
   print(
     ds_classes_effect_size %>%
-      filter(disturbance == "low",
-             eco_metaeco_type == "L (L_L)" | eco_metaeco_type == "L (S_L)",
+      filter(disturbance == disturbance_input,
+             eco_metaeco_type %in% c("L", "L (L_L)", "L (S_L)"),
              day == time_point_input*4) %>%
       ggplot(
         aes(
@@ -46,8 +42,11 @@ for(time_point_input in 0:7) {
         position = position_dodge(0.05)
       ) +
       scale_color_manual(
-        values = c(colour_different_size, colour_same_size),
-        labels = c(name_L_connected_to_L,
+        values = c(colour_L,
+                   colour_same_size,
+                   colour_different_size),
+        labels = c(name_L_isolated,
+                   name_L_connected_to_L,
                    name_L_connected_to_S)
       ) +
       theme_bw() +
@@ -58,10 +57,12 @@ for(time_point_input in 0:7) {
       ) +
       labs(
         title = paste0("Day = ", (time_point_input*4)),
-        x = 'Log size (μm2)',
+        x = name_x_axis_size_class,
         y = 'Log abundance + 1 (indiv/μm2)',
         color = ""
       )
+      # ) +
+      # scale_x_continuous(breaks = unique(round(ds_classes_effect_size$log_size_class, digits = 1)))
   )
 }
 ```
@@ -69,80 +70,33 @@ for(time_point_input in 0:7) {
 ##### Effect size
 
 ```{r}
+
+#Effect size
+
 for(time_point_input in 0:7) {
   print(
     ds_classes_effect_size %>%
-      filter(disturbance == "low",
-             eco_metaeco_type == "L (L_L)" | eco_metaeco_type == "L (S_L)",
-             day == time_point_input*4) %>%
+      filter(disturbance == disturbance_input,
+             eco_metaeco_type %in% c("L (L_L)", "L (S_L)"),
+             day == time_point_input * 4) %>%
       ggplot(
         aes(
           x = log_size_class,
           y = abundance_hedges_d,
-          group = interaction(log_size_class, eco_metaeco_type),
           color = eco_metaeco_type
         )
       ) +
-      geom_point(stat = "summary", fun = "mean") +
-      geom_line(
-        stat = "summary",
-        fun = "mean",
-        aes(group = eco_metaeco_type)
-      ) +
-      scale_color_manual(
-        values = c(colour_different_size, colour_same_size),
-        labels = c(name_L_connected_to_L,
-                   name_L_connected_to_S)
-      ) +
-      theme_bw() +
-      theme(
-        panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(),
-        legend.position = "bottom"
-      ) +
-      labs(
-        title = paste0("Day = ", (time_point_input*4)),
-        x = 'Log size (μm2)',
-        y = 'Log abundance + 1 (indiv/μm2)',
-        color = ""
-      )
-  )
-}
-```
-
-#### High disturbance {.tabset .tabset-pills}
-
-##### Boxplots
-
-```{r}
-for(time_point_input in 0:7) {
-  print(
-    ds_classes_effect_size %>%
-      filter(disturbance == "high") %>%
-      filter(eco_metaeco_type == "L (L_L)" | eco_metaeco_type == "L (S_L)") %>%
-      filter(day == time_point_input*4) %>%
-      ggplot(
-        aes(
-          x = log_size_class,
-          y = log_abundance,
-          group = interaction(log_size_class, eco_metaeco_type),
-          color = eco_metaeco_type
-        )
-      ) +
-      geom_point(stat = "summary", fun = "mean") +
-      geom_line(
-        stat = "summary",
-        fun = "mean",
-        aes(group = eco_metaeco_type)
-      ) +
+      geom_point(position = position_dodge(0.5)) +
+      geom_line(position = position_dodge(0.5)) +
       geom_errorbar(
-        aes(ymax = log_abundance_upper_ci,
-            ymin = log_abundance_lower_ci),
+        aes(ymin = abundance_hedges_d_lower,
+            ymax = abundance_hedges_d_upper),
         width = .2,
-        position = position_dodge(0.05)
+        position = position_dodge(0.5)
       ) +
       scale_color_manual(
-        values = c(colour_different_size, colour_same_size),
+        values = c(colour_same_size,
+                   colour_different_size),
         labels = c(name_L_connected_to_L,
                    name_L_connected_to_S)
       ) +
@@ -153,54 +107,22 @@ for(time_point_input in 0:7) {
         legend.position = "bottom"
       ) +
       labs(
-        title = paste0("Day = ", (time_point_input*4)),
-        x = 'Log size (μm2)',
-        y = 'Log abundance + 1 (indiv/μm2)',
+        title = paste0("Day = ", (time_point_input * 4)),
+        x = name_x_axis_size_class,
+        y = name_y_axis_size_class_effect_size,
         color = ""
-      )
-  )
-}
-```
-
-##### Effect size
-
-```{r}
-for(time_point_input in 0:7) {
-  print(
-    ds_classes_effect_size %>%
-      filter(disturbance == "high",
-             eco_metaeco_type == "L (L_L)" | eco_metaeco_type == "L (S_L)",
-             day == time_point_input*4) %>%
-      ggplot(
-        aes(
-          x = log_size_class,
-          y = abundance_hedges_d,
-          group = interaction(log_size_class, eco_metaeco_type),
-          color = eco_metaeco_type
-        )
       ) +
-      geom_point(stat = "summary", fun = "mean") +
-      geom_line(
-        stat = "summary",
-        fun = "mean",
-        aes(group = eco_metaeco_type)
+      geom_hline(
+        yintercept = 0,
+        linetype = "dotted",
+        color = "black",
+        size = 0.7
       ) +
-      scale_color_manual(
-        values = c(colour_different_size, colour_same_size),
-        labels = c(name_L_connected_to_L,
-                   name_L_connected_to_S)
-      ) +
-      labs(
-        title = paste0("Day = ", (time_point_input*4)),
-        x = 'Log size (μm2)',
-        y = 'Log abundance + 1 (indiv/μm2)',
-        color = ""
-      ) + 
-      theme_bw() +
-      theme(
-        panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(),
-        legend.position = "bottom"
+      geom_hline(
+        yintercept = 0,
+        linetype = "dotted",
+        color = "black",
+        size = 0.7
       )
   )
 }

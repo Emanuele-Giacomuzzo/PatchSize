@@ -1,7 +1,7 @@
 ---
 title: "PatchSizePilot"
 author: "Emanuele Giacomuzzo"
-date: "2022-08-03"
+date: "`r Sys.time()`"
 output: 
   html_document:
     code_folding: hide
@@ -52,7 +52,7 @@ recompute_analyses = FALSE #Lengthy analyses have been suppressed. Set recompute
 compute_n_display_datasets = TRUE
 include_non_clean_scripts = FALSE
 include_incomplete_time_series = FALSE
-include_GIFS = TRUE
+include_GIFS = FALSE
 save_figures = TRUE
 disturbance_input = "low"
 displays_datasets = FALSE
@@ -104,6 +104,7 @@ library("job")
 library("scales")
 library("Rmisc")
 library("ggpubr")
+library("patchwork")
 
 
 conflict_prefer("load", "base")
@@ -149,10 +150,13 @@ publication_height = 12
 publication_unit = "cm"
 presentation_size = 15
 
-name_SS = "Small-Small connected"
-name_MM = "Medium-Medium connected"
-name_LL = "Large-Large connected"
-name_SL = "Small-Large connected"
+dodging = 0.5 
+boxplot_width = 0.9
+
+name_SS = "Small-Small meta-ecosystem"
+name_MM = "Medium-Medium meta-ecosystem"
+name_LL = "Large-Large meta-ecosystem"
+name_SL = "Small-Large meta-ecosystem"
 name_MM_from_isolated = "Medium-Medium isolated"
 name_SL_from_isolated = "Small-Large isolated"
 
@@ -170,28 +174,44 @@ name_M = "Medium isolated"
 name_L = "Large isolated"
 
 name_y_axis_bioarea_density = "Bioarea Density (µm²/ml)"
+name_y_axis_bioarea_density_effect_size = "Bioarea Density Effect Size"
 name_y_axis_total_bioarea = "Total Bioarea (µm²)"
-name_y_axis_alpha_diversity = "Alpha Diversity (Shannon Index)"
-name_y_axis_beta_diversity = "Beta Diversity (Bray-Curtis Index)"
-name_y_axis_gamma_diversity = "Gamma Diversity (Shannon Index)"
+name_y_axis_alpha_diversity = "α Diversity"
+name_y_axis_alpha_diversity_effect_size = "α Diversity Effect Size"
+name_y_axis_beta_diversity = "β Diversity"
+name_y_axis_gamma_diversity = "γ Diversity"
+name_y_axis_size_class = 'Abundance (Indiv/ml)'
+name_y_axis_size_class_effect_size = "Abundance Effect Size"
+name_y_axis_median_body_size = "Median body size (µm²)"
+name_y_axis_median_body_size_effect_size = "Median Body Size Effect Size"
 
-name_y_axis_alpha_diversity_effect_size = "Alpha Diversity Effect Size (Hedge\'s d)"
-name_y_axis_size_class_effect_size = 'Abundance Effect Size (Hedge\'s d)'
+name_time_axis = "Day"
+name_x_axis_size_class = "Log size (μm2)"
 
-caption_resource_flow = "Vertical grey line: resource flow"
+caption_resource_flow = ""
+
+size_legend = 12
+size_x_axis = 16
+size_y_axis = 13
 
 #Choose colours. 
 
 colour_isolated = "#d9d9d9"
 colour_different_size = "#4992c6"
 colour_same_size = "#bc9960"
-colour_small = "#ffeda0"
-colour_medium = "#feb24c"
-colour_large = "#f03b20"
-colour_MM = "#dd7f42" #Colour of the Medium-Medium meta-ecosystem
-colour_MM_from_isolated = "#ffeda0"
-colour_SL = "#438cbe" #Colour of the Small-Large meta-ecosystem 
-colour_SL_from_isolated = "#9ecae1"
+
+colour_S = "#ffeda0"
+colour_M = "#feb24c"
+colour_L = "#f03b20"
+
+colour_S_connected_to_L = "#deebf7"  
+colour_L_connected_to_S = "#3182bd" 
+
+
+colour_MM = "#238b45"
+colour_MM_from_isolated = "#c7e9c0"
+colour_SL = "#8856a7" 
+colour_SL_from_isolated = "#dadaeb"
 ```
 
 #  {.tabset}
@@ -216,6 +236,12 @@ colour_SL_from_isolated = "#9ecae1"
 ```
 
 ```{r child = here("r_files", "data_individuals.Rmd"), eval = compute_n_display_datasets}
+```
+
+```{r child = here("r_files", "data_median_body_size.Rmd"), eval = compute_n_display_datasets}
+```
+
+```{r child = here("r_files", "data_median_body_size_effect_size.Rmd"), eval = compute_n_display_datasets}
 ```
 
 ```{r child = here("r_files", "data_classes.Rmd"), eval = compute_n_display_datasets}
@@ -289,7 +315,7 @@ colour_SL_from_isolated = "#9ecae1"
 ```{r child = here("r_files", "SL_vs_SL_from_isolated_biomass.Rmd")}
 ```
 
-```{r child = here("r_files", "SL_vs_SL_from_isolated_beta_diversity.Rmd"), eval = include_non_clean_scripts}
+```{r child = here("r_files", "SL_vs_SL_from_isolated_beta_diversity.Rmd")}
 ```
 
 ```{r child = here("r_files", "SL_vs_SL_from_isolated_gamma_diversity.Rmd"), eval = include_non_clean_scripts}
@@ -303,24 +329,13 @@ colour_SL_from_isolated = "#9ecae1"
 ```{r child = here("r_files", "MM_from_isolated_vs_SL_from_isolated_biomass.Rmd")}
 ```
 
-```{r child = here("r_files", "MM_from_isolated_vs_SL_from_isolated_beta_diversity.Rmd"), eval = include_non_clean_scripts}
+```{r child = here("r_files", "MM_from_isolated_vs_SL_from_isolated_beta.Rmd")}
 ```
 
 ```{r child = here("r_files", "MM_from_isolated_vs_SL_from_isolated_gamma_diversity.Rmd"), eval = include_non_clean_scripts}
 ```
 
 ```{r child = here("r_files", "MM_from_isolated_vs_SL_from_isolated_species_total.Rmd")}
-```
-
-### SL {.tabset .tabset-pills}
-
-```{r child = here("r_files", "SL_biomass.Rmd")}
-```
-
-```{r child = here("r_files", "SL_alpha_diversity.Rmd")}
-```
-
-```{r child = here("r_files", "SL_species_densities.Rmd")}
 ```
 
 ## Patches {.tabset .tabset-dropdown}
@@ -341,7 +356,10 @@ colour_SL_from_isolated = "#9ecae1"
 ```{r child = here("r_files", "isolated_patches_species_densities.Rmd")}
 ```
 
-```{r child = here("r_files", "isolated_patches_body_size_distribution.Rmd"), eval = include_non_clean_scripts}
+```{r child = here("r_files", "isolated_patches_body_size_distribution.Rmd")}
+```
+
+```{r child = here("r_files", "isolated_patches_size_classes.Rmd")}
 ```
 
 ### Small {.tabset .tabset-pills}
@@ -355,10 +373,13 @@ colour_SL_from_isolated = "#9ecae1"
 ```{r child = here("r_files", "small_patches_species_densities.Rmd")}
 ```
 
-```{r child = here("r_files", "small_patches_body_size_distribution.Rmd"), eval = include_non_clean_scripts}
+```{r child = here("r_files", "small_patches_median_body_size.Rmd")}
 ```
 
-```{r child = here("r_files", "small_patches_size_classes.Rmd"), eval = include_non_clean_scripts}
+```{r child = here("r_files", "small_patches_body_size_distribution.Rmd")}
+```
+
+```{r child = here("r_files", "small_patches_size_classes.Rmd")}
 ```
 
 ### Medium {.tabset .tabset-pills}
@@ -380,13 +401,33 @@ colour_SL_from_isolated = "#9ecae1"
 ```{r child = here("r_files", "large_patches_alpha_diversity.Rmd")}
 ```
 
-```{r child = here("r_files", "large_patches_species_densities.Rmd"), eval = include_non_clean_scripts}
+```{r child = here("r_files", "large_patches_species_densities.Rmd")}
 ```
 
-```{r child = here("r_files", "large_patches_body_size_distribution.Rmd"), eval = include_non_clean_scripts}
+```{r child = here("r_files", "large_patches_body_size_distribution.Rmd")}
 ```
 
-## Evaporation {.tabset .tabset-pills}
+```{r child = here("r_files", "large_patches_median_body_size.Rmd")}
+```
+
+```{r child = here("r_files", "large_patches_size_classes.Rmd")}
+```
+
+### SL {.tabset .tabset-pills}
+
+```{r child = here("r_files", "SL_biomass.Rmd")}
+```
+
+```{r child = here("r_files", "SL_alpha_diversity.Rmd")}
+```
+
+```{r child = here("r_files", "SL_species_densities.Rmd")}
+```
+
+```{r child = here("r_files", "SL_size_classes.Rmd")}
+```
+
+## Evaporation {.tabset .tabset-dropdown}
 
 ```{r child = here("r_files", "evaporation.Rmd")}
 ```
@@ -401,78 +442,8 @@ colour_SL_from_isolated = "#9ecae1"
 
 ## Paper
 
-### Introduction
-
-### Methods
-
-Put here a methods figure.
-
-### Results
-
-#### Isolated systems: effect of patch size
-
-In isolated ecosystems, the larger the patch, the more productive it was, as it also had higher biodiversity.
-
-```{r}
-ggarrange(
-  p_isolated_biomass,
-  p_isolated_alpha,
-  ncol = 2,
-  common.legend = TRUE,
-  legend = "bottom"
-)
+```{r child = here("r_files", "paper.Rmd")}
 ```
-
-Driven by the non-linear relationship between size and function (reference?), we see that the small-large isolated systems were more productive than medium-medium systems.
-
-```{r}
-ggarrange(
-  p_all_metaecos_biomass,
-  p_all_metaecos_beta,
-  ncol = 2,
-  common.legend = TRUE,
-  legend = "bottom"
-)
-#take off connected systems
-```
-
-Furthermore, small-large systems had more beta-diversity than medium-medium systems, as their patches had different size. However, the gamma diversity of small-large and medium-medium systems stayed the same (I don't know how to interpret).
-
-#### Connected systems: effects of resource flow
-
-When patches were connected into small-large and medium-medium meta-ecosystems, we notice that: (i) medium patches stay the same, as there is no difference between the two medium patches (ii) small patches are increased in productivity by receiving high amount of detritus, which in turn increases biodiversity (iii) large patches are decreased in productivity by receiving low amount of detritus, which in turn decreases biodiversity
-
-```{r}
-ggarrange(
-  p_connected_biomass_effect_size,
-  p_connected_alpha_effect_size,
-  ncol = 2,
-  common.legend = TRUE,
-  legend = "bottom"
-)
-```
-
-As we can see here, the function in the larger was decreased more than the function in the smaller was increased. Therefore, the connection between the two patches was detrimental for meta-ecosystem function. This means that when we connect a small and a large patch, the large patch might receive so little detritus that it basically receiving nothing. The function of the small is increased, but when taken the whole meta-ecosystem that doesn't add up too much.
-
-```{r}
-ggarrange(
-  p_all_metaecos_biomass,
-  p_all_metaecos_beta,
-  ncol = 2,
-  common.legend = TRUE,
-  legend = "bottom"
-)
-```
-
-Furthermore, as small and large ecosystems have more and more similar productivity they becomes more and more similar, which decreases beta diversity.
-
-I need to add here a figure with the body size distribution but first I need to run the code, as I haven't done it since I have the data on Spi.
-
-#### Discussion
-
-Patch size has an effect on meta-ecosystem function. However, this will depend upon the amount of resource flow happening between the two ecosystems. When there isn't any flow between the two ecosystems, small-large meta-ecosystems are the most productive (opposed to what @Benedetti-Cecchi2005 predicted). However, the more detritus is exchanged, the less the function of the meta-ecosystem, as it is mainly driven by the largest system. The small patch increases in function in
-
-The higher species richness experienced by small patches is in line with the Subsidized Island Biogeography Hypothesis (@Anderson2001). I need to read @Menegotto2020.
 
 ## Running time
 
@@ -480,5 +451,15 @@ The higher species richness experienced by small patches is in line with the Sub
 end_time = Sys.time()
 end_time - start_time
 ```
+
+## Other
+
+In the .bib file get rid of:
+
+-   book_section
+
+-   computer_program
+
+-   web_page
 
 ## Bibliography

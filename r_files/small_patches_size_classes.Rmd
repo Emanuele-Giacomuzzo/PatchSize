@@ -6,7 +6,72 @@ editor_options:
   chunk_output_type: console
 ---
 
-#### Size Classes
+#### Size Classes {.tabset .tabset-pills}
+
+##### Means & 95% CI
+
+```{r}
+filtered_data = ds_classes %>%
+  filter(disturbance == disturbance_input,
+         patch_size == "S") %>%
+  ungroup() %>%
+  summarySE(measurevar = "size_class_abundance",
+            groupvars = c("day", 
+                          "size_class_n",
+                          "eco_metaeco_type"))
+
+for(size_class_input in 1:nr_of_size_classes) {
+
+  p = filtered_data %>%
+    filter(size_class_n == size_class_input) %>%
+    ggplot(aes(x = day,
+               y = size_class_abundance,
+               color = eco_metaeco_type)) +
+    geom_point(position = position_dodge(0.5)) +
+    geom_line(position = position_dodge(0.5)) +
+    geom_errorbar(
+      aes(ymin = size_class_abundance + ci,
+          ymax = size_class_abundance - ci),
+      width = .2,
+      position = position_dodge(0.5)
+    ) +
+    geom_hline(
+      yintercept = 0,
+      linetype = "dotted",
+      color = "black",
+      size = 0.7
+    ) +
+    labs(
+      x = name_time_axis,
+      y = paste0(
+        "Class ",
+        size_class_input,
+        " ",
+        name_y_axis_size_class_effect_size
+      ),
+      color = ""
+    ) +
+    scale_color_manual(
+      values = c(colour_isolated,
+                 colour_different_size,
+                 colour_same_size),
+      labels = c(name_S,
+                 name_S_connected_to_L,
+                 name_S_connected_to_S)
+    ) +
+    theme_bw() +
+    theme(
+      panel.grid.major = element_blank(),
+      panel.grid.minor = element_blank(),
+      legend.position = "bottom"
+    )
+  
+  print(p)
+}
+```
+
+
+##### Effect sizes
 
 ```{r}
 small_class = NULL
@@ -15,7 +80,7 @@ for(size_class_input in 1:nr_of_size_classes){
 filtered_data = ds_classes_effect_size %>%
   filter(
     disturbance == disturbance_input,
-    eco_metaeco_type %in% c("S (S_S)", "S (S_L)"),
+    eco_metaeco_type %in% c("S (S_L)", "L (S_L)"),
     time_point >= first_time_point_model,
     time_point <= last_time_point_model,
     size_class_n == size_class_input
@@ -51,7 +116,8 @@ p_effect_size = ds_classes_effect_size %>%
       y = paste0(
         "Class ",
         size_class_input,
-        " Abundance Effect Size (Hedge\'s d)"
+        " ",
+        name_y_axis_size_class
       ),
       color = ""
     ) +
@@ -69,37 +135,37 @@ p_effect_size = ds_classes_effect_size %>%
 
 print(p_effect_size)
 
-full_model = lm(abundance_hedges_d ~                  
-                  eco_metaeco_type +
-                  eco_metaeco_type : day,
-                  data = filtered_data)
-
-# par(mfrow = c(2,3))
-# plot(full_model, which = 1:5)
-
-null_model = lm(abundance_hedges_d ~                  
-                  1,
-                  data = filtered_data)
-
-AIC = AIC(full_model, null_model)
-AIC
-AIC_full = AIC$AIC[1]
-AIC_null = AIC$AIC[2]
-deltaAIC = AIC_full - AIC_null
-deltaAIC = round(deltaAIC, digits = 2)
-
-anova = anova(full_model, null_model)
-anova
-
-p_value = anova$`Pr(>F)`[2]
-p_value = round(p_value, digits = 3)
-
-R2_full = glance(full_model)$r.squared
-R2_null = glance(null_model)$r.squared
-R2_P =  R2_full - R2_null
-R2_P = round(R2_P, digits = 2)
-
-small_class[[size_class_input]] = p_effect_size +
-  labs(title = paste0("ΔAIC = ", deltaAIC , ", p = ", p_value, ", Adjusted R2 = ", R2_P))
+# full_model = lm(abundance_hedges_d ~                  
+#                   eco_metaeco_type +
+#                   eco_metaeco_type : day,
+#                   data = filtered_data)
+# 
+# # par(mfrow = c(2,3))
+# # plot(full_model, which = 1:5)
+# 
+# null_model = lm(abundance_hedges_d ~                  
+#                   1,
+#                   data = filtered_data)
+# 
+# AIC = AIC(full_model, null_model)
+# AIC
+# AIC_full = AIC$AIC[1]
+# AIC_null = AIC$AIC[2]
+# deltaAIC = AIC_full - AIC_null
+# deltaAIC = round(deltaAIC, digits = 2)
+# 
+# anova = anova(full_model, null_model)
+# anova
+# 
+# p_value = anova$`Pr(>F)`[2]
+# p_value = round(p_value, digits = 3)
+# 
+# R2_full = glance(full_model)$r.squared
+# R2_null = glance(null_model)$r.squared
+# R2_P =  R2_full - R2_null
+# R2_P = round(R2_P, digits = 2)
+# 
+# small_class[[size_class_input]] = p_effect_size +
+#   labs(title = paste0("ΔAIC = ", deltaAIC , ", p = ", p_value, ", Adjusted R2 = ", R2_P))
 }
 ```

@@ -17,39 +17,39 @@ ds_patches %>%
     group = interaction(day, eco_metaeco_type),
     fill = eco_metaeco_type
   )) +
-  geom_boxplot() +
+  geom_boxplot(width = boxplot_width) +
   geom_vline(
-    xintercept = resource_flow_days[1] + 0.7,
+    xintercept = resource_flow_days[1],
     linetype = "dotdash",
     color = "grey",
     size = 0.7
   ) +
   geom_vline(
-    xintercept = resource_flow_days[2] + 0.7,
+    xintercept = resource_flow_days[2],
     linetype = "dotdash",
     color = "grey",
     size = 0.7
   ) +
   geom_vline(
-    xintercept = resource_flow_days[3] + 0.7,
+    xintercept = resource_flow_days[3],
     linetype = "dotdash",
     color = "grey",
     size = 0.7
   ) +
   geom_vline(
-    xintercept = resource_flow_days[4] + 0.7,
+    xintercept = resource_flow_days[4],
     linetype = "dotdash",
     color = "grey",
     size = 0.7
   ) +
   geom_vline(
-    xintercept = resource_flow_days[5] + 0.7,
+    xintercept = resource_flow_days[5],
     linetype = "dotdash",
     color = "grey",
     size = 0.7
   ) +
   geom_vline(
-    xintercept = resource_flow_days[6] + 0.7,
+    xintercept = resource_flow_days[6],
     linetype = "dotdash",
     color = "grey",
     size = 0.7
@@ -61,7 +61,7 @@ ds_patches %>%
     caption = caption_resource_flow
   ) +
   scale_fill_manual(
-    values = c(colour_small, colour_medium, colour_large),
+    values = c(colour_S, colour_M, colour_L),
     labels = c(name_S_connected_to_L,
                name_M_connected_to_M,
                name_L_connected_to_S)
@@ -94,49 +94,49 @@ p_connected_alpha = ds_patches %>%
   ) +
   geom_point(stat = "summary", 
              fun = "mean",
-             position = position_dodge(1)) +
+             position = position_dodge(dodging)) +
   geom_line(stat = "summary",
             fun = "mean",
             aes(group = eco_metaeco_type),
-            position = position_dodge(1)) +
+            position = position_dodge(dodging)) +
   geom_errorbar(
     aes(ymax = shannon + ci,
         ymin = shannon - ci),
     width = .2,
-    position = position_dodge(1)
+    position = position_dodge(dodging)
   ) +
   geom_vline(
-    xintercept = resource_flow_days[1] + 0.7,
+    xintercept = resource_flow_days[1],
     linetype = "dotdash",
     color = "grey",
     size = 0.7
   ) +
   geom_vline(
-    xintercept = resource_flow_days[2] + 0.7,
+    xintercept = resource_flow_days[2],
     linetype = "dotdash",
     color = "grey",
     size = 0.7
   ) +
   geom_vline(
-    xintercept = resource_flow_days[3] + 0.7,
+    xintercept = resource_flow_days[3],
     linetype = "dotdash",
     color = "grey",
     size = 0.7
   ) +
   geom_vline(
-    xintercept = resource_flow_days[4] + 0.7,
+    xintercept = resource_flow_days[4],
     linetype = "dotdash",
     color = "grey",
     size = 0.7
   ) +
   geom_vline(
-    xintercept = resource_flow_days[5] + 0.7,
+    xintercept = resource_flow_days[5],
     linetype = "dotdash",
     color = "grey",
     size = 0.7
   ) +
   geom_vline(
-    xintercept = resource_flow_days[6] + 0.7,
+    xintercept = resource_flow_days[6],
     linetype = "dotdash",
     color = "grey",
     size = 0.7
@@ -148,9 +148,9 @@ p_connected_alpha = ds_patches %>%
     caption = caption_resource_flow
   ) +
    scale_color_manual(
-     values = c(colour_large,
-                colour_medium,
-                colour_small),
+     values = c(colour_L,
+                colour_M,
+                colour_S),
      labels = c(name_L_connected_to_S,
                 name_M_connected_to_M,
                 name_S_connected_to_L)

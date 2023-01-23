@@ -13,30 +13,28 @@ p_connected_biomass_effect_size = ds_patches_effect_size %>%
   filter(
     !time_point == 0,
     disturbance == disturbance_input,
-    eco_metaeco_type %in% c("S (S_L)", "M (M_M)", "L (S_L)")
+    eco_metaeco_type %in% c("S (S_L)", "L (S_L)")
   ) %>%
   ggplot(aes(x = day,
              y = bioarea_per_volume_d,
              color = eco_metaeco_type)) +
-  geom_point(position = position_dodge(0.5)) +
-  geom_line(position = position_dodge(0.5)) +
+  geom_point(position = position_dodge(dodging)) +
+  geom_line(position = position_dodge(dodging)) +
   geom_errorbar(
     aes(ymin = bioarea_per_volume_d_lower,
         ymax = bioarea_per_volume_d_upper),
     width = .2,
-    position = position_dodge(0.5)
+    position = position_dodge(dodging)
   ) +
   labs(
     x = "Day",
-    y = "Bioarea Density Effect Size (Hedge's d)",
+    y = name_y_axis_bioarea_density_effect_size,
     color = "",
     caption = caption_resource_flow
   ) +
-  scale_color_manual(values = c(colour_large,
-                                colour_medium,
-                                colour_small),
+  scale_color_manual(values = c(colour_L,
+                                colour_S),
                      labels = c(name_L_connected_to_S,
-                                name_M_connected_to_M,
                                 name_S_connected_to_L)) +
   scale_x_continuous(breaks = unique(ds_patches_effect_size$day)) +
   theme_bw() +
@@ -46,37 +44,37 @@ p_connected_biomass_effect_size = ds_patches_effect_size %>%
     legend.position = "bottom"
   ) +
   geom_vline(
-    xintercept = resource_flow_days[1] + 0.7,
+    xintercept = resource_flow_days[1],
     linetype = "dotdash",
     color = "grey",
     size = 0.7
   ) +
   geom_vline(
-    xintercept = resource_flow_days[2] + 0.7,
+    xintercept = resource_flow_days[2],
     linetype = "dotdash",
     color = "grey",
     size = 0.7
   ) +
   geom_vline(
-    xintercept = resource_flow_days[3] + 0.7,
+    xintercept = resource_flow_days[3],
     linetype = "dotdash",
     color = "grey",
     size = 0.7
   ) +
   geom_vline(
-    xintercept = resource_flow_days[4] + 0.7,
+    xintercept = resource_flow_days[4],
     linetype = "dotdash",
     color = "grey",
     size = 0.7
   ) +
   geom_vline(
-    xintercept = resource_flow_days[5] + 0.7,
+    xintercept = resource_flow_days[5],
     linetype = "dotdash",
     color = "grey",
     size = 0.7
   ) +
   geom_vline(
-    xintercept = resource_flow_days[6] + 0.7,
+    xintercept = resource_flow_days[6],
     linetype = "dotdash",
     color = "grey",
     size = 0.7
@@ -89,4 +87,45 @@ p_connected_biomass_effect_size = ds_patches_effect_size %>%
   )
 
 p_connected_biomass_effect_size
+```
+
+```{r}
+filtered_data = ds_patches_effect_size %>%
+                         filter(time_point >= first_time_point_model,
+                                time_point <= last_time_point_model,
+                                disturbance == disturbance_input,
+                                eco_metaeco_type %in% c("S (S_L)","L (S_L)"))
+```
+
+```{r}
+full_model = lm(bioarea_per_volume_d ~
+                  eco_metaeco_type + 
+                  eco_metaeco_type : day,
+                data = filtered_data)
+
+summary(full_model)
+par(mfrow = c(2, 3))
+plot(full_model, which = 1:5)
+```
+
+```{r}
+null_model = lm(bioarea_per_volume_d ~
+                  1,
+                data = filtered_data)
+
+AIC = AIC(full_model, null_model)
+AIC
+AIC_full = AIC$AIC[1]
+AIC_null = AIC$AIC[2]
+deltaAIC = AIC_full - AIC_null
+deltaAIC_connected_biomass = round(deltaAIC, digits = 2)
+
+anova = anova(full_model, null_model)
+anova
+p_value = anova$`Pr(>F)`[2]
+if (p_value == 0){
+  p_value_connected_biomass = "< 0.001"
+} else {
+  p_value_connected_biomass = round(p_value, digits = 3)
+}
 ```

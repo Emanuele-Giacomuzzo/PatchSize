@@ -1,0 +1,13 @@
+---
+output: html_document
+date: "2022-12-16"
+bibliography: library.bib
+---
+
+```{r}
+library("bookdown")
+```
+
+```{r fig:cars, fig.cap = "Figure 1. An amazing plot"}
+plot(cars)
+```
