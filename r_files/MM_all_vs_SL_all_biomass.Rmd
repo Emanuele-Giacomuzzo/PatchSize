@@ -80,8 +80,7 @@ p_all_metaecos_biomass = ds_metaecosystems %>%
   filter(disturbance == disturbance_input) %>%
   summarySE(measurevar = "total_metaecosystem_bioarea", 
             groupvars = c("day", "metaecosystem_type")) %>%
-  filter(day > 5,
-         metaecosystem_type %in% c("S_L", 
+  filter(metaecosystem_type %in% c("S_L", 
                               "S_L_from_isolated", 
                               "M_M",
                               "M_M_from_isolated")

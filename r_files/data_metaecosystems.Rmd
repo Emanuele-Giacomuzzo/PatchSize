@@ -131,6 +131,11 @@ for (combination in 1:number_of_combinations){
       ungroup() %>%
       select(Ble:Tet)
     
+    #Alpha diversity: Shannon (mean between the two patches)
+    shannon_patch_1 = diversity(species_density_of_the_two_patches[1,], index = "shannon")
+    shannon_patch_2 = diversity(species_density_of_the_two_patches[2,], index = "shannon")
+    shannon = (shannon_patch_1 + shannon_patch_2) / 2
+    
     #Beta diversity: Jaccard
 
     jaccard_index = vegdist(species_density_of_the_two_patches, 
@@ -190,7 +195,8 @@ for (combination in 1:number_of_combinations){
            jaccard_index = jaccard_index,
            bray_curtis = bray_curtis,
            metaecosystem_richness = metaecosystem_richness,
-           gamma_shannon = gamma_shannon) %>%
+           gamma_shannon = gamma_shannon,
+           mean_shannon = shannon) %>%
       ungroup()
     
   }
@@ -199,7 +205,6 @@ for (combination in 1:number_of_combinations){
 ds_metaecosystems = ds_metaecosystems_single_rows %>%
   bind_rows()
 ```
-
 
 ```{r add-baselines-(ds_metaecosystems)}
 

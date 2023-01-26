@@ -141,3 +141,7 @@ According to this [post on stackoverflow](https://stackoverflow.com/questions/40
 ### Size distribution
 
 I thought I might look into how to better choose the nr of size classes. In @Loder1997 it says that they have no idea how to do that. I will then just look into how to best choose the number of histragram plots.
+
+### Evenness
+
+For calculating evenness I used the following resource: [diversity-vegan.pdf (r-project.org)](https://cran.r-project.org/web/packages/vegan/vignettes/diversity-vegan.pdf)

@@ -1,0 +1,867 @@
+---
+title: "Small patches - Species dominance"
+output: html_document
+date: "2023-01-26"
+editor_options: 
+  chunk_output_type: console
+---
+
+#### Species Dominance {.tabset .tabset-pills}
+
+##### Ble
+
+```{r}
+ds_patches %>%
+      filter(
+        disturbance == disturbance_input,
+        metaecosystem == "no"
+      ) %>%
+      ggplot(
+        aes(
+          x = day,
+          y = Ble_dominance,
+          group = interaction(day, eco_metaeco_type),
+          fill = eco_metaeco_type
+        )
+      ) +
+      geom_boxplot(width = boxplot_width) +
+      labs(
+        x = name_time_axis,
+        y = name_y_axis_dominance_Ble,
+        fill = "",
+        caption = caption_resource_flow
+      ) +
+      theme_bw() +
+      theme(
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        legend.position = "top"
+      ) +
+      scale_fill_manual(
+        values = c(colour_L, 
+                   colour_M, 
+                   colour_S),
+        labels = c(
+          name_L_isolated,
+          name_M_isolated,
+          name_S_isolated
+        )
+      )  +
+      scale_x_continuous(breaks = unique(ds_patches$day)) +
+      geom_vline(
+        xintercept = resource_flow_days[1],
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = resource_flow_days[2],
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = resource_flow_days[3],
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = resource_flow_days[4],
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = resource_flow_days[5],
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = resource_flow_days[6],
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      )
+```
+
+##### Cep
+
+```{r}
+ds_patches %>%
+      filter(
+        disturbance == disturbance_input,
+        metaecosystem == "no"
+      ) %>%
+      ggplot(
+        aes(
+          x = day,
+          y = Cep_dominance,
+          group = interaction(day, eco_metaeco_type),
+          fill = eco_metaeco_type
+        )
+      ) +
+      geom_boxplot(width = boxplot_width) +
+      labs(
+        x = name_time_axis,
+        y = name_y_axis_dominance_Cep,
+        fill = "",
+        caption = caption_resource_flow
+      ) +
+      theme_bw() +
+      theme(
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        legend.position = "top"
+      ) +
+      scale_fill_manual(
+        values = c(colour_L, 
+                   colour_M, 
+                   colour_S),
+        labels = c(
+          name_L_isolated,
+          name_M_isolated,
+          name_S_isolated
+        )
+      )  +
+      scale_x_continuous(breaks = unique(ds_patches$day)) +
+      geom_vline(
+        xintercept = resource_flow_days[1],
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = resource_flow_days[2],
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = resource_flow_days[3],
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = resource_flow_days[4],
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = resource_flow_days[5],
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = resource_flow_days[6],
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      )
+```
+
+##### Col
+
+```{r}
+ds_patches %>%
+      filter(
+        disturbance == disturbance_input,
+        metaecosystem == "no"
+      ) %>%
+      ggplot(
+        aes(
+          x = day,
+          y = Col_dominance,
+          group = interaction(day, eco_metaeco_type),
+          fill = eco_metaeco_type
+        )
+      ) +
+      geom_boxplot(width = boxplot_width) +
+      labs(
+        x = name_time_axis,
+        y = name_y_axis_dominance_Col,
+        fill = "",
+        caption = caption_resource_flow
+      ) +
+      theme_bw() +
+      theme(
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        legend.position = "top"
+      ) +
+      scale_fill_manual(
+        values = c(colour_L, 
+                   colour_M, 
+                   colour_S),
+        labels = c(
+          name_L_isolated,
+          name_M_isolated,
+          name_S_isolated
+        )
+      )  +
+      scale_x_continuous(breaks = unique(ds_patches$day)) +
+      geom_vline(
+        xintercept = resource_flow_days[1],
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = resource_flow_days[2],
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = resource_flow_days[3],
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = resource_flow_days[4],
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = resource_flow_days[5],
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = resource_flow_days[6],
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      )
+```
+
+##### Eug
+
+```{r}
+ds_patches %>%
+      filter(
+        disturbance == disturbance_input,
+        metaecosystem == "no"
+      ) %>%
+      ggplot(
+        aes(
+          x = day,
+          y = Eug_dominance,
+          group = interaction(day, eco_metaeco_type),
+          fill = eco_metaeco_type
+        )
+      ) +
+      geom_boxplot(width = boxplot_width) +
+      labs(
+        x = name_time_axis,
+        y = name_y_axis_dominance_Eug,
+        fill = "",
+        caption = caption_resource_flow
+      ) +
+      theme_bw() +
+      theme(
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        legend.position = "top"
+      ) +
+      scale_fill_manual(
+        values = c(colour_L, 
+                   colour_M, 
+                   colour_S),
+        labels = c(
+          name_L_isolated,
+          name_M_isolated,
+          name_S_isolated
+        )
+      )  +
+      scale_x_continuous(breaks = unique(ds_patches$day)) +
+      geom_vline(
+        xintercept = resource_flow_days[1],
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = resource_flow_days[2],
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = resource_flow_days[3],
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = resource_flow_days[4],
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = resource_flow_days[5],
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = resource_flow_days[6],
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      )
+```
+
+##### Eup
+
+```{r}
+ds_patches %>%
+      filter(
+        disturbance == disturbance_input,
+        metaecosystem == "no"
+      ) %>%
+      ggplot(
+        aes(
+          x = day,
+          y = Eup_dominance,
+          group = interaction(day, eco_metaeco_type),
+          fill = eco_metaeco_type
+        )
+      ) +
+      geom_boxplot(width = boxplot_width) +
+      labs(
+        x = name_time_axis,
+        y = name_y_axis_dominance_Eup,
+        fill = "",
+        caption = caption_resource_flow
+      ) +
+      theme_bw() +
+      theme(
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        legend.position = "top"
+      ) +
+      scale_fill_manual(
+        values = c(colour_L, 
+                   colour_M, 
+                   colour_S),
+        labels = c(
+          name_L_isolated,
+          name_M_isolated,
+          name_S_isolated
+        )
+      )  +
+      scale_x_continuous(breaks = unique(ds_patches$day)) +
+      geom_vline(
+        xintercept = resource_flow_days[1],
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = resource_flow_days[2],
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = resource_flow_days[3],
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = resource_flow_days[4],
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = resource_flow_days[5],
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = resource_flow_days[6],
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      )
+```
+
+##### Lox
+
+```{r}
+ds_patches %>%
+      filter(
+        disturbance == disturbance_input,
+        metaecosystem == "no"
+      ) %>%
+      ggplot(
+        aes(
+          x = day,
+          y = Lox_dominance,
+          group = interaction(day, eco_metaeco_type),
+          fill = eco_metaeco_type
+        )
+      ) +
+      geom_boxplot(width = boxplot_width) +
+      labs(
+        x = name_time_axis,
+        y = name_y_axis_dominance_Lox,
+        fill = "",
+        caption = caption_resource_flow
+      ) +
+      theme_bw() +
+      theme(
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        legend.position = "top"
+      ) +
+      scale_fill_manual(
+        values = c(colour_L, 
+                   colour_M, 
+                   colour_S),
+        labels = c(
+          name_L_isolated,
+          name_M_isolated,
+          name_S_isolated
+        )
+      )  +
+      scale_x_continuous(breaks = unique(ds_patches$day)) +
+      geom_vline(
+        xintercept = resource_flow_days[1],
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = resource_flow_days[2],
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = resource_flow_days[3],
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = resource_flow_days[4],
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = resource_flow_days[5],
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = resource_flow_days[6],
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      )
+```
+
+##### Pau
+
+```{r}
+ds_patches %>%
+      filter(
+        disturbance == disturbance_input,
+        metaecosystem == "no"
+      ) %>%
+      ggplot(
+        aes(
+          x = day,
+          y = Pau_dominance,
+          group = interaction(day, eco_metaeco_type),
+          fill = eco_metaeco_type
+        )
+      ) +
+      geom_boxplot(width = boxplot_width) +
+      labs(
+        x = name_time_axis,
+        y = name_y_axis_dominance_Pau,
+        fill = "",
+        caption = caption_resource_flow
+      ) +
+      theme_bw() +
+      theme(
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        legend.position = "top"
+      ) +
+      scale_fill_manual(
+        values = c(colour_L, 
+                   colour_M, 
+                   colour_S),
+        labels = c(
+          name_L_isolated,
+          name_M_isolated,
+          name_S_isolated
+        )
+      )  +
+      scale_x_continuous(breaks = unique(ds_patches$day)) +
+      geom_vline(
+        xintercept = resource_flow_days[1],
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = resource_flow_days[2],
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = resource_flow_days[3],
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = resource_flow_days[4],
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = resource_flow_days[5],
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = resource_flow_days[6],
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      )
+```
+
+##### Pca
+
+```{r}
+ds_patches %>%
+      filter(
+        disturbance == disturbance_input,
+        metaecosystem == "no"
+      ) %>%
+      ggplot(
+        aes(
+          x = day,
+          y = Pca_dominance,
+          group = interaction(day, eco_metaeco_type),
+          fill = eco_metaeco_type
+        )
+      ) +
+      geom_boxplot(width = boxplot_width) +
+      labs(
+        x = name_time_axis,
+        y = name_y_axis_dominance_Pca,
+        fill = "",
+        caption = caption_resource_flow
+      ) +
+      theme_bw() +
+      theme(
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        legend.position = "top"
+      ) +
+      scale_fill_manual(
+        values = c(colour_L, 
+                   colour_M, 
+                   colour_S),
+        labels = c(
+          name_L_isolated,
+          name_M_isolated,
+          name_S_isolated
+        )
+      )  +
+      scale_x_continuous(breaks = unique(ds_patches$day)) +
+      geom_vline(
+        xintercept = resource_flow_days[1],
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = resource_flow_days[2],
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = resource_flow_days[3],
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = resource_flow_days[4],
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = resource_flow_days[5],
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = resource_flow_days[6],
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      )
+```
+
+##### Spi
+
+```{r}
+ds_patches %>%
+      filter(
+        disturbance == disturbance_input,
+        metaecosystem == "no"
+      ) %>%
+      ggplot(
+        aes(
+          x = day,
+          y = Spi_dominance,
+          group = interaction(day, eco_metaeco_type),
+          fill = eco_metaeco_type
+        )
+      ) +
+      geom_boxplot(width = boxplot_width) +
+      labs(
+        x = name_time_axis,
+        y = name_y_axis_dominance_Spi,
+        fill = "",
+        caption = caption_resource_flow
+      ) +
+      theme_bw() +
+      theme(
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        legend.position = "top"
+      ) +
+      scale_fill_manual(
+        values = c(colour_L, 
+                   colour_M, 
+                   colour_S),
+        labels = c(
+          name_L_isolated,
+          name_M_isolated,
+          name_S_isolated
+        )
+      )  +
+      scale_x_continuous(breaks = unique(ds_patches$day)) +
+      geom_vline(
+        xintercept = resource_flow_days[1],
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = resource_flow_days[2],
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = resource_flow_days[3],
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = resource_flow_days[4],
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = resource_flow_days[5],
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = resource_flow_days[6],
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      )
+```
+
+##### Spi te
+
+```{r}
+ds_patches %>%
+      filter(
+        disturbance == disturbance_input,
+        metaecosystem == "no"
+      ) %>%
+      ggplot(
+        aes(
+          x = day,
+          y = Spi_te_dominance,
+          group = interaction(day, eco_metaeco_type),
+          fill = eco_metaeco_type
+        )
+      ) +
+      geom_boxplot(width = boxplot_width) +
+      labs(
+        x = name_time_axis,
+        y = name_y_axis_dominance_Spi_te,
+        fill = "",
+        caption = caption_resource_flow
+      ) +
+      theme_bw() +
+      theme(
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        legend.position = "top"
+      ) +
+      scale_fill_manual(
+        values = c(colour_L, 
+                   colour_M, 
+                   colour_S),
+        labels = c(
+          name_L_isolated,
+          name_M_isolated,
+          name_S_isolated
+        )
+      )  +
+      scale_x_continuous(breaks = unique(ds_patches$day)) +
+      geom_vline(
+        xintercept = resource_flow_days[1],
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = resource_flow_days[2],
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = resource_flow_days[3],
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = resource_flow_days[4],
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = resource_flow_days[5],
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = resource_flow_days[6],
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      )
+```
+
+##### Tet
+
+```{r}
+ds_patches %>%
+      filter(
+        disturbance == disturbance_input,
+        metaecosystem == "no"
+      ) %>%
+      ggplot(
+        aes(
+          x = day,
+          y = Tet_dominance,
+          group = interaction(day, eco_metaeco_type),
+          fill = eco_metaeco_type
+        )
+      ) +
+      geom_boxplot(width = boxplot_width) +
+      labs(
+        x = name_time_axis,
+        y = name_y_axis_dominance_Tet,
+        fill = "",
+        caption = caption_resource_flow
+      ) +
+      theme_bw() +
+      theme(
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        legend.position = "top"
+      ) +
+      scale_fill_manual(
+        values = c(colour_L, 
+                   colour_M, 
+                   colour_S),
+        labels = c(
+          name_L_isolated,
+          name_M_isolated,
+          name_S_isolated
+        )
+      )  +
+      scale_x_continuous(breaks = unique(ds_patches$day)) +
+      geom_vline(
+        xintercept = resource_flow_days[1],
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = resource_flow_days[2],
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = resource_flow_days[3],
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = resource_flow_days[4],
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = resource_flow_days[5],
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      ) +
+      geom_vline(
+        xintercept = resource_flow_days[6],
+        linetype = "dotdash",
+        color = "grey",
+        size = 0.7
+      )
+```

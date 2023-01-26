@@ -97,9 +97,15 @@ ggarrange(
 ```
 
 ```{r fig-connected-systems, fig.cap = "Figure 3. Effect of asymmetry in patch size and resource flow on (a) meta-ecosystem total bioarea and (b) meta-ecosystem beta diversity. (a): medium-medium and small-large meta-ecosystems had the same biomass (bioarea is a proxy for biomass). (b): small-large meta-ecosystems maintained higher beta diversity (Bray-Curtis Index). All systems were sampled at the same time but points were jettered to make the figure clearar. Vertical grey lines: disturbance events followed by resource flow."}
-
 ggarrange(
   p_all_metaecos_biomass +
+    rremove("xlab") +
+    theme(axis.text.x = element_blank(),
+          axis.ticks.x = element_blank()) +
+    font("legend.text", size = size_legend) +
+    font("ylab", size = size_y_axis),
+  NULL,
+  p_all_metaecos_alpha +
     rremove("xlab") +
     theme(axis.text.x = element_blank(),
           axis.ticks.x = element_blank()) +
@@ -110,8 +116,8 @@ ggarrange(
     font("xlab", size = size_x_axis) +
     font("ylab", size = size_y_axis) +
     scale_x_continuous(breaks = unique(ds_patches$day)),
-  nrow = 3,
-  heights = c(0.9,-0.1, 1),
+  nrow = 5,
+  heights = c(0.9,-0.1, 1, -0.1, 1),
   common.legend = TRUE,
   align = "v"
 )

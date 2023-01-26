@@ -35,6 +35,17 @@ ds_patches_effect_size = ds_patches %>%
     baseline_Spi_across_videos = mean(baseline_Spi),
     baseline_Spi_te_across_videos = mean(baseline_Spi_te),
     baseline_Tet_across_videos = mean(baseline_Tet),
+    baseline_Ble_dominance_across_videos = mean(baseline_Ble_dominance),
+    baseline_Cep_dominance_across_videos = mean(baseline_Cep_dominance),
+    baseline_Col_dominance_across_videos = mean(baseline_Col_dominance),
+    baseline_Eug_dominance_across_videos = mean(baseline_Eug_dominance),
+    baseline_Eup_dominance_across_videos = mean(baseline_Eup_dominance),
+    baseline_Lox_dominance_across_videos = mean(baseline_Lox_dominance),
+    baseline_Pau_dominance_across_videos = mean(baseline_Pau_dominance),
+    baseline_Pca_dominance_across_videos = mean(baseline_Pca_dominance),
+    baseline_Spi_dominance_across_videos = mean(baseline_Spi_dominance),
+    baseline_Spi_te_dominance_across_videos = mean(baseline_Spi_te_dominance),
+    baseline_Tet_dominance_across_videos = mean(baseline_Tet_dominance),
     bioarea_per_volume_across_videos = mean(bioarea_per_volume),
     indiv_per_volume_across_videos = mean(indiv_per_volume),
     species_richness_across_videos = max(species_richness),
@@ -49,7 +60,18 @@ ds_patches_effect_size = ds_patches %>%
     Pca_across_videos = mean(Pca),
     Spi_across_videos = mean(Spi),
     Spi_te_across_videos = mean(Spi_te),
-    Tet_across_videos = mean(Tet)
+    Tet_across_videos = mean(Tet),
+    Ble_dominance_across_videos = mean(Ble_dominance),
+    Cep_dominance_across_videos = mean(Cep_dominance),
+    Col_dominance_across_videos = mean(Col_dominance),
+    Eug_dominance_across_videos = mean(Eug_dominance),
+    Eup_dominance_across_videos = mean(Eup_dominance),
+    Lox_dominance_across_videos = mean(Lox_dominance),
+    Pau_dominance_across_videos = mean(Pau_dominance),
+    Pca_dominance_across_videos = mean(Pca_dominance),
+    Spi_dominance_across_videos = mean(Spi_dominance),
+    Spi_te_dominance_across_videos = mean(Spi_te_dominance),
+    Tet_dominance_across_videos = mean(Tet_dominance)
   ) %>%
   group_by(disturbance, 
            eco_metaeco_type, 
@@ -73,6 +95,17 @@ ds_patches_effect_size = ds_patches %>%
     baseline_Spi = mean(Spi_across_videos),
     baseline_Spi_te = mean(Spi_te_across_videos),
     baseline_Tet = mean(Tet_across_videos),
+    baseline_Ble_dominance = mean(Ble_dominance_across_videos),
+    baseline_Cep_dominance = mean(Cep_dominance_across_videos),
+    baseline_Col_dominance = mean(Col_dominance_across_videos),
+    baseline_Eug_dominance = mean(Eug_dominance_across_videos),
+    baseline_Eup_dominance = mean(Eup_dominance_across_videos),
+    baseline_Lox_dominance = mean(Lox_dominance_across_videos),
+    baseline_Pau_dominance = mean(Pau_dominance_across_videos),
+    baseline_Pca_dominance = mean(Pca_dominance_across_videos),
+    baseline_Spi_dominance = mean(Spi_dominance_across_videos),
+    baseline_Spi_te_dominance = mean(Spi_te_dominance_across_videos),
+    baseline_Tet_dominance = mean(Tet_dominance_across_videos),
     bioarea_per_volume_mean = mean(bioarea_per_volume_across_videos),
     bioarea_per_volume_sd = sd(bioarea_per_volume_across_videos),
     indiv_per_volume_mean = mean(indiv_per_volume_across_videos),
@@ -102,7 +135,29 @@ ds_patches_effect_size = ds_patches %>%
     Spi_te_mean = mean(Spi_te_across_videos),
     Spi_te_sd = sd(Spi_te_across_videos),
     Tet_mean = mean(Tet_across_videos),
-    Tet_sd = sd(Tet_across_videos)
+    Tet_sd = sd(Tet_across_videos),
+    Ble_dominance_mean = mean(Ble_dominance_across_videos),
+    Ble_dominance_sd = sd(Ble_dominance_across_videos),
+    Cep_dominance_mean = mean(Cep_dominance_across_videos),
+    Cep_dominance_sd = sd(Cep_dominance_across_videos),
+    Col_dominance_mean = mean(Col_dominance_across_videos),
+    Col_dominance_sd = sd(Col_dominance_across_videos),
+    Eug_dominance_mean = mean(Eug_dominance_across_videos),
+    Eug_dominance_sd = sd(Eug_dominance_across_videos),
+    Eup_dominance_mean = mean(Eup_dominance_across_videos),
+    Eup_dominance_sd = sd(Eup_dominance_across_videos),
+    Lox_dominance_mean = mean(Lox_dominance_across_videos),
+    Lox_dominance_sd = sd(Lox_dominance_across_videos),
+    Pau_dominance_mean = mean(Pau_dominance_across_videos),
+    Pau_dominance_sd = sd(Pau_dominance_across_videos),
+    Pca_dominance_mean = mean(Pca_dominance_across_videos),
+    Pca_dominance_sd = sd(Pca_dominance_across_videos),
+    Spi_dominance_mean = mean(Spi_dominance_across_videos),
+    Spi_dominance_sd = sd(Spi_dominance_across_videos),
+    Spi_te_dominance_mean = mean(Spi_te_dominance_across_videos),
+    Spi_te_dominance_sd = sd(Spi_te_dominance_across_videos),
+    Tet_dominance_mean = mean(Tet_dominance_across_videos),
+    Tet_dominance_sd = sd(Tet_dominance_across_videos)
   ) %>% #Initialise columns
   mutate(bioarea_per_volume_d = NA,
          bioarea_per_volume_d_upper = NA,
@@ -131,6 +186,17 @@ ds_patches_effect_size = ds_patches %>%
          Spi_d = NA,
          Spi_te_d = NA,
          Tet_d = NA,
+         Ble_dominance_d = NA,
+         Cep_dominance_d = NA,
+         Col_dominance_d = NA,
+         Eug_dominance_d = NA,
+         Eup_dominance_d = NA,
+         Lox_dominance_d = NA,
+         Pau_dominance_d = NA,
+         Pca_dominance_d = NA,
+         Spi_dominance_d = NA,
+         Spi_te_dominance_d = NA,
+         Tet_dominance_d = NA,
          Ble_d_upper = NA,
          Ble_d_lower = NA,
          Ble_lnRR = NA,
@@ -163,7 +229,29 @@ ds_patches_effect_size = ds_patches %>%
          Spi_te_lnRR = NA,
          Tet_d_upper = NA,
          Tet_d_lower = NA,
-         Tet_lnRR = NA)
+         Tet_lnRR = NA,
+         Ble_dominance_d_upper = NA,
+         Ble_dominance_d_lower = NA,
+         Cep_dominance_d_upper = NA,
+         Cep_dominance_d_lower = NA,
+         Col_dominance_d_upper = NA,
+         Col_dominance_d_lower = NA,
+         Eug_dominance_d_upper = NA,
+         Eug_dominance_d_lower = NA,
+         Eup_dominance_d_upper = NA,
+         Eup_dominance_d_lower = NA,
+         Lox_dominance_d_upper = NA,
+         Lox_dominance_d_lower = NA,
+         Pau_dominance_d_upper = NA,
+         Pau_dominance_d_lower = NA,
+         Pca_dominance_d_upper = NA,
+         Pca_dominance_d_lower = NA,
+         Spi_dominance_d_upper = NA,
+         Spi_dominance_d_lower = NA,
+         Spi_te_dominance_d_upper = NA,
+         Spi_te_dominance_d_lower = NA,
+         Tet_dominance_d_upper = NA,
+         Tet_dominance_d_lower = NA)
 ```
 
 ```{r}
@@ -723,6 +811,325 @@ for (disturbance_input in c("low", "high")) {
       ds_patches_effect_size$time_point == time_point_input &
       ds_patches_effect_size$disturbance == disturbance_input] = 
       ln(treatment_row$Tet_mean / control_row$Tet_mean)
+    
+    ### Ble dominance
+    
+    hedges_d_Ble_dominance = calculate.hedges_d(
+      treatment_row$Ble_dominance_mean,
+      treatment_row$Ble_dominance_sd,
+      treatment_row$sample_size,
+      control_row$Ble_dominance_mean,
+      control_row$Ble_dominance_sd,
+      control_row$sample_size
+    )
+    
+    ds_patches_effect_size$Ble_dominance_d[
+      ds_patches_effect_size$eco_metaeco_type == eco_metaeco_treatment &
+      ds_patches_effect_size$time_point == time_point_input &
+      ds_patches_effect_size$disturbance == disturbance_input] = 
+      hedges_d_Ble_dominance$d
+    
+    ds_patches_effect_size$Ble_dominance_d_lower[
+      ds_patches_effect_size$eco_metaeco_type == eco_metaeco_treatment &
+      ds_patches_effect_size$time_point == time_point_input &
+      ds_patches_effect_size$disturbance == disturbance_input] = 
+      hedges_d_Ble_dominance$lower_CI
+    
+    ds_patches_effect_size$Ble_dominance_d_upper[
+      ds_patches_effect_size$eco_metaeco_type == eco_metaeco_treatment &
+      ds_patches_effect_size$time_point == time_point_input &
+      ds_patches_effect_size$disturbance == disturbance_input] = 
+      hedges_d_Ble_dominance$upper_CI
+    
+    ### Cep dominance
+    
+    hedges_d_Cep_dominance = calculate.hedges_d(
+      treatment_row$Cep_dominance_mean,
+      treatment_row$Cep_dominance_sd,
+      treatment_row$sample_size,
+      control_row$Cep_dominance_mean,
+      control_row$Cep_dominance_sd,
+      control_row$sample_size
+    )
+    
+    ds_patches_effect_size$Cep_dominance_d[
+      ds_patches_effect_size$eco_metaeco_type == eco_metaeco_treatment &
+      ds_patches_effect_size$time_point == time_point_input &
+      ds_patches_effect_size$disturbance == disturbance_input] = 
+      hedges_d_Cep_dominance$d
+    
+    ds_patches_effect_size$Cep_dominance_d_lower[
+      ds_patches_effect_size$eco_metaeco_type == eco_metaeco_treatment &
+      ds_patches_effect_size$time_point == time_point_input &
+      ds_patches_effect_size$disturbance == disturbance_input] = 
+      hedges_d_Cep_dominance$lower_CI
+    
+    ds_patches_effect_size$Cep_dominance_d_upper[
+      ds_patches_effect_size$eco_metaeco_type == eco_metaeco_treatment &
+      ds_patches_effect_size$time_point == time_point_input &
+      ds_patches_effect_size$disturbance == disturbance_input] = 
+      hedges_d_Cep_dominance$upper_CI
+    
+    ### Col dominance
+    
+    hedges_d_Col_dominance = calculate.hedges_d(
+      treatment_row$Col_dominance_mean,
+      treatment_row$Col_dominance_sd,
+      treatment_row$sample_size,
+      control_row$Col_dominance_mean,
+      control_row$Col_dominance_sd,
+      control_row$sample_size
+    )
+    
+    ds_patches_effect_size$Col_dominance_d[
+      ds_patches_effect_size$eco_metaeco_type == eco_metaeco_treatment &
+      ds_patches_effect_size$time_point == time_point_input &
+      ds_patches_effect_size$disturbance == disturbance_input] = 
+      hedges_d_Col_dominance$d
+    
+    ds_patches_effect_size$Col_dominance_d_lower[
+      ds_patches_effect_size$eco_metaeco_type == eco_metaeco_treatment &
+      ds_patches_effect_size$time_point == time_point_input &
+      ds_patches_effect_size$disturbance == disturbance_input] = 
+      hedges_d_Col_dominance$lower_CI
+    
+    ds_patches_effect_size$Col_dominance_d_upper[
+      ds_patches_effect_size$eco_metaeco_type == eco_metaeco_treatment &
+      ds_patches_effect_size$time_point == time_point_input &
+      ds_patches_effect_size$disturbance == disturbance_input] = 
+      hedges_d_Col_dominance$upper_CI
+    
+    ### Eug dominance
+    
+    hedges_d_Eug_dominance = calculate.hedges_d(
+      treatment_row$Eug_dominance_mean,
+      treatment_row$Eug_dominance_sd,
+      treatment_row$sample_size,
+      control_row$Eug_dominance_mean,
+      control_row$Eug_dominance_sd,
+      control_row$sample_size
+    )
+    
+    ds_patches_effect_size$Eug_dominance_d[
+      ds_patches_effect_size$eco_metaeco_type == eco_metaeco_treatment &
+      ds_patches_effect_size$time_point == time_point_input &
+      ds_patches_effect_size$disturbance == disturbance_input] = 
+      hedges_d_Eug_dominance$d
+    
+    ds_patches_effect_size$Eug_dominance_d_lower[
+      ds_patches_effect_size$eco_metaeco_type == eco_metaeco_treatment &
+      ds_patches_effect_size$time_point == time_point_input &
+      ds_patches_effect_size$disturbance == disturbance_input] = 
+      hedges_d_Eug_dominance$lower_CI
+    
+    ds_patches_effect_size$Eug_dominance_d_upper[
+      ds_patches_effect_size$eco_metaeco_type == eco_metaeco_treatment &
+      ds_patches_effect_size$time_point == time_point_input &
+      ds_patches_effect_size$disturbance == disturbance_input] = 
+      hedges_d_Eug_dominance$upper_CI
+    
+    ### Eup dominance
+    
+    hedges_d_Eup_dominance = calculate.hedges_d(
+      treatment_row$Eup_dominance_mean,
+      treatment_row$Eup_dominance_sd,
+      treatment_row$sample_size,
+      control_row$Eup_dominance_mean,
+      control_row$Eup_dominance_sd,
+      control_row$sample_size
+    )
+    
+    ds_patches_effect_size$Eup_dominance_d[
+      ds_patches_effect_size$eco_metaeco_type == eco_metaeco_treatment &
+      ds_patches_effect_size$time_point == time_point_input &
+      ds_patches_effect_size$disturbance == disturbance_input] = 
+      hedges_d_Eup_dominance$d
+    
+    ds_patches_effect_size$Eup_dominance_d_lower[
+      ds_patches_effect_size$eco_metaeco_type == eco_metaeco_treatment &
+      ds_patches_effect_size$time_point == time_point_input &
+      ds_patches_effect_size$disturbance == disturbance_input] = 
+      hedges_d_Eup_dominance$lower_CI
+    
+    ds_patches_effect_size$Eup_dominance_d_upper[
+      ds_patches_effect_size$eco_metaeco_type == eco_metaeco_treatment &
+      ds_patches_effect_size$time_point == time_point_input &
+      ds_patches_effect_size$disturbance == disturbance_input] = 
+      hedges_d_Eup_dominance$upper_CI
+    
+    ### Lox dominance
+    
+    hedges_d_Lox_dominance = calculate.hedges_d(
+      treatment_row$Lox_dominance_mean,
+      treatment_row$Lox_dominance_sd,
+      treatment_row$sample_size,
+      control_row$Lox_dominance_mean,
+      control_row$Lox_dominance_sd,
+      control_row$sample_size
+    )
+    
+    ds_patches_effect_size$Lox_dominance_d[
+      ds_patches_effect_size$eco_metaeco_type == eco_metaeco_treatment &
+      ds_patches_effect_size$time_point == time_point_input &
+      ds_patches_effect_size$disturbance == disturbance_input] = 
+      hedges_d_Lox_dominance$d
+    
+    ds_patches_effect_size$Lox_dominance_d_lower[
+      ds_patches_effect_size$eco_metaeco_type == eco_metaeco_treatment &
+      ds_patches_effect_size$time_point == time_point_input &
+      ds_patches_effect_size$disturbance == disturbance_input] = 
+      hedges_d_Lox_dominance$lower_CI
+    
+    ds_patches_effect_size$Lox_dominance_d_upper[
+      ds_patches_effect_size$eco_metaeco_type == eco_metaeco_treatment &
+      ds_patches_effect_size$time_point == time_point_input &
+      ds_patches_effect_size$disturbance == disturbance_input] = 
+      hedges_d_Lox_dominance$upper_CI
+    
+    ### Pau dominance
+    
+    hedges_d_Pau_dominance = calculate.hedges_d(
+      treatment_row$Pau_dominance_mean,
+      treatment_row$Pau_dominance_sd,
+      treatment_row$sample_size,
+      control_row$Pau_dominance_mean,
+      control_row$Pau_dominance_sd,
+      control_row$sample_size
+    )
+    
+    ds_patches_effect_size$Pau_dominance_d[
+      ds_patches_effect_size$eco_metaeco_type == eco_metaeco_treatment &
+      ds_patches_effect_size$time_point == time_point_input &
+      ds_patches_effect_size$disturbance == disturbance_input] = 
+      hedges_d_Pau_dominance$d
+    
+    ds_patches_effect_size$Pau_dominance_d_lower[
+      ds_patches_effect_size$eco_metaeco_type == eco_metaeco_treatment &
+      ds_patches_effect_size$time_point == time_point_input &
+      ds_patches_effect_size$disturbance == disturbance_input] = 
+      hedges_d_Pau_dominance$lower_CI
+    
+    ds_patches_effect_size$Pau_dominance_d_upper[
+      ds_patches_effect_size$eco_metaeco_type == eco_metaeco_treatment &
+      ds_patches_effect_size$time_point == time_point_input &
+      ds_patches_effect_size$disturbance == disturbance_input] = 
+      hedges_d_Pau_dominance$upper_CI
+    
+    ### Pca dominance
+    
+    hedges_d_Pca_dominance = calculate.hedges_d(
+      treatment_row$Pca_dominance_mean,
+      treatment_row$Pca_dominance_sd,
+      treatment_row$sample_size,
+      control_row$Pca_dominance_mean,
+      control_row$Pca_dominance_sd,
+      control_row$sample_size
+    )
+    
+    ds_patches_effect_size$Pca_dominance_d[
+      ds_patches_effect_size$eco_metaeco_type == eco_metaeco_treatment &
+      ds_patches_effect_size$time_point == time_point_input &
+      ds_patches_effect_size$disturbance == disturbance_input] = 
+      hedges_d_Pca_dominance$d
+    
+    ds_patches_effect_size$Pca_dominance_d_lower[
+      ds_patches_effect_size$eco_metaeco_type == eco_metaeco_treatment &
+      ds_patches_effect_size$time_point == time_point_input &
+      ds_patches_effect_size$disturbance == disturbance_input] = 
+      hedges_d_Pca_dominance$lower_CI
+    
+    ds_patches_effect_size$Pca_dominance_d_upper[
+      ds_patches_effect_size$eco_metaeco_type == eco_metaeco_treatment &
+      ds_patches_effect_size$time_point == time_point_input &
+      ds_patches_effect_size$disturbance == disturbance_input] = 
+      hedges_d_Pca_dominance$upper_CI
+
+    ### Spi dominance
+    
+    hedges_d_Spi_dominance = calculate.hedges_d(
+      treatment_row$Spi_dominance_mean,
+      treatment_row$Spi_dominance_sd,
+      treatment_row$sample_size,
+      control_row$Spi_dominance_mean,
+      control_row$Spi_dominance_sd,
+      control_row$sample_size
+    )
+    
+    ds_patches_effect_size$Spi_dominance_d[
+      ds_patches_effect_size$eco_metaeco_type == eco_metaeco_treatment &
+      ds_patches_effect_size$time_point == time_point_input &
+      ds_patches_effect_size$disturbance == disturbance_input] = 
+      hedges_d_Spi_dominance$d
+    
+    ds_patches_effect_size$Spi_dominance_d_lower[
+      ds_patches_effect_size$eco_metaeco_type == eco_metaeco_treatment &
+      ds_patches_effect_size$time_point == time_point_input &
+      ds_patches_effect_size$disturbance == disturbance_input] = 
+      hedges_d_Spi_dominance$lower_CI
+    
+    ds_patches_effect_size$Spi_dominance_d_upper[
+      ds_patches_effect_size$eco_metaeco_type == eco_metaeco_treatment &
+      ds_patches_effect_size$time_point == time_point_input &
+      ds_patches_effect_size$disturbance == disturbance_input] = 
+      hedges_d_Spi_dominance$upper_CI
+    
+    ### Spi te dominance
+    
+    hedges_d_Spi_te_dominance = calculate.hedges_d(
+      treatment_row$Spi_te_dominance_mean,
+      treatment_row$Spi_te_dominance_sd,
+      treatment_row$sample_size,
+      control_row$Spi_te_dominance_mean,
+      control_row$Spi_te_dominance_sd,
+      control_row$sample_size
+    )
+    
+    ds_patches_effect_size$Spi_te_dominance_d[
+      ds_patches_effect_size$eco_metaeco_type == eco_metaeco_treatment &
+      ds_patches_effect_size$time_point == time_point_input &
+      ds_patches_effect_size$disturbance == disturbance_input] = 
+      hedges_d_Spi_te_dominance$d
+    
+    ds_patches_effect_size$Spi_te_dominance_d_lower[
+      ds_patches_effect_size$eco_metaeco_type == eco_metaeco_treatment &
+      ds_patches_effect_size$time_point == time_point_input &
+      ds_patches_effect_size$disturbance == disturbance_input] = 
+      hedges_d_Spi_te_dominance$lower_CI
+    
+    ds_patches_effect_size$Spi_te_dominance_d_upper[
+      ds_patches_effect_size$eco_metaeco_type == eco_metaeco_treatment &
+      ds_patches_effect_size$time_point == time_point_input &
+      ds_patches_effect_size$disturbance == disturbance_input] = 
+      hedges_d_Spi_te_dominance$upper_CI
+    
+    ### Tet dominance
+    
+    hedges_d_Tet_dominance = calculate.hedges_d(
+      treatment_row$Tet_dominance_mean,
+      treatment_row$Tet_dominance_sd,
+      treatment_row$sample_size,
+      control_row$Tet_dominance_mean,
+      control_row$Tet_dominance_sd,
+      control_row$sample_size
+    )
+    
+    ds_patches_effect_size$Tet_dominance_d[
+      ds_patches_effect_size$eco_metaeco_type == eco_metaeco_treatment &
+      ds_patches_effect_size$time_point == time_point_input &
+      ds_patches_effect_size$disturbance == disturbance_input] = 
+      hedges_d_Tet_dominance$d
+    
+    ds_patches_effect_size$Tet_dominance_d_lower[
+      ds_patches_effect_size$eco_metaeco_type == eco_metaeco_treatment &
+      ds_patches_effect_size$time_point == time_point_input &
+      ds_patches_effect_size$disturbance == disturbance_input] = 
+      hedges_d_Tet_dominance$lower_CI
+    
+    ds_patches_effect_size$Tet_dominance_d_upper[
+      ds_patches_effect_size$eco_metaeco_type == eco_metaeco_treatment &
+      ds_patches_effect_size$time_point == time_point_input &
+      ds_patches_effect_size$disturbance == disturbance_input] = 
+      hedges_d_Tet_dominance$upper_CI
     
     }
   }

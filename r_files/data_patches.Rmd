@@ -243,7 +243,19 @@ ds_patches = ds_patches %>%
          Pca_tot = Pca * patch_size_volume,
          Spi_tot = Spi * patch_size_volume,
          Spi_te_tot = Spi_te * patch_size_volume,
-         Tet_tot = Tet * patch_size_volume)
+         Tet_tot = Tet * patch_size_volume,
+         Ble_dominance = (Ble / indiv_per_volume) * 100,
+         Cep_dominance = (Cep / indiv_per_volume) * 100,
+         Col_dominance = (Col / indiv_per_volume) * 100,
+         Eug_dominance = (Eug / indiv_per_volume) * 100,
+         Eup_dominance = (Eup  / indiv_per_volume) * 100,
+         Lox_dominance = (Lox / indiv_per_volume) * 100,
+         Pau_dominance = (Pau / indiv_per_volume) * 100,
+         Pca_dominance = (Pca / indiv_per_volume) * 100,
+         Spi_dominance = (Spi / indiv_per_volume) * 100,
+         Spi_te_dominance = (Spi_te / indiv_per_volume) * 100,
+         Tet_dominance = (Tet / indiv_per_volume) * 100
+         )
 ```
 
 ```{r calculate_alpha_diversity_(ds_patches)}
@@ -300,24 +312,31 @@ ds_patches = ds_patches %>%
     )
   ))
 
-#Calculate alpha diversity (shannon, simpson, inv simpson)
+#Calculate alpha diversity (shannon, simpson, inv simpson, evenness)
 
 ds_patches$shannon = NA
 ds_patches$simpson = NA
 ds_patches$inv_simpson = NA
+ds_patches$evenness_pielou = NA
+
 for (row in 1:nrow(ds_patches)){
   
   species_vector = ds_patches %>%
     slice(row) %>%
     select(Ble:Tet)
   
-  shannon = diversity(species_vector, index = "shannon")
-  simpson = diversity(species_vector, index = "simpson")
-  inv_simpson = diversity(species_vector, index = "invsimpson")
-  
+  simpson = diversity(species_vector, 
+                      index = "simpson")
+  shannon = diversity(species_vector, 
+                      index = "shannon")
+  inv_simpson = diversity(species_vector, 
+                          index = "invsimpson")
+  evenness_pielou = diversity(species_vector) / log(specnumber(species_vector))
+
   ds_patches[row,]$shannon = shannon
   ds_patches[row,]$simpson = simpson
   ds_patches[row,]$inv_simpson = inv_simpson
+  ds_patches[row,]$evenness_pielou = evenness_pielou
   
 }
 ```
@@ -343,7 +362,18 @@ baselines = ds_patches %>%
             Pca_across_videos = mean(Pca),
             Spi_across_videos = mean(Spi),
             Spi_te_across_videos = mean(Spi_te),
-            Tet_across_videos = mean(Tet)) %>%
+            Tet_across_videos = mean(Tet),
+            Ble_dominance_across_videos = mean(Ble_dominance),
+            Cep_dominance_across_videos = mean(Cep_dominance),
+            Col_dominance_across_videos = mean(Col_dominance),
+            Eug_dominance_across_videos = mean(Eug_dominance),
+            Eup_dominance_across_videos = mean(Eup_dominance),
+            Lox_dominance_across_videos = mean(Lox_dominance),
+            Pau_dominance_across_videos = mean(Pau_dominance),
+            Pca_dominance_across_videos = mean(Pca_dominance),
+            Spi_dominance_across_videos = mean(Spi_dominance),
+            Spi_te_dominance_across_videos = mean(Spi_te_dominance),
+            Tet_dominance_across_videos = mean(Tet_dominance)) %>%
   rename(baseline_bioarea = bioarea_per_volume_across_videos,
          baseline_indiv_per_volume = indiv_per_volume_across_videos,
          baseline_species_richness = species_richness_across_videos,
@@ -358,7 +388,18 @@ baselines = ds_patches %>%
          baseline_Pca = Pca_across_videos,
          baseline_Spi = Spi_across_videos,
          baseline_Spi_te = Spi_te_across_videos,
-         baseline_Tet = Tet_across_videos)
+         baseline_Tet = Tet_across_videos,
+         baseline_Ble_dominance = Ble_dominance_across_videos,
+         baseline_Cep_dominance = Cep_dominance_across_videos,
+         baseline_Col_dominance = Col_dominance_across_videos,
+         baseline_Eug_dominance = Eug_dominance_across_videos,
+         baseline_Eup_dominance = Eup_dominance_across_videos,
+         baseline_Lox_dominance = Lox_dominance_across_videos,
+         baseline_Pau_dominance = Pau_dominance_across_videos,
+         baseline_Pca_dominance = Pca_dominance_across_videos,
+         baseline_Spi_dominance = Spi_dominance_across_videos,
+         baseline_Spi_te_dominance = Spi_te_dominance_across_videos,
+         baseline_Tet_dominance = Tet_dominance_across_videos)
 
 ds_patches = full_join(ds_patches, baselines)
 ```

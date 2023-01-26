@@ -80,8 +80,7 @@ p_all_metaecos_beta = ds_metaecosystems %>%
   filter(disturbance == disturbance_input) %>%
   summarySE(measurevar = "bray_curtis", 
             groupvars = c("day", "metaecosystem_type")) %>%
-  filter(day > 5,
-         metaecosystem_type %in% c("S_L", 
+  filter(metaecosystem_type %in% c("S_L", 
                               "S_L_from_isolated", 
                               "M_M",
                               "M_M_from_isolated")

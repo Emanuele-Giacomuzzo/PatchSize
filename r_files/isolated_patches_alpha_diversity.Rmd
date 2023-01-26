@@ -82,8 +82,7 @@ p_isolated_alpha = ds_patches %>%
   filter(disturbance == disturbance_input) %>%
   summarySE(measurevar = "shannon", 
             groupvars = c("day", "eco_metaeco_type")) %>%
-  filter(day > 5,
-         eco_metaeco_type %in% c("S", 
+  filter(eco_metaeco_type %in% c("S", 
                                  "M", 
                                  "L")
   ) %>%

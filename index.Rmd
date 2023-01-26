@@ -60,7 +60,7 @@ displays_datasets = FALSE
 
 ```{r packages, echo = FALSE, results = FALSE, message = FALSE, cache = FALSE}
 
-#Packages, conflicts, functinos
+#Packages, conflicts, functions
 
 library("conflicted")
 library("tidyverse")
@@ -105,7 +105,9 @@ library("scales")
 library("Rmisc")
 library("ggpubr")
 library("patchwork")
-
+library("viridis") #To create small multiple plots
+library("hrbrthemes") #To create small multiple plots
+library("treemapify")
 
 conflict_prefer("load", "base")
 conflict_prefer("here", "here")
@@ -175,7 +177,7 @@ name_L = "Large isolated"
 
 name_y_axis_bioarea_density = "Bioarea Density (µm²/ml)"
 name_y_axis_bioarea_density_effect_size = "Bioarea Density Effect Size"
-name_y_axis_total_bioarea = "Total Bioarea (µm²)"
+name_y_axis_total_bioarea = "Tot Bioarea (µm²)"
 name_y_axis_alpha_diversity = "α Diversity"
 name_y_axis_alpha_diversity_effect_size = "α Diversity Effect Size"
 name_y_axis_beta_diversity = "β Diversity"
@@ -184,6 +186,18 @@ name_y_axis_size_class = 'Abundance (Indiv/ml)'
 name_y_axis_size_class_effect_size = "Abundance Effect Size"
 name_y_axis_median_body_size = "Median body size (µm²)"
 name_y_axis_median_body_size_effect_size = "Median Body Size Effect Size"
+
+name_y_axis_dominance_Ble = "Ble Dominance %"
+name_y_axis_dominance_Cep = "Cep Dominance %"
+name_y_axis_dominance_Col = "Col Dominance %"
+name_y_axis_dominance_Eug = "Eug Dominance %"
+name_y_axis_dominance_Eup = "Eup Dominance %"
+name_y_axis_dominance_Lox = "Lox Dominance %"
+name_y_axis_dominance_Pau = "Pau Dominance %"
+name_y_axis_dominance_Pca = "Pca Dominance %"
+name_y_axis_dominance_Spi = "Spi Dominance %"
+name_y_axis_dominance_Spi_te = "Spi te Dominance %"
+name_y_axis_dominance_Tet = "Tet Dominance %"
 
 name_time_axis = "Day"
 name_x_axis_size_class = "Log size (μm2)"
@@ -268,74 +282,18 @@ colour_SL_from_isolated = "#dadaeb"
 ```{r child = here("r_files", "equally_sized_metaecos_gamma_diversity.Rmd")}
 ```
 
-### MM (and isolated) vs SL (and isolated) {.tabset .tabset-pills}
+### MM vs SL (meta-ecosystems and isolated) {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "MM_all_vs_SL_all_biomass.Rmd")}
+```
+
+```{r child = here("r_files", "MM_all_vs_SL_all_alpha_diversity.Rmd")}
 ```
 
 ```{r child = here("r_files", "MM_all_vs_SL_all_beta_diversity.Rmd")}
 ```
 
 ```{r child = here("r_files", "MM_all_vs_SL_all_gamma_diversity.Rmd")}
-```
-
-### MM vs SL {.tabset .tabset-pills}
-
-```{r child = here("r_files", "MM_vs_SL_biomass.Rmd")}
-```
-
-```{r child = here("r_files", "MM_vs_SL_alpha_diversity.Rmd")}
-```
-
-```{r child = here("r_files", "MM_vs_SL_beta_diversity.Rmd")}
-```
-
-```{r child = here("r_files", "MM_vs_SL_gamma_diversity.Rmd")}
-```
-
-```{r child = here("r_files", "MM_vs_SL_species_total.Rmd")}
-```
-
-### MM vs MM from isolated {.tabset .tabset-pills}
-
-```{r child = here("r_files", "MM_vs_MM_from_isolated_biomass.Rmd")}
-```
-
-```{r child = here("r_files", "MM_vs_MM_from_isolated_beta_diversity.Rmd"), eval = include_non_clean_scripts}
-```
-
-```{r child = here("r_files", "MM_vs_MM_from_isolated_gamma_diversity.Rmd"), eval = include_non_clean_scripts}
-```
-
-```{r child = here("r_files", "MM_vs_MM_from_isolated_species_total.Rmd"), eval = include_non_clean_scripts}
-```
-
-### SL vs SL from isolated {.tabset .tabset-pills}
-
-```{r child = here("r_files", "SL_vs_SL_from_isolated_biomass.Rmd")}
-```
-
-```{r child = here("r_files", "SL_vs_SL_from_isolated_beta_diversity.Rmd")}
-```
-
-```{r child = here("r_files", "SL_vs_SL_from_isolated_gamma_diversity.Rmd"), eval = include_non_clean_scripts}
-```
-
-```{r child = here("r_files", "SL_vs_SL_from_isolated_species_total.Rmd")}
-```
-
-### MM from isolated vs SL from isolated {.tabset .tabset-pills}
-
-```{r child = here("r_files", "MM_from_isolated_vs_SL_from_isolated_biomass.Rmd")}
-```
-
-```{r child = here("r_files", "MM_from_isolated_vs_SL_from_isolated_beta.Rmd")}
-```
-
-```{r child = here("r_files", "MM_from_isolated_vs_SL_from_isolated_gamma_diversity.Rmd"), eval = include_non_clean_scripts}
-```
-
-```{r child = here("r_files", "MM_from_isolated_vs_SL_from_isolated_species_total.Rmd")}
 ```
 
 ## Patches {.tabset .tabset-dropdown}
@@ -354,6 +312,12 @@ colour_SL_from_isolated = "#dadaeb"
 ```
 
 ```{r child = here("r_files", "isolated_patches_species_densities.Rmd")}
+```
+
+```{r child = here("r_files", "isolated_patches_species_dominance.Rmd")}
+```
+
+```{r child = here("r_files", "isolated_patches_species_composition.Rmd")}
 ```
 
 ```{r child = here("r_files", "isolated_patches_body_size_distribution.Rmd")}
@@ -422,6 +386,12 @@ colour_SL_from_isolated = "#dadaeb"
 ```
 
 ```{r child = here("r_files", "SL_species_densities.Rmd")}
+```
+
+```{r child = here("r_files", "SL_species_dominance.Rmd")}
+```
+
+```{r child = here("r_files", "SL_species_composition.Rmd")}
 ```
 
 ```{r child = here("r_files", "SL_size_classes.Rmd")}
