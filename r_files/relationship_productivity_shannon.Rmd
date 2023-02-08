@@ -1,0 +1,69 @@
+---
+title: "What drives productivity?"
+output: html_document
+date: "2023-01-31"
+editor_options: 
+  chunk_output_type: console
+---
+### Shannon index {.tabset .tabset-pills}
+
+#### All data points
+
+```{r}
+ds_patches %>%
+  filter(disturbance == disturbance_input) %>%
+  ggplot(aes(x = shannon,
+             y = bioarea_per_volume)) +
+  geom_point()
+```
+
+
+#### Single treatments & time points {.tabset .tabset-pills}
+
+```{r}
+plot_shannon = function(patch_type) {
+  print(
+    ds_patches %>%
+      filter(eco_metaeco_type == patch_type) %>%
+      ggplot(aes(x = shannon,
+                 y = bioarea_per_volume)) +
+      geom_point() +
+      facet_wrap( ~ time_point) +
+      labs(title = paste0(
+        "Patch type = ",
+        patch_type
+      ))
+  )
+}
+```
+
+
+##### S
+
+```{r}
+plot_shannon("S")
+```
+
+##### M
+
+```{r}
+plot_shannon("M")
+```
+
+##### L
+
+```{r}
+plot_shannon("L")
+```
+
+##### S connected to L
+
+```{r}
+plot_shannon("S (S_L)")
+```
+
+##### L connected to S
+
+```{r}
+plot_shannon("L (S_L)")
+```

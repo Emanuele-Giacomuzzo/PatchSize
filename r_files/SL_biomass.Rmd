@@ -84,7 +84,7 @@ p_connected_biomass_effect_size = ds_patches_effect_size %>%
     linetype = "dotted",
     color = "black",
     size = 0.7
-  )
+  ) 
 
 p_connected_biomass_effect_size
 ```

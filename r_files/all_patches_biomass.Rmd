@@ -32,7 +32,12 @@ ds_patches %>%
           geom_vline(xintercept = first_perturbation_day + 0.6,
                      linetype="dotdash",
                      color = "grey",
-                     size=0.7) 
+                     size=0.7) +
+  geom_hline(yintercept=0,
+             color = colour_zero_line,
+             linetype = line_type_zero_line,
+             size = size_zero_line)
+  
 ```
 
 #### Total bioarea
@@ -61,5 +66,9 @@ ds_patches %>%
     panel.grid.major = element_blank(),
     panel.grid.minor = element_blank(),
     legend.position = "bottom"
-  )
+  ) +
+  geom_hline(yintercept=0,
+             color = colour_zero_line,
+             linetype = line_type_zero_line,
+             size = size_zero_line)
 ```

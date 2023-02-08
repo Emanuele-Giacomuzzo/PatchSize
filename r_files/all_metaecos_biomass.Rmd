@@ -40,5 +40,9 @@ ds_metaecosystems %>%
     linetype = "dotdash",
     color = "grey",
     size = 0.7
-  )
+  ) +
+  geom_hline(yintercept=0,
+             color = colour_zero_line,
+             linetype = line_type_zero_line,
+             size = size_zero_line)
 ```

@@ -1,5 +1,5 @@
 ---
-title: "PatchSizePilot"
+title: "PhD Chapter 1 - PatchSize"
 author: "Emanuele Giacomuzzo"
 date: "`r Sys.time()`"
 output: 
@@ -177,7 +177,7 @@ name_L = "Large isolated"
 
 name_y_axis_bioarea_density = "Bioarea Density (µm²/ml)"
 name_y_axis_bioarea_density_effect_size = "Bioarea Density Effect Size"
-name_y_axis_total_bioarea = "Tot Bioarea (µm²)"
+name_y_axis_total_bioarea = "Bioarea (µm²)"
 name_y_axis_alpha_diversity = "α Diversity"
 name_y_axis_alpha_diversity_effect_size = "α Diversity Effect Size"
 name_y_axis_beta_diversity = "β Diversity"
@@ -226,6 +226,10 @@ colour_MM = "#238b45"
 colour_MM_from_isolated = "#c7e9c0"
 colour_SL = "#8856a7" 
 colour_SL_from_isolated = "#dadaeb"
+  
+colour_zero_line = "black"
+line_type_zero_line = "solid"
+size_zero_line = 0.5
 ```
 
 #  {.tabset}
@@ -269,6 +273,9 @@ colour_SL_from_isolated = "#dadaeb"
 ### All
 
 ```{r child = here("r_files", "all_metaecos_biomass.Rmd")}
+```
+
+```{r child = here("r_files", "all_metaecos_beta_diversity.Rmd")}
 ```
 
 ### Equally sized {.tabset .tabset-pills}
@@ -395,6 +402,20 @@ colour_SL_from_isolated = "#dadaeb"
 ```
 
 ```{r child = here("r_files", "SL_size_classes.Rmd")}
+```
+
+## Productivity drivers {.tabset .tabset-pills}
+
+```{r child = here("r_files", "relationship_productivity_richness.Rmd")}
+```
+
+```{r child = here("r_files", "relationship_productivity_shannon.Rmd")}
+```
+
+```{r child = here("r_files", "relationship_productivity_evenness.Rmd")}
+```
+
+```{r child = here("r_files", "relationship_productivity_dominance.Rmd")}
 ```
 
 ## Evaporation {.tabset .tabset-dropdown}

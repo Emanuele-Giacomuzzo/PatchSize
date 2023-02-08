@@ -76,7 +76,11 @@ p_boxplots = ds_metaecosystems %>%
     color = "grey",
     size = 0.7
   ) +
-  labs(caption = caption_resource_flow)
+  labs(caption = caption_resource_flow) +
+  geom_hline(yintercept=0,
+             color = colour_zero_line,
+             linetype = line_type_zero_line,
+             size = size_zero_line)
 
 p_boxplots
 ```

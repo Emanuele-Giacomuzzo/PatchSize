@@ -1,0 +1,68 @@
+---
+title: "What drives productivity?"
+output: html_document
+date: "2023-01-31"
+editor_options: 
+  chunk_output_type: console
+---
+
+### Evenness {.tabset .tabset-pills}
+
+#### All data points
+
+```{r}
+ds_patches %>%
+  filter(disturbance == disturbance_input) %>%
+  ggplot(aes(x = evenness_pielou,
+             y = bioarea_per_volume)) +
+  geom_point()
+```
+
+#### Single treatments & time points {.tabset .tabset-pills}
+
+```{r}
+plot_evenness = function(patch_type) {
+  print(
+    ds_patches %>%
+      filter(eco_metaeco_type == patch_type) %>%
+      ggplot(aes(x = evenness_pielou,
+                 y = bioarea_per_volume)) +
+      geom_point() +
+      facet_wrap( ~ time_point) +
+      labs(title = paste0(
+        "Patch type = ",
+        patch_type
+      ))
+  )
+}
+```
+
+##### S
+
+```{r}
+plot_evenness("S")
+```
+
+##### M
+
+```{r}
+plot_evenness("M")
+```
+
+##### L
+
+```{r}
+plot_evenness("L")
+```
+
+##### S connected to L
+
+```{r}
+plot_evenness("S (S_L)")
+```
+
+##### L connected to S
+
+```{r}
+plot_evenness("L (S_L)")
+```

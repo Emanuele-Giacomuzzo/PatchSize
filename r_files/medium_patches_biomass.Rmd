@@ -76,7 +76,11 @@ ds_patches %>%
         linetype = "dotdash",
         color = "grey",
         size = 0.7
-      )
+      ) +
+  geom_hline(yintercept=0,
+             color = colour_zero_line,
+             linetype = line_type_zero_line,
+             size = size_zero_line)
 ```
 
 ```{r}
@@ -146,8 +150,12 @@ ds_patches %>%
         xintercept = resource_flow_days[6],
         linetype = "dotdash",
         color = "grey",
-        size = 0.7
-      )
+        size = 0.7 
+      ) +
+  geom_hline(yintercept=0,
+             color = colour_zero_line,
+             linetype = line_type_zero_line,
+             size = size_zero_line)
 ```
 
 ```{r}

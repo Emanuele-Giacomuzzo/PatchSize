@@ -1,0 +1,68 @@
+---
+title: "What drives productivity?"
+output: html_document
+date: "2023-01-31"
+editor_options: 
+  chunk_output_type: console
+---
+
+### Species richness {.tabset .tabset-pills}
+
+#### All data points
+
+```{r}
+ds_patches %>%
+  filter(disturbance == disturbance_input) %>%
+  ggplot(aes(x = species_richness,
+             y = bioarea_per_volume)) +
+  geom_point()
+```
+
+#### Single treatments & time points {.tabset .tabset-pills}
+
+```{r}
+plot_species_richness = function(patch_type) {
+  print(
+    ds_patches %>%
+      filter(eco_metaeco_type == patch_type) %>%
+      ggplot(aes(x = species_richness,
+                 y = bioarea_per_volume)) +
+      geom_point() +
+      facet_wrap( ~ time_point) +
+      labs(title = paste0(
+        "Patch type = ",
+        patch_type
+      ))
+  )
+}
+```
+
+##### S
+
+```{r}
+plot_species_richness("S")
+```
+
+##### M
+
+```{r}
+plot_species_richness("M")
+```
+
+##### L
+
+```{r}
+plot_species_richness("L")
+```
+
+##### S connected to L
+
+```{r}
+plot_species_richness("S (S_L)")
+```
+
+##### L connected to S
+
+```{r}
+plot_species_richness("L (S_L)")
+```
