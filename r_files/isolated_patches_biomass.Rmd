@@ -76,9 +76,9 @@ ds_patches %>%
     legend.position = "bottom"
   ) +
   geom_hline(yintercept=0,
-             color = colour_zero_line,
-             linetype = line_type_zero_line,
-             size = size_zero_line)
+             color = zero_line_colour,
+             linetype = zero_line_line_type,
+             size = zero_line_line_width)
 ```
 
 ```{r}
@@ -149,7 +149,7 @@ p_isolated_biomass = ds_patches %>%
   ) +
   labs(
     x = "Day",
-    y = name_y_axis_bioarea_density,
+    y = y_axis_bioarea_density,
     color = "",
     caption = caption_resource_flow
   ) +
@@ -168,13 +168,13 @@ p_isolated_biomass = ds_patches %>%
     legend.position = "bottom"
   ) +
   geom_hline(yintercept=0,
-             color = colour_zero_line,
-             linetype = line_type_zero_line,
-             size = size_zero_line) +
+             color = zero_line_colour,
+             linetype = zero_line_line_type,
+             size = zero_line_line_width) +
   geom_hline(yintercept=0,
-             color = colour_zero_line,
-             linetype = line_type_zero_line,
-             size = size_zero_line)
+             color = zero_line_colour,
+             linetype = zero_line_line_type,
+             size = zero_line_line_width)
 
 p_isolated_biomass
 ```

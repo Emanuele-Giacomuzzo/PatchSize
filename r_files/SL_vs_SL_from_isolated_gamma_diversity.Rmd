@@ -26,7 +26,7 @@ ds_metaecosystems %>%
   geom_line () +
   labs(
     x = "Day",
-    y = name_y_axis_gamma_diversity,
+    y = y_axis_gamma_diversity,
     fill = "System nr",
     color = "System nr",
     linetype = "",
@@ -128,7 +128,7 @@ p_boxplots = ds_metaecosystems %>%
   ) +
   labs(
     x = "Day",
-    y = name_y_axis_gamma_diversity,
+    y = y_axis_gamma_diversity,
     color = '',
     fill = '',
     caption = caption_resource_flow

@@ -55,7 +55,7 @@ for(time_point_input in 0:7) {
       ) +
       labs(
         title = paste0("Day = ", (time_point_input*4)),
-        x = name_x_axis_size_class,
+        x = x_axis_size_class,
         y = 'Log abundance + 1 (indiv/μm2)',
         color = ""
       )

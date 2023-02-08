@@ -41,7 +41,7 @@ for(time_point_input in first_time_point:last_time_point) {
       labs(
         title = paste0("Day = ", (time_point_input * 4)),
         x = 'Log size (μm2)',
-        y = name_y_axis_size_class_effect_size,
+        y = y_axis_size_class_effect_size,
         color = ""
       ) +
       geom_hline(

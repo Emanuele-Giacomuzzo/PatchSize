@@ -404,6 +404,23 @@ baselines = ds_patches %>%
 ds_patches = full_join(ds_patches, baselines)
 ```
 
+```{r}
+ds_patches = ds_patches %>%
+  mutate(eco_metaeco_type = factor(
+    eco_metaeco_type,
+    levels = c(
+      "S",
+      "S (S_S)",
+      "S (S_L)",
+      "M",
+      "M (M_M)",
+      "L",
+      "L (L_L)",
+      "L (S_L)"
+    )
+  ))
+```
+
 ```{r save_ds_biomas_abund}
 saveRDS(ds_for_evaporation, file = here("results", "ds_for_evaporation.RData"))
 saveRDS(ds_patches, file = here("results", "ds_patches.RData"))

@@ -24,7 +24,7 @@ p_boxplots = ds_metaecosystems %>%
   ) +
   geom_boxplot(width = boxplot_width) +
   labs(x = "Day",
-       y = name_y_axis_total_bioarea,
+       y = y_axis_total_bioarea,
        color = '',
        fill = '') +
   scale_fill_manual(
@@ -78,9 +78,9 @@ p_boxplots = ds_metaecosystems %>%
   ) +
   labs(caption = caption_resource_flow) +
   geom_hline(yintercept=0,
-             color = colour_zero_line,
-             linetype = line_type_zero_line,
-             size = size_zero_line)
+             color = zero_line_colour,
+             linetype = zero_line_line_type,
+             size = zero_line_line_width)
 
 p_boxplots
 ```

@@ -61,7 +61,7 @@ ds_metaecosystems %>%
   ) +
   labs(
     x = "Day",
-    y = name_y_axis_beta_diversity,
+    y = y_axis_beta_diversity,
     fill = "",
     caption = caption_resource_flow
   ) +
@@ -144,7 +144,7 @@ p_all_metaecos_beta = ds_metaecosystems %>%
   ) +
   labs(
     x = "Day",
-    y = name_y_axis_beta_diversity,
+    y = y_axis_beta_diversity,
     color = "",
     caption = caption_resource_flow
   ) +
@@ -237,7 +237,7 @@ p_all_metaecos_but_MM_isolated_beta = ds_metaecosystems %>%
   ) +
   labs(
     x = "Day",
-    y = name_y_axis_beta_diversity,
+    y = y_axis_beta_diversity,
     color = "",
     caption = caption_resource_flow
   ) +

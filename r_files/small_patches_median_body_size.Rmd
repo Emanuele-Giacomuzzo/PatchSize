@@ -23,8 +23,8 @@ ds_median_body_size %>%
       ) +
       geom_boxplot(width = boxplot_width) +
       labs(
-        x = name_time_axis,
-        y = name_y_axis_median_body_size,
+        x = x_axis_day,
+        y = y_axis_median_body_size,
         fill = ""
       ) +
       scale_fill_manual(
@@ -44,7 +44,7 @@ ds_median_body_size %>%
         legend.position = "bottom"
       ) +
       geom_vline(
-        xintercept = first_perturbation_day,
+        xintercept = first_resource_flow,
         linetype = "dotdash",
         color = "grey",
         size = 0.7
@@ -71,8 +71,8 @@ p_effect_size = ds_median_body_size_effect_size %>%
     position = position_dodge(0.5)
   ) +
   labs(
-    x = name_time_axis,
-    y = name_y_axis_median_body_size_effect_size,
+    x = x_axis_day,
+    y = y_axis_median_body_size_effect_size,
     color = ""
   ) +
   scale_color_discrete(labels = c(name_S_connected_to_L,

@@ -44,11 +44,11 @@ for(size_class_input in 1:nr_of_size_classes) {
       size = 0.7
     ) +
     labs(
-      x = name_time_axis,
+      x = x_axis_day,
       y = paste0(
         "Class ",
         size_class_input,
-       name_y_axis_size_class_effect_size
+       y_axis_size_class_effect_size
       ),
       color = ""
     ) +

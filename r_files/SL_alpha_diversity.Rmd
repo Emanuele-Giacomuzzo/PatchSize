@@ -28,7 +28,7 @@ p_connected_alpha_effect_size = ds_patches_effect_size %>%
   ) +
   labs(
     x = "Day",
-    y = name_y_axis_alpha_diversity_effect_size,
+    y = y_axis_alpha_diversity_effect_size,
     color = "",
     caption = caption_resource_flow
   ) +

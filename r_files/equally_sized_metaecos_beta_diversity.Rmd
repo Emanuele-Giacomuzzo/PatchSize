@@ -59,7 +59,7 @@ p_boxplots = ds_metaecosystems %>%
   ) + 
   labs(
     x = "Day",
-    y = name_y_axis_beta_diversity,
+    y = y_axis_beta_diversity,
     color = '',
     fill = '',
     caption = caption_resource_flow
@@ -77,9 +77,9 @@ p_boxplots = ds_metaecosystems %>%
     legend.position = "bottom"
   ) +
   geom_hline(yintercept=0,
-             color = colour_zero_line,
-             linetype = line_type_zero_line,
-             size = size_zero_line)
+             color = zero_line_colour,
+             linetype = zero_line_line_type,
+             size = zero_line_line_width)
 
 p_boxplots
 ```

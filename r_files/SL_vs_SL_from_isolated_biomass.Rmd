@@ -30,7 +30,7 @@ ds_metaecosystems %>%
       geom_line () +
       labs(
         x = "Day",
-        y = name_y_axis_total_bioarea,
+        y = y_axis_total_bioarea,
         fill = "System nr",
         color = "System nr",
         linetype = ""
@@ -136,7 +136,7 @@ p_boxplots = ds_metaecosystems %>%
   ) +
   labs(
     x = "Day",
-    y = name_y_axis_total_bioarea,
+    y = y_axis_total_bioarea,
     fill = "",
     caption = "Vertical grey line: resouce flow"
   ) +
@@ -221,7 +221,7 @@ p_SL_SL_isolated_biomass = ds_metaecosystems %>%
   ) +
   labs(
     x = "Day",
-    y = name_y_axis_total_bioarea,
+    y = y_axis_total_bioarea,
     color = "",
     caption = caption_resource_flow
   ) +

@@ -10,39 +10,53 @@ editor_options:
 #### Biomass {.tabset .tabset-pills}
 
 ```{r}
-ds_metaecosystems %>%
-  filter(
-    disturbance == disturbance_input,!metaecosystem_type %in% c("S_L_from_isolated", "M_M_from_isolated")
-  ) %>%
-  ggplot(
-    aes(
-      x = day,
-      y = total_metaecosystem_bioarea,
-      group = interaction(day, metaecosystem_type),
-      fill = metaecosystem_type
-    )
-  ) +
-  geom_boxplot(width = boxplot_width) +
-  labs(
-    x = "Day",
-    y = name_y_axis_total_bioarea,
-    fill = "",
-    caption = caption_resource_flow
-  ) +
-  theme_bw() +
-  theme(
-    panel.grid.major = element_blank(),
-    panel.grid.minor = element_blank(),
-    legend.position = "bottom"
-  ) +
-  geom_vline(
-    xintercept = first_perturbation_day + 0.5,
-    linetype = "dotdash",
-    color = "grey",
-    size = 0.7
-  ) +
-  geom_hline(yintercept=0,
-             color = colour_zero_line,
-             linetype = line_type_zero_line,
-             size = size_zero_line)
+metaecosystem_type_input = unique(ds_metaecosystems$metaecosystem_type)
+colour_level_1 = colour_SS
+colour_level_2 = colour_MM
+colour_level_3 = colour_MM_from_isolated
+colour_level_4 = colour_LL
+colour_level_5 = colour_SL
+colour_level_6 = colour_SL_from_isolated
+name_level_1  = name_SS
+name_level_2 = name_MM
+name_level_3 = name_MM_from_isolated
+name_level_4 = name_LL
+name_level_5 = name_SL
+name_level_6 = name_SL_from_isolated
+```
+
+```{r}
+plot.metaecos.biomass.boxplots(
+  metaecosystem_type_input = metaecosystem_type_input,
+  colour_level_1 = colour_level_1,
+  colour_level_2 = colour_level_2,
+  colour_level_3 = colour_level_3,
+  colour_level_4 = colour_level_4,
+  colour_level_5 = colour_level_5,
+  colour_level_6 = colour_level_6,
+  name_level_1  = name_level_1,
+  name_level_2 = name_level_2,
+  name_level_3 = name_level_3,
+  name_level_4 = name_level_4,
+  name_level_5 = name_level_5,
+  name_level_6 = name_level_6
+)
+```
+
+```{r}
+plot.metaecos.biomass.points(
+  metaecosystem_type_input = metaecosystem_type_input,
+  colour_level_1 = colour_level_1,
+  colour_level_2 = colour_level_2,
+  colour_level_3 = colour_level_3,
+  colour_level_4 = colour_level_4,
+  colour_level_5 = colour_level_5,
+  colour_level_6 = colour_level_6,
+  name_level_1  = name_level_1,
+  name_level_2 = name_level_2,
+  name_level_3 = name_level_3,
+  name_level_4 = name_level_4,
+  name_level_5 = name_level_5,
+  name_level_6 = name_level_6
+)
 ```

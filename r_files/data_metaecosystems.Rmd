@@ -232,6 +232,19 @@ ds_metaecosystems = full_join(ds_metaecosystems, baselines)
 ds_metaecosystems = as.data.frame(ds_metaecosystems)
 ```
 
+```{r}
+ds_metaecosystems = ds_metaecosystems %>%
+  mutate(metaecosystem_type = factor(metaecosystem_type,
+                                     levels = c(
+                                       "S_S",
+                                       "M_M",
+                                       "M_M_from_isolated",
+                                       "L_L",
+                                       "S_L",
+                                       "S_L_from_isolated"
+                                     )))
+```
+
 ```{r save-ds_metaecosystems}
 saveRDS(ds_metaecosystems, file = here("results", "ds_metaecosystems.RData"))
 ```

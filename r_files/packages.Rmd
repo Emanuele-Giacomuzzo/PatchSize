@@ -1,0 +1,68 @@
+---
+title: "Packages"
+output: html_document
+date: "2023-02-08"
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r packages, echo = FALSE, results = FALSE, message = FALSE, cache = FALSE}
+
+#Packages, conflicts, functions
+
+library("conflicted")
+library("tidyverse")
+library("grid")
+library("gridExtra") 
+library("lme4")
+library("here")
+library("MuMIn")
+library("equatiomatic")
+library("knitr")
+library("optimx")
+library("GenSA")
+library("purrr")
+library("kableExtra")
+library("DT")
+library("renv")
+library("broom")
+library("patchwork")
+library("gganimate") 
+library("gapminder")
+library("gifski")
+library("av")
+library("transformr")
+library("gifski")
+library("GGally")
+#library("strengejacke")
+library("sjPlot")
+library("sjstats")
+library("partR2")
+library("SciViews")
+library("effsize")
+library("boot")
+library("vegan")
+library("betapart")
+library("caret")
+library("leaps")
+library("MASS")
+library("glmulti")
+library("metafor")
+library("job")
+library("scales")
+library("Rmisc")
+library("ggpubr")
+library("patchwork")
+library("viridis") #To create small multiple plots
+library("hrbrthemes") #To create small multiple plots
+library("treemapify")
+
+conflict_prefer("load", "base")
+conflict_prefer("here", "here")
+conflict_prefer("filter", "dplyr")
+conflict_prefer("select", "dplyr")
+conflict_prefer("mutate", "dplyr")
+conflict_prefer("arrange", "dplyr")
+conflict_prefer("summarise", "dplyr")
+conflict_prefer("rename", "dplyr")
+```

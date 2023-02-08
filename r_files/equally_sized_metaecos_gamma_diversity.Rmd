@@ -76,9 +76,9 @@ p_boxplots = ds_metaecosystems %>%
     legend.position = "bottom"
   ) +
   geom_hline(yintercept=0,
-             color = colour_zero_line,
-             linetype = line_type_zero_line,
-             size = size_zero_line)
+             color = zero_line_colour,
+             linetype = zero_line_line_type,
+             size = zero_line_line_width)
 
 p_boxplots
 ```

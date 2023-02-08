@@ -26,8 +26,8 @@ ds_patches %>%
       ) +
       geom_boxplot(width = boxplot_width) +
       labs(
-        x = name_time_axis,
-        y = name_y_axis_dominance_Ble,
+        x = x_axis_day,
+        y = y_axis_dominance_Ble,
         fill = "",
         caption = caption_resource_flow
       ) +
@@ -104,8 +104,8 @@ ds_patches %>%
       ) +
       geom_boxplot(width = boxplot_width) +
       labs(
-        x = name_time_axis,
-        y = name_y_axis_dominance_Cep,
+        x = x_axis_day,
+        y = y_axis_dominance_Cep,
         fill = "",
         caption = caption_resource_flow
       ) +
@@ -182,8 +182,8 @@ ds_patches %>%
       ) +
       geom_boxplot(width = boxplot_width) +
       labs(
-        x = name_time_axis,
-        y = name_y_axis_dominance_Col,
+        x = x_axis_day,
+        y = y_axis_dominance_Col,
         fill = "",
         caption = caption_resource_flow
       ) +
@@ -260,8 +260,8 @@ ds_patches %>%
       ) +
       geom_boxplot(width = boxplot_width) +
       labs(
-        x = name_time_axis,
-        y = name_y_axis_dominance_Eug,
+        x = x_axis_day,
+        y = y_axis_dominance_Eug,
         fill = "",
         caption = caption_resource_flow
       ) +
@@ -338,8 +338,8 @@ ds_patches %>%
       ) +
       geom_boxplot(width = boxplot_width) +
       labs(
-        x = name_time_axis,
-        y = name_y_axis_dominance_Eup,
+        x = x_axis_day,
+        y = y_axis_dominance_Eup,
         fill = "",
         caption = caption_resource_flow
       ) +
@@ -416,8 +416,8 @@ ds_patches %>%
       ) +
       geom_boxplot(width = boxplot_width) +
       labs(
-        x = name_time_axis,
-        y = name_y_axis_dominance_Lox,
+        x = x_axis_day,
+        y = y_axis_dominance_Lox,
         fill = "",
         caption = caption_resource_flow
       ) +
@@ -494,8 +494,8 @@ ds_patches %>%
       ) +
       geom_boxplot(width = boxplot_width) +
       labs(
-        x = name_time_axis,
-        y = name_y_axis_dominance_Pau,
+        x = x_axis_day,
+        y = y_axis_dominance_Pau,
         fill = "",
         caption = caption_resource_flow
       ) +
@@ -572,8 +572,8 @@ ds_patches %>%
       ) +
       geom_boxplot(width = boxplot_width) +
       labs(
-        x = name_time_axis,
-        y = name_y_axis_dominance_Pca,
+        x = x_axis_day,
+        y = y_axis_dominance_Pca,
         fill = "",
         caption = caption_resource_flow
       ) +
@@ -650,8 +650,8 @@ ds_patches %>%
       ) +
       geom_boxplot(width = boxplot_width) +
       labs(
-        x = name_time_axis,
-        y = name_y_axis_dominance_Spi,
+        x = x_axis_day,
+        y = y_axis_dominance_Spi,
         fill = "",
         caption = caption_resource_flow
       ) +
@@ -728,8 +728,8 @@ ds_patches %>%
       ) +
       geom_boxplot(width = boxplot_width) +
       labs(
-        x = name_time_axis,
-        y = name_y_axis_dominance_Spi_te,
+        x = x_axis_day,
+        y = y_axis_dominance_Spi_te,
         fill = "",
         caption = caption_resource_flow
       ) +
@@ -806,8 +806,8 @@ ds_patches %>%
       ) +
       geom_boxplot(width = boxplot_width) +
       labs(
-        x = name_time_axis,
-        y = name_y_axis_dominance_Tet,
+        x = x_axis_day,
+        y = y_axis_dominance_Tet,
         fill = "",
         caption = caption_resource_flow
       ) +

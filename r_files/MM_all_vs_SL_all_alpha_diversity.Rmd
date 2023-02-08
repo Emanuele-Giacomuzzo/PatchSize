@@ -61,7 +61,7 @@ ds_metaecosystems %>%
   ) +
   labs(
     x = "Day",
-    y = name_y_axis_alpha_diversity,
+    y = y_axis_alpha_diversity,
     fill = "",
     caption = caption_resource_flow
   ) +
@@ -144,7 +144,7 @@ p_all_metaecos_alpha = ds_metaecosystems %>%
   ) +
   labs(
     x = "Day",
-    y = name_y_axis_alpha_diversity,
+    y = y_axis_alpha_diversity,
     color = "",
     caption = caption_resource_flow
   ) +
