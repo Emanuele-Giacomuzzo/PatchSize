@@ -9,7 +9,7 @@ editor_options:
 #### Species Densities {.tabset .tabset-pills}
 
 ```{r}
-patch_size_input = "M"
+patch_size_input = "Medium isolated"
 ```
 
 ##### Ble

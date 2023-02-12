@@ -7,56 +7,14 @@ editor_options:
   chunk_output_type: console
 ---
 
-#### Biomass {.tabset .tabset-pills}
-
 ```{r}
-metaecosystem_type_input = unique(ds_metaecosystems$metaecosystem_type)
-colour_level_1 = colour_SS
-colour_level_2 = colour_MM
-colour_level_3 = colour_MM_from_isolated
-colour_level_4 = colour_LL
-colour_level_5 = colour_SL
-colour_level_6 = colour_SL_from_isolated
-name_level_1  = name_SS
-name_level_2 = name_MM
-name_level_3 = name_MM_from_isolated
-name_level_4 = name_LL
-name_level_5 = name_SL
-name_level_6 = name_SL_from_isolated
+response_variable = "total_metaecosystem_bioarea"
 ```
 
 ```{r}
-plot.metaecos.biomass.boxplots(
-  metaecosystem_type_input = metaecosystem_type_input,
-  colour_level_1 = colour_level_1,
-  colour_level_2 = colour_level_2,
-  colour_level_3 = colour_level_3,
-  colour_level_4 = colour_level_4,
-  colour_level_5 = colour_level_5,
-  colour_level_6 = colour_level_6,
-  name_level_1  = name_level_1,
-  name_level_2 = name_level_2,
-  name_level_3 = name_level_3,
-  name_level_4 = name_level_4,
-  name_level_5 = name_level_5,
-  name_level_6 = name_level_6
-)
-```
+plot.metaecos.boxplots(metaecosystem_type_input,
+                       response_variable)
 
-```{r}
-plot.metaecos.biomass.points(
-  metaecosystem_type_input = metaecosystem_type_input,
-  colour_level_1 = colour_level_1,
-  colour_level_2 = colour_level_2,
-  colour_level_3 = colour_level_3,
-  colour_level_4 = colour_level_4,
-  colour_level_5 = colour_level_5,
-  colour_level_6 = colour_level_6,
-  name_level_1  = name_level_1,
-  name_level_2 = name_level_2,
-  name_level_3 = name_level_3,
-  name_level_4 = name_level_4,
-  name_level_5 = name_level_5,
-  name_level_6 = name_level_6
-)
+plot.metaecos.points(metaecosystem_type_input,
+                     response_variable)
 ```

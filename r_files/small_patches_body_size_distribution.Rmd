@@ -19,7 +19,7 @@ for(time_point_input in 0:7) {
   print(
     ds_classes_effect_size %>%
       filter(disturbance == disturbance_input,
-             eco_metaeco_type %in% c("S", "S (S_S)", "S (S_L)"),
+             eco_metaeco_type %in% c("Small isolated", "Small connected to small", "Small connected to large"),
              day == time_point_input*4) %>%
       ggplot(
         aes(
@@ -77,7 +77,7 @@ for(time_point_input in 0:7) {
   print(
     ds_classes_effect_size %>%
       filter(disturbance == disturbance_input,
-             eco_metaeco_type %in% c("S (S_S)", "S (S_L)"),
+             eco_metaeco_type %in% c("Small connected to small", "Small connected to large"),
              day == time_point_input * 4) %>%
       ggplot(
         aes(

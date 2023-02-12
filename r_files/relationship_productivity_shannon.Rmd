@@ -5,6 +5,7 @@ date: "2023-01-31"
 editor_options: 
   chunk_output_type: console
 ---
+
 ### Shannon index {.tabset .tabset-pills}
 
 #### All data points
@@ -20,50 +21,37 @@ ds_patches %>%
 
 #### Single treatments & time points {.tabset .tabset-pills}
 
+##### Small isolated
+
 ```{r}
-plot_shannon = function(patch_type) {
-  print(
-    ds_patches %>%
-      filter(eco_metaeco_type == patch_type) %>%
-      ggplot(aes(x = shannon,
-                 y = bioarea_per_volume)) +
-      geom_point() +
-      facet_wrap( ~ time_point) +
-      labs(title = paste0(
-        "Patch type = ",
-        patch_type
-      ))
-  )
-}
+plot.relationship.BEF("Small isolated",
+                      "shannon")
 ```
 
-
-##### S
+##### Medium isolated
 
 ```{r}
-plot_shannon("S")
+plot.relationship.BEF("Medium isolated",
+                      "shannon")
 ```
 
-##### M
+##### Large isolated
 
 ```{r}
-plot_shannon("M")
+plot.relationship.BEF("Large isolated",
+                      "shannon")
 ```
 
-##### L
+##### Small connected to large
 
 ```{r}
-plot_shannon("L")
+plot.relationship.BEF("Small connected to large",
+                      "shannon")
 ```
 
-##### S connected to L
+##### Large connecred to small
 
 ```{r}
-plot_shannon("S (S_L)")
-```
-
-##### L connected to S
-
-```{r}
-plot_shannon("L (S_L)")
+plot.relationship.BEF("Large connected to small",
+                      "shannon")
 ```

@@ -1,0 +1,111 @@
+---
+title: "Median Body Size Effect Size"
+output: html_document
+date: "2022-11-22"
+editor_options: 
+  chunk_output_type: console
+---
+
+#### Median body size effect size (`ds_median_body_size_effect_size)`
+
+```{r}
+ds_median_body_size_effect_size = ds_median_body_size %>%
+  group_by(disturbance, 
+           eco_metaeco_type, 
+           patch_size, 
+           time_point, 
+           day) %>%
+  summarise(
+    sample_size = n(),
+    median_body_size_mean = mean(median_body_size),
+    median_body_size_sd = sd(median_body_size)
+  ) %>% #Initialise columns
+  mutate(median_body_size_d = NA,
+         median_body_size_d_upper = NA,
+         median_body_size_d_lower = NA,
+         median_body_size_lnRR = NA)
+```
+
+
+```{r ds_median_body_size_effect_size-create}
+treatments_and_controls = data.frame(
+  treatment = c("Small connected to small", "Small connected to large", "Medium connected to medium", "Large connected to large", "Large connected to small"),
+  control = c("Small isolated", "Small isolated", "Medium isolated", "Large isolated", "Large isolated")
+)
+
+n_of_treatments = nrow(treatments_and_controls)
+
+row_n = 0
+for (disturbance_input in c("low", "high")) {
+  for (treatment_n in 1:n_of_treatments) {
+    for (time_point_input in 0:7) {
+      
+      row_n = row_n + 1
+      
+      eco_metaeco_treatment = treatments_and_controls$treatment[treatment_n]
+      
+      treatment_row = ds_median_body_size_effect_size %>%
+        filter(
+          disturbance == disturbance_input,
+          eco_metaeco_type == eco_metaeco_treatment,
+          time_point == time_point_input
+        )
+      
+      eco_metaeco_control = treatments_and_controls$control[treatment_n]
+      
+      control_row = ds_median_body_size_effect_size %>%
+        filter(
+          disturbance == disturbance_input,
+          eco_metaeco_type == eco_metaeco_control,
+          time_point == time_point_input
+        )
+      
+      hedges_d_median_body_size = calculate.hedges_d(
+        treatment_row$median_body_size_mean,
+        treatment_row$median_body_size_sd,
+        treatment_row$sample_size,
+        control_row$median_body_size_mean,
+        control_row$median_body_size_sd,
+        control_row$sample_size
+      )
+      
+      ds_median_body_size_effect_size$median_body_size_d[
+        ds_median_body_size_effect_size$eco_metaeco_type == eco_metaeco_treatment &
+        ds_median_body_size_effect_size$time_point == time_point_input &
+        ds_median_body_size_effect_size$disturbance == disturbance_input] = 
+        hedges_d_median_body_size$d
+      
+      ds_median_body_size_effect_size$median_body_size_d_upper[
+        ds_median_body_size_effect_size$eco_metaeco_type == eco_metaeco_treatment &
+        ds_median_body_size_effect_size$time_point == time_point_input &
+        ds_median_body_size_effect_size$disturbance == disturbance_input] = 
+        hedges_d_median_body_size$upper_CI
+      
+      ds_median_body_size_effect_size$median_body_size_d_lower[
+        ds_median_body_size_effect_size$eco_metaeco_type == eco_metaeco_treatment &
+        ds_median_body_size_effect_size$time_point == time_point_input &
+        ds_median_body_size_effect_size$disturbance == disturbance_input] = 
+        hedges_d_median_body_size$lower_CI
+      
+      ds_median_body_size_effect_size$median_body_size_lnRR[
+        ds_median_body_size_effect_size$eco_metaeco_type == eco_metaeco_treatment &
+        ds_median_body_size_effect_size$time_point == time_point_input &
+        ds_median_body_size_effect_size$disturbance == disturbance_input] = 
+        ln(treatment_row$median_body_size_mean / control_row$median_body_size_mean)
+    
+    }
+  }
+}
+```
+
+```{r}
+saveRDS(ds_median_body_size_effect_size, here("results", "ds_median_body_size_effect_size.RData"))
+```
+
+```{r ds_median_body_size_effect_size-datable}
+datatable(ds_median_body_size_effect_size,
+          rownames = FALSE,
+          options = list(scrollX = TRUE),
+          filter = list(position = 'top', 
+                        clear = FALSE))
+```

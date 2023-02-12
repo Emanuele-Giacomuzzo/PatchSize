@@ -7,173 +7,21 @@ editor_options:
   chunk_output_type: console
 ---
 
-#### Alpha Diversity {.tabset .tabset-pills}
-
 ```{r}
-ds_patches %>%
-  filter(disturbance == disturbance_input,
-       metaecosystem == "no") %>%
-  mutate(eco_metaeco_type = fct_reorder(eco_metaeco_type, patch_size_volume)) %>%
-  ggplot(aes(
-    x = day,
-    y = shannon,
-    group = interaction(day, eco_metaeco_type),
-    fill = eco_metaeco_type
-  )) +
-  geom_boxplot(width = boxplot_width) +
-  geom_vline(
-    xintercept = resource_flow_days[1],
-    linetype = "dotdash",
-    color = "grey",
-    size = 0.7
-  ) +
-  geom_vline(
-    xintercept = resource_flow_days[2],
-    linetype = "dotdash",
-    color = "grey",
-    size = 0.7
-  ) +
-  geom_vline(
-    xintercept = resource_flow_days[3],
-    linetype = "dotdash",
-    color = "grey",
-    size = 0.7
-  ) +
-  geom_vline(
-    xintercept = resource_flow_days[4],
-    linetype = "dotdash",
-    color = "grey",
-    size = 0.7
-  ) +
-  geom_vline(
-    xintercept = resource_flow_days[5],
-    linetype = "dotdash",
-    color = "grey",
-    size = 0.7
-  ) +
-  geom_vline(
-    xintercept = resource_flow_days[6],
-    linetype = "dotdash",
-    color = "grey",
-    size = 0.7
-  ) +
-  labs(
-    x = "Day",
-    y = "Alpha Diversity (Shannon Index)",
-    fill = "",
-    caption = caption_resource_flow
-  ) +
-  scale_fill_manual(
-    values = c(colour_S, colour_M, colour_L),
-    labels = c(name_S_isolated,
-               name_M_isolated,
-               name_L_isolated)
-  ) +
-  theme_bw() +
-  theme(
-    panel.grid.major = element_blank(),
-    panel.grid.minor = element_blank(),
-    legend.position = "bottom"
-  ) +
-  geom_hline(yintercept=0,
-             color = zero_line_colour,
-             linetype = zero_line_line_type,
-             size = zero_line_line_width)
+response_variable = "shannon"
 ```
 
 ```{r}
-p_isolated_alpha = ds_patches %>%
-  filter(disturbance == disturbance_input) %>%
-  summarySE(measurevar = "shannon", 
-            groupvars = c("day", "eco_metaeco_type")) %>%
-  filter(eco_metaeco_type %in% c("S", 
-                                 "M", 
-                                 "L")
-  ) %>%
-  ggplot(
-    aes(
-      x = day,
-      y = shannon,
-      group = interaction(day, eco_metaeco_type),
-      color = eco_metaeco_type
-    )
-  ) +
-  geom_point(stat = "summary", 
-             fun = "mean",
-             position = position_dodge(dodging)) +
-  geom_line(stat = "summary",
-            fun = "mean",
-            aes(group = eco_metaeco_type),
-            position = position_dodge(dodging)) +
-  geom_errorbar(
-    aes(ymax = shannon + ci,
-        ymin = shannon - ci),
-    width = .2,
-    position = position_dodge(dodging)
-  ) +
-  geom_vline(
-    xintercept = resource_flow_days[1],
-    linetype = "dotdash",
-    color = "grey",
-    size = 0.7
-  ) +
-  geom_vline(
-    xintercept = resource_flow_days[2],
-    linetype = "dotdash",
-    color = "grey",
-    size = 0.7
-  ) +
-  geom_vline(
-    xintercept = resource_flow_days[3],
-    linetype = "dotdash",
-    color = "grey",
-    size = 0.7
-  ) +
-  geom_vline(
-    xintercept = resource_flow_days[4],
-    linetype = "dotdash",
-    color = "grey",
-    size = 0.7
-  ) +
-  geom_vline(
-    xintercept = resource_flow_days[5],
-    linetype = "dotdash",
-    color = "grey",
-    size = 0.7
-  ) +
-  geom_vline(
-    xintercept = resource_flow_days[6],
-    linetype = "dotdash",
-    color = "grey",
-    size = 0.7
-  ) +
-  labs(
-    x = "Day",
-    y = y_axis_alpha_diversity,
-    color = "",
-    caption = caption_resource_flow
-  ) +
-   scale_color_manual(
-     values = c(colour_L,
-                colour_M,
-                colour_S),
-     labels = c(name_L,
-                name_M,
-                name_S)
-   ) +
-  theme_bw() +
-  theme(
-    panel.grid.major = element_blank(),
-    panel.grid.minor = element_blank(),
-    legend.position = "bottom"
-  ) +
-  geom_hline(yintercept=0,
-             color = zero_line_colour,
-             linetype = zero_line_line_type,
-             size = zero_line_line_width)
+plot.patches.boxplots(eco_metaeco_type_input,
+                       response_variable)
+
+p_isolated_alpha = plot.patches.points(eco_metaeco_type_input,
+                       response_variable)
 
 p_isolated_alpha
 ```
+
+*Analysis*
 
 ```{r}
 filtered_data = ds_patches %>%

@@ -2,10 +2,11 @@
 title: "Functions"
 output: html_document
 date: "2023-02-08"
+editor_options: 
+  chunk_output_type: console
 ---
 
-```{r}
-source(here("r_files", "functions", "calculate.hedges_d.R"))
-source(here("r_files", "functions", "plot.metaecos.biomass.boxplots.R"))
-source(here("r_files", "functions", "plot.metaecos.biomass.points.R"))
+```{r echo=FALSE, message=FALSE, results=FALSE}
+functions_paths = list.files(here("r_files", "functions"), pattern = ".R$", full.names = TRUE)
+lapply(functions_paths, source)
 ```

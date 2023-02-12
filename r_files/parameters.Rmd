@@ -49,6 +49,11 @@ last_time_point = length(sampling_days) - 1
 n_time_points = last_time_point + 1
 nr_videos = c(12,1,1,1,1,1,2,2) #Videos taken for each time point for each culture. At t0 we took 12 videos of the large bottle from which we started the  cultures.
 
+time_point_day = data.frame(
+  time_point = 0:7,
+  day = sampling_days
+)
+
 #Resource flow
 resource_flow_days = c(5, 9, 13, 17, 21, 25)
 first_resource_flow = resource_flow_days[1]
@@ -56,82 +61,99 @@ first_resource_flow = resource_flow_days[1]
 
 ```{r}
 dodging = 0.5 
+dodging_error_bar = 0.5
 width_errorbar = 0.2
-boxplot_width = 0.9
+boxplot_width = 2
 legend_position = "top"
 ```
 
 ```{r axes}
-#X axis
-x_axis_day = "Day"
-x_axis_size_class = "Log size (μm2)"
-
-#Y axis
-y_axis_bioarea_density = "Bioarea Density (µm²/ml)"
-y_axis_bioarea_density_effect_size = "Bioarea Density Effect Size"
-y_axis_total_bioarea = "Tot Bioarea (µm²)"
-y_axis_alpha_diversity = "α Diversity"
-y_axis_alpha_diversity_effect_size = "α Diversity Effect Size"
-y_axis_beta_diversity = "β Diversity"
-y_axis_gamma_diversity = "γ Diversity"
-y_axis_size_class = 'Abundance (Indiv/ml)'
-y_axis_size_class_effect_size = "Abundance Effect Size"
-y_axis_median_body_size = "Median body size (µm²)"
-y_axis_median_body_size_effect_size = "Median Body Size Effect Size"
-y_axis_dominance_Ble = "Ble Dominance %"
-y_axis_dominance_Cep = "Cep Dominance %"
-y_axis_dominance_Col = "Col Dominance %"
-y_axis_dominance_Eug = "Eug Dominance %"
-y_axis_dominance_Eup = "Eup Dominance %"
-y_axis_dominance_Lox = "Lox Dominance %"
-y_axis_dominance_Pau = "Pau Dominance %"
-y_axis_dominance_Pca = "Pca Dominance %"
-y_axis_dominance_Spi = "Spi Dominance %"
-y_axis_dominance_Spi_te = "Spi te Dominance %"
-y_axis_dominance_Tet = "Tet Dominance %"
-```
-
-```{r name-treatments}
-#Name patches
-name_S = "Small isolated"
-name_S_isolated = "Small isolated"
-name_S_connected_to_S = "Small connected to small"
-name_S_connected_to_L = "Small connected to large"
-name_M = "Medium isolated"
-name_M_isolated = "Medium isolated"
-name_M_connected_to_M = "Medium connected to medium"
-name_L = "Large isolated"
-name_L_isolated = "Large isolated"
-name_L_connected_to_L = "Large connected to large"
-name_L_connected_to_S = "Large connected to small"
-
-#Name meta-ecosystems
-name_SS = "Small-Small meta-ecosystem"
-name_MM = "Medium-Medium meta-ecosystem"
-name_LL = "Large-Large meta-ecosystem"
-name_SL = "Small-Large meta-ecosystem"
-name_MM_from_isolated = "Medium-Medium isolated"
-name_SL_from_isolated = "Small-Large isolated"
+axis_names = data.frame(variable = NA,
+                    axis_name= NA) %>%
+  add_row(variable = "day", axis_name = "Day") %>%
+  add_row(variable = "log_size_class", axis_name = "Log size (μm2)") %>%
+  add_row(variable = "size_class_abundance", axis_name = "Density (ind/ml)") %>%
+  add_row(variable = "bioarea_per_volume", axis_name = "Bioarea Density (µm²/ml)") %>%
+  add_row(variable = "bioarea_per_volume_d", axis_name = "Bioarea Density ES") %>%
+  add_row(variable = "bioarea_tot", axis_name = "Bioarea (µm²)") %>%
+  add_row(variable = "total_metaecosystem_bioarea", axis_name = "Bioarea (µm²)") %>%
+  add_row(variable = "mean_shannon", axis_name = "α Diversity") %>%
+  add_row(variable = "shannon", axis_name = "α Diversity") %>%
+  add_row(variable = "shannon_d", axis_name = "α Diversity ES") %>%
+  add_row(variable = "bray_curtis", axis_name = "β Diversity") %>%
+  add_row(variable = "metaecosystem_richness", axis_name = "γ Diversity") %>%
+  add_row(variable = "indiv_per_volume", axis_name = "Abundance (ind/ml)") %>%
+  add_row(variable = "indiv_per_volume_d", axis_name = "Abundance ES") %>%
+  add_row(variable = "median_body_size", axis_name = "Median body size (µm²)") %>%
+  add_row(variable = "median_body_size_d", axis_name = "Median Body Size ES") %>%
+  add_row(variable = "Ble", axis_name = "Ble Density (ind/μl?)") %>%
+  add_row(variable = "Cep", axis_name = "Cep Density (ind/μl?)") %>%
+  add_row(variable = "Col", axis_name = "Col Density (ind/μl?)") %>%
+  add_row(variable = "Eug", axis_name = "Eug Density (ind/μl?)") %>%
+  add_row(variable = "Eup", axis_name = "Eup Density (ind/μl?)") %>%
+  add_row(variable = "Lox", axis_name = "Lox Density (ind/μl?)") %>%
+  add_row(variable = "Pau", axis_name = "Pau Density (ind/μl?)") %>%
+  add_row(variable = "Pca", axis_name = "Pca Density (ind/μl?)") %>%
+  add_row(variable = "Spi", axis_name = "Spi Density (ind/μl?)") %>%
+  add_row(variable = "Spi_te", axis_name = "Spi te Density (ind/μl?)") %>%
+  add_row(variable = "Tet", axis_name = "Tet Density (ind/μl?)") %>%
+  add_row(variable = "Ble_d", axis_name = "Ble Density ES") %>%
+  add_row(variable = "Cep_d", axis_name = "Cep Density ES") %>%
+  add_row(variable = "Col_d", axis_name = "Col Density ES") %>%
+  add_row(variable = "Eug_d", axis_name = "Eug Density ES") %>%
+  add_row(variable = "Eup_d", axis_name = "Eup Density ES") %>%
+  add_row(variable = "Lox_d", axis_name = "Lox Density ES") %>%
+  add_row(variable = "Pau_d", axis_name = "Pau Density ES") %>%
+  add_row(variable = "Pca_d", axis_name = "Pca Density ES") %>%
+  add_row(variable = "Spi_d", axis_name = "Spi Density ES") %>%
+  add_row(variable = "Spi_te_d", axis_name = "Spi te Density ES") %>%
+  add_row(variable = "Tet_d", axis_name = "Tet Density ES") %>%
+  add_row(variable = "Ble_dominance", axis_name = "Ble Dominance (%)") %>%
+  add_row(variable = "Cep_dominance", axis_name = "Cep Dominance (%)") %>%
+  add_row(variable = "Col_dominance", axis_name = "Col Dominance (%)") %>%
+  add_row(variable = "Eug_dominance", axis_name = "Eug Dominance (%)") %>%
+  add_row(variable = "Eup_dominance", axis_name = "Eup Dominance (%)") %>%
+  add_row(variable = "Lox_dominance", axis_name = "Lox Dominance (%)") %>%
+  add_row(variable = "Pau_dominance", axis_name = "Pau Dominance (%)") %>%
+  add_row(variable = "Pca_dominance", axis_name = "Pca Dominance (%)") %>%
+  add_row(variable = "Spi_dominance", axis_name = "Spi Dominance (%)") %>%
+  add_row(variable = "Spi_te_dominance", axis_name = "Spi te Dominance (%)") %>%
+  add_row(variable = "Tet_dominance", axis_name = "Tet Dominance (%)") %>%
+  add_row(variable = "Ble_dominance_d", axis_name = "Ble Dominance ES") %>%
+  add_row(variable = "Cep_dominance_d", axis_name = "Cep Dominance ES") %>%
+  add_row(variable = "Col_dominance_d", axis_name = "Col Dominance ES") %>%
+  add_row(variable = "Eug_dominance_d", axis_name = "Eug Dominance ES") %>%
+  add_row(variable = "Eup_dominance_d", axis_name = "Eup Dominance ES") %>%
+  add_row(variable = "Lox_dominance_d", axis_name = "Lox Dominance ES") %>%
+  add_row(variable = "Pau_dominance_d", axis_name = "Pau Dominance ES") %>%
+  add_row(variable = "Pca_dominance_d", axis_name = "Pca Dominance ES") %>%
+  add_row(variable = "Spi_dominance_d", axis_name = "Spi Dominance ES") %>%
+  add_row(variable = "Spi_te_dominance_d", axis_name = "Spi te Dominance ES") %>%
+  add_row(variable = "Tet_dominance_d", axis_name = "Tet Dominance ES") %>%
+  add_row(variable = "dominance", axis_name = "Dominance (%)") %>%
+  add_row(variable = "log_abundance", axis_name = "Log Abundance + 1 (ind/μm²)") %>%
+  add_row(variable = "abundance_hedges_d", axis_name = "Density ES") %>%
+  slice(-1)
 ```
 
 ```{r colour-treatments}
-
-colour_isolated = "#d9d9d9"
-colour_different_size = "#4992c6"
-colour_same_size = "#bc9960"
-
-colour_S = "#ffeda0"
-colour_L_connected_to_S = "#3182bd" 
-colour_S_connected_to_L = "#deebf7"  
-colour_M = "#feb24c"
-colour_L = "#f03b20"
-
-colour_SS = "#ffeda0"
-colour_MM = "#238b45"
-colour_MM_from_isolated = "#c7e9c0"
-colour_LL = "#3182bd"
-colour_SL = "#8856a7" 
-colour_SL_from_isolated = "#dadaeb"
+colours_treatments = data.frame(treatment = NA,
+                                colour = NA) %>%
+  add_row(treatment = "Small isolated", colour = "#bdbdbd") %>%
+  add_row(treatment = "Small connected to small", colour = "#ffffcc") %>%
+  add_row(treatment = "Small connected to large", colour = "#ffeda0") %>%
+  add_row(treatment = "Medium isolated", colour = "#737373") %>%
+  add_row(treatment = "Medium connected to medium", colour = "#feb24c") %>%
+  add_row(treatment = "Large isolated", colour = "#000000") %>%
+  add_row(treatment = "Large connected to large", colour = "#fc4e2a") %>%
+  add_row(treatment = "Large connected to small", colour = "#e31a1c") %>%
+  add_row(treatment = "Small-Small meta-ecosystem", colour = "#f7fbff") %>%
+  add_row(treatment = "Medium-Medium meta-ecosystem", colour = "#238b45") %>%
+  add_row(treatment = "Medium-Medium isolated", colour = "#c7e9c0") %>%
+  add_row(treatment = "Large-Large meta-ecosystem", colour = "#3182bd") %>%
+  add_row(treatment = "Small-Large meta-ecosystem", colour = "#8856a7") %>%
+  add_row(treatment = "Small-Large isolated", colour = "#dadaeb") %>%
+  slice(-1)
 ```
 
 ```{r}
@@ -145,19 +167,30 @@ caption_resource_flow = ""
 zero_line_colour = "black"
 zero_line_line_type = "solid"
 zero_line_line_width = 0.5
+
+#Zero line  ES
+zero_line_ES_line_type = "dotted"
+zero_line_ES_colour = "grey"
+zero_line_ES_line_width = 1
+
 ```
 
 ```{r figure-sizes}
 #Presentation
 size_legend = 12
 size_x_axis = 16
-size_y_axis = 13
+size_y_axis = 11
 
 #Publication 
 publication_width = 12
 publication_height = 12
 publication_unit = "cm"
 presentation_size = 15
+
+ggarrange_margin_top = 0
+ggarrange_margin_bottom = 0
+ggarrange_margin_left = 0
+ggarrange_margin_right = 0
 ```
 
 ```{r modelling}

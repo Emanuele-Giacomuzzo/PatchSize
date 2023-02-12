@@ -7,6 +7,12 @@ editor_options:
   chunk_output_type: console
 ---
 
+```{r}
+plot.patches.classes.density.points(eco_metaeco_type_input,
+                                    time_point_input)
+```
+
+
 #### Body Size Distribution {.tabset .tabset-pills}
 
 ```{r}

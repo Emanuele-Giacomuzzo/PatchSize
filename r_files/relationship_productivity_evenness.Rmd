@@ -18,51 +18,40 @@ ds_patches %>%
   geom_point()
 ```
 
+
 #### Single treatments & time points {.tabset .tabset-pills}
 
+##### Small isolated
+
 ```{r}
-plot_evenness = function(patch_type) {
-  print(
-    ds_patches %>%
-      filter(eco_metaeco_type == patch_type) %>%
-      ggplot(aes(x = evenness_pielou,
-                 y = bioarea_per_volume)) +
-      geom_point() +
-      facet_wrap( ~ time_point) +
-      labs(title = paste0(
-        "Patch type = ",
-        patch_type
-      ))
-  )
-}
+plot.relationship.BEF("Small isolated",
+                      "evenness_pielou")
 ```
 
-##### S
+##### Medium isolated
 
 ```{r}
-plot_evenness("S")
+plot.relationship.BEF("Medium isolated",
+                      "evenness_pielou")
 ```
 
-##### M
+##### Large isolated
 
 ```{r}
-plot_evenness("M")
+plot.relationship.BEF("Large isolated",
+                      "evenness_pielou")
 ```
 
-##### L
+##### Small connected to large
 
 ```{r}
-plot_evenness("L")
+plot.relationship.BEF("Small connected to large",
+                      "evenness_pielou")
 ```
 
-##### S connected to L
+##### Large connecred to small
 
 ```{r}
-plot_evenness("S (S_L)")
-```
-
-##### L connected to S
-
-```{r}
-plot_evenness("L (S_L)")
+plot.relationship.BEF("Large connected to small",
+                      "evenness_pielou")
 ```

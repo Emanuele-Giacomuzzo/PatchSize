@@ -1,0 +1,15 @@
+---
+title: "s"
+output: html_document
+date: "2023-02-09"
+---
+
+
+```{r}
+eco_metaeco_type_input = c("Small connected to large", 
+                           "Large connected to small")
+colour_level_1 = colour_S_connected_to_L
+colour_level_2 = colour_L_connected_to_S
+name_level_1 = name_S_connected_to_L
+name_level_2 = name_L_connected_to_S
+```

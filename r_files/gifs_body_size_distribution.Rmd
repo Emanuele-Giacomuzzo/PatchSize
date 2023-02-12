@@ -26,7 +26,7 @@ second_level = c(
   name_L_connected_to_S
 )
 
-for (patch_size_input in c("S", "L")) {
+for (patch_size_input in c("Small isolated", "Large isolated")) {
   for (disturbance_input in c("low", "high")) {
     n = n + 1
     

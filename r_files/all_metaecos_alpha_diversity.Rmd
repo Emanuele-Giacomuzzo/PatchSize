@@ -1,0 +1,19 @@
+---
+title: "s"
+output: html_document
+date: "2023-02-09"
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+response_variable = "mean_shannon"
+```
+
+```{r}
+plot.metaecos.boxplots(metaecosystem_type_input,
+                       response_variable)
+
+plot.metaecos.points(metaecosystem_type_input,
+                     response_variable)
+```

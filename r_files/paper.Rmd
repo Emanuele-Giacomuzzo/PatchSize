@@ -8,12 +8,11 @@ editor_options:
 
 ### Title page
 
-Title: How meta-ecosystem dynamics can homogenise ecosystem function across patch size distribution 
+Title: How meta-ecosystem dynamics can homogenise ecosystem function across patch size distribution
 
 Authors (add affiliations): Emanuele Giacomuzzo, Tianna Peller, Isabelle Gounand, Florian Altermatt
 
-Number of words: ... 
-Number of figures: ...
+Number of words: ... Number of figures: ...
 
 ### Abstract
 
@@ -61,9 +60,70 @@ The evaporated water was replenished with autoclaved deionised water. Before the
 
 Furthermore, we added medium to the cultures during each exchange event to make up for the volume sampled at each time point (0.2 ml). The addition of medium, however, did not happen at the sixth exchange, as it was right before the last time point. The sampling of 0.2 ml of culture at the last time point would not have mattered as it was the last day of the experiment.
 
+#### Statistical analysis
+
+##### Mixed effect models
+
+To perform mixed effect modeling on our data, we utilized the R package lme4. The code syntax was obtained from the vignette available at <https://cran.r-project.org/web/packages/lme4/vignettes/lmer.pdf>. Interaction terms were coded following the guidelines provided in chapter 9 of the book "An R Companion to Statistics: Data Analysis and Modeling" by Maarten Speekenbrink (<https://mspeekenbrink.github.io/sdam-r-companion/linear-mixed-effects-models.html>). Model diagnostics were conducted using quantile-quantile plots (plot(mixed_model)) and partial residual plots (qqnorm(resid(mixed_model))), as recommended by @Zuur2009 (page 487).
+
+The effect size of the explanatory variables was computed as marginal and conditional R squared. The marginal R squared represents the amount of variance explained by the fixed effects, while the conditional R squared accounts for both the fixed and random effects. The calculation of marginal and conditional R squared was performed using the MuMIn package, based on the methods of @Nakagawa2017. For the coding and interpretation of these R squared values, refer to the documentation for the r.squaredGLMM function.
+
+Time can either be included as a fixed or random effect. If the data points are dependent on each other (e.g. seasons), time should be included as a random effect. However, since the biomass in our experiment showed a temporal trend and exhibited autocorrelation (i.e. t2 is more similar to t3 than t4), we decided to include time as a fixed effect. For a comprehensive discussion on this topic, see this blog post: <https://dynamicecology.wordpress.com/2015/11/04/is-it-a-fixed-or-random-effect/>.
+
+Some interactions cannot be tested in R, as described in this Stack Overflow thread (https://stackoverflow.com/questions/40729701/how-to-use-formula-in-r-to-exclude-main-effect-but-retain-interaction). This is specifically the case when the interaction is between a factor (e.g., eco_metaeco_type) and a continuous variable (e.g. day), and the factor is the primary predictor. This limitation is due to the model.matrix.default function. To test the effects of day, I must remove the interaction term with eco_metaeco_type.
+
+##### Effect sizes
+
+To determine how response variables change across treatments, we chose to use an effect size with the control being a patch of the same size but isolated. Initially, we considered using the natural logarithm of the response ratio (lnRR), but some values of the response variables in the control or treatment were 0. Adding 1 to all null values, as suggested in the literature, would have inflated the effect sizes. As a result, we searched for alternative effect size metrics and found that Hedge's d (also known as Hedge's g) is the most commonly used and preferred metric today (@Hedges1985). Hedge's d is calculated as the difference in mean between the treatment and control groups divided by the standard deviation of the pooled data. Another option would have been Cohen's d, but this metric is less effective for sample sizes smaller than 20 (as discussed in this post on StatisticsHowTo: https://www.statisticshowto.com/hedges-g/).
+
+##### Model selection
+
+Model selection was performed using the Akaike Information Criterion (AIC). A difference in AIC of 2 was considered to be the threshold that distinguishes between two models, with the model having the lower AIC being preferred. If the difference in AIC does not exceed 2, the model with the smallest number of parameters is preferred. This approach was suggested by @Halsey2019 as an alternative to using p-values. P-values are not a reliable method of model selection due to the small sample size (five replicates), which can result in larger p-values, and because p-values can be highly variable, leading to many false positives and negatives (e.g., with a p-value of 0.05, there is a 1 in 3 chance that it's a false positive).
+
+##### Size distribution
+
+The selection of the number of size classes was arbitrary and based on the same number used by @Jacquet2020. Currently, there is no established standard for optimizing the number of size classes when analyzing body size distributions in ecology (@Loder1997).
+
+##### Confidence intervals
+
+To determine the 95% confidence interval of means, I used a code that can be found on a Stack Overflow thread (https://stackoverflow.com/questions/35953394/calculating-length-of-95-ci-using-dplyr). The code is based on the formula presented in the Lumen Learning course "Introduction to Statistics" (https://courses.lumenlearning.com/introstats1/chapter/a-single-population-mean-using-the-student-t-distribution/). The formula to calculate the upper and lower bounds of the 95% confidence interval is as follows:
+
+$$
+CI_{lower} = mean - (t \: score * \frac{SD}{sample \: size})
+$$ 
+
+$$
+CI_{upper} = mean + (t \: score * \frac{SD}{sample \: size})
+$$
+
+where the t-score is computed from the student t distribution using the r function qt with percentile = 0.975 and degrees of freedom = sample size - 1.
+
+
+To determine the 95% confidence interval of Hedge's d, I used a formula that is part of DATAPLOT, a software system for scientific visualization, statistical analysis, and non-linear modeling provided by the US government (as described in the following link: https://www.itl.nist.gov/div898/software/dataplot/refman1/auxillar/hedges_g.htm). The method was also suggested in a Cross Validated thread (https://stats.stackexchange.com/questions/460367/calculate-effect-size-and-confidence-interval-from-published-means±std). I also cited https://www.meta-analysis.com/downloads/Meta-analysis%20Effect%20sizes%20based%20on%20means.pdf, but I am unsure why.
+
+Hedge's d ± 95% confidence interval is computed as Hedge's d ± 1.96 * SE, where SE is calculated as follows:
+
+$$
+SE_g = \sqrt{V_g}
+$$
+
+$$
+V_g = J^2 * V_d
+$$
+
+$$
+J = 1 - \frac{3}{4df-1}
+$$
+
+$$
+V_d = \frac{n1 + n2}{n_1 n_2} + \frac{d^2}{2(n_1 + n_2)}
+$$
+
+where d is Hedge's d, n1 is the sample size of group 1, n2 is the sample size of group 2, and df is the degrees of freedom (df = n1 + n2 - 2).
+
 ### Results
 
-#### Discussion
+### Discussion
 
 Patch size has an effect on meta-ecosystem function. However, this will depend upon the amount of resource flow happening between the two ecosystems. When there isn't any flow between the two ecosystems, small-large meta-ecosystems are the most productive (opposed to what @Benedetti-Cecchi2005 predicted). However, the more detritus is exchanged, the less the function of the meta-ecosystem, as it is mainly driven by the largest system. The small patch increases in function in
 
@@ -73,7 +133,7 @@ The higher species richness experienced by small patches is in line with the Sub
 
 #### Figures
 
-![Figure 1. Experimental Design. We constructed meta-ecosytems made out two patches. ](images/Design.png)
+![Figure 1. Experimental Design. We constructed meta-ecosytems made out two patches.](images/Design.png)
 
 ```{r fig-isolated-patches, fig.cap = "Figure 2. Effect of patch size on (a) isolated patch bioarea density and (b) isolated patch alpha diversity. (a): the larger the patch, the more biomass density it had (bioarea is a proxy for biomass). (b): the larger the patch was, the higher its diversity (Shannon Index) was. All patches were sampled at the same time but points were jettered to make the figure clearar. Vertical grey lines: disturbance events."}
 
@@ -81,16 +141,25 @@ ggarrange(
   p_isolated_biomass +
     rremove("xlab") +
     theme(axis.text.x = element_blank(),
-          axis.ticks.x = element_blank()) +
+          axis.ticks.x = element_blank(),
+          plot.margin = unit(c(ggarrange_margin_top,
+                               ggarrange_margin_right,
+                               ggarrange_margin_bottom,
+                               ggarrange_margin_left), 
+                             "cm")) +
     font("legend.text", size = size_legend) +
     font("ylab", size = size_y_axis), 
-  NULL,
   p_isolated_alpha +
+    theme(plot.margin = unit(c(ggarrange_margin_left,
+                               ggarrange_margin_right,
+                               ggarrange_margin_bottom,
+                               ggarrange_margin_left), 
+                             "cm")) + 
     font("xlab", size = size_x_axis) + 
     font("ylab", size = size_y_axis) +
   scale_x_continuous(breaks = unique(ds_patches$day)),
-  nrow = 3,
-  heights = c(0.9, -0.1, 1),
+  nrow = 2,
+  heights = c(0.9,1),
   common.legend = TRUE,
   align = "v"
 )
@@ -98,33 +167,44 @@ ggarrange(
 
 ```{r fig-connected-systems, fig.cap = "Figure 3. Effect of asymmetry in patch size and resource flow on (a) meta-ecosystem total bioarea and (b) meta-ecosystem beta diversity. (a): medium-medium and small-large meta-ecosystems had the same biomass (bioarea is a proxy for biomass). (b): small-large meta-ecosystems maintained higher beta diversity (Bray-Curtis Index). All systems were sampled at the same time but points were jettered to make the figure clearar. Vertical grey lines: disturbance events followed by resource flow."}
 ggarrange(
-  p_all_metaecos_biomass +
+  p_MM_SL_metaecos_biomass +
     rremove("xlab") +
     theme(axis.text.x = element_blank(),
-          axis.ticks.x = element_blank()) +
+          axis.ticks.x = element_blank(),
+          plot.margin = unit(c(ggarrange_margin_top,
+                               ggarrange_margin_right,
+                               ggarrange_margin_bottom,
+                               ggarrange_margin_left), 
+                             "cm")) +
     font("legend.text", size = size_legend) +
     font("ylab", size = size_y_axis),
-  NULL,
-  p_all_metaecos_alpha +
+  p_MM_SL_metaecos_alpha +
     rremove("xlab") +
     theme(axis.text.x = element_blank(),
-          axis.ticks.x = element_blank()) +
+          axis.ticks.x = element_blank(),
+          plot.margin = unit(c(ggarrange_margin_top,
+                               ggarrange_margin_right,
+                               ggarrange_margin_bottom,
+                               ggarrange_margin_left), 
+                             "cm")) +
     font("legend.text", size = size_legend) +
     font("ylab", size = size_y_axis),
-  NULL,
-  p_all_metaecos_beta +
+  p_MM_SL_metaecos_beta +
+    theme(plot.margin = unit(c(ggarrange_margin_left,
+                               ggarrange_margin_right,
+                               ggarrange_margin_bottom,
+                               ggarrange_margin_left), 
+                             "cm")) + 
     font("xlab", size = size_x_axis) +
     font("ylab", size = size_y_axis) +
     scale_x_continuous(breaks = unique(ds_patches$day)),
-  nrow = 5,
-  heights = c(0.9,-0.1, 0.9, -0.1, 0.9),
+  heights = c(0.8,0.8,1),
+  nrow = 3,
   common.legend = TRUE,
   align = "v"
 )
 
 ```
-
-
 
 ```{r fig-connected-patches, fig.cap = "Figure 6. Effect of the resource flow on the patches of meta-ecosystems. The effects of resource flow have been measured as effect size (Hedge's d) compared to their respective isolated patches. Top: effects of resource flow on the biomass (bioarea is used as a proxy for biomass) of the small and the large patches. Flow from the small to the large increased the biomass of the small patch. Flow from the small patch decreased the biomass of the biomass of the large patch. Bottom: effects of resource flow on the alpha diversity (Shannon Index) of the small and the large patches. Flow from the large to the small increased the biodiveristy of the small patch. Flow from the small patch to the large patch had no effect on alpha diversity of the large patch. All patches were sampled at the same time but points were jettered to make the figure clearar. Vertical grey lines: disturbances events followed by resource flow."}
 
@@ -132,20 +212,28 @@ ggarrange(
   p_connected_biomass_effect_size +
     rremove("xlab") +
     theme(axis.text.x = element_blank(),
-          axis.ticks.x = element_blank()) +
+          axis.ticks.x = element_blank(),
+          plot.margin = unit(c(ggarrange_margin_top,
+                               ggarrange_margin_right,
+                               ggarrange_margin_bottom,
+                               ggarrange_margin_left), 
+                             "cm")) +
     font("legend.text", size = size_legend) +
     font("ylab", size = size_y_axis), 
-  NULL,
   p_connected_alpha_effect_size +
+    theme(plot.margin = unit(c(ggarrange_margin_left,
+                               ggarrange_margin_right,
+                               ggarrange_margin_bottom,
+                               ggarrange_margin_left), 
+                             "cm")) + 
     font("xlab", size = size_x_axis) + 
     font("ylab", size = size_y_axis) +
     scale_x_continuous(breaks = unique(ds_patches$day)),
-  nrow = 3,
-  heights = c(0.9, -0.1, 1),
+  nrow = 2,
+  heights = c(0.9,1),
   common.legend = TRUE,
   align = "v"
 )
-
 ```
 
 #### Figure legends
@@ -153,5 +241,5 @@ ggarrange(
 #### Appendix
 
 ```{r}
-p_all_metaecos_gamma
+p_MM_SL_metaecos_gamma
 ```

@@ -7,177 +7,21 @@ editor_options:
   chunk_output_type: console
 ---
 
-#### Biomass 
-
 ```{r}
-ds_patches %>%
-  filter(disturbance == disturbance_input,
-       metaecosystem == "no") %>%
-  mutate(eco_metaeco_type = fct_reorder(eco_metaeco_type, patch_size_volume)) %>%
-  ggplot(aes(
-    x = day,
-    y = bioarea_per_volume,
-    group = interaction(day, eco_metaeco_type),
-    fill = eco_metaeco_type
-  )) +
-  geom_boxplot(width = boxplot_width) +
-  geom_vline(
-    xintercept = resource_flow_days[1],
-    linetype = "dotdash",
-    color = "grey",
-    size = 0.7
-  ) +
-  geom_vline(
-    xintercept = resource_flow_days[2],
-    linetype = "dotdash",
-    color = "grey",
-    size = 0.7
-  ) +
-  geom_vline(
-    xintercept = resource_flow_days[3],
-    linetype = "dotdash",
-    color = "grey",
-    size = 0.7
-  ) +
-  geom_vline(
-    xintercept = resource_flow_days[4],
-    linetype = "dotdash",
-    color = "grey",
-    size = 0.7
-  ) +
-  geom_vline(
-    xintercept = resource_flow_days[5],
-    linetype = "dotdash",
-    color = "grey",
-    size = 0.7
-  ) +
-  geom_vline(
-    xintercept = resource_flow_days[6],
-    linetype = "dotdash",
-    color = "grey",
-    size = 0.7
-  ) +
-  labs(
-    x = "Day",
-    y = "Patch Bioarea (µm²/μl)",
-    fill = "",
-    caption = caption_resource_flow
-  ) +
-  scale_fill_manual(
-    values = c(colour_S, colour_M, colour_L),
-    labels = c(name_S_isolated,
-               name_M_isolated,
-               name_L_isolated)
-  ) +
-  theme_bw() +
-  theme(
-    panel.grid.major = element_blank(),
-    panel.grid.minor = element_blank(),
-    legend.position = "bottom"
-  ) +
-  geom_hline(yintercept=0,
-             color = zero_line_colour,
-             linetype = zero_line_line_type,
-             size = zero_line_line_width)
+response_variable = "bioarea_per_volume"
 ```
 
 ```{r}
-p_isolated_biomass = ds_patches %>%
-  filter(disturbance == disturbance_input) %>%
-  summarySE(measurevar = "bioarea_per_volume", 
-            groupvars = c("day", "eco_metaeco_type")) %>%
-  filter(eco_metaeco_type %in% c("S", 
-                                 "M", 
-                                 "L")
-  ) %>%
-  ggplot(
-    aes(
-      x = day,
-      y = bioarea_per_volume,
-      group = interaction(day, eco_metaeco_type),
-      color = eco_metaeco_type
-    )
-  ) +
-  geom_point(stat = "summary", 
-             fun = "mean",
-             position = position_dodge(dodging)) +
-  geom_line(stat = "summary",
-            fun = "mean",
-            aes(group = eco_metaeco_type),
-            position = position_dodge(dodging)) +
-  geom_errorbar(
-    aes(ymax = bioarea_per_volume + ci,
-        ymin = bioarea_per_volume - ci),
-    width = .2,
-    position = position_dodge(dodging)
-  ) +
-  geom_vline(
-    xintercept = resource_flow_days[1],
-    linetype = "dotdash",
-    color = "grey",
-    size = 0.7
-  ) +
-  geom_vline(
-    xintercept = resource_flow_days[2],
-    linetype = "dotdash",
-    color = "grey",
-    size = 0.7
-  ) +
-  geom_vline(
-    xintercept = resource_flow_days[3],
-    linetype = "dotdash",
-    color = "grey",
-    size = 0.7
-  ) +
-  geom_vline(
-    xintercept = resource_flow_days[4],
-    linetype = "dotdash",
-    color = "grey",
-    size = 0.7
-  ) +
-  geom_vline(
-    xintercept = resource_flow_days[5],
-    linetype = "dotdash",
-    color = "grey",
-    size = 0.7
-  ) +
-  geom_vline(
-    xintercept = resource_flow_days[6],
-    linetype = "dotdash",
-    color = "grey",
-    size = 0.7
-  ) +
-  labs(
-    x = "Day",
-    y = y_axis_bioarea_density,
-    color = "",
-    caption = caption_resource_flow
-  ) +
-   scale_color_manual(
-     values = c(colour_L,
-                colour_M,
-                colour_S),
-     labels = c(name_L,
-                name_M,
-                name_S)
-   ) +
-  theme_bw() +
-  theme(
-    panel.grid.major = element_blank(),
-    panel.grid.minor = element_blank(),
-    legend.position = "bottom"
-  ) +
-  geom_hline(yintercept=0,
-             color = zero_line_colour,
-             linetype = zero_line_line_type,
-             size = zero_line_line_width) +
-  geom_hline(yintercept=0,
-             color = zero_line_colour,
-             linetype = zero_line_line_type,
-             size = zero_line_line_width)
+plot.patches.boxplots(eco_metaeco_type_input,
+                       response_variable)
+
+p_isolated_biomass = plot.patches.points(eco_metaeco_type_input,
+                       response_variable)
 
 p_isolated_biomass
 ```
+
+*Analysis*
 
 ```{r}
 filtered_data = ds_patches %>%

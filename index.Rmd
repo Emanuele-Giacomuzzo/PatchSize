@@ -1,0 +1,381 @@
+---
+title: "PhD Chapter 1 - PatchSize"
+author: "Emanuele Giacomuzzo"
+date: "`r Sys.time()`"
+output: 
+  html_document:
+    code_folding: hide
+bibliography: library.bib
+html_document:
+    toc: true
+    toc_float: true
+    code_folding: hide
+    number_sections: true
+    includes:
+      after_body: tabset-dropdown.html
+editor_options: 
+  chunk_output_type: console
+---
+
+#  {.tabset}
+
+```{r echo=FALSE, message=FALSE}
+start_time = Sys.time()
+library("here")
+```
+
+```{r child = here("r_files", "packages.Rmd"), echo = FALSE}
+```
+
+```{r child = here("r_files", "functions.Rmd"), echo = FALSE}
+```
+
+```{r child = here("r_files", "parameters.Rmd"), echo = FALSE}
+```
+
+## Overview {.tabset .tabset-pills}
+
+```{r overview-experiment, child = here("r_files", "overview.Rmd"), eval = compute_n_display_datasets}
+```
+
+## Data {.tabset .tabset-dropdown}
+
+```{r child = here("r_files", "ds_culture_info.Rmd"), eval = compute_n_display_datasets}
+```
+
+```{r child = here("r_files", "ds_patches.Rmd"), eval = compute_n_display_datasets}
+```
+
+```{r child = here("r_files", "ds_patches_effect_size.Rmd"), eval = compute_n_display_datasets}
+```
+
+```{r child = here("r_files", "ds_metaecosystems.Rmd"), eval = compute_n_display_datasets}
+```
+
+```{r child = here("r_files", "ds_individuals.Rmd"), eval = compute_n_display_datasets}
+```
+
+```{r child = here("r_files", "ds_median_body_size.Rmd"), eval = compute_n_display_datasets}
+```
+
+```{r child = here("r_files", "ds_median_body_size_effect_size.Rmd"), eval = compute_n_display_datasets}
+```
+
+```{r child = here("r_files", "ds_classes.Rmd"), eval = compute_n_display_datasets}
+```
+
+```{r child = here("r_files", "ds_classes_effect_size.Rmd"), eval = compute_n_display_datasets}
+```
+
+## Meta-ecosystems {.tabset .tabset-dropdown}
+
+### All {.tabset .tabset-pills}
+
+```{r}
+metaecosystem_type_input = c("Small-Small meta-ecosystem",
+                             "Medium-Medium meta-ecosystem",
+                             "Medium-Medium isolated",
+                             "Large-Large meta-ecosystem",
+                             "Small-Large meta-ecosystem",
+                             "Small-Large isolated")
+```
+
+#### Biomass
+
+```{r child = here("r_files", "all_metaecos_biomass.Rmd")}
+```
+
+#### Alpha
+
+```{r child = here("r_files", "all_metaecos_alpha_diversity.Rmd")}
+```
+
+#### Beta diversity
+
+```{r child = here("r_files", "all_metaecos_beta_diversity.Rmd")}
+```
+
+#### Gamma diversity
+
+```{r child = here("r_files", "all_metaecos_gamma_diversity.Rmd")}
+```
+
+### MM vs SL (meta-ecosystems and isolated) {.tabset .tabset-pills}
+
+```{r}
+metaecosystem_type_input = c("Medium-Medium meta-ecosystem",
+                             "Medium-Medium isolated",
+                             "Small-Large meta-ecosystem",
+                             "Small-Large isolated")
+```
+
+#### Biomass
+
+```{r child = here("r_files", "MM_all_vs_SL_all_biomass.Rmd")}
+```
+
+#### Alpha diversity
+
+```{r child = here("r_files", "MM_all_vs_SL_all_alpha_diversity.Rmd")}
+```
+
+#### Beta diversity
+
+```{r child = here("r_files", "MM_all_vs_SL_all_beta_diversity.Rmd")}
+```
+
+#### Gamma diversity
+
+```{r child = here("r_files", "MM_all_vs_SL_all_gamma_diversity.Rmd")}
+```
+
+## Patches {.tabset .tabset-dropdown}
+
+### Isolated {.tabset .tabset-pills}
+
+```{r}
+eco_metaeco_type_input = c("Small isolated",
+                           "Medium isolated",
+                           "Large isolated")
+```
+
+#### Biomass
+
+```{r child = here("r_files", "isolated_patches_biomass.Rmd")}
+```
+
+#### Alpha diversity
+
+```{r child = here("r_files", "isolated_patches_alpha_diversity.Rmd")}
+```
+
+#### Species densities
+
+```{r child = here("r_files", "isolated_patches_species_densities.Rmd")}
+```
+
+#### Species dominance
+
+```{r child = here("r_files", "isolated_patches_species_dominance.Rmd")}
+```
+
+#### Species composition
+
+```{r child = here("r_files", "isolated_patches_species_composition.Rmd")}
+```
+
+#### Size classes densities
+
+```{r child = here("r_files", "isolated_patches_size_classes.Rmd")}
+```
+
+#### Body size distribution {.tabset .tabset-pills}
+
+```{r child = here("r_files", "isolated_patches_body_size_distribution.Rmd"), eval = FALSE}
+```
+
+#### Median body size {.tabset .tabset-pills}
+
+```{r child = here("r_files", "isolated_patches_median_body_size.Rmd")}
+```
+
+### Small {.tabset .tabset-pills}
+
+```{r}
+eco_metaeco_type_input = c("Small isolated",
+                           "Small connected to small",
+                           "Small connected to large")
+```
+
+#### Biomass
+
+```{r child = here("r_files", "small_patches_biomass.Rmd")}
+```
+
+#### Alpha diversity
+
+```{r child = here("r_files", "small_patches_alpha_diversity.Rmd")}
+```
+
+#### Species densities
+
+```{r child = here("r_files", "small_patches_species_densities.Rmd")}
+```
+
+#### Species dominance
+
+```{r child = here("r_files", "small_patches_species_dominance.Rmd")}
+```
+
+#### Species composition
+
+```{r child = here("r_files", "small_patches_species_composition.Rmd")}
+```
+
+#### Size classes densities
+
+```{r child = here("r_files", "small_patches_size_classes.Rmd")}
+```
+
+#### Body size distribution {.tabset .tabset-pills}
+
+```{r child = here("r_files", "small_patches_body_size_distribution.Rmd"), eval = FALSE}
+```
+
+#### Median body size
+
+```{r child = here("r_files", "small_patches_median_body_size.Rmd")}
+```
+
+### Medium
+
+```{r}
+eco_metaeco_type_input = c("Medium isolated",
+                           "Medium connected to medium")
+```
+
+#### Biomass
+
+```{r child = here("r_files", "medium_patches_biomass.Rmd")}
+```
+
+### Large {.tabset .tabset-pills}
+
+```{r}
+eco_metaeco_type_input = c("Large isolated",
+                           "Large connected to large",
+                           "Large connected to small")
+```
+
+#### Biomass
+
+```{r child = here("r_files", "large_patches_biomass.Rmd")}
+```
+
+#### Alpha diversity
+
+```{r child = here("r_files", "large_patches_alpha_diversity.Rmd")}
+```
+
+#### Species densities
+
+```{r child = here("r_files", "large_patches_species_densities.Rmd")}
+```
+
+#### Species dominance
+
+```{r child = here("r_files", "large_patches_species_dominance.Rmd")}
+```
+
+#### Species composition
+
+```{r child = here("r_files", "large_patches_species_composition.Rmd")}
+```
+
+#### Size classes densities
+
+```{r child = here("r_files", "large_patches_size_classes.Rmd")}
+```
+
+#### Body size distribution
+
+```{r child = here("r_files", "large_patches_body_size_distribution.Rmd"), eval = FALSE}
+```
+
+#### Median body size
+
+```{r child = here("r_files", "large_patches_median_body_size.Rmd")}
+```
+
+### SL {.tabset .tabset-pills}
+
+```{r}
+eco_metaeco_type_input = c("Small connected to large",
+                           "Large connected to small")
+```
+
+#### Biomass
+
+```{r child = here("r_files", "SL_biomass.Rmd")}
+```
+
+#### Alpha diversity
+
+```{r child = here("r_files", "SL_alpha_diversity.Rmd")}
+```
+
+#### Species densities
+
+```{r child = here("r_files", "SL_species_densities.Rmd")}
+```
+
+#### Species dominance
+
+```{r child = here("r_files", "SL_species_dominance.Rmd")}
+```
+
+#### Species composition
+
+```{r child = here("r_files", "SL_species_composition.Rmd")}
+```
+
+#### Size classes densities
+
+```{r child = here("r_files", "SL_size_classes.Rmd")}
+```
+
+#### Median body size {.tabset .tabset-pills}
+
+```{r child = here("r_files", "SL_median_body_size.Rmd")}
+```
+
+## Productivity drivers {.tabset .tabset-pills}
+
+```{r child = here("r_files", "relationship_productivity_richness.Rmd")}
+```
+
+```{r child = here("r_files", "relationship_productivity_shannon.Rmd")}
+```
+
+```{r child = here("r_files", "relationship_productivity_evenness.Rmd")}
+```
+
+```{r child = here("r_files", "relationship_productivity_dominance.Rmd")}
+```
+
+## Evaporation {.tabset .tabset-dropdown}
+
+```{r child = here("r_files", "evaporation.Rmd")}
+```
+
+```{r child = here("r_files", "evaporation_tests.Rmd")}
+```
+
+## Video analysis script
+
+```{r child = here("r_files", "video_analysis_script.Rmd"), class.source = "fold-show"}
+```
+
+## Paper
+
+```{r child = here("r_files", "paper.Rmd")}
+```
+
+## Running time
+
+```{r running-time, echo = FALSE, eval = TRUE}
+end_time = Sys.time()
+end_time - start_time
+```
+
+## Other
+
+In the .bib file get rid of:
+
+-   book_section
+
+-   computer_program
+
+-   web_page
+
+## Bibliography

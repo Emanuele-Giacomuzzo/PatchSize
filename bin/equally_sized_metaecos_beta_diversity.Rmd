@@ -1,0 +1,33 @@
+---
+title: "Beta Diversity Metaecos MM SL"
+output: html_document
+date: "2022-11-22"
+editor_options: 
+  chunk_output_type: console
+---
+
+#### Beta Diversity
+
+```{r}
+plot.metaecos.beta.diversity.boxplots(
+  metaecosystem_type_input = metaecosystem_type_input,
+  colour_level_1 = colour_level_1,
+  colour_level_2 = colour_level_2,
+  colour_level_3 = colour_level_3,
+  name_level_1  = name_level_1,
+  name_level_2 = name_level_2,
+  name_level_3 = name_level_3
+)
+```
+
+```{r}
+plot.metaecos.beta.diversity.points(
+  metaecosystem_type_input = metaecosystem_type_input,
+  colour_level_1 = colour_level_1,
+  colour_level_2 = colour_level_2,
+  colour_level_3 = colour_level_3,
+  name_level_1  = name_level_1,
+  name_level_2 = name_level_2,
+  name_level_3 = name_level_3
+)
+```
