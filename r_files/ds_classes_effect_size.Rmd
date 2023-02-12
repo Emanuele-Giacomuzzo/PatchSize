@@ -32,9 +32,9 @@ ds_classes_effect_size = ds_classes %>%
     log_abundance_lower_ci = log_abundance - qt(1 - (0.05 / 2), sample_size - 1) * log_abundance_se,
     log_abundance_upper_ci = log_abundance + qt(1 - (0.05 / 2), sample_size - 1) * log_abundance_se
   ) %>%
-  mutate(abundance_hedges_d = NA,
-         abundance_hedges_d_upper = NA,
-         abundance_hedges_d_lower = NA)
+  mutate(abundance_d = NA,
+         abundance_d_upper = NA,
+         abundance_d_lower = NA)
 
 #Expected number of rows: 12 size classes * 8 eco_metaeco_types * 2 disturbance types * 8 time points = 1536
 ```
@@ -91,21 +91,21 @@ for (disturbance_input in c("low", "high")) {
           control$sample_size
         )
         
-        ds_classes_effect_size$abundance_hedges_d[
+        ds_classes_effect_size$abundance_d[
           ds_classes_effect_size$disturbance == disturbance_input &
           ds_classes_effect_size$eco_metaeco_type == eco_metaeco_treatment &
           ds_classes_effect_size$time_point == time_point_input &
           ds_classes_effect_size$size_class_n == size_class_input] = 
           hedges_d_size_class$d
         
-        ds_classes_effect_size$abundance_hedges_d_upper[
+        ds_classes_effect_size$abundance_d_upper[
           ds_classes_effect_size$disturbance == disturbance_input &
           ds_classes_effect_size$eco_metaeco_type == eco_metaeco_treatment &
           ds_classes_effect_size$time_point == time_point_input &
           ds_classes_effect_size$size_class_n == size_class_input] =
           hedges_d_size_class$upper_CI
         
-        ds_classes_effect_size$abundance_hedges_d_lower[
+        ds_classes_effect_size$abundance_d_lower[
           ds_classes_effect_size$disturbance == disturbance_input &
           ds_classes_effect_size$eco_metaeco_type == eco_metaeco_treatment &
           ds_classes_effect_size$time_point == time_point_input &

@@ -133,7 +133,6 @@ ds_individuals = ds_individuals %>%
   ))
 ```
 
-
 ```{r}
 saveRDS(ds_individuals, file = here("results", "ds_individuals.RData"))
 ```

@@ -2,7 +2,6 @@ plot.metaecos.points = function(metaecosystem_type_input,
                                 response_variable) {
   ds_metaecosystems %>%
     filter(
-      disturbance == disturbance_input,
       metaecosystem_type %in% metaecosystem_type_input
     ) %>%
     summarySE(measurevar = response_variable,

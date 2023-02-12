@@ -7,6 +7,6 @@ editor_options:
 ---
 
 ```{r echo=FALSE, message=FALSE, results=FALSE}
-functions_paths = list.files(here("r_files", "functions"), pattern = ".R$", full.names = TRUE)
+functions_paths = list.files(here("..", "Functions"), pattern = ".R$", full.names = TRUE)
 lapply(functions_paths, source)
 ```

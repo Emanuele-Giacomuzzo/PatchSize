@@ -67,6 +67,9 @@ library("here")
 ```{r child = here("r_files", "ds_classes_effect_size.Rmd"), eval = compute_n_display_datasets}
 ```
 
+```{r child = here("r_files", "disturbance_filter.Rmd")}
+```
+
 ## Meta-ecosystems {.tabset .tabset-dropdown}
 
 ### All {.tabset .tabset-pills}

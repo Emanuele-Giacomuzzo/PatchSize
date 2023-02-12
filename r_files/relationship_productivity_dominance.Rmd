@@ -29,29 +29,34 @@ for(species_input in protist_species){
 ##### Small isolated
 
 ```{r}
-plot.relationship.dominance.productivity("Small isolated")
+plot.relationship.dominance.productivity("Small isolated",
+                                         protist_species)
 ```
 
 ##### Medium isolated
 
 ```{r}
-plot.relationship.dominance.productivity("Medium isolated")
+plot.relationship.dominance.productivity("Medium isolated",
+                                         protist_species)
 ```
 
 ##### Large isolated
 
 ```{r}
-plot.relationship.dominance.productivity("Large isolated")
+plot.relationship.dominance.productivity("Large isolated",
+                                         protist_species)
 ```
 
 ##### Small connected to large
 
 ```{r}
-plot.relationship.dominance.productivity("Small connected to large")
+plot.relationship.dominance.productivity("Small connected to large",
+                                         protist_species)
 ```
 
 ##### Large connected to small
 
 ```{r}
-plot.relationship.dominance.productivity("Large connected to small")
+plot.relationship.dominance.productivity("Large connected to small",
+                                         protist_species)
 ```
