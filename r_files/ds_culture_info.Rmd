@@ -5,8 +5,6 @@ date: "2022-09-08"
 output: html_document
 ---
 
-### Experimental cultures (`culture_info`)
-
 This table contains information about the 110 cultures of the experiment.
 
 ```{r experimental-cultures}

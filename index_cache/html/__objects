@@ -1,0 +1,263 @@
+experiment	culture_info	eco_metaeco_types	ecosystems_to_take_off	first_resource_flow	first_time_point	last_time_point	metaecosystems_to_take_off	n_cultures	n_metaecosystems	n_protist_species	n_time_points	n_videos_taken_t0	nr_videos	protist_species	resource_flow_days	sampling_days	system_nr_metaecosystems	time_point_day	time_point_names
+unnamed-chunk-75	vars
+unnamed-chunk-76	vars	vars_metaecos
+axes	axis_names
+colour-treatments	colours_treatments
+unnamed-chunk-77	boxplot_width	dodging	dodging_error_bar	legend_position	width_errorbar
+figure-sizes	ggarrange_margin_bottom	ggarrange_margin_left	ggarrange_margin_right	ggarrange_margin_top	presentation_size	publication_height	publication_unit	publication_width	size_legend	size_x_axis	size_y_axis
+modelling	first_time_point_model	last_time_point_model
+experimental-cultures	culture_info
+unnamed-chunk-78	caption_resource_flow	resource_flow_line_colour	resource_flow_line_type	resource_flow_line_width	zero_line_colour	zero_line_ES_colour	zero_line_ES_line_type	zero_line_ES_line_width	zero_line_line_type	zero_line_line_width
+unnamed-chunk-79	
+unnamed-chunk-80	ds_patches	time_point	time_points_ds	pop_output
+unnamed-chunk-81	ds_patches
+unnamed-chunk-82	ds_patches
+unnamed-chunk-83	ds_patches
+unnamed-chunk-84	ds_patches
+unnamed-chunk-85	ds_patches
+calculate_alpha_diversity_(ds_patches)	ds_patches	row	species_vector
+add_baselines_(ds_patches)	baselines	ds_patches
+unnamed-chunk-86	ds_patches
+unnamed-chunk-87	ds_patches
+save_ds_biomas_abund	
+unnamed-chunk-88	ds_patches_effect_size	n_of_treatments	treatments_and_controls	var
+unnamed-chunk-89	control_row	disturbance_input	ds_patches_effect_size	eco_metaeco_control	eco_metaeco_treatment	hedges_d_bioarea	hedges_d_Ble	hedges_d_Ble_dominance	hedges_d_Cep	hedges_d_Cep_dominance	hedges_d_Col	hedges_d_Col_dominance	hedges_d_Eug	hedges_d_Eug_dominance	hedges_d_Eup	hedges_d_Eup_dominance	hedges_d_evenness_pielou	hedges_d_indiv_per_volume	hedges_d_Lox	hedges_d_Lox_dominance	hedges_d_Pau	hedges_d_Pau_dominance	hedges_d_Pca	hedges_d_Pca_dominance	hedges_d_shannon	hedges_d_species_richness	hedges_d_Spi	hedges_d_Spi_dominance	hedges_d_Spi_te	hedges_d_Spi_te_dominance	hedges_d_Tet	hedges_d_Tet_dominance	row_n	time_point_input	treatment_n	treatment_row
+unnamed-chunk-90	baselines	ds_patches_effect_size
+unnamed-chunk-91	
+unnamed-chunk-92	combinations_M_and_M_high	combinations_M_and_M_low	combinations_S_and_L_high	combinations_S_and_L_low	culture_ID_of_isolated_L_high	culture_ID_of_isolated_L_low	culture_ID_of_isolated_M_high	culture_ID_of_isolated_M_low	culture_ID_of_isolated_S_high	culture_ID_of_isolated_S_low	ID_combinations	ID_combinations_isolated	ID_combinations_metaecos	number_of_combinations
+unnamed-chunk-93	bray_curtis	combination	current_day	current_disturbance	current_IDs	current_metaeco_type	current_system_nr	ds_metaecosystems	ds_metaecosystems_single_rows	jaccard_index	metaecosystem_richness	presence_absence_metaecosystem	presence_absence_two_patches	row_n	shannon	shannon_patch_1	shannon_patch_2	species_density_of_the_two_patches	summed_columns	time_point_input
+add-baselines-(ds_metaecosystems)	baselines	ds_metaecosystems
+unnamed-chunk-94	ds_metaecosystems
+unnamed-chunk-95	ds_metaecosystems
+save-ds_metaecosystems	
+ds_metaecosystems-datatable	
+ds_individuals-import-time-points	t0	t1	t2	t3	t4	t5	t6	t7
+ds_individuals-tidy-time-points	t0	t1	t2	t3	t4	t5	t6	t7
+ds-body-size-join-time-points	cultures_n	ds_individuals	ID_vector	original_t0_rows
+ds_individuals-tidy-columns	ds_individuals
+unnamed-chunk-96	ds_metaecosystems
+unnamed-chunk-97	ds_individuals
+ds_individuals-datatable	
+ds_median_body_size-create	ds_median_body_size	eco_metaeco_types
+unnamed-chunk-98	
+ds_median_body_size-datatable	.index_cache/html/ds_median_body_size-datatable_9c580c800390f5437b9c290ec48b8f19_meta
+unnamed-chunk-99	
+ds_median_body_size_effect_size-create	control_row	disturbance_input	ds_median_body_size_effect_size	eco_metaeco_control	eco_metaeco_treatment	hedges_d_median_body_size	n_of_treatments	row_n	time_point_input	treatment_n	treatment_row	treatments_and_controls
+unnamed-chunk-100	ds_median_body_size_effect_size
+ds_median_body_size_effect_size-datable	.index_cache/html/ds_median_body_size_effect_size-datable_d2f44abc72bb8c74e3f15f21299b9639_meta
+nr_of_size_classes	largest_size	nr_of_size_classes	smallest_size
+ds_classes_effect_size-create-ds_classes	
+unnamed-chunk-101	
+unnamed-chunk-102	ds_classes
+unnamed-chunk-103	ds_classes_effect_size
+unnamed-chunk-104	control	disturbance_input	ds_classes_effect_size	eco_metaeco_control	eco_metaeco_treatment	hedges_d_size_class	n_of_treatments	row_n	size_class_input	time_point_input	treatment	treatment_n	treatments_and_controls
+unnamed-chunk-105	
+unnamed-chunk-106	
+unnamed-chunk-15	metaecosystem_type_input
+unnamed-chunk-107	ds_classes	ds_classes_effect_size	ds_individuals	ds_median_body_size	ds_median_body_size_effect_size	ds_metaecosystems	ds_patches	ds_patches_effect_size
+unnamed-chunk-108	response_variable
+unnamed-chunk-109	
+unnamed-chunk-110	response_variable
+unnamed-chunk-111	
+unnamed-chunk-112	response_variable
+unnamed-chunk-113	
+unnamed-chunk-114	response_variable
+unnamed-chunk-20	metaecosystem_type_input
+unnamed-chunk-115	
+unnamed-chunk-116	response_variable
+unnamed-chunk-117	p_MM_SL_metaecos_biomass
+unnamed-chunk-118	response_variable
+unnamed-chunk-119	p_MM_SL_metaecos_alpha
+unnamed-chunk-120	response_variable
+unnamed-chunk-121	p_MM_SL_metaecos_beta
+unnamed-chunk-122	response_variable
+unnamed-chunk-25	eco_metaeco_type_input
+unnamed-chunk-123	p_MM_SL_metaecos_gamma
+unnamed-chunk-124	response_variable
+unnamed-chunk-125	p_isolated_biomass
+unnamed-chunk-126	filtered_data
+unnamed-chunk-127	full_model
+unnamed-chunk-128	AIC	AIC_full	AIC_null	anova	deltaAIC	deltaAIC_isolated_biomass	null_model	p_value	p_value_isolated_biomass
+unnamed-chunk-129	response_variable
+unnamed-chunk-130	p_isolated_alpha
+unnamed-chunk-131	filtered_data
+unnamed-chunk-132	full_model
+unnamed-chunk-133	AIC	AIC_full	AIC_null	anova	deltaAIC	deltaAIC_isolated_alpha	null_model	p_value	p_value_isolated_alpha
+unnamed-chunk-134	response_variable
+unnamed-chunk-135	
+unnamed-chunk-136	response_variable	species_input
+unnamed-chunk-137	response_variable	species_input
+unnamed-chunk-138	time_point_input
+unnamed-chunk-139	size_class_input
+unnamed-chunk-35	eco_metaeco_type_input
+unnamed-chunk-140	
+unnamed-chunk-141	response_variable
+choose-time-points	filtered_data
+small-patches-full-model	AIC	AIC_full	AIC_null	anova	deltaAIC	full_model	null_model	p_value	R2_full	R2_null	R2_P
+unnamed-chunk-142	
+unnamed-chunk-143	response_variable
+choose-time-points-small-alpha	filtered_data
+small-patches-full-model-small-alpha	AIC	AIC_full	AIC_null	anova	deltaAIC	full_model	null_model	p_value	R2_full	R2_null	R2_P
+unnamed-chunk-144	
+unnamed-chunk-145	
+unnamed-chunk-146	response_variable
+unnamed-chunk-147	
+unnamed-chunk-148	response_variable	species_input
+unnamed-chunk-149	response_variable	species_input
+unnamed-chunk-150	response_variable	species_input
+unnamed-chunk-151	patch_size_input
+unnamed-chunk-152	filtered_data
+unnamed-chunk-153	AIC	AIC_full	AIC_null	anova	deltaAIC	full_model	null_model	p_value	R2_full	R2_null	R2_P
+unnamed-chunk-154	
+unnamed-chunk-155	filtered_data
+unnamed-chunk-156	AIC	AIC_full	AIC_null	anova	deltaAIC	full_model	null_model	p_value	R2_full	R2_null	R2_P
+unnamed-chunk-157	
+unnamed-chunk-158	filtered_data
+unnamed-chunk-159	AIC	AIC_full	AIC_null	anova	deltaAIC	full_model	null_model	p_value	R2_full	R2_null	R2_P
+unnamed-chunk-160	
+unnamed-chunk-161	
+unnamed-chunk-162	
+unnamed-chunk-163	
+unnamed-chunk-164	filtered_data
+unnamed-chunk-165	AIC	AIC_full	AIC_null	anova	deltaAIC	full_model	null_model	p_value	R2_full	R2_null	R2_P
+unnamed-chunk-166	
+unnamed-chunk-167	filtered_data
+unnamed-chunk-168	AIC	AIC_full	AIC_null	anova	deltaAIC	full_model	null_model	p_value	R2_full	R2_null	R2_P
+unnamed-chunk-169	
+unnamed-chunk-170	filtered_data
+unnamed-chunk-171	AIC	AIC_full	AIC_null	anova	deltaAIC	full_model	null_model	p_value	R2_full	R2_null	R2_P
+unnamed-chunk-172	
+unnamed-chunk-173	filtered_data
+unnamed-chunk-174	AIC	AIC_full	AIC_null	anova	deltaAIC	full_model	null_model	p_value	R2_full	R2_null	R2_P
+unnamed-chunk-175	
+unnamed-chunk-176	filtered_data
+unnamed-chunk-177	AIC	AIC_full	AIC_null	anova	deltaAIC	full_model	null_model	p_value	R2_full	R2_null	R2_P
+unnamed-chunk-178	
+unnamed-chunk-179	filtered_data
+unnamed-chunk-180	AIC	AIC_full	AIC_null	anova	deltaAIC	full_model	null_model	p_value	R2_full	R2_null	R2_P
+unnamed-chunk-181	
+unnamed-chunk-182	
+unnamed-chunk-183	
+unnamed-chunk-184	
+unnamed-chunk-185	response_variable	species_input
+unnamed-chunk-186	time_point_input
+unnamed-chunk-187	size_class_input
+unnamed-chunk-188	size_class_input
+unnamed-chunk-45	eco_metaeco_type_input
+unnamed-chunk-189	
+unnamed-chunk-190	response_variable
+unnamed-chunk-47	eco_metaeco_type_input
+unnamed-chunk-191	
+unnamed-chunk-192	response_variable
+unnamed-chunk-193	
+create-full-model-of-the-large-patches	AIC	AIC_full	AIC_null	anova	deltaAIC	full_model	null_model	p_value	R2_full	R2_null	R2_P
+unnamed-chunk-194	filtered_data
+unnamed-chunk-195	
+unnamed-chunk-196	response_variable
+unnamed-chunk-197	
+unnamed-chunk-198	filtered_data
+unnamed-chunk-199	AIC	AIC_full	AIC_null	anova	deltaAIC	full_model	null_model	p_value	R2_full	R2_null	R2_P
+unnamed-chunk-200	
+unnamed-chunk-201	response_variable
+unnamed-chunk-202	
+unnamed-chunk-203	response_variable	species_input
+unnamed-chunk-204	response_variable	species_input
+unnamed-chunk-205	response_variable	species_input
+unnamed-chunk-206	patch_size_input
+unnamed-chunk-207	filtered_data
+unnamed-chunk-208	AIC	AIC_full	AIC_null	anova	deltaAIC	full_model	null_model	p_value	R2_full	R2_null	R2_P
+unnamed-chunk-209	
+unnamed-chunk-210	filtered_data
+unnamed-chunk-211	AIC	AIC_full	AIC_null	anova	deltaAIC	full_model	null_model	p_value	R2_full	R2_null	R2_P
+unnamed-chunk-212	
+unnamed-chunk-213	filtered_data
+unnamed-chunk-214	AIC	AIC_full	AIC_null	anova	deltaAIC	full_model	null_model	p_value	R2_full	R2_null	R2_P
+unnamed-chunk-215	
+unnamed-chunk-216	
+unnamed-chunk-217	
+unnamed-chunk-218	
+unnamed-chunk-219	filtered_data
+unnamed-chunk-220	AIC	AIC_full	AIC_null	anova	deltaAIC	full_model	null_model	p_value	R2_full	R2_null	R2_P
+unnamed-chunk-221	
+unnamed-chunk-222	filtered_data
+unnamed-chunk-223	AIC	AIC_full	AIC_null	anova	deltaAIC	full_model	null_model	p_value	R2_full	R2_null	R2_P
+unnamed-chunk-224	
+unnamed-chunk-225	filtered_data
+unnamed-chunk-226	AIC	AIC_full	AIC_null	anova	deltaAIC	full_model	null_model	p_value	R2_full	R2_null	R2_P
+unnamed-chunk-227	
+unnamed-chunk-228	filtered_data
+unnamed-chunk-229	AIC	AIC_full	AIC_null	anova	deltaAIC	full_model	null_model	p_value	R2_full	R2_null	R2_P
+unnamed-chunk-230	
+unnamed-chunk-231	filtered_data
+unnamed-chunk-232	AIC	AIC_full	AIC_null	anova	deltaAIC	full_model	null_model	p_value	R2_full	R2_null	R2_P
+unnamed-chunk-233	
+unnamed-chunk-234	filtered_data
+unnamed-chunk-235	AIC	AIC_full	AIC_null	anova	deltaAIC	full_model	null_model	p_value	R2_full	R2_null	R2_P
+unnamed-chunk-236	
+unnamed-chunk-237	
+unnamed-chunk-238	
+unnamed-chunk-239	
+unnamed-chunk-240	response_variable	species_input
+unnamed-chunk-241	time_point_input
+unnamed-chunk-242	size_class_input
+unnamed-chunk-243	size_class_input
+unnamed-chunk-57	eco_metaeco_type_input
+unnamed-chunk-244	
+unnamed-chunk-245	response_variable
+unnamed-chunk-246	p_connected_biomass_effect_size
+unnamed-chunk-247	filtered_data
+unnamed-chunk-248	full_model
+unnamed-chunk-249	
+unnamed-chunk-250	
+unnamed-chunk-251	null_model
+unnamed-chunk-252	AIC	AIC_full	AIC_null	anova	deltaAIC	deltaAIC_connected_biomass	p_value	p_value_connected_biomass
+unnamed-chunk-253	
+unnamed-chunk-254	response_variable
+unnamed-chunk-255	p_connected_alpha_effect_size
+unnamed-chunk-256	filtered_data
+unnamed-chunk-257	full_model
+unnamed-chunk-258	
+unnamed-chunk-259	
+unnamed-chunk-260	null_model
+unnamed-chunk-261	AIC	AIC_full	AIC_null	anova	deltaAIC	deltaAIC_connected_alpha	p_value	p_value_connected_alpha
+unnamed-chunk-262	
+unnamed-chunk-263	response_variable
+unnamed-chunk-264	
+unnamed-chunk-265	response_variable	species_input
+unnamed-chunk-266	response_variable	species_input
+unnamed-chunk-267	time_point_input
+unnamed-chunk-268	size_class_input
+unnamed-chunk-269	
+unnamed-chunk-270	
+unnamed-chunk-271	
+unnamed-chunk-272	
+unnamed-chunk-273	
+unnamed-chunk-274	
+unnamed-chunk-275	
+unnamed-chunk-276	
+unnamed-chunk-277	
+unnamed-chunk-278	
+unnamed-chunk-279	
+unnamed-chunk-280	
+unnamed-chunk-281	
+unnamed-chunk-282	
+unnamed-chunk-283	
+unnamed-chunk-284	
+unnamed-chunk-285	
+unnamed-chunk-286	
+unnamed-chunk-287	
+fig-isolated-patches	
+fig-connected-systems	
+fig-connected-patches	
+unnamed-chunk-288	species_input
+running-time	end_time
+unnamed-chunk-74	
+unnamed-chunk-289	
+unnamed-chunk-290	
+unnamed-chunk-291	
+unnamed-chunk-292	
+unnamed-chunk-293	
+unnamed-chunk-294	evaporation.test
+unnamed-chunk-295	evaporation.test
+unnamed-chunk-296	
+unnamed-chunk-297	

@@ -50,3 +50,7 @@ scales
 plyr
 Rmisc
 ggpubr
+viridisLite
+viridis
+hrbrthemes
+treemapify

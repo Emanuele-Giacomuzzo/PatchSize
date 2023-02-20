@@ -29,23 +29,24 @@ filtered_data = ds_patches_effect_size %>%
                          filter(time_point >= first_time_point_model,
                                 time_point <= last_time_point_model,
                                 disturbance == disturbance_input,
-                                eco_metaeco_type %in% c("Small connected to small","Small connected to large"))
+                                eco_metaeco_type %in% c("Small connected to small",
+                                                        "Small connected to large"))
 ```
 
 ```{r small-patches-full-model}
 full_model = lm(bioarea_per_volume_d ~                  
                   eco_metaeco_type +
                   eco_metaeco_type : day +
-                  baseline_bioarea + 
-                  baseline_bioarea : day,
+                  baseline_bioarea_per_volume_d + 
+                  baseline_bioarea_per_volume_d : day,
                   data = filtered_data)
 
 par(mfrow = c(2,3))
 plot(full_model, which = 1:5)
 
 null_model = lm(bioarea_per_volume_d ~                  
-                  baseline_bioarea + 
-                  baseline_bioarea : day,
+                  baseline_bioarea_per_volume_d + 
+                  baseline_bioarea_per_volume_d : day,
                   data = filtered_data)
 
 AIC = AIC(full_model, null_model)

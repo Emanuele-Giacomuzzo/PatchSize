@@ -17,7 +17,9 @@ p_connected_biomass_effect_size = plot.patches.points.ES(eco_metaeco_type_input,
 p_connected_biomass_effect_size
 ```
 
-*Analysis*
+**Analysis**
+
+1.  Filter the data. Filter between time point 2 and time point 7 (last time point). We exclude time point 0 and time point 1, as these happened before the first disturbance took place (the first disturbance took place right after time point 1).
 
 ```{r}
 filtered_data = ds_patches_effect_size %>%
@@ -27,35 +29,159 @@ filtered_data = ds_patches_effect_size %>%
                                 eco_metaeco_type %in% eco_metaeco_type_input)
 ```
 
+2.  Construct a full model that captures our two hypotheses.\
+    \
+    The first hypothesis proposes that small patches connected to large ones will exhibit greater biomass compared to small isolated patches, while large patches connected to small ones will display lower biomass relative to large isolated patches. As such, the effect size of bioarea per volume will depend on the patch type (`bioarea_per_volume_d ~ eco_metaeco_type`).
+
+    \
+    The second hypothesis states that as the experiment progresses, small patches connected to large ones will exhibit a greater increase in biomass compared to isolated patches, while large patches will display a decreased increase in biomass relative to large isolated patches. Therefore, the effect size of bioarea per volume will depend on the interaction between patch type and day\
+    (`bioarea_per_volume_d ~ eco_metaeco_type : day`).
+
 ```{r}
 full_model = lm(bioarea_per_volume_d ~
                   eco_metaeco_type + 
                   eco_metaeco_type : day,
                 data = filtered_data)
+```
 
+3.  Check the output of the model.
+
+```{r}
 summary(full_model)
+```
+
+4.  Check that the residuals of the model are okay (model diagnostics)
+
+```{r}
 par(mfrow = c(2, 3))
 plot(full_model, which = 1:5)
 ```
+
+5.  Construct the null model for both hypotheses, where there is no dependency of bioarea per volume on either patch type or the interaction between patch type and day.
 
 ```{r}
 null_model = lm(bioarea_per_volume_d ~
                   1,
                 data = filtered_data)
+```
 
-AIC = AIC(full_model, null_model)
-AIC
-AIC_full = AIC$AIC[1]
-AIC_null = AIC$AIC[2]
+6.  Get the p value and the delta AIC of the full model compared to the null model.
+
+```{r}
+
+AIC = AIC(full_model, null_model) %>% 
+  rownames_to_column("model")
+
+AIC_full = AIC %>%
+           filter(model == "full_model") %>%
+           pull(AIC)
+
+AIC_null = AIC %>%
+           filter(model == "null_model") %>%
+           pull(AIC)
+
 deltaAIC = AIC_full - AIC_null
 deltaAIC_connected_biomass = round(deltaAIC, digits = 2)
 
 anova = anova(full_model, null_model)
 anova
 p_value = anova$`Pr(>F)`[2]
-if (p_value == 0){
+if (p_value < 0.001){
   p_value_connected_biomass = "< 0.001"
 } else {
   p_value_connected_biomass = round(p_value, digits = 3)
 }
 ```
+
+```{r}
+print(paste0("P value = ", p_value_connected_biomass, ", ΔAIC = ", deltaAIC_connected_biomass))
+```
+
+7.  Test the effect of patch type (`eco_metaeco_type`).
+
+    Construct the null model.
+
+```{r}
+null_model = lm(bioarea_per_volume_d ~
+                  eco_metaeco_type : day,
+                data = filtered_data)
+```
+
+Get the p value and AIC.
+
+```{r}
+
+AIC = AIC(full_model, null_model) %>% 
+  rownames_to_column("model")
+
+AIC_full = AIC %>%
+           filter(model == "full_model") %>%
+           pull(AIC)
+
+AIC_null = AIC %>%
+           filter(model == "null_model") %>%
+           pull(AIC)
+
+deltaAIC = AIC_full - AIC_null
+deltaAIC_connected_biomass = round(deltaAIC, digits = 2)
+
+anova = anova(full_model, null_model)
+anova
+p_value = anova$`Pr(>F)`[2]
+if (p_value < 0.001){
+  p_value_connected_biomass = "< 0.001"
+} else {
+  p_value_connected_biomass = round(p_value, digits = 3)
+}
+```
+
+```{r}
+print(paste0("P value = ", p_value_connected_biomass, ", ΔAIC = ", deltaAIC_connected_biomass))
+```
+
+7.  Test the effect of the interaction between patch type and day (`eco_metaeco_type * day`).
+
+    Construct the null model.
+
+```{r}
+null_model = lm(bioarea_per_volume_d ~
+                  eco_metaeco_type,
+                data = filtered_data)
+```
+
+Get the p value and AIC.
+
+```{r}
+
+AIC = AIC(full_model, null_model) %>% 
+  rownames_to_column("model")
+
+AIC_full = AIC %>%
+           filter(model == "full_model") %>%
+           pull(AIC)
+
+AIC_null = AIC %>%
+           filter(model == "null_model") %>%
+           pull(AIC)
+
+deltaAIC = AIC_full - AIC_null
+deltaAIC_connected_biomass = round(deltaAIC, digits = 2)
+
+anova = anova(full_model, null_model)
+anova
+p_value = anova$`Pr(>F)`[2]
+if (p_value < 0.001){
+  p_value_connected_biomass = "< 0.001"
+} else {
+  p_value_connected_biomass = round(p_value, digits = 3)
+}
+```
+
+```{r}
+print(paste0("P value = ", p_value_connected_biomass, ", ΔAIC = ", deltaAIC_connected_biomass))
+```
+
+So, it seems like the biomass of the small connected to large and the large connected to small differs, but it doesn't differ across time. But:
+
+1.  Can we conclude that the effect size for the large connected to small is negative compared to its isolated counterpart, and the effect size for the small connected to large is positive compared to its isolated counterpart?
+2.  It seems like the effect size of the large connected to small is decreasing, meanwhile the small connected to large is increasing. Is testing the interaction between patch type and day enough? Or should I test this for each of the patch types?

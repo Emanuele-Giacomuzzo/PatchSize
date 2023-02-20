@@ -36,8 +36,8 @@ filtered_data = ds_patches_effect_size %>%
 full_model = lm(bioarea_per_volume_d ~                  
                   eco_metaeco_type + 
                   eco_metaeco_type : day +
-                  baseline_bioarea + 
-                  baseline_bioarea : day,
+                  baseline_bioarea_per_volume_d + 
+                  baseline_bioarea_per_volume_d : day,
                   data = filtered_data)
 
 summary(full_model)
@@ -45,8 +45,8 @@ par(mfrow = c(2,3))
 plot(full_model, which = 1:5)
 
 null_model = lm(bioarea_per_volume_d ~                  
-                  baseline_bioarea + 
-                  baseline_bioarea : day,
+                  baseline_bioarea_per_volume_d + 
+                  baseline_bioarea_per_volume_d : day,
                   data = filtered_data)
 
 AIC = AIC(full_model, null_model)

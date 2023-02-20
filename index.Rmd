@@ -40,6 +40,8 @@ library("here")
 
 ## Data {.tabset .tabset-dropdown}
 
+### Experimental cultures (`culture_info`)
+
 ```{r child = here("r_files", "ds_culture_info.Rmd"), eval = compute_n_display_datasets}
 ```
 
@@ -67,6 +69,8 @@ library("here")
 ```{r child = here("r_files", "ds_classes_effect_size.Rmd"), eval = compute_n_display_datasets}
 ```
 
+### Filter according to disturbance
+
 ```{r child = here("r_files", "disturbance_filter.Rmd")}
 ```
 
@@ -83,22 +87,22 @@ metaecosystem_type_input = c("Small-Small meta-ecosystem",
                              "Small-Large isolated")
 ```
 
-#### Biomass
+#### Biomass {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "all_metaecos_biomass.Rmd")}
 ```
 
-#### Alpha
+#### Alpha {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "all_metaecos_alpha_diversity.Rmd")}
 ```
 
-#### Beta diversity
+#### Beta diversity {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "all_metaecos_beta_diversity.Rmd")}
 ```
 
-#### Gamma diversity
+#### Gamma diversity {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "all_metaecos_gamma_diversity.Rmd")}
 ```
@@ -112,22 +116,22 @@ metaecosystem_type_input = c("Medium-Medium meta-ecosystem",
                              "Small-Large isolated")
 ```
 
-#### Biomass
+#### Biomass {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "MM_all_vs_SL_all_biomass.Rmd")}
 ```
 
-#### Alpha diversity
+#### Alpha diversity {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "MM_all_vs_SL_all_alpha_diversity.Rmd")}
 ```
 
-#### Beta diversity
+#### Beta diversity {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "MM_all_vs_SL_all_beta_diversity.Rmd")}
 ```
 
-#### Gamma diversity
+#### Gamma diversity {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "MM_all_vs_SL_all_gamma_diversity.Rmd")}
 ```
@@ -142,32 +146,37 @@ eco_metaeco_type_input = c("Small isolated",
                            "Large isolated")
 ```
 
-#### Biomass
+#### Biomass {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "isolated_patches_biomass.Rmd")}
 ```
 
-#### Alpha diversity
+#### Shannon index {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "isolated_patches_alpha_diversity.Rmd")}
 ```
 
-#### Species densities
+#### Evenness {.tabset .tabset-pills}
+
+```{r child = here("r_files", "isolated_patches_evenness.Rmd")}
+```
+
+#### Species densities {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "isolated_patches_species_densities.Rmd")}
 ```
 
-#### Species dominance
+#### Species dominance {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "isolated_patches_species_dominance.Rmd")}
 ```
 
-#### Species composition
+#### Species composition {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "isolated_patches_species_composition.Rmd")}
 ```
 
-#### Size classes densities
+#### Size classes densities {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "isolated_patches_size_classes.Rmd")}
 ```
@@ -190,32 +199,37 @@ eco_metaeco_type_input = c("Small isolated",
                            "Small connected to large")
 ```
 
-#### Biomass
+#### Biomass {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "small_patches_biomass.Rmd")}
 ```
 
-#### Alpha diversity
+#### Shannon index {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "small_patches_alpha_diversity.Rmd")}
 ```
 
-#### Species densities
+#### Evenness {.tabset .tabset-pills}
+
+```{r child = here("r_files", "small_patches_evenness.Rmd")}
+```
+
+#### Species densities {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "small_patches_species_densities.Rmd")}
 ```
 
-#### Species dominance
+#### Species dominance {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "small_patches_species_dominance.Rmd")}
 ```
 
-#### Species composition
+#### Species composition {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "small_patches_species_composition.Rmd")}
 ```
 
-#### Size classes densities
+#### Size classes densities {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "small_patches_size_classes.Rmd")}
 ```
@@ -225,19 +239,19 @@ eco_metaeco_type_input = c("Small isolated",
 ```{r child = here("r_files", "small_patches_body_size_distribution.Rmd"), eval = FALSE}
 ```
 
-#### Median body size
+#### Median body size {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "small_patches_median_body_size.Rmd")}
 ```
 
-### Medium
+### Medium {.tabset .tabset-pills}
 
 ```{r}
 eco_metaeco_type_input = c("Medium isolated",
                            "Medium connected to medium")
 ```
 
-#### Biomass
+#### Biomass {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "medium_patches_biomass.Rmd")}
 ```
@@ -250,42 +264,47 @@ eco_metaeco_type_input = c("Large isolated",
                            "Large connected to small")
 ```
 
-#### Biomass
+#### Biomass {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "large_patches_biomass.Rmd")}
 ```
 
-#### Alpha diversity
+#### Shannon index {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "large_patches_alpha_diversity.Rmd")}
 ```
 
-#### Species densities
+#### Evenness {.tabset .tabset-pills}
+
+```{r child = here("r_files", "large_patches_evenness.Rmd")}
+```
+
+#### Species densities {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "large_patches_species_densities.Rmd")}
 ```
 
-#### Species dominance
+#### Species dominance {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "large_patches_species_dominance.Rmd")}
 ```
 
-#### Species composition
+#### Species composition {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "large_patches_species_composition.Rmd")}
 ```
 
-#### Size classes densities
+#### Size classes densities {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "large_patches_size_classes.Rmd")}
 ```
 
-#### Body size distribution
+#### Body size distribution {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "large_patches_body_size_distribution.Rmd"), eval = FALSE}
 ```
 
-#### Median body size
+#### Median body size {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "large_patches_median_body_size.Rmd")}
 ```
@@ -297,32 +316,37 @@ eco_metaeco_type_input = c("Small connected to large",
                            "Large connected to small")
 ```
 
-#### Biomass
+#### Biomass {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "SL_biomass.Rmd")}
 ```
 
-#### Alpha diversity
+#### Alpha diversity {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "SL_alpha_diversity.Rmd")}
 ```
 
-#### Species densities
+#### Evenness {.tabset .tabset-pills}
+
+```{r child = here("r_files", "SL_evenness.Rmd")}
+```
+
+#### Species densities {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "SL_species_densities.Rmd")}
 ```
 
-#### Species dominance
+#### Species dominance {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "SL_species_dominance.Rmd")}
 ```
 
-#### Species composition
+#### Species composition {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "SL_species_composition.Rmd")}
 ```
 
-#### Size classes densities
+#### Size classes densities {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "SL_size_classes.Rmd")}
 ```
@@ -348,7 +372,7 @@ eco_metaeco_type_input = c("Small connected to large",
 
 ## Evaporation {.tabset .tabset-dropdown}
 
-```{r child = here("r_files", "evaporation.Rmd")}
+```{r child = here("r_files", "evaporation.Rmd"), eval = FALSE}
 ```
 
 ```{r child = here("r_files", "evaporation_tests.Rmd")}
@@ -382,3 +406,8 @@ In the .bib file get rid of:
 -   web_page
 
 ## Bibliography
+
+```{r echo=FALSE, message=FALSE}
+save.image(file = "my_environment.RData")
+```
+

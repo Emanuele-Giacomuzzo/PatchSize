@@ -1,0 +1,22 @@
+---
+title: "Large Patches - Evenness"
+output: html_document
+date: "2023-02-14"
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+response_variable = "evenness_pielou"
+```
+
+```{r}
+plot.patches.boxplots(eco_metaeco_type_input,
+                       response_variable)
+
+plot.patches.points(eco_metaeco_type_input,
+                       response_variable)
+
+plot.patches.points.ES(eco_metaeco_type_input,
+                       paste0(response_variable, "_d"))
+```

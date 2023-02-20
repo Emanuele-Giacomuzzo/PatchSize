@@ -7,7 +7,9 @@ editor_options:
 ---
 
 ```{r knitting-options}
-knitr::opts_chunk$set(message = FALSE, cache = FALSE)
+knitr::opts_chunk$set(message = FALSE, 
+                      cache = FALSE,
+                      autodep = FALSE)
 recompute_analyses = FALSE #Lengthy analyses have been suppressed. Set recompute_analyses = TRUE to redo them. 
 compute_n_display_datasets = TRUE
 include_non_clean_scripts = FALSE
@@ -48,11 +50,13 @@ metaecosystems_to_take_off = culture_info %>%
 
 #Sampling
 
+time_point_names = c("t0", "t1", "t2", "t3", "t4", "t5", "t6", "t7")
 sampling_days = c(0, 4, 8, 12, 16, 20, 24, 28)
 first_time_point = 0
 last_time_point = length(sampling_days) - 1
 n_time_points = last_time_point + 1
 nr_videos = c(12,1,1,1,1,1,2,2) #Videos taken for each time point for each culture. At t0 we took 12 videos of the large bottle from which we started the  cultures.
+n_videos_taken_t0 = nr_videos[1]
 
 time_point_day = data.frame(
   time_point = first_time_point:last_time_point,
@@ -62,6 +66,25 @@ time_point_day = data.frame(
 #Resource flow
 resource_flow_days = c(5, 9, 13, 17, 21, 25)
 first_resource_flow = resource_flow_days[1]
+```
+
+```{r}
+#Define the variables whose effect size I want to calculate
+vars = c("bioarea_per_volume",
+         "indiv_per_volume",
+         "species_richness",
+         "shannon",
+         "evenness_pielou",
+         protist_species,
+         paste0(protist_species, "_dominance"))
+
+#Define the variables I want to calculate but for meta-ecosystems
+vars_metaecos = c(
+  "total_metaecosystem_bioarea",
+  "jaccard_index",
+  "bray_curtis",
+  "metaecosystem_richness"
+)
 ```
 
 ```{r}
@@ -80,8 +103,8 @@ axis_names = data.frame(variable = NA,
   add_row(variable = "size_class_abundance", axis_name = "Density (ind/ml)") %>%
   add_row(variable = "bioarea_per_volume", axis_name = "Bioarea Density (µm²/ml)") %>%
   add_row(variable = "bioarea_per_volume_d", axis_name = "Bioarea Density ES") %>%
-  add_row(variable = "bioarea_tot", axis_name = "Bioarea (µm²)") %>%
-  add_row(variable = "total_metaecosystem_bioarea", axis_name = "Bioarea (µm²)") %>%
+  add_row(variable = "bioarea_tot", axis_name = "Tot Bioarea (µm²)") %>%
+  add_row(variable = "total_metaecosystem_bioarea", axis_name = "Tot Bioarea (µm²)") %>%
   add_row(variable = "mean_shannon", axis_name = "α Diversity") %>%
   add_row(variable = "shannon", axis_name = "α Diversity") %>%
   add_row(variable = "shannon_d", axis_name = "α Diversity ES") %>%
@@ -144,7 +167,7 @@ axis_names = data.frame(variable = NA,
 ```{r colour-treatments}
 colours_treatments = data.frame(treatment = NA,
                                 colour = NA) %>%
-  add_row(treatment = "Small isolated", colour = "#bdbdbd") %>%
+  add_row(treatment = "Small isolated", colour = "#bdbdbd") %>% 
   add_row(treatment = "Small connected to small", colour = "#ffffcc") %>%
   add_row(treatment = "Small connected to large", colour = "#ffeda0") %>%
   add_row(treatment = "Medium isolated", colour = "#737373") %>%
@@ -152,12 +175,12 @@ colours_treatments = data.frame(treatment = NA,
   add_row(treatment = "Large isolated", colour = "#000000") %>%
   add_row(treatment = "Large connected to large", colour = "#fc4e2a") %>%
   add_row(treatment = "Large connected to small", colour = "#e31a1c") %>%
-  add_row(treatment = "Small-Small meta-ecosystem", colour = "#f7fbff") %>%
-  add_row(treatment = "Medium-Medium meta-ecosystem", colour = "#238b45") %>%
-  add_row(treatment = "Medium-Medium isolated", colour = "#c7e9c0") %>%
-  add_row(treatment = "Large-Large meta-ecosystem", colour = "#3182bd") %>%
-  add_row(treatment = "Small-Large meta-ecosystem", colour = "#8856a7") %>%
-  add_row(treatment = "Small-Large isolated", colour = "#dadaeb") %>%
+  add_row(treatment = "Small-Small meta-ecosystem", colour = "#f7fbff") %>% #Needs to become color-blind friendly
+  add_row(treatment = "Medium-Medium meta-ecosystem", colour = "#1b7837") %>%
+  add_row(treatment = "Medium-Medium isolated", colour = "#d9f0d3") %>%
+  add_row(treatment = "Large-Large meta-ecosystem", colour = "#3182bd") %>% #Needs to become color-blind friendly
+  add_row(treatment = "Small-Large meta-ecosystem", colour = "#762a83") %>%
+  add_row(treatment = "Small-Large isolated", colour = "#e7d4e8") %>%
   slice(-1)
 ```
 

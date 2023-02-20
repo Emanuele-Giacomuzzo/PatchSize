@@ -1,0 +1,16 @@
+---
+title: "SL - Evenness"
+output: html_document
+date: "2023-02-15"
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+response_variable = "evenness_pielou"
+```
+
+```{r}
+plot.patches.points.ES(eco_metaeco_type_input,
+                       paste0(response_variable, "_d"))
+```

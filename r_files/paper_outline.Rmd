@@ -1,0 +1,57 @@
+---
+title: "Paper outline"
+output: html_document
+date: "2023-02-15"
+---
+
+**INTRODUCTION**
+
+-   Needs to study ecosystem function
+
+    -   Need to study of ecosystem function for ecosystem services
+
+    -   Need to study of ecosystem function to understand human impact on ecosystems
+
+    -   Need to study of ecosystem function to develop ecosystem managment
+
+    -   Need to understand ecosystem function at a landscape scale
+
+-   Flow of resources in determining ecosystem function
+
+    -   Effects of resource flow on ecosystem function
+
+    -   Introduce the concept of meta-ecosystem
+
+-   Impact of patch size on meta-ecosystem function
+
+    -   Lack of studies on how patch size influences meta-ecosystem function
+
+    -   Donor ecosystem size
+
+    -   Receiving ecosystem size
+
+-   Experiment to test patch size effects on meta-ecosystem function
+
+    -   Protist microcosm experiment
+
+    -   Control & treatments
+
+    -   Inflow of resources and perturbation effects on patch recovery
+
+-   Conclusion
+
+    -   Effects of resource flow on meta-ecosystem function depend on patch size
+
+    -   Importance of understanding ecosystem function at a landscape scale for preservation in face of global change.
+
+**METHODS**
+
+**RESULTS**
+
+**DISCUSSION**
+
+-   Meta-ecosystem fail to incorporate patch size
+
+-   Effects of patch symmetry on meta-ecosystem function
+
+-   Effects of patch symmetry on meta-ecosystem biodiversity

@@ -1,0 +1,263 @@
+experiment	%>%	==	$	c	culture_ID	data.frame	filter	here	length	max	metaecosystem	pull	read.csv	system_nr	unique
+unnamed-chunk-75	c	paste0	protist_species
+unnamed-chunk-76	c	paste0	protist_species
+axes	%>%	add_row	data.frame	slice
+colour-treatments	%>%	add_row	data.frame	slice
+unnamed-chunk-77	
+figure-sizes	
+modelling	
+experimental-cultures	here	read.csv
+unnamed-chunk-78	
+unnamed-chunk-79	culture_info	datatable	list
+unnamed-chunk-80	[[	[[<-	%>%	==	arrange	bind_rows	bioarea_per_volume	Ble	Cep	culture_ID	culture_info	file	first_time_point	for	here	if	indiv_per_volume	last_time_point	left_join	load	mutate	n_cultures	n_protist_species	n_videos_taken_t0	nrow	paste0	pop_output	protist_species	read.csv	rep	row.names	sampling_days	select	Tet
+unnamed-chunk-81	!	%>%	culture_ID	ecosystems_to_take_off	filter
+unnamed-chunk-82	%>%	bioarea_per_volume	Ble	Cep	Col	culture_ID	day	disturbance	eco_metaeco_type	Eug	Eup	group_by	indiv_per_volume	Lox	mean	metaecosystem	metaecosystem_type	patch_size	patch_size_volume	Pau	Pca	Spi	Spi_te	summarise	system_nr	Tet	time_point	ungroup
+unnamed-chunk-83	%>%	bioarea_per_volume	Ble	Cep	Col	Eug	Eup	indiv_per_volume	Lox	mutate	Pau	Pca	Spi	Spi_te	Tet
+unnamed-chunk-84	%>%	bioarea_per_volume	Ble	Cep	Col	Eug	Eup	indiv_per_volume	Lox	mutate	patch_size_volume	Pau	Pca	Spi	Spi_te	Tet
+unnamed-chunk-85	%>%	Ble	Cep	Col	Eug	Eup	indiv_per_volume	Lox	mutate	Pau	Pca	Spi	Spi_te	Tet
+calculate_alpha_diversity_(ds_patches)	.	[<-	%>%	>	$<-	diversity	for	funs	ifelse	log	mutate_at	n_protist_species	nrow	protist_species	rowSums	select	slice	specnumber	vars
+add_baselines_(ds_patches)	%>%	==	across	culture_ID	filter	full_join	group_by	summarise	time_point	vars
+unnamed-chunk-86	$	$<-	recode
+unnamed-chunk-87	%>%	c	eco_metaeco_type	factor	mutate
+save_ds_biomas_abund	ds_patches	here	saveRDS
+unnamed-chunk-88	:=	!	%>%	across	all_of	c	data.frame	day	disturbance	ds_patches	eco_metaeco_type	for	group_by	list	mean	mutate	n	nrow	paste0	patch_size	sd	summarise	time_point	vars
+unnamed-chunk-89	[<-	&	%>%	==	$	$<-	c	calculate.hedges_d	disturbance	eco_metaeco_type	filter	first_time_point	for	last_time_point	n_of_treatments	time_point	treatments_and_controls
+unnamed-chunk-90	%>%	==	across	eco_metaeco_type	filter	full_join	group_by	paste0	summarise	time_point	vars
+unnamed-chunk-91	ds_patches_effect_size	here	saveRDS
+unnamed-chunk-92	%>%	==	as.data.frame	combn	crossing	culture_ID	disturbance	ds_patches	eco_metaeco_type	filter	here	mutate	nrow	pull	rbind	read.csv	rename	t	unique	V1	V2
+unnamed-chunk-93	[[<-	%>%	==	>	$	as.numeric	bind_rows	bioarea_tot	Ble	Ble_tot	Cep_tot	Col_tot	colSums	culture_ID	diversity	ds_patches	Eug_tot	Eup_tot	filter	first_time_point	for	ID_combinations	if	ifelse	last_time_point	Lox_tot	metaecosystems_to_take_off	mutate	next	number_of_combinations	Pau_tot	Pca_tot	sampling_days	select	Spi_te_tot	Spi_tot	sum	summarise	Tet	Tet_tot	time_point	ungroup	vegdist
+add-baselines-(ds_metaecosystems)	%>%	==	across	filter	full_join	group_by	summarise	system_nr	time_point	ungroup	vars_metaecos
+unnamed-chunk-94	as.data.frame
+unnamed-chunk-95	$	$<-	recode
+save-ds_metaecosystems	ds_metaecosystems	here	saveRDS
+ds_metaecosystems-datatable	datatable	ds_metaecosystems	list
+ds_individuals-import-time-points	here	load	morph_mvt	rm
+ds_individuals-tidy-time-points	[<-	%>%	==	$	$<-	rename	replicate
+ds-body-size-join-time-points	%>%	$	culture_info	max	merge	mutate	n	nrow	rbind	rep	rm	slice
+ds_individuals-tidy-columns	[<-	%>%	==	$	$<-	as.character	as.numeric	culture_ID	day	disturbance	eco_metaeco_type	mean_area	metaecosystem	metaecosystem_type	patch_size	patch_size_volume	replicate_video	select	system_nr	time_point
+unnamed-chunk-96	%>%	c	factor	metaecosystem_type	mutate
+unnamed-chunk-97	[<-	%>%	==	$	$<-	c	eco_metaeco_type	factor	mutate
+ds_individuals-datatable	datatable	ds_individuals	head	list
+ds_median_body_size-create	%>%	$	culture_ID	day	disturbance	ds_individuals	ds_patches	eco_metaeco_type	group_by	mean_area	median	metaecosystem	metaecosystem_type	mutate	patch_size	patch_size_volume	replicate_video	summarise	time_point	ungroup	unique
+unnamed-chunk-98	ds_individuals	here	saveRDS
+ds_median_body_size-datatable	datatable	ds_median_body_size	list
+unnamed-chunk-99	ds_median_body_size	here	saveRDS
+ds_median_body_size_effect_size-create	[<-	&	%>%	==	$	$<-	c	calculate.hedges_d	data.frame	disturbance	eco_metaeco_type	filter	for	ln	nrow	time_point
+unnamed-chunk-100	%>%	day	disturbance	ds_median_body_size	eco_metaeco_type	group_by	mean	median_body_size	mutate	n	patch_size	sd	summarise	time_point
+ds_median_body_size_effect_size-datable	datatable	ds_median_body_size_effect_size	list
+nr_of_size_classes	$	ds_individuals	max	min
+ds_classes_effect_size-create-ds_classes	[[<-	%>%	<=	==	bind_rows	culture_ID	ds_individuals	ds_patches	filter	for	here	largest_size	last_time_point	log	mean_area	mutate	n	n_cultures	nr_of_size_classes	nr_videos	pull	replicate_video	saveRDS	seq	size_class	size_class_abundance	smallest_size	summarise	time_point
+unnamed-chunk-101	ds_median_body_size_effect_size	here	saveRDS
+unnamed-chunk-102	here	readRDS
+unnamed-chunk-103	%>%	day	disturbance	ds_classes	eco_metaeco_type	group_by	log_abundance	log_abundance_sd	log_abundance_se	log_size_class	mean	metaecosystem	mutate	n	patch_size	qt	sample_size	sd	size_class_abundance	size_class_n	sqrt	summarise	time_point
+unnamed-chunk-104	[<-	&	%>%	==	$	$<-	c	calculate.hedges_d	data.frame	disturbance	eco_metaeco_type	filter	for	nr_of_size_classes	nrow	size_class_n	time_point
+unnamed-chunk-105	ds_classes_effect_size	here	saveRDS
+unnamed-chunk-106	datatable	ds_classes_effect_size	list
+unnamed-chunk-15	c
+unnamed-chunk-107	%>%	==	disturbance	disturbance_input	filter
+unnamed-chunk-108	
+unnamed-chunk-109	metaecosystem_type_input	plot.metaecos.boxplots	plot.metaecos.points	response_variable
+unnamed-chunk-110	
+unnamed-chunk-111	metaecosystem_type_input	plot.metaecos.boxplots	plot.metaecos.points	response_variable
+unnamed-chunk-112	
+unnamed-chunk-113	metaecosystem_type_input	plot.metaecos.boxplots	plot.metaecos.points	response_variable
+unnamed-chunk-114	
+unnamed-chunk-20	c
+unnamed-chunk-115	metaecosystem_type_input	plot.metaecos.boxplots	plot.metaecos.points	response_variable
+unnamed-chunk-116	
+unnamed-chunk-117	metaecosystem_type_input	plot.metaecos.boxplots	plot.metaecos.points	response_variable
+unnamed-chunk-118	
+unnamed-chunk-119	metaecosystem_type_input	plot.metaecos.boxplots	plot.metaecos.points	response_variable
+unnamed-chunk-120	
+unnamed-chunk-121	metaecosystem_type_input	plot.metaecos.boxplots	plot.metaecos.points	response_variable
+unnamed-chunk-122	
+unnamed-chunk-25	c
+unnamed-chunk-123	metaecosystem_type_input	plot.metaecos.boxplots	plot.metaecos.points	response_variable
+unnamed-chunk-124	
+unnamed-chunk-125	eco_metaeco_type_input	plot.patches.boxplots	plot.patches.points	response_variable
+unnamed-chunk-126	%>%	<=	==	>=	disturbance	disturbance_input	ds_patches	filter	first_time_point_model	last_time_point_model	metaecosystem	time_point
+unnamed-chunk-127	~	filtered_data	lmer	lmerControl	plot	qqnorm	resid	summary
+unnamed-chunk-128	==	~	$	filtered_data	full_model	if	lmer	lmerControl	round
+unnamed-chunk-129	
+unnamed-chunk-130	eco_metaeco_type_input	plot.patches.boxplots	plot.patches.points	response_variable
+unnamed-chunk-131	%>%	<=	==	>=	disturbance	disturbance_input	ds_patches	filter	first_time_point_model	last_time_point_model	metaecosystem	time_point
+unnamed-chunk-132	~	filtered_data	lmer	lmerControl	plot	qqnorm	resid	summary
+unnamed-chunk-133	==	~	$	filtered_data	full_model	if	lmer	lmerControl	round
+unnamed-chunk-134	
+unnamed-chunk-135	eco_metaeco_type_input	plot.patches.boxplots	plot.patches.points	response_variable
+unnamed-chunk-136	eco_metaeco_type_input	for	plot.patches.boxplots	print	protist_species
+unnamed-chunk-137	eco_metaeco_type_input	for	paste0	plot.patches.boxplots	print	protist_species
+unnamed-chunk-138	eco_metaeco_type_input	first_time_point	for	last_time_point	paste	plot.patches.species.composition.stacked	print
+unnamed-chunk-139	eco_metaeco_type_input	for	nr_of_size_classes	plot.patches.classes.points	print
+unnamed-chunk-35	c
+unnamed-chunk-140	eco_metaeco_type_input	plot.patches.median.body.size.boxplots	plot.patches.median.body.size.points
+unnamed-chunk-141	
+choose-time-points	%>%	<=	==	>=	c	disturbance	disturbance_input	ds_patches_effect_size	eco_metaeco_type	filter	first_time_point_model	last_time_point_model	time_point
+small-patches-full-model	~	$	c	filtered_data	glance	lm	par	plot	round
+unnamed-chunk-142	eco_metaeco_type_input	paste0	plot.patches.boxplots	plot.patches.points	plot.patches.points.ES	response_variable
+unnamed-chunk-143	
+choose-time-points-small-alpha	%>%	<=	==	>=	c	disturbance	disturbance_input	ds_patches_effect_size	eco_metaeco_type	filter	first_time_point_model	last_time_point_model	time_point
+small-patches-full-model-small-alpha	~	$	c	filtered_data	glance	lm	par	plot	round
+unnamed-chunk-144	eco_metaeco_type_input	paste0	plot.patches.boxplots	plot.patches.points	plot.patches.points.ES	response_variable
+unnamed-chunk-145	deltaAIC	p_value	paste0	print	R2_P
+unnamed-chunk-146	
+unnamed-chunk-147	eco_metaeco_type_input	paste0	plot.patches.boxplots	plot.patches.points	plot.patches.points.ES	response_variable
+unnamed-chunk-148	eco_metaeco_type_input	for	plot.patches.boxplots	print	protist_species
+unnamed-chunk-149	eco_metaeco_type_input	for	plot.patches.points	print	protist_species
+unnamed-chunk-150	eco_metaeco_type_input	for	paste0	plot.patches.points.ES	print	protist_species
+unnamed-chunk-151	
+unnamed-chunk-152	%>%	<=	==	>=	disturbance	disturbance_input	ds_patches_effect_size	filter	first_time_point_model	last_time_point_model	patch_size	patch_size_input	time_point
+unnamed-chunk-153	~	$	c	filtered_data	glance	lm	par	plot	round	summary
+unnamed-chunk-154	deltaAIC	p_value	paste0	print	R2_P
+unnamed-chunk-155	%>%	<=	==	>=	disturbance	disturbance_input	ds_patches_effect_size	filter	first_time_point_model	last_time_point_model	patch_size	patch_size_input	time_point
+unnamed-chunk-156	~	$	c	filtered_data	glance	lm	par	plot	round	summary
+unnamed-chunk-157	deltaAIC	p_value	paste0	print	R2_P
+unnamed-chunk-158	%>%	<=	==	>=	disturbance	disturbance_input	ds_patches_effect_size	filter	first_time_point_model	last_time_point_model	patch_size	patch_size_input	time_point
+unnamed-chunk-159	~	$	c	filtered_data	glance	lm	par	plot	round	summary
+unnamed-chunk-160	deltaAIC	p_value	paste0	print	R2_P
+unnamed-chunk-161	%>%	<=	==	>=	disturbance	disturbance_input	ds_patches_effect_size	filter	first_time_point_model	last_time_point_model	patch_size	patch_size_input	time_point
+unnamed-chunk-162	~	$	c	filtered_data	glance	lm	par	plot	round	summary
+unnamed-chunk-163	deltaAIC	p_value	paste0	print	R2_P
+unnamed-chunk-164	%>%	<=	==	>=	disturbance	disturbance_input	ds_patches_effect_size	filter	first_time_point_model	last_time_point_model	patch_size	patch_size_input	time_point
+unnamed-chunk-165	~	$	c	filtered_data	glance	lm	par	plot	round	summary
+unnamed-chunk-166	deltaAIC	p_value	paste0	print	R2_P
+unnamed-chunk-167	%>%	<=	==	>=	disturbance	disturbance_input	ds_patches_effect_size	filter	first_time_point_model	last_time_point_model	patch_size	patch_size_input	time_point
+unnamed-chunk-168	~	$	c	filtered_data	glance	lm	par	plot	round	summary
+unnamed-chunk-169	deltaAIC	p_value	paste0	print	R2_P
+unnamed-chunk-170	%>%	<=	==	>=	disturbance	disturbance_input	ds_patches_effect_size	filter	first_time_point_model	last_time_point_model	patch_size	patch_size_input	time_point
+unnamed-chunk-171	~	$	c	filtered_data	glance	lm	par	plot	round	summary
+unnamed-chunk-172	deltaAIC	p_value	paste0	print	R2_P
+unnamed-chunk-173	%>%	<=	==	>=	disturbance	disturbance_input	ds_patches_effect_size	filter	first_time_point_model	last_time_point_model	patch_size	patch_size_input	time_point
+unnamed-chunk-174	~	$	c	filtered_data	glance	lm	par	plot	round	summary
+unnamed-chunk-175	deltaAIC	p_value	paste0	print	R2_P
+unnamed-chunk-176	%>%	<=	==	>=	disturbance	disturbance_input	ds_patches_effect_size	filter	first_time_point_model	last_time_point_model	patch_size	patch_size_input	time_point
+unnamed-chunk-177	~	$	c	filtered_data	glance	lm	par	plot	round	summary
+unnamed-chunk-178	deltaAIC	p_value	paste0	print	R2_P
+unnamed-chunk-179	%>%	<=	==	>=	disturbance	disturbance_input	ds_patches_effect_size	filter	first_time_point_model	last_time_point_model	patch_size	patch_size_input	time_point
+unnamed-chunk-180	~	$	c	filtered_data	glance	lm	par	plot	round	summary
+unnamed-chunk-181	deltaAIC	p_value	paste0	print	R2_P
+unnamed-chunk-182	%>%	<=	==	>=	disturbance	disturbance_input	ds_patches_effect_size	filter	first_time_point_model	last_time_point_model	patch_size	patch_size_input	time_point
+unnamed-chunk-183	~	$	c	filtered_data	glance	lm	par	plot	round	summary
+unnamed-chunk-184	deltaAIC	p_value	paste0	print	R2_P
+unnamed-chunk-185	eco_metaeco_type_input	for	paste0	plot.patches.boxplots	print	protist_species
+unnamed-chunk-186	eco_metaeco_type_input	first_time_point	for	last_time_point	paste	plot.patches.species.composition.stacked	print
+unnamed-chunk-187	eco_metaeco_type_input	for	nr_of_size_classes	plot.patches.classes.points	print
+unnamed-chunk-188	eco_metaeco_type_input	for	nr_of_size_classes	plot.patches.classes.points.ES	print
+unnamed-chunk-45	c
+unnamed-chunk-189	eco_metaeco_type_input	plot.patches.median.body.size.boxplots	plot.patches.median.body.size.points	plot.patches.median.body.size.points.ES
+unnamed-chunk-190	
+unnamed-chunk-47	c
+unnamed-chunk-191	eco_metaeco_type_input	paste0	plot.patches.boxplots	plot.patches.points	plot.patches.points.ES	response_variable
+unnamed-chunk-192	
+unnamed-chunk-193	eco_metaeco_type_input	paste0	plot.patches.boxplots	plot.patches.points	plot.patches.points.ES	response_variable
+create-full-model-of-the-large-patches	~	$	c	filtered_data	glance	lm	par	plot	round	summary
+unnamed-chunk-194	%>%	<=	==	>=	c	disturbance	disturbance_input	ds_patches_effect_size	eco_metaeco_type	filter	first_time_point_model	last_time_point_model	time_point
+unnamed-chunk-195	deltaAIC	p_value	paste0	print	R2_P
+unnamed-chunk-196	
+unnamed-chunk-197	eco_metaeco_type_input	paste0	plot.patches.boxplots	plot.patches.points	plot.patches.points.ES	response_variable
+unnamed-chunk-198	%>%	<=	==	>=	c	disturbance	disturbance_input	ds_patches_effect_size	eco_metaeco_type	filter	first_time_point_model	last_time_point_model	time_point
+unnamed-chunk-199	~	$	c	filtered_data	glance	lm	par	plot	round	summary
+unnamed-chunk-200	deltaAIC	p_value	paste0	print	R2_P
+unnamed-chunk-201	
+unnamed-chunk-202	eco_metaeco_type_input	paste0	plot.patches.boxplots	plot.patches.points	plot.patches.points.ES	response_variable
+unnamed-chunk-203	eco_metaeco_type_input	for	plot.patches.boxplots	print	protist_species
+unnamed-chunk-204	eco_metaeco_type_input	for	plot.patches.points	print	protist_species
+unnamed-chunk-205	eco_metaeco_type_input	for	paste0	plot.patches.points.ES	print	protist_species
+unnamed-chunk-206	
+unnamed-chunk-207	%>%	<=	==	>=	disturbance	disturbance_input	ds_patches_effect_size	filter	first_time_point_model	last_time_point_model	patch_size	patch_size_input	time_point
+unnamed-chunk-208	~	$	c	filtered_data	glance	lm	par	plot	round	summary
+unnamed-chunk-209	deltaAIC	p_value	paste0	print	R2_P
+unnamed-chunk-210	%>%	<=	==	>=	disturbance	disturbance_input	ds_patches_effect_size	filter	first_time_point_model	last_time_point_model	patch_size	patch_size_input	time_point
+unnamed-chunk-211	~	$	c	filtered_data	glance	lm	par	plot	round	summary
+unnamed-chunk-212	deltaAIC	p_value	paste0	print	R2_P
+unnamed-chunk-213	%>%	<=	==	>=	disturbance	disturbance_input	ds_patches_effect_size	filter	first_time_point_model	last_time_point_model	patch_size	patch_size_input	time_point
+unnamed-chunk-214	~	$	c	filtered_data	glance	lm	par	plot	round	summary
+unnamed-chunk-215	deltaAIC	p_value	paste0	print	R2_P
+unnamed-chunk-216	%>%	<=	==	>=	disturbance	disturbance_input	ds_patches_effect_size	filter	first_time_point_model	last_time_point_model	patch_size	patch_size_input	time_point
+unnamed-chunk-217	~	$	c	filtered_data	glance	lm	par	plot	round	summary
+unnamed-chunk-218	deltaAIC	p_value	paste0	print	R2_P
+unnamed-chunk-219	%>%	<=	==	>=	disturbance	disturbance_input	ds_patches_effect_size	filter	first_time_point_model	last_time_point_model	patch_size	patch_size_input	time_point
+unnamed-chunk-220	~	$	c	filtered_data	glance	lm	par	plot	round	summary
+unnamed-chunk-221	deltaAIC	p_value	paste0	print	R2_P
+unnamed-chunk-222	%>%	<=	==	>=	disturbance	disturbance_input	ds_patches_effect_size	filter	first_time_point_model	last_time_point_model	patch_size	patch_size_input	time_point
+unnamed-chunk-223	~	$	c	filtered_data	glance	lm	par	plot	round	summary
+unnamed-chunk-224	deltaAIC	p_value	paste0	print	R2_P
+unnamed-chunk-225	%>%	<=	==	>=	disturbance	disturbance_input	ds_patches_effect_size	filter	first_time_point_model	last_time_point_model	patch_size	patch_size_input	time_point
+unnamed-chunk-226	~	$	c	filtered_data	glance	lm	par	plot	round	summary
+unnamed-chunk-227	deltaAIC	p_value	paste0	print	R2_P
+unnamed-chunk-228	%>%	<=	==	>=	disturbance	disturbance_input	ds_patches_effect_size	filter	first_time_point_model	last_time_point_model	patch_size	patch_size_input	time_point
+unnamed-chunk-229	~	$	c	filtered_data	glance	lm	par	plot	round	summary
+unnamed-chunk-230	deltaAIC	p_value	paste0	print	R2_P
+unnamed-chunk-231	%>%	<=	==	>=	disturbance	disturbance_input	ds_patches_effect_size	filter	first_time_point_model	last_time_point_model	patch_size	patch_size_input	time_point
+unnamed-chunk-232	~	$	c	filtered_data	glance	lm	par	plot	round	summary
+unnamed-chunk-233	deltaAIC	p_value	paste0	print	R2_P
+unnamed-chunk-234	%>%	<=	==	>=	disturbance	disturbance_input	ds_patches_effect_size	filter	first_time_point_model	last_time_point_model	patch_size	patch_size_input	time_point
+unnamed-chunk-235	~	$	c	filtered_data	glance	lm	par	plot	round	summary
+unnamed-chunk-236	deltaAIC	p_value	paste0	print	R2_P
+unnamed-chunk-237	%>%	<=	==	>=	disturbance	disturbance_input	ds_patches_effect_size	filter	first_time_point_model	last_time_point_model	patch_size	patch_size_input	time_point
+unnamed-chunk-238	~	$	c	filtered_data	glance	lm	par	plot	round	summary
+unnamed-chunk-239	deltaAIC	p_value	paste0	print	R2_P
+unnamed-chunk-240	eco_metaeco_type_input	for	paste0	plot.patches.boxplots	print	protist_species
+unnamed-chunk-241	eco_metaeco_type_input	first_time_point	for	last_time_point	paste	plot.patches.species.composition.stacked	print
+unnamed-chunk-242	eco_metaeco_type_input	for	nr_of_size_classes	plot.patches.classes.points	print
+unnamed-chunk-243	eco_metaeco_type_input	for	nr_of_size_classes	plot.patches.classes.points.ES	print
+unnamed-chunk-57	c
+unnamed-chunk-244	eco_metaeco_type_input	plot.patches.median.body.size.boxplots	plot.patches.median.body.size.points	plot.patches.median.body.size.points.ES
+unnamed-chunk-245	
+unnamed-chunk-246	eco_metaeco_type_input	paste0	plot.patches.points.ES	response_variable
+unnamed-chunk-247	%>%	<=	==	>=	disturbance	disturbance_input	ds_patches_effect_size	eco_metaeco_type	eco_metaeco_type_input	filter	first_time_point_model	last_time_point_model	time_point
+unnamed-chunk-248	~	filtered_data	lm
+unnamed-chunk-249	full_model	summary
+unnamed-chunk-250	c	full_model	par	plot
+unnamed-chunk-251	~	filtered_data	lm
+unnamed-chunk-252	<	$	full_model	if	null_model	round
+unnamed-chunk-253	deltaAIC_connected_biomass	p_value_connected_biomass	paste0	print
+unnamed-chunk-254	
+unnamed-chunk-255	eco_metaeco_type_input	paste0	plot.patches.points.ES	response_variable
+unnamed-chunk-256	%>%	<=	==	>=	disturbance	disturbance_input	ds_patches_effect_size	eco_metaeco_type	filter	first_time_point_model	last_time_point_model	time_point
+unnamed-chunk-257	~	filtered_data	lm
+unnamed-chunk-258	full_model	summary
+unnamed-chunk-259	c	full_model	par	plot
+unnamed-chunk-260	~	filtered_data	lm
+unnamed-chunk-261	<	$	full_model	if	null_model	round
+unnamed-chunk-262	deltaAIC_connected_alpha	p_value_connected_alpha	paste0	print
+unnamed-chunk-263	
+unnamed-chunk-264	eco_metaeco_type_input	paste0	plot.patches.points.ES	response_variable
+unnamed-chunk-265	eco_metaeco_type_input	for	paste0	plot.patches.points.ES	print	protist_species
+unnamed-chunk-266	eco_metaeco_type_input	for	paste0	plot.patches.points.ES	print	protist_species
+unnamed-chunk-267	eco_metaeco_type_input	first_time_point	for	last_time_point	paste	plot.patches.species.composition.stacked	print
+unnamed-chunk-268	eco_metaeco_type_input	for	nr_of_size_classes	plot.patches.classes.points.ES	print
+unnamed-chunk-269	eco_metaeco_type_input	plot.patches.median.body.size.points.ES
+unnamed-chunk-270	%>%	==	aes	bioarea_per_volume	disturbance	disturbance_input	ds_patches	filter	geom_point	ggplot	species_richness
+unnamed-chunk-271	plot.relationship.BEF
+unnamed-chunk-272	plot.relationship.BEF
+unnamed-chunk-273	plot.relationship.BEF
+unnamed-chunk-274	plot.relationship.BEF
+unnamed-chunk-275	plot.relationship.BEF
+unnamed-chunk-276	%>%	==	aes	bioarea_per_volume	disturbance	disturbance_input	ds_patches	filter	geom_point	ggplot	shannon
+unnamed-chunk-277	plot.relationship.BEF
+unnamed-chunk-278	plot.relationship.BEF
+unnamed-chunk-279	plot.relationship.BEF
+unnamed-chunk-280	plot.relationship.BEF
+unnamed-chunk-281	plot.relationship.BEF
+unnamed-chunk-282	%>%	==	aes	bioarea_per_volume	disturbance	disturbance_input	ds_patches	evenness_pielou	filter	geom_point	ggplot
+unnamed-chunk-283	plot.relationship.BEF
+unnamed-chunk-284	plot.relationship.BEF
+unnamed-chunk-285	plot.relationship.BEF
+unnamed-chunk-286	plot.relationship.BEF
+unnamed-chunk-287	plot.relationship.BEF
+fig-isolated-patches	$	c	ds_patches	element_blank	font	ggarrange	ggarrange_margin_bottom	ggarrange_margin_left	ggarrange_margin_right	ggarrange_margin_top	p_isolated_alpha	p_isolated_biomass	rremove	scale_x_continuous	size_legend	size_x_axis	size_y_axis	theme	unique	unit
+fig-connected-systems	$	c	ds_patches	element_blank	font	ggarrange	ggarrange_margin_bottom	ggarrange_margin_left	ggarrange_margin_right	ggarrange_margin_top	p_MM_SL_metaecos_alpha	p_MM_SL_metaecos_beta	p_MM_SL_metaecos_biomass	rremove	scale_x_continuous	size_legend	size_x_axis	size_y_axis	theme	unique	unit
+fig-connected-patches	$	c	ds_patches	element_blank	font	ggarrange	ggarrange_margin_bottom	ggarrange_margin_left	ggarrange_margin_right	ggarrange_margin_top	p_connected_alpha_effect_size	p_connected_biomass_effect_size	rremove	scale_x_continuous	size_legend	size_x_axis	size_y_axis	theme	unique	unit
+unnamed-chunk-288	%>%	==	aes	bioarea_per_volume	disturbance	disturbance_input	ds_patches	filter	for	geom_point	get	ggplot	labs	paste0	print	protist_species
+running-time	start_time	Sys.time
+unnamed-chunk-74	save.image
+unnamed-chunk-289	plot.relationship.dominance.productivity	protist_species
+unnamed-chunk-290	plot.relationship.dominance.productivity	protist_species
+unnamed-chunk-291	plot.relationship.dominance.productivity	protist_species
+unnamed-chunk-292	plot.relationship.dominance.productivity	protist_species
+unnamed-chunk-293	plot.relationship.dominance.productivity	protist_species
+unnamed-chunk-294	%>%	aes	as.character	boxplot_width	geom_boxplot	ggplot	here	interaction	labs	rack	read.csv	water_pipetted	weight_water_evaporated
+unnamed-chunk-295	%>%	aes	all_tubes_water	boxplot_width	geom_boxplot	ggplot	here	labs	read.csv	weight_water_evaporated
+unnamed-chunk-296	c	check_tools_folder	convert_to_avi	create_overlays	create.subtitle.overlays	detectCores	F	filter_data	getwd	library	link_particles	load	locate_and_measure_particles	ls	merge_data	paste	paste0	rm	setwd	summarize_populations	summarize_trajectories	system	T	trajectory.data
+unnamed-chunk-297	p_MM_SL_metaecos_gamma

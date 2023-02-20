@@ -14,6 +14,16 @@ editor_options:
 
 ```{r}
 
+#Chatgpt
+
+IDs_iso_low_high = ds_patches %>% 
+  filter(eco_metaeco_type %in% c("Small isolated", "Large isolated", "Medium isolated"), 
+         disturbance %in% c("low", "high")) %>% 
+  distinct(culture_ID, eco_metaeco_type, disturbance) %>% 
+  select(culture_ID) %>% 
+  unique()
+
+
 ### Create a data frame with all the experimental meta-ecosystems and all the possible meta-ecosystems from isolated
 
 culture_ID_of_isolated_S_low = ds_patches %>%
@@ -107,7 +117,7 @@ number_of_combinations = nrow(ID_combinations)
 
 ```{r}
 
-#Compute meta-ecosystems 
+#Compute meta-ecosystems  for each time point 
 
 ds_metaecosystems_single_rows = NULL
 row_n = 0
@@ -124,6 +134,7 @@ for (combination in 1:number_of_combinations){
     
     if (current_system_nr %in% metaecosystems_to_take_off)
       next
+    
     
     species_density_of_the_two_patches = ds_patches %>%
       filter(culture_ID %in% current_IDs,
@@ -162,14 +173,6 @@ for (combination in 1:number_of_combinations){
     
     metaecosystem_richness = sum(presence_absence_metaecosystem)
     
-    #Gamma diversity: Shannon
-    
-    averaged_species_density_of_the_two_patches = species_density_of_the_two_patches %>%
-      map_dbl(function(x) if(is.numeric(x)) mean(x) else NA)
-      
-    gamma_shannon = diversity(averaged_species_density_of_the_two_patches, 
-                              index = "shannon")
-    
     #Put everything together
     
     ds_metaecosystems_single_rows[[row_n]] = ds_patches %>%
@@ -195,7 +198,6 @@ for (combination in 1:number_of_combinations){
            jaccard_index = jaccard_index,
            bray_curtis = bray_curtis,
            metaecosystem_richness = metaecosystem_richness,
-           gamma_shannon = gamma_shannon,
            mean_shannon = shannon) %>%
       ungroup()
     
@@ -208,22 +210,12 @@ ds_metaecosystems = ds_metaecosystems_single_rows %>%
 
 ```{r add-baselines-(ds_metaecosystems)}
 
-#Add baselines (from t1)
-
-baselines = ds_metaecosystems %>%
+#Add baselines (from t1).
+baselines <- ds_metaecosystems %>%
   ungroup() %>%
   filter(time_point == 1) %>%
-  select(system_nr, 
-         total_metaecosystem_bioarea, 
-         jaccard_index,
-         bray_curtis,
-         metaecosystem_richness,
-         gamma_shannon) %>%
-  rename(baseline_bioarea = total_metaecosystem_bioarea,
-         baseline_jaccard_index = jaccard_index,
-         baseline_bray_curtis = bray_curtis,
-         baseline_metaecosystem_richness = metaecosystem_richness,
-         baseline_gamma_shannon = gamma_shannon)
+  group_by(system_nr) %>%
+  summarise(across(vars_metaecos, .names = "baseline_{.col}"))
 
 ds_metaecosystems = full_join(ds_metaecosystems, baselines)
 ```
@@ -233,17 +225,22 @@ ds_metaecosystems = as.data.frame(ds_metaecosystems)
 ```
 
 ```{r}
-#Rename the meta-ecosystems
 
-ds_metaecosystems$metaecosystem_type[ds_metaecosystems$metaecosystem_type == "S_S"] = "Small-Small meta-ecosystem"
-ds_metaecosystems$metaecosystem_type[ds_metaecosystems$metaecosystem_type == "M_M"] = "Medium-Medium meta-ecosystem"
-ds_metaecosystems$metaecosystem_type[ds_metaecosystems$metaecosystem_type == "M_M_from_isolated"] = "Medium-Medium isolated"
-ds_metaecosystems$metaecosystem_type[ds_metaecosystems$metaecosystem_type == "L_L"] = "Large-Large meta-ecosystem"
-ds_metaecosystems$metaecosystem_type[ds_metaecosystems$metaecosystem_type == "S_L"] = "Small-Large meta-ecosystem"
-ds_metaecosystems$metaecosystem_type[ds_metaecosystems$metaecosystem_type == "S_L_from_isolated"] = "Small-Large isolated"
+#Rename the meta-ecosystems
+ds_metaecosystems$metaecosystem_type <- recode(
+  ds_metaecosystems$metaecosystem_type,
+  "S_S" = "Small-Small meta-ecosystem",
+  "M_M" = "Medium-Medium meta-ecosystem",
+  "M_M_from_isolated" = "Medium-Medium isolated",
+  "L_L" = "Large-Large meta-ecosystem",
+  "S_L" = "Small-Large meta-ecosystem",
+  "S_L_from_isolated" = "Small-Large isolated"
+)
+```
+
+```{r}
 
 #Reorder the meta-ecosystems
-
 ds_metaecosystems = ds_metaecosystems %>%
   mutate(metaecosystem_type = factor(metaecosystem_type,
                                      levels = c(
@@ -256,14 +253,33 @@ ds_metaecosystems = ds_metaecosystems %>%
                                      )))
 ```
 
-```{r save-ds_metaecosystems}
-saveRDS(ds_metaecosystems, file = here("results", "ds_metaecosystems.RData"))
+```{r}
+
+#Add whether systems are connected or not 
+ds_metaecosystems$connection <-
+  ifelse(
+    ds_metaecosystems$metaecosystem_type %in% c("Medium-Medium isolated",
+                                                "Small-Large isolated"),
+    yes = "isolated",
+    no = "connected"
+  )
 ```
 
-```{r ds_metaecosystems-datatable, eval = displays_datasets}
-datatable(ds_metaecosystems,
-          rownames = FALSE,
-          options = list(scrollX = TRUE),
-          filter = list(position = 'top', 
-                        clear = FALSE))
+```{r}
+
+#Add whether patch sizes are symmetric or not
+ds_metaecosystems$patch_size_symmetry <-
+  ifelse(
+    ds_metaecosystems$metaecosystem_type %in% c("Small-Large isolated",
+                                                "Small-Large meta-ecosystem"),
+    yes = "asymmetric",
+    no = "symmetric"
+  )
+```
+
+
+
+```{r save-ds_metaecosystems}
+saveRDS(ds_metaecosystems, file = here("results", "ds_metaecosystems.RData"))
+#ds_metaecosystems = readRDS(file = here("results", "ds_metaecosystems.RData"))
 ```
