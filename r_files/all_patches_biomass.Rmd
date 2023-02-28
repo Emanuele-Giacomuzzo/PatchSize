@@ -18,7 +18,7 @@ editor_options:
 ds_patches %>%
           filter(disturbance == disturbance_input) %>%
           ggplot(aes(x = day,
-             y = bioarea_per_volume,
+             y = bioarea_per_ml,
              group = interaction(day, eco_metaeco_type),
              fill = eco_metaeco_type)) +
           geom_boxplot(width = boxplot_width) +

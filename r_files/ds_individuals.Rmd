@@ -66,7 +66,7 @@ rm(t0, t1, t2, t3, t4, t5, t6, t7)
 ```
 
 ```{r ds_individuals-tidy-columns}
-ds_individuals$day = ds_individuals$time_point;
+ds_individuals$day = ds_individuals$time_point
 ds_individuals$day[ds_individuals$day=="t0"] = "0"
 ds_individuals$day[ds_individuals$day=="t1"] = "4"
 ds_individuals$day[ds_individuals$day=="t2"] = "8"
@@ -100,7 +100,8 @@ ds_individuals = ds_individuals %>%
          day, 
          metaecosystem, 
          system_nr, 
-         eco_metaeco_type)
+         eco_metaeco_type) %>%
+  rename(patch_size_ml = patch_size_volume)
 ```
 
 ```{r}

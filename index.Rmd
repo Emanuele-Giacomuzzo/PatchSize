@@ -346,6 +346,11 @@ eco_metaeco_type_input = c("Small connected to large",
 ```{r child = here("r_files", "SL_species_composition.Rmd")}
 ```
 
+#### Community divergence
+
+```{r child = here("r_files", "SL_community_divergence.Rmd")}
+```
+
 #### Size classes densities {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "SL_size_classes.Rmd")}
@@ -410,4 +415,3 @@ In the .bib file get rid of:
 ```{r echo=FALSE, message=FALSE}
 save.image(file = "my_environment.RData")
 ```
-

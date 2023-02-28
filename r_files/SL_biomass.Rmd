@@ -7,7 +7,7 @@ editor_options:
 ---
 
 ```{r}
-response_variable = "bioarea_per_volume"
+response_variable = "bioarea_per_ml"
 ```
 
 ```{r}
@@ -31,14 +31,14 @@ filtered_data = ds_patches_effect_size %>%
 
 2.  Construct a full model that captures our two hypotheses.\
     \
-    The first hypothesis proposes that small patches connected to large ones will exhibit greater biomass compared to small isolated patches, while large patches connected to small ones will display lower biomass relative to large isolated patches. As such, the effect size of bioarea per volume will depend on the patch type (`bioarea_per_volume_d ~ eco_metaeco_type`).
+    The first hypothesis proposes that small patches connected to large ones will exhibit greater biomass compared to small isolated patches, while large patches connected to small ones will display lower biomass relative to large isolated patches. As such, the effect size of bioarea per volume will depend on the patch type (`bioarea_per_ml_d ~ eco_metaeco_type`).
 
     \
     The second hypothesis states that as the experiment progresses, small patches connected to large ones will exhibit a greater increase in biomass compared to isolated patches, while large patches will display a decreased increase in biomass relative to large isolated patches. Therefore, the effect size of bioarea per volume will depend on the interaction between patch type and day\
-    (`bioarea_per_volume_d ~ eco_metaeco_type : day`).
+    (`bioarea_per_ml_d ~ eco_metaeco_type : day`).
 
 ```{r}
-full_model = lm(bioarea_per_volume_d ~
+full_model = lm(bioarea_per_ml_d ~
                   eco_metaeco_type + 
                   eco_metaeco_type : day,
                 data = filtered_data)
@@ -60,7 +60,7 @@ plot(full_model, which = 1:5)
 5.  Construct the null model for both hypotheses, where there is no dependency of bioarea per volume on either patch type or the interaction between patch type and day.
 
 ```{r}
-null_model = lm(bioarea_per_volume_d ~
+null_model = lm(bioarea_per_ml_d ~
                   1,
                 data = filtered_data)
 ```
@@ -102,7 +102,7 @@ print(paste0("P value = ", p_value_connected_biomass, ", ΔAIC = ", deltaAIC_con
     Construct the null model.
 
 ```{r}
-null_model = lm(bioarea_per_volume_d ~
+null_model = lm(bioarea_per_ml_d ~
                   eco_metaeco_type : day,
                 data = filtered_data)
 ```
@@ -144,7 +144,7 @@ print(paste0("P value = ", p_value_connected_biomass, ", ΔAIC = ", deltaAIC_con
     Construct the null model.
 
 ```{r}
-null_model = lm(bioarea_per_volume_d ~
+null_model = lm(bioarea_per_ml_d ~
                   eco_metaeco_type,
                 data = filtered_data)
 ```

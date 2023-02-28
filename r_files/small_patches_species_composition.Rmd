@@ -6,6 +6,8 @@ editor_options:
   chunk_output_type: console
 ---
 
+By time point
+
 ```{r}
 for(time_point_input in first_time_point:last_time_point) {
   
@@ -17,4 +19,14 @@ for(time_point_input in first_time_point:last_time_point) {
   )
   
 }
+```
+
+By treatment
+
+```{r}
+plot.patches.species.composition.stacked.time("Small isolated")
+```
+
+```{r}
+plot.patches.species.composition.stacked.time("Small connected to large")
 ```

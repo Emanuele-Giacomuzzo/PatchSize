@@ -7,8 +7,10 @@ editor_options:
   chunk_output_type: console
 ---
 
+##### Time - Biomass
+
 ```{r}
-response_variable = "bioarea_per_volume"
+response_variable = "bioarea_per_ml"
 ```
 
 ```{r}
@@ -37,18 +39,18 @@ filtered_data = ds_patches %>%
 
 2.  Construct a full model that captures all our hypotheses.\
     \
-    The first hypothesis proposes that the bioarea density of isolated patches depends on their patch size (`patch_size_volume`). \
+    The first hypothesis proposes that the bioarea density of isolated patches depends on their patch size (`patch_size_ml`). \
     \
-    The second hypothesis proposes that the bioarea density of isolated patches goes down faster in smaller patches (`patch_size_volume : day`).
+    The second hypothesis proposes that the bioarea density of isolated patches goes down faster in smaller patches (`patch_size_ml : day`).
 
 ```{r}
 full_model = lmer(
-  bioarea_per_volume ~
+  bioarea_per_ml ~
     day +
-    patch_size_volume +
-    patch_size_volume : day +
-    baseline_bioarea_per_volume + 
-    baseline_bioarea_per_volume : day +
+    patch_size_ml +
+    patch_size_ml : day +
+    baseline_bioarea_per_ml + 
+    baseline_bioarea_per_ml : day +
     (day | culture_ID),
   data = filtered_data,
   REML = FALSE,
@@ -75,10 +77,10 @@ Construct the null model for all hypotheses.
     
 ```{r}
 null_model = lmer(
-  bioarea_per_volume ~
+  bioarea_per_ml ~
     day +
-    baseline_bioarea_per_volume + 
-    baseline_bioarea_per_volume : day +
+    baseline_bioarea_per_ml + 
+    baseline_bioarea_per_ml : day +
     (day | culture_ID),
   data = filtered_data,
   REML = FALSE,
@@ -124,11 +126,11 @@ Construct the null model.
 
 ```{r}
 null_model = lmer(
-  bioarea_per_volume ~
+  bioarea_per_ml ~
     day +
-    patch_size_volume : day +
-    baseline_bioarea_per_volume + 
-    baseline_bioarea_per_volume : day +
+    patch_size_ml : day +
+    baseline_bioarea_per_ml + 
+    baseline_bioarea_per_ml : day +
     (day | culture_ID),
   data = filtered_data,
   REML = FALSE,
@@ -175,11 +177,11 @@ Construct the null model.
 
 ```{r}
 null_model = lmer(
-  bioarea_per_volume ~
+  bioarea_per_ml ~
     day +
-    patch_size_volume +
-    baseline_bioarea_per_volume + 
-    baseline_bioarea_per_volume : day +
+    patch_size_ml +
+    baseline_bioarea_per_ml + 
+    baseline_bioarea_per_ml : day +
     (day | culture_ID),
   data = filtered_data,
   REML = FALSE,
@@ -219,3 +221,22 @@ if (p_value < 0.001){
 print(paste0("P value = ", p_value, ", ΔAIC = ", deltaAIC))
 ```
 
+##### Patch size - Biomass {.tabset .tabset-pills}
+
+###### Isolated
+
+```{r}
+plot.patches.size.response.boxplots(metaecosystem_input = "no",
+                                  trophic_type_input = "NA",
+                                  flow_input = "NA",
+                                  response_variable = response_variable)
+```
+
+###### Connected
+
+```{r}
+plot.patches.size.response.boxplots(metaecosystem_input = "yes",
+                                  trophic_type_input = "NA",
+                                  flow_input = "NA",
+                                  response_variable = response_variable)
+```

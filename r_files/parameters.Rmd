@@ -26,6 +26,8 @@ displays_datasets = FALSE
 
 protist_species = c("Ble", "Cep", "Col", "Eug", "Eup", "Lox", "Pau", "Pca", "Spi", "Spi_te", "Tet")
 n_protist_species = length(protist_species)
+first_protist = protist_species[1]
+last_protist = protist_species[n_protist_species]
 
 #Patches
 
@@ -70,8 +72,8 @@ first_resource_flow = resource_flow_days[1]
 
 ```{r}
 #Define the variables whose effect size I want to calculate
-vars = c("bioarea_per_volume",
-         "indiv_per_volume",
+vars = c("bioarea_per_ml",
+         "indiv_per_ml",
          "species_richness",
          "shannon",
          "evenness_pielou",
@@ -99,10 +101,11 @@ legend_position = "top"
 axis_names = data.frame(variable = NA,
                     axis_name= NA) %>%
   add_row(variable = "day", axis_name = "Day") %>%
+  add_row(variable = "patch_size_ml", axis_name = "Patch size (ml)") %>%
   add_row(variable = "log_size_class", axis_name = "Log size (μm2)") %>%
   add_row(variable = "size_class_abundance", axis_name = "Density (ind/ml)") %>%
-  add_row(variable = "bioarea_per_volume", axis_name = "Bioarea Density (µm²/ml)") %>%
-  add_row(variable = "bioarea_per_volume_d", axis_name = "Bioarea Density ES") %>%
+  add_row(variable = "bioarea_per_ml", axis_name = "Bioarea Density (µm²/ml)") %>%
+  add_row(variable = "bioarea_per_ml_d", axis_name = "Bioarea Density ES") %>%
   add_row(variable = "bioarea_tot", axis_name = "Tot Bioarea (µm²)") %>%
   add_row(variable = "total_metaecosystem_bioarea", axis_name = "Tot Bioarea (µm²)") %>%
   add_row(variable = "mean_shannon", axis_name = "α Diversity") %>%
@@ -110,8 +113,8 @@ axis_names = data.frame(variable = NA,
   add_row(variable = "shannon_d", axis_name = "α Diversity ES") %>%
   add_row(variable = "bray_curtis", axis_name = "β Diversity") %>%
   add_row(variable = "metaecosystem_richness", axis_name = "γ Diversity") %>%
-  add_row(variable = "indiv_per_volume", axis_name = "Abundance (ind/ml)") %>%
-  add_row(variable = "indiv_per_volume_d", axis_name = "Abundance ES") %>%
+  add_row(variable = "indiv_per_ml", axis_name = "Abundance (ind/ml)") %>%
+  add_row(variable = "indiv_per_ml_d", axis_name = "Abundance ES") %>%
   add_row(variable = "median_body_size", axis_name = "Median body size (µm²)") %>%
   add_row(variable = "median_body_size_d", axis_name = "Median Body Size ES") %>%
   add_row(variable = "Ble", axis_name = "Ble Density (ind/μl?)") %>%

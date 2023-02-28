@@ -13,19 +13,7 @@ editor_options:
 -   It contains also "fake" meta-ecosystems which I created from isolated patches (`metecosystem type = S_L_from_isolated` & `metecosystem type = M_M_from_isolated`).
 
 ```{r}
-
-#Chatgpt
-
-IDs_iso_low_high = ds_patches %>% 
-  filter(eco_metaeco_type %in% c("Small isolated", "Large isolated", "Medium isolated"), 
-         disturbance %in% c("low", "high")) %>% 
-  distinct(culture_ID, eco_metaeco_type, disturbance) %>% 
-  select(culture_ID) %>% 
-  unique()
-
-
 ### Create a data frame with all the experimental meta-ecosystems and all the possible meta-ecosystems from isolated
-
 culture_ID_of_isolated_S_low = ds_patches %>%
   filter(eco_metaeco_type == "Small isolated",
          disturbance == "low") %>%

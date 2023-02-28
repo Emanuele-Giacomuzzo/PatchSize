@@ -13,6 +13,7 @@ editor_options:
 -   The value of different videos have been already averaged.
 
 ```{r}
+#Assemble the dataset
 time_points_ds = NULL
 for (time_point in first_time_point:last_time_point) {
   
@@ -59,13 +60,13 @@ ds_patches = time_points_ds %>%
 ```
 
 ```{r}
+#Filter out problematic cultures 
 ds_patches = ds_patches %>%
   filter(! culture_ID %in% ecosystems_to_take_off)
 ```
 
 ```{r}
-
-### Average videos & get rid of useless columns
+### Average videos (gets rid of useless columns)
 ds_patches = ds_patches %>%
   group_by(
     culture_ID,
@@ -94,17 +95,19 @@ ds_patches = ds_patches %>%
     Spi_te = mean(Spi_te),
     Tet = mean(Tet)
   ) %>%
+  rename(patch_size_ml = patch_size_volume) %>%
+  mutate(indiv_per_volume_Lynn = Ble + Cep + Col + Eug + Eup + Lox + Pau + Pca + Spi + Spi_te + Tet) %>%
   ungroup()
 ```
 
 ```{r}
-
 #Change all the measures to ml
 #1. Bioarea_per_volume in the original data is in µm2 / µl -> convert to µm2 / ml
 #2. Indiv_per_volume & all protists in the original data are in individuals / µl -> convert to individuals / ml
 ds_patches = ds_patches %>%
-  mutate(bioarea_per_volume = bioarea_per_volume / 1000,
-         indiv_per_volume = indiv_per_volume / 1000,
+  mutate(bioarea_per_ml = bioarea_per_volume / 1000,
+         indiv_per_ml = indiv_per_volume / 1000,
+         indiv_per_ml_Lynn = indiv_per_volume_Lynn / 1000,
          Ble = Ble / 1000,
          Cep = Cep / 1000,
          Col = Col / 1000,
@@ -119,39 +122,37 @@ ds_patches = ds_patches %>%
 ```
 
 ```{r}
-
 #Calculate total response variable for the whole patch
 ds_patches = ds_patches %>%
-  mutate(bioarea_tot = bioarea_per_volume * patch_size_volume,
-         indiv_tot = indiv_per_volume * patch_size_volume,
-         Ble_tot = Ble * patch_size_volume,
-         Cep_tot = Cep * patch_size_volume,
-         Col_tot = Col * patch_size_volume,
-         Eug_tot = Eug * patch_size_volume,
-         Eup_tot = Eup * patch_size_volume,
-         Lox_tot = Lox * patch_size_volume,
-         Pau_tot = Pau * patch_size_volume,
-         Pca_tot = Pca * patch_size_volume,
-         Spi_tot = Spi * patch_size_volume,
-         Spi_te_tot = Spi_te * patch_size_volume,
-         Tet_tot = Tet * patch_size_volume)
+  mutate(bioarea_tot = bioarea_per_ml * patch_size_ml,
+         indiv_tot = indiv_per_ml * patch_size_ml,
+         Ble_tot = Ble * patch_size_ml,
+         Cep_tot = Cep * patch_size_ml,
+         Col_tot = Col * patch_size_ml,
+         Eug_tot = Eug * patch_size_ml,
+         Eup_tot = Eup * patch_size_ml,
+         Lox_tot = Lox * patch_size_ml,
+         Pau_tot = Pau * patch_size_ml,
+         Pca_tot = Pca * patch_size_ml,
+         Spi_tot = Spi * patch_size_ml,
+         Spi_te_tot = Spi_te * patch_size_ml,
+         Tet_tot = Tet * patch_size_ml)
 ```
 
 ```{r}
-
 #Calculate species dominance
 ds_patches = ds_patches %>%
-  mutate(Ble_dominance = (Ble / indiv_per_volume) * 100,
-         Cep_dominance = (Cep / indiv_per_volume) * 100,
-         Col_dominance = (Col / indiv_per_volume) * 100,
-         Eug_dominance = (Eug / indiv_per_volume) * 100,
-         Eup_dominance = (Eup  / indiv_per_volume) * 100,
-         Lox_dominance = (Lox / indiv_per_volume) * 100,
-         Pau_dominance = (Pau / indiv_per_volume) * 100,
-         Pca_dominance = (Pca / indiv_per_volume) * 100,
-         Spi_dominance = (Spi / indiv_per_volume) * 100,
-         Spi_te_dominance = (Spi_te / indiv_per_volume) * 100,
-         Tet_dominance = (Tet / indiv_per_volume) * 100)
+  mutate(Ble_dominance = (Ble / indiv_per_ml_Lynn) * 100,
+         Cep_dominance = (Cep / indiv_per_ml_Lynn) * 100,
+         Col_dominance = (Col / indiv_per_ml_Lynn) * 100,
+         Eug_dominance = (Eug / indiv_per_ml_Lynn) * 100,
+         Eup_dominance = (Eup  / indiv_per_ml_Lynn) * 100,
+         Lox_dominance = (Lox / indiv_per_ml_Lynn) * 100,
+         Pau_dominance = (Pau / indiv_per_ml_Lynn) * 100,
+         Pca_dominance = (Pca / indiv_per_ml_Lynn) * 100,
+         Spi_dominance = (Spi / indiv_per_ml_Lynn) * 100,
+         Spi_te_dominance = (Spi_te / indiv_per_ml_Lynn) * 100,
+         Tet_dominance = (Tet / indiv_per_ml_Lynn) * 100)
 ```
 
 ```{r calculate_alpha_diversity_(ds_patches)}
@@ -162,7 +163,6 @@ ds_patches$shannon = NA
 ds_patches$simpson = NA
 ds_patches$inv_simpson = NA
 ds_patches$evenness_pielou = NA
-
 
 for (row in 1:nrow(ds_patches)) {
   
@@ -237,6 +237,53 @@ ds_patches = ds_patches %>%
   ))
 ```
 
-```{r save_ds_biomas_abund}
-saveRDS(ds_patches, file = here("results", "ds_patches.RData"))
+```{r}
+#Calculate how the community of a certain treatment diverges from the community of the control 
+ds_patches$beta_diversity_from_isolated = NA
+for (disturbance in c("Low", "High")){
+  for (time_point_input in first_time_point:last_time_point) {
+    for(treatment_input in c("Small connected to large", "Large connected to small")){
+      
+      if(treatment_input == "Small connected to large"){control_input = "Small isolated"}
+      if(treatment_input == "Large connected to small"){control_input = "Large isolated"}
+      
+      treatment_group = ds_patches %>%
+        filter(eco_metaeco_type %in% treatment_input,
+               time_point == time_point_input,
+               disturbance == disturbance_input) %>%
+        select(culture_ID, 
+               first_protist:last_protist)
+      
+      control_group = ds_patches %>%
+        filter(eco_metaeco_type %in% control_input,
+               time_point == time_point_input,
+               disturbance == disturbance_input) %>%
+        select(culture_ID, 
+               first_protist:last_protist)
+      
+      pairwise_bray_curtis = NA
+      row = 0
+      for(treatment_iteration in 1:nrow(treatment_group)){
+        for(control_iteration in 1:nrow(control_group)){
+          
+          row = row + 1
+          
+          pairwise_bray_curtis[row] <- vegdist(rbind(treatment_group[treatment_iteration, -1], 
+                                                     control_group[control_iteration, -1]), 
+                                               method = "bray") %>%
+            as.numeric()
+          
+        }
+        
+        mean_bray_curtis = mean(pairwise_bray_curtis)
+        
+        ds_patches$beta_diversity_from_isolated[
+          ds_patches$culture_ID ==  treatment_group$culture_ID[treatment_iteration] &
+          ds_patches$time_point == time_point_input] = 
+        mean_bray_curtis
+        
+      }
+    }
+  }
+}
 ```

@@ -14,7 +14,7 @@ editor_options:
 ds_patches %>%
   filter(disturbance == disturbance_input) %>%
   ggplot(aes(x = shannon,
-             y = bioarea_per_volume)) +
+             y = bioarea_per_ml)) +
   geom_point()
 ```
 

@@ -8,7 +8,7 @@ editor_options:
 ---
 
 ```{r}
-response_variable = "bioarea_per_volume"
+response_variable = "bioarea_per_ml"
 ```
 
 ```{r}
@@ -34,19 +34,19 @@ filtered_data = ds_patches_effect_size %>%
 ```
 
 ```{r small-patches-full-model}
-full_model = lm(bioarea_per_volume_d ~                  
+full_model = lm(bioarea_per_ml_d ~                  
                   eco_metaeco_type +
                   eco_metaeco_type : day +
-                  baseline_bioarea_per_volume_d + 
-                  baseline_bioarea_per_volume_d : day,
+                  baseline_bioarea_per_ml_d + 
+                  baseline_bioarea_per_ml_d : day,
                   data = filtered_data)
 
 par(mfrow = c(2,3))
 plot(full_model, which = 1:5)
 
-null_model = lm(bioarea_per_volume_d ~                  
-                  baseline_bioarea_per_volume_d + 
-                  baseline_bioarea_per_volume_d : day,
+null_model = lm(bioarea_per_ml_d ~                  
+                  baseline_bioarea_per_ml_d + 
+                  baseline_bioarea_per_ml_d : day,
                   data = filtered_data)
 
 AIC = AIC(full_model, null_model)

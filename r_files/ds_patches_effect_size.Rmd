@@ -82,27 +82,27 @@ for (disturbance_input in c("low", "high")) {
       ### Bioarea density
       
       hedges_d_bioarea = calculate.hedges_d(
-        treatment_row$bioarea_per_volume_mean,
-        treatment_row$bioarea_per_volume_sd,
+        treatment_row$bioarea_per_ml_mean,
+        treatment_row$bioarea_per_ml_sd,
         treatment_row$sample_size,
-        control_row$bioarea_per_volume_mean,
-        control_row$bioarea_per_volume_sd,
+        control_row$bioarea_per_ml_mean,
+        control_row$bioarea_per_ml_sd,
         control_row$sample_size
       )
       
-      ds_patches_effect_size$bioarea_per_volume_d[
+      ds_patches_effect_size$bioarea_per_ml_d[
         ds_patches_effect_size$eco_metaeco_type == eco_metaeco_treatment &
         ds_patches_effect_size$time_point == time_point_input &
         ds_patches_effect_size$disturbance == disturbance_input] = 
         hedges_d_bioarea$d
       
-      ds_patches_effect_size$bioarea_per_volume_d_upper[
+      ds_patches_effect_size$bioarea_per_ml_d_upper[
         ds_patches_effect_size$eco_metaeco_type == eco_metaeco_treatment &
         ds_patches_effect_size$time_point == time_point_input &
         ds_patches_effect_size$disturbance == disturbance_input] = 
         hedges_d_bioarea$upper_CI
       
-      ds_patches_effect_size$bioarea_per_volume_d_lower[
+      ds_patches_effect_size$bioarea_per_ml_d_lower[
         ds_patches_effect_size$eco_metaeco_type == eco_metaeco_treatment &
         ds_patches_effect_size$time_point == time_point_input &
         ds_patches_effect_size$disturbance == disturbance_input] = 
@@ -110,32 +110,32 @@ for (disturbance_input in c("low", "high")) {
       
       ### Individuals per volume
     
-    hedges_d_indiv_per_volume = calculate.hedges_d(
-      treatment_row$indiv_per_volume_mean,
-      treatment_row$indiv_per_volume_sd,
+    hedges_d_indiv_per_ml = calculate.hedges_d(
+      treatment_row$indiv_per_ml_mean,
+      treatment_row$indiv_per_ml_sd,
       treatment_row$sample_size,
-      control_row$indiv_per_volume_mean,
-      control_row$indiv_per_volume_sd,
+      control_row$indiv_per_ml_mean,
+      control_row$indiv_per_ml_sd,
       control_row$sample_size
     )
     
-    ds_patches_effect_size$indiv_per_volume_d[
+    ds_patches_effect_size$indiv_per_ml_d[
       ds_patches_effect_size$eco_metaeco_type == eco_metaeco_treatment &
       ds_patches_effect_size$time_point == time_point_input &
       ds_patches_effect_size$disturbance == disturbance_input] = 
-      hedges_d_indiv_per_volume$d
+      hedges_d_indiv_per_ml$d
     
-    ds_patches_effect_size$indiv_per_volume_d_lower[
+    ds_patches_effect_size$indiv_per_ml_d_lower[
       ds_patches_effect_size$eco_metaeco_type == eco_metaeco_treatment &
       ds_patches_effect_size$time_point == time_point_input &
       ds_patches_effect_size$disturbance == disturbance_input] = 
-      hedges_d_indiv_per_volume$lower_CI
+      hedges_d_indiv_per_ml$lower_CI
     
-    ds_patches_effect_size$indiv_per_volume_d_upper[
+    ds_patches_effect_size$indiv_per_ml_d_upper[
       ds_patches_effect_size$eco_metaeco_type == eco_metaeco_treatment &
       ds_patches_effect_size$time_point == time_point_input &
       ds_patches_effect_size$disturbance == disturbance_input] = 
-      hedges_d_indiv_per_volume$upper_CI
+      hedges_d_indiv_per_ml$upper_CI
 
     
     ### Species richness

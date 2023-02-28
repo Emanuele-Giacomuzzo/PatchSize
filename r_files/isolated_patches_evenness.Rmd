@@ -6,6 +6,8 @@ editor_options:
   chunk_output_type: console
 ---
 
+##### Day - Evenness {.tabset .tabset-pills}
+
 ```{r}
 response_variable = "evenness_pielou"
 ```
@@ -16,4 +18,24 @@ plot.patches.boxplots(eco_metaeco_type_input,
 
 plot.patches.points(eco_metaeco_type_input,
                        response_variable)
+```
+
+##### Patch size - Evenness {.tabset .tabset-pills}
+
+###### Isolated
+
+```{r}
+plot.patches.size.response.boxplots(metaecosystem_input = "no",
+                                  trophic_type_input = "NA",
+                                  flow_input = "NA",
+                                  response_variable = response_variable)
+```
+
+###### Connected
+
+```{r}
+plot.patches.size.response.boxplots(metaecosystem_input = "yes",
+                                  trophic_type_input = "NA",
+                                  flow_input = "NA",
+                                  response_variable = response_variable)
 ```

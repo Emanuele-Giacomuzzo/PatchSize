@@ -18,7 +18,7 @@ ds_median_body_size = ds_individuals %>%
   group_by(
     culture_ID,
     patch_size,
-    patch_size_volume,
+    patch_size_ml,
     disturbance,
     metaecosystem_type,
     time_point,
