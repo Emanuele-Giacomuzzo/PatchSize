@@ -6,8 +6,6 @@ editor_options:
   chunk_output_type: console
 ---
 
-### Size classes (ds_classes)
-
 -   Each row is the size class of a culture at a certain time point
 -   I create 24 size classes (@Jacquet2020 created 12 size classes). The first class lower boundary is the smallest body size, the last size class upper boundary is the largest one.
 
@@ -33,7 +31,6 @@ for (class in 1:nr_of_size_classes) {
   bin_lower_limit = size_class_boundaries[class]
   bin_upper_limit = size_class_boundaries[class + 1]
   mean_size = (size_class_boundaries[class] + size_class_boundaries[class + 1]) / 2
-  
   
   for (time_point_input in 0:last_time_point) {
     for (culture_ID_input in 1:n_cultures) {

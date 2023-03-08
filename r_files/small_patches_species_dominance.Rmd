@@ -9,7 +9,7 @@ for (species_input in protist_species){
   
   response_variable = paste0(species_input, "_dominance")
   
-  print(plot.patches.boxplots(eco_metaeco_type_input,
+  print(plot.patches.boxplots(patch_type_input,
                        response_variable))
   
 }

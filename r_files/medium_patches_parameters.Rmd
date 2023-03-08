@@ -7,7 +7,7 @@ editor_options:
 ---
 
 ```{r}
-eco_metaeco_type_input = c("Medium isolated", 
+patch_type_input = c("Medium isolated", 
                            "Medium connected to medium")
 colour_level_1 = colour_M
 colour_level_2 = colour_M_connected_to_M

@@ -6,12 +6,10 @@ editor_options:
   chunk_output_type: console
 ---
 
-#### Median body size effect size (`ds_median_body_size_effect_size)`
-
 ```{r}
 ds_median_body_size_effect_size = ds_median_body_size %>%
   group_by(disturbance, 
-           eco_metaeco_type, 
+           patch_type, 
            patch_size, 
            time_point, 
            day) %>%
@@ -36,7 +34,7 @@ treatments_and_controls = data.frame(
 n_of_treatments = nrow(treatments_and_controls)
 
 row_n = 0
-for (disturbance_input in c("low", "high")) {
+for (disturbance in c("low", "high")) {
   for (treatment_n in 1:n_of_treatments) {
     for (time_point_input in 0:7) {
       
@@ -46,8 +44,8 @@ for (disturbance_input in c("low", "high")) {
       
       treatment_row = ds_median_body_size_effect_size %>%
         filter(
-          disturbance == disturbance_input,
-          eco_metaeco_type == eco_metaeco_treatment,
+          disturbance == disturbance,
+          patch_type == eco_metaeco_treatment,
           time_point == time_point_input
         )
       
@@ -55,8 +53,8 @@ for (disturbance_input in c("low", "high")) {
       
       control_row = ds_median_body_size_effect_size %>%
         filter(
-          disturbance == disturbance_input,
-          eco_metaeco_type == eco_metaeco_control,
+          disturbance == disturbance,
+          patch_type == eco_metaeco_control,
           time_point == time_point_input
         )
       
@@ -70,42 +68,30 @@ for (disturbance_input in c("low", "high")) {
       )
       
       ds_median_body_size_effect_size$median_body_size_d[
-        ds_median_body_size_effect_size$eco_metaeco_type == eco_metaeco_treatment &
+        ds_median_body_size_effect_size$patch_type == eco_metaeco_treatment &
         ds_median_body_size_effect_size$time_point == time_point_input &
-        ds_median_body_size_effect_size$disturbance == disturbance_input] = 
+        ds_median_body_size_effect_size$disturbance == disturbance] = 
         hedges_d_median_body_size$d
       
       ds_median_body_size_effect_size$median_body_size_d_upper[
-        ds_median_body_size_effect_size$eco_metaeco_type == eco_metaeco_treatment &
+        ds_median_body_size_effect_size$patch_type == eco_metaeco_treatment &
         ds_median_body_size_effect_size$time_point == time_point_input &
-        ds_median_body_size_effect_size$disturbance == disturbance_input] = 
+        ds_median_body_size_effect_size$disturbance == disturbance] = 
         hedges_d_median_body_size$upper_CI
       
       ds_median_body_size_effect_size$median_body_size_d_lower[
-        ds_median_body_size_effect_size$eco_metaeco_type == eco_metaeco_treatment &
+        ds_median_body_size_effect_size$patch_type == eco_metaeco_treatment &
         ds_median_body_size_effect_size$time_point == time_point_input &
-        ds_median_body_size_effect_size$disturbance == disturbance_input] = 
+        ds_median_body_size_effect_size$disturbance == disturbance] = 
         hedges_d_median_body_size$lower_CI
       
       ds_median_body_size_effect_size$median_body_size_lnRR[
-        ds_median_body_size_effect_size$eco_metaeco_type == eco_metaeco_treatment &
+        ds_median_body_size_effect_size$patch_type == eco_metaeco_treatment &
         ds_median_body_size_effect_size$time_point == time_point_input &
-        ds_median_body_size_effect_size$disturbance == disturbance_input] = 
+        ds_median_body_size_effect_size$disturbance == disturbance] = 
         ln(treatment_row$median_body_size_mean / control_row$median_body_size_mean)
     
     }
   }
 }
-```
-
-```{r}
-saveRDS(ds_median_body_size_effect_size, here("results", "ds_median_body_size_effect_size.RData"))
-```
-
-```{r ds_median_body_size_effect_size-datable}
-datatable(ds_median_body_size_effect_size,
-          rownames = FALSE,
-          options = list(scrollX = TRUE),
-          filter = list(position = 'top', 
-                        clear = FALSE))
 ```

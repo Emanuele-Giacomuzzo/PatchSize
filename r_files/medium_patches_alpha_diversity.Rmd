@@ -11,12 +11,12 @@ response_variable = "shannon"
 ```
 
 ```{r}
-plot.patches.boxplots(eco_metaeco_type_input,
+plot.patches.boxplots(patch_type_input,
                        response_variable)
 
-plot.patches.points(eco_metaeco_type_input,
+plot.patches.points(patch_type_input,
                        response_variable)
 
-plot.patches.points.ES(eco_metaeco_type_input,
+plot.patches.points.ES(patch_type_input,
                        paste0(response_variable, "_d"))
 ```

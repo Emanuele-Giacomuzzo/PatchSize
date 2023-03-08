@@ -7,8 +7,32 @@ editor_options:
 ---
 
 ```{r}
+plot.patches.boxplots(
+    "Large connected to small"),
+  "beta_diversity_from_isolated"
+)
+
+disturbance_input
+
+ds_patches %>%
+  filter(disturbance == disturbance_input) %>%
+  select(beta_diversity_from_isolated) %>%
+  pull()
+
 ds_patches = ds_patches %>%
   filter(disturbance == disturbance_input)
+
+ds_patches %>%
+  filter(disturbance == disturbance_input) %>%
+  select(beta_diversity_from_isolated) %>%
+  pull()
+
+
+plot.patches.boxplots(
+  c("Small connected to large",
+    "Large connected to small"),
+  "beta_diversity_from_isolated"
+)
 
 ds_patches_effect_size = ds_patches_effect_size %>%
   filter(disturbance == disturbance_input)

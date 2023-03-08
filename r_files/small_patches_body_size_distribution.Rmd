@@ -19,21 +19,21 @@ for(time_point_input in 0:7) {
   print(
     ds_classes_effect_size %>%
       filter(disturbance == disturbance_input,
-             eco_metaeco_type %in% c("Small isolated", "Small connected to small", "Small connected to large"),
+             patch_type %in% c("Small isolated", "Small connected to small", "Small connected to large"),
              day == time_point_input*4) %>%
       ggplot(
         aes(
           x = log_size_class,
           y = log_abundance,
-          group = interaction(log_size_class, eco_metaeco_type),
-          color = eco_metaeco_type
+          group = interaction(log_size_class, patch_type),
+          color = patch_type
         )
       ) +
       geom_point(stat = "summary", fun = "mean") +
       geom_line(
         stat = "summary",
         fun = "mean",
-        aes(group = eco_metaeco_type)
+        aes(group = patch_type)
       ) +
       geom_errorbar(
         aes(ymax = log_abundance_upper_ci,
@@ -77,13 +77,13 @@ for(time_point_input in 0:7) {
   print(
     ds_classes_effect_size %>%
       filter(disturbance == disturbance_input,
-             eco_metaeco_type %in% c("Small connected to small", "Small connected to large"),
+             patch_type %in% c("Small connected to small", "Small connected to large"),
              day == time_point_input * 4) %>%
       ggplot(
         aes(
           x = log_size_class,
           y = abundance_hedges_d,
-          color = eco_metaeco_type
+          color = patch_type
         )
       ) +
       geom_point(position = position_dodge(0.5)) +

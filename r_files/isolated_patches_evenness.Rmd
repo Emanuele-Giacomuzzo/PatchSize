@@ -13,10 +13,10 @@ response_variable = "evenness_pielou"
 ```
 
 ```{r}
-plot.patches.boxplots(eco_metaeco_type_input,
+plot.patches.boxplots(patch_type_input,
                        response_variable)
 
-plot.patches.points(eco_metaeco_type_input,
+plot.patches.points(patch_type_input,
                        response_variable)
 ```
 

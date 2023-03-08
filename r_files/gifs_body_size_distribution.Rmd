@@ -38,19 +38,19 @@ for (patch_size_input in c("Small isolated", "Large isolated")) {
     p[[n]] <- ds_classes_effect_size %>%
       filter(disturbance == disturbance_input) %>%
       filter(patch_size == patch_size_input) %>%
-      filter(!eco_metaeco_type == patch_size_input) %>%
+      filter(!patch_type == patch_size_input) %>%
       ggplot(
         aes(
           x = log_size_class,
           y = log_abundance,
-          group = interaction(log_size_class, eco_metaeco_type),
-          color = eco_metaeco_type
+          group = interaction(log_size_class, patch_type),
+          color = patch_type
         )
       ) +
       geom_point(stat = "summary", fun = "mean") +
       geom_line(stat = "summary",
                 fun = "mean",
-                aes(group = eco_metaeco_type)) +
+                aes(group = patch_type)) +
       geom_errorbar(
         aes(ymax = log_abundance_upper_ci,
             ymin = log_abundance_lower_ci),

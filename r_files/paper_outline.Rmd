@@ -6,31 +6,31 @@ date: "2023-02-15"
 
 **INTRODUCTION**
 
--   Needs to study ecosystem function
+-   Needs to study patch function
 
-    -   Need to study of ecosystem function for ecosystem services
+    -   Need to study of patch function for patch services
 
-    -   Need to study of ecosystem function to understand human impact on ecosystems
+    -   Need to study of patch function to understand human impact on patches
 
-    -   Need to study of ecosystem function to develop ecosystem managment
+    -   Need to study of patch function to develop patch managment
 
-    -   Need to understand ecosystem function at a landscape scale
+    -   Need to understand patch function at a landscape scale
 
--   Flow of resources in determining ecosystem function
+-   Flow of resources in determining patch function
 
-    -   Effects of resource flow on ecosystem function
+    -   Effects of resource flow on patch function
 
-    -   Introduce the concept of meta-ecosystem
+    -   Introduce the concept of meta-patch
 
--   Impact of patch size on meta-ecosystem function
+-   Impact of patch size on meta-patch function
 
-    -   Lack of studies on how patch size influences meta-ecosystem function
+    -   Lack of studies on how patch size influences meta-patch function
 
-    -   Donor ecosystem size
+    -   Donor patch size
 
-    -   Receiving ecosystem size
+    -   Receiving patch size
 
--   Experiment to test patch size effects on meta-ecosystem function
+-   Experiment to test patch size effects on meta-patch function
 
     -   Protist microcosm experiment
 
@@ -40,9 +40,9 @@ date: "2023-02-15"
 
 -   Conclusion
 
-    -   Effects of resource flow on meta-ecosystem function depend on patch size
+    -   Effects of resource flow on meta-patch function depend on patch size
 
-    -   Importance of understanding ecosystem function at a landscape scale for preservation in face of global change.
+    -   Importance of understanding patch function at a landscape scale for preservation in face of global change.
 
 **METHODS**
 
@@ -52,6 +52,6 @@ date: "2023-02-15"
 
 -   Meta-ecosystem fail to incorporate patch size
 
--   Effects of patch symmetry on meta-ecosystem function
+-   Effects of patch symmetry on meta-patch function
 
--   Effects of patch symmetry on meta-ecosystem biodiversity
+-   Effects of patch symmetry on meta-patch biodiversity

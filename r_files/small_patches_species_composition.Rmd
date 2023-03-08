@@ -14,7 +14,7 @@ for(time_point_input in first_time_point:last_time_point) {
   print(paste("Time point: ", time_point_input))
   
   print(
-    plot.patches.species.composition.stacked(eco_metaeco_type_input,
+    plot.patches.species.composition.stacked(patch_type_input,
                                              time_point_input)
   )
   

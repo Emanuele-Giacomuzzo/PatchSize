@@ -12,62 +12,83 @@ response_variable = "shannon"
 ```
 
 ```{r}
-plot.patches.boxplots(eco_metaeco_type_input,
+plot.patches.boxplots(patch_type_input,
                        response_variable)
 
-plot.patches.points(eco_metaeco_type_input,
+plot.patches.points(patch_type_input,
                        response_variable)
 
-plot.patches.points.ES(eco_metaeco_type_input,
+plot.patches.points.ES(patch_type_input,
                        paste0(response_variable, "_d"))
 ```
 
 *Analysis*
 
+-   Filter data
+
 ```{r}
+
+patch_type_input_model = c("Large connected to large",
+                                 "Large connected to small")
+
 filtered_data = ds_patches_effect_size %>%
                          filter(time_point >= first_time_point_model,
                                 time_point <= last_time_point_model,
-                                disturbance == disturbance_input,
-                                eco_metaeco_type %in% c("Large connected to large", "Large connected to small"))
+                                patch_type %in% patch_type_input_model)
 ```
+
+-   Full model
 
 ```{r}
 full_model = lm(shannon_d ~                  
-                  eco_metaeco_type + 
-                  eco_metaeco_type : day,
+                  patch_type +
+                  patch_type : day,
                   data = filtered_data)
 
 summary(full_model)
 par(mfrow = c(2,3))
 plot(full_model, which = 1:5)
-
-null_model = lm(shannon_d ~                  
-                  1,
-                  data = filtered_data)
-
-anova = anova(full_model, null_model)
-AIC = AIC(full_model, null_model)
-
-anova
-AIC
-
-p_value = anova$`Pr(>F)`[2]
-
-AIC_full = AIC$AIC[1]
-AIC_null = AIC$AIC[2]
-deltaAIC =  AIC_full - AIC_null
-
-R2_full = glance(full_model)$r.squared
-R2_null = glance(null_model)$r.squared
-R2_P = R2_full - R2_null
-
-p_value = round(p_value, digits = 2)
-R2_full = round(R2_full, digits = 2)
-R2_P = round(R2_P, digits = 2)
-deltaAIC = round(deltaAIC, digits = 2)
 ```
 
+-   Effects of `patch_type`
+
 ```{r}
-print(paste0("ΔAIC = ", deltaAIC, ", p = ", p_value, ", R2 (pach type) = ", R2_P))
+null_model = lm(shannon_d ~                  
+                  patch_type : day,
+                  data = filtered_data)
+
+summary(null_model)
+par(mfrow = c(2,3))
+plot(null_model, which = 1:5)
+stats = compute.model.stats(full_model,
+                    null_model,
+                    "linear_model")
+
+stats
+```
+
+-   Effects of `patch_type : day`
+
+```{r}
+null_model = lm(shannon_d ~                  
+                  patch_type,
+                  data = filtered_data)
+
+summary(null_model)
+par(mfrow = c(2,3))
+plot(null_model, which = 1:5)
+stats = compute.model.stats(full_model,
+                    null_model,
+                    "linear_model")
+
+results_large_patches_shannon_patch_type_day = paste0(
+  "Effect of the interaction between size of the connected patch and day on shannon effect size in small patches: ",
+  "P value = ", 
+  stats$p_value, 
+  ", ΔAIC = ", 
+  stats$deltaAIC, 
+  ", R2 = ", 
+  stats$R2)
+
+results_large_patches_shannon_patch_type_day
 ```

@@ -1,0 +1,16 @@
+---
+title: "SL - community divergence"
+output: html_document
+date: "2023-02-28"
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+response_variable = "beta_diversity_from_isolated"
+```
+
+```{r}
+plot.patches.boxplots(patch_type_input,
+                      response_variable)
+```

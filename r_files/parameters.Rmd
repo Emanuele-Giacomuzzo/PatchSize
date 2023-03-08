@@ -6,98 +6,86 @@ editor_options:
   chunk_output_type: console
 ---
 
-```{r knitting-options}
-knitr::opts_chunk$set(message = FALSE, 
-                      cache = FALSE,
-                      autodep = FALSE)
-recompute_analyses = FALSE #Lengthy analyses have been suppressed. Set recompute_analyses = TRUE to redo them. 
-compute_n_display_datasets = TRUE
-include_non_clean_scripts = FALSE
-include_incomplete_time_series = FALSE
-include_GIFS = FALSE
-save_figures = TRUE
-disturbance_input = "low"
-displays_datasets = FALSE
-```
-
 ```{r experiment}
-
-#Protists
-
+#Protist parameters
 protist_species = c("Ble", "Cep", "Col", "Eug", "Eup", "Lox", "Pau", "Pca", "Spi", "Spi_te", "Tet")
 n_protist_species = length(protist_species)
 first_protist = protist_species[1]
 last_protist = protist_species[n_protist_species]
 
-#Patches
-
+#Patches parameters 
 culture_info = read.csv(here("data", "PatchSizePilot_culture_info.csv"), header = TRUE)
 n_cultures = max(culture_info$culture_ID)
-eco_metaeco_types = unique(culture_info$eco_metaeco_type)
-ecosystems_to_take_off = 60 #Culture ID = 60 because it was spilled (isolated small patch, high disturbance, system nr = 40)
+patch_types = c("Small isolated",
+                "Small connected to small",
+                "Small connected to large",
+                "Medium isolated",
+                "Medium connected to medium",
+                "Large isolated",
+                "Large connected to large",
+                "Large connected to small")
+patches_to_take_off = 60 #Culture ID = 60 because it was spilled (small isolated @ high disturbance, system nr = 40)
 
-#Meta-ecosystems
-
+#Meta-ecosystems parameters
 system_nr_metaecosystems = culture_info %>%
   filter(metaecosystem == "yes") %>%
   pull(system_nr) %>%
   unique
-
 n_metaecosystems = length(system_nr_metaecosystems)
-
 metaecosystems_to_take_off = culture_info %>%
-  filter(culture_ID %in% ecosystems_to_take_off) %>%
+  filter(culture_ID %in% patches_to_take_off) %>%
   pull(system_nr) %>%
   unique
 
-#Sampling
-
+#Sampling parameters
 time_point_names = c("t0", "t1", "t2", "t3", "t4", "t5", "t6", "t7")
 sampling_days = c(0, 4, 8, 12, 16, 20, 24, 28)
 first_time_point = 0
 last_time_point = length(sampling_days) - 1
 n_time_points = last_time_point + 1
-nr_videos = c(12,1,1,1,1,1,2,2) #Videos taken for each time point for each culture. At t0 we took 12 videos of the large bottle from which we started the  cultures.
+nr_videos = c(12,1,1,1,1,1,2,2) #Videos taken for each time point for each culture. At t0 we took 12 videos of the large bottle from which we started the  cultures. Write why 2 at the end. 
 n_videos_taken_t0 = nr_videos[1]
-
 time_point_day = data.frame(
   time_point = first_time_point:last_time_point,
   day = sampling_days
 )
 
-#Resource flow
+#Resource flow parameters
 resource_flow_days = c(5, 9, 13, 17, 21, 25)
 first_resource_flow = resource_flow_days[1]
-```
 
-```{r}
-#Define the variables whose effect size I want to calculate
+#Variables whose effect size I want to calculate
 vars = c("bioarea_per_ml",
          "indiv_per_ml",
          "species_richness",
          "shannon",
          "evenness_pielou",
          protist_species,
-         paste0(protist_species, "_dominance"))
+         paste0(protist_species, "_dominance"),
+         "beta_diversity_from_previous_time")
 
-#Define the variables I want to calculate but for meta-ecosystems
+#Variables I want to calculate for meta-ecosystems
 vars_metaecos = c(
   "total_metaecosystem_bioarea",
   "jaccard_index",
   "bray_curtis",
   "metaecosystem_richness"
 )
+
+#Modeling parameters. We chose the first time point as 2 because it's after the first disturbance. 
+first_time_point_model = 2
+last_time_point_model = last_time_point
 ```
 
 ```{r}
+#Parameters for general plotting 
 dodging = 0.5 
 dodging_error_bar = 0.5
 width_errorbar = 0.2
 boxplot_width = 2
 legend_position = "top"
-```
 
-```{r axes}
+#Axes names
 axis_names = data.frame(variable = NA,
                     axis_name= NA) %>%
   add_row(variable = "day", axis_name = "Day") %>%
@@ -117,17 +105,17 @@ axis_names = data.frame(variable = NA,
   add_row(variable = "indiv_per_ml_d", axis_name = "Abundance ES") %>%
   add_row(variable = "median_body_size", axis_name = "Median body size (µm²)") %>%
   add_row(variable = "median_body_size_d", axis_name = "Median Body Size ES") %>%
-  add_row(variable = "Ble", axis_name = "Ble Density (ind/μl?)") %>%
-  add_row(variable = "Cep", axis_name = "Cep Density (ind/μl?)") %>%
-  add_row(variable = "Col", axis_name = "Col Density (ind/μl?)") %>%
-  add_row(variable = "Eug", axis_name = "Eug Density (ind/μl?)") %>%
-  add_row(variable = "Eup", axis_name = "Eup Density (ind/μl?)") %>%
-  add_row(variable = "Lox", axis_name = "Lox Density (ind/μl?)") %>%
-  add_row(variable = "Pau", axis_name = "Pau Density (ind/μl?)") %>%
-  add_row(variable = "Pca", axis_name = "Pca Density (ind/μl?)") %>%
-  add_row(variable = "Spi", axis_name = "Spi Density (ind/μl?)") %>%
-  add_row(variable = "Spi_te", axis_name = "Spi te Density (ind/μl?)") %>%
-  add_row(variable = "Tet", axis_name = "Tet Density (ind/μl?)") %>%
+  add_row(variable = "Ble", axis_name = "Ble Density (ind/ml)") %>% 
+  add_row(variable = "Cep", axis_name = "Cep Density (ind/ml)") %>%
+  add_row(variable = "Col", axis_name = "Col Density (ind/ml)") %>%
+  add_row(variable = "Eug", axis_name = "Eug Density (ind/ml)") %>%
+  add_row(variable = "Eup", axis_name = "Eup Density (ind/ml)") %>%
+  add_row(variable = "Lox", axis_name = "Lox Density (ind/ml)") %>%
+  add_row(variable = "Pau", axis_name = "Pau Density (ind/ml)") %>%
+  add_row(variable = "Pca", axis_name = "Pca Density (ind/ml)") %>%
+  add_row(variable = "Spi", axis_name = "Spi Density (ind/ml)") %>%
+  add_row(variable = "Spi_te", axis_name = "Spi te Density (ind/ml)") %>%
+  add_row(variable = "Tet", axis_name = "Tet Density (ind/ml)") %>%
   add_row(variable = "Ble_d", axis_name = "Ble Density ES") %>%
   add_row(variable = "Cep_d", axis_name = "Cep Density ES") %>%
   add_row(variable = "Col_d", axis_name = "Col Density ES") %>%
@@ -164,30 +152,31 @@ axis_names = data.frame(variable = NA,
   add_row(variable = "dominance", axis_name = "Dominance (%)") %>%
   add_row(variable = "log_abundance", axis_name = "Log Abundance + 1 (ind/μm²)") %>%
   add_row(variable = "abundance_hedges_d", axis_name = "Density ES") %>%
+  add_row(variable = "beta_diversity_from_isolated", axis_name = "Divergence from isolated") %>%
+  add_row(variable = "beta_diversity_from_previous_time", axis_name = "Temporal Divergence") %>%
+  add_row(variable = "beta_diversity_from_previous_time_d", axis_name = "Temporal Divergence ES") %>%
+  add_row(variable = "evenness_pielou", axis_name = "Evenness") %>%
   slice(-1)
-```
 
-```{r colour-treatments}
+#Colour for each of the treatments 
 colours_treatments = data.frame(treatment = NA,
                                 colour = NA) %>%
   add_row(treatment = "Small isolated", colour = "#bdbdbd") %>% 
-  add_row(treatment = "Small connected to small", colour = "#ffffcc") %>%
-  add_row(treatment = "Small connected to large", colour = "#ffeda0") %>%
+  add_row(treatment = "Small connected to small", colour = "#fff7bc") %>%
+  add_row(treatment = "Small connected to large", colour = "#feb24c") %>%
   add_row(treatment = "Medium isolated", colour = "#737373") %>%
   add_row(treatment = "Medium connected to medium", colour = "#feb24c") %>%
   add_row(treatment = "Large isolated", colour = "#000000") %>%
-  add_row(treatment = "Large connected to large", colour = "#fc4e2a") %>%
-  add_row(treatment = "Large connected to small", colour = "#e31a1c") %>%
-  add_row(treatment = "Small-Small meta-ecosystem", colour = "#f7fbff") %>% #Needs to become color-blind friendly
-  add_row(treatment = "Medium-Medium meta-ecosystem", colour = "#1b7837") %>%
+  add_row(treatment = "Large connected to large", colour = "#fee0d2") %>%
+  add_row(treatment = "Large connected to small", colour = "#67000d") %>%
+  add_row(treatment = "Small-Small meta-patch", colour = "#f7fbff") %>% #Needs to become color-blind friendly
+  add_row(treatment = "Medium-Medium meta-patch", colour = "#1b7837") %>%
   add_row(treatment = "Medium-Medium isolated", colour = "#d9f0d3") %>%
-  add_row(treatment = "Large-Large meta-ecosystem", colour = "#3182bd") %>% #Needs to become color-blind friendly
-  add_row(treatment = "Small-Large meta-ecosystem", colour = "#762a83") %>%
+  add_row(treatment = "Large-Large meta-patch", colour = "#3182bd") %>% #Needs to become color-blind friendly
+  add_row(treatment = "Small-Large meta-patch", colour = "#762a83") %>%
   add_row(treatment = "Small-Large isolated", colour = "#e7d4e8") %>%
   slice(-1)
-```
 
-```{r}
 #Resource flow line & caption
 resource_flow_line_type = "dotdash"
 resource_flow_line_colour = "grey"
@@ -195,8 +184,8 @@ resource_flow_line_width = 0.7
 caption_resource_flow = ""
 
 #Zero line  
-zero_line_colour = "black"
-zero_line_line_type = "solid"
+zero_line_colour = "grey"
+zero_line_line_type = "dotted"
 zero_line_line_width = 0.5
 
 #Zero line  ES
@@ -204,9 +193,6 @@ zero_line_ES_line_type = "dotted"
 zero_line_ES_colour = "grey"
 zero_line_ES_line_width = 1
 
-```
-
-```{r figure-sizes}
 #Presentation
 size_legend = 12
 size_x_axis = 16
@@ -222,9 +208,4 @@ ggarrange_margin_top = 0
 ggarrange_margin_bottom = 0
 ggarrange_margin_left = 0
 ggarrange_margin_right = 0
-```
-
-```{r modelling}
-first_time_point_model = 2
-last_time_point_model = 7
 ```

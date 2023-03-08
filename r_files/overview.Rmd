@@ -5,19 +5,19 @@ date: "2022-08-18"
 output: html_document
 ---
 
+### Design
+
+![](images/Design.png)
+
 ### Recap
 
-Meta-ecosystems have been studied looking at meta-ecosystems in which patch size was the same. However, of course, we know that meta-ecosystems are mad out of patches that have different size. To see the effects of patch size on meta-ecosystem properties, we ran a four weeks protist experiment in which different ecosystems were connected through the flow of nutrients. The flow of nutrients resulted from a perturbation of the ecosystems in which a fixed part of the cultures was boiled and then poored into the receiving patch. This had a fixed volume (e.g., small perturbation = 6.75 ml) and was the same across all patch sizes. The experiment design consisted in crossing two disturbances with a small, medium, and large isolated ecosystems and with a small-small, medium-medium, large-large, and small-large meta-ecosystem. We took videos every four days and we create this perturbation and resource flow the day after taking videos. We skipped the perturbation the day after we assembled the experiment so that we would start perturbing it when population densities were already high.
+Meta-ecosystems have been studied looking at meta-ecosystems in which patch size was the same. However, of course, we know that meta-ecosystems are mad out of patches that have different size. To see the effects of patch size on meta-patch properties, we ran a four weeks protist experiment in which different patches were connected through the flow of nutrients. The flow of nutrients resulted from a perturbation of the patches in which a fixed part of the cultures was boiled and then poored into the receiving patch. This had a fixed volume (e.g., small perturbation = 6.75 ml) and was the same across all patch sizes. The experiment design consisted in crossing two disturbances with a small, medium, and large isolated patches and with a small-small, medium-medium, large-large, and small-large meta-patch. We took videos every four days and we create this perturbation and resource flow the day after taking videos. We skipped the perturbation the day after we assembled the experiment so that we would start perturbing it when population densities were already high.
 
 We had mainly two research questions:
 
 -   Do patch properties of a patch depend upon the size of the patch it is connected to?
 
--   Do metaecosystem properties of a meta-ecosystem depend upon the relative size of its patch?
-
-### Design
-
-![](images/paste-58F5AC73.png)
+-   Do metaecosystem properties of a meta-patch depend upon the relative size of its patch?
 
 ### Lab work
 

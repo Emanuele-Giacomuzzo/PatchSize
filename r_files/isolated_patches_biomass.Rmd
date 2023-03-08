@@ -14,10 +14,10 @@ response_variable = "bioarea_per_ml"
 ```
 
 ```{r}
-plot.patches.boxplots(eco_metaeco_type_input,
+plot.patches.boxplots(patch_type_input,
                        response_variable)
 
-p_isolated_biomass = plot.patches.points(eco_metaeco_type_input,
+p_isolated_biomass = plot.patches.points(patch_type_input,
                        response_variable)
 
 p_isolated_biomass
@@ -25,7 +25,7 @@ p_isolated_biomass
 
 *Analysis*
 
-1.  Filter the data. Filter between time point 2 and time point 7 (last time point). We exclude time point 0 and time point 1, as these happened before the first disturbance took place (the first disturbance took place right after time point 1).
+-   Filter data
 
 ```{r}
 filtered_data = ds_patches %>%
@@ -37,11 +37,7 @@ filtered_data = ds_patches %>%
   )
 ```
 
-2.  Construct a full model that captures all our hypotheses.\
-    \
-    The first hypothesis proposes that the bioarea density of isolated patches depends on their patch size (`patch_size_ml`). \
-    \
-    The second hypothesis proposes that the bioarea density of isolated patches goes down faster in smaller patches (`patch_size_ml : day`).
+-   Full model
 
 ```{r}
 full_model = lmer(
@@ -56,25 +52,14 @@ full_model = lmer(
   REML = FALSE,
   control = lmerControl(optimizer = "Nelder_Mead")
 )
-```
 
-Check the output of the model.
-
-```{r}
 summary(full_model)
-```
-
-Check that the residuals of the model are okay (model diagnostics).
-
-```{r}
 plot(full_model)
 qqnorm(resid(full_model))
 ```
 
-3.  Test the full model.
+-   Test `patch_size_ml` and `patch_size_ml : day`
 
-Construct the null model for all hypotheses.
-    
 ```{r}
 null_model = lmer(
   bioarea_per_ml ~
@@ -86,43 +71,18 @@ null_model = lmer(
   REML = FALSE,
   control = lmerControl(optimizer = "Nelder_Mead")
 )
-```
-    
-Get the p value and the delta AIC of the full model compared to the null model.
 
-```{r}
+summary(null_model)
+plot(null_model)
+qqnorm(resid(null_model))
+stats = compute.model.stats(full_model,
+                            null_model,
+                            "mixed_model")
 
-AIC = AIC(full_model, null_model) %>% 
-  rownames_to_column("model")
-
-AIC_full = AIC %>%
-           filter(model == "full_model") %>%
-           pull(AIC)
-
-AIC_null = AIC %>%
-           filter(model == "null_model") %>%
-           pull(AIC)
-
-deltaAIC = AIC_full - AIC_null
-deltaAIC = round(deltaAIC, digits = 2)
-
-anova = anova(full_model, null_model)
-anova
-p_value = anova$`Pr(>Chisq)`[2]
-if(p_value < 0.001){
-  p_value = "< 0.001"
-} else {
-  p_value = round(p_value, digits = 3)
-}
+stats
 ```
 
-```{r}
-print(paste0("P value = ", p_value, ", ΔAIC = ", deltaAIC))
-```
-
-4.  Test hypothesis 1
-
-Construct the null model.
+-   Test `patch_size_ml`
 
 ```{r}
 null_model = lmer(
@@ -136,44 +96,18 @@ null_model = lmer(
   REML = FALSE,
   control = lmerControl(optimizer = "Nelder_Mead")
 )
+
+summary(null_model)
+plot(null_model)
+qqnorm(resid(null_model))
+stats = compute.model.stats(full_model,
+                            null_model,
+                            "mixed_model")
+
+stats
 ```
 
-Get the p value and the delta AIC of the full model compared to the null model.
-
-```{r}
-
-AIC = AIC(full_model, null_model) %>% 
-  rownames_to_column("model")
-
-AIC_full = AIC %>%
-           filter(model == "full_model") %>%
-           pull(AIC)
-
-AIC_null = AIC %>%
-           filter(model == "null_model") %>%
-           pull(AIC)
-
-deltaAIC = AIC_full - AIC_null
-deltaAIC = round(deltaAIC, digits = 2)
-
-anova = anova(full_model, null_model)
-anova
-p_value = anova$`Pr(>Chisq)`[2]
-if (p_value < 0.001){
-   p_value = "< 0.001"
- } else {
-   p_value = round(p_value, digits = 3)
- }
-```
-
-```{r}
-print(paste0("P value = ", p_value, ", ΔAIC = ", deltaAIC))
-```
-
-
-5.  Test hypothesis 2
-
-Construct the null model.
+-   Test `patch_size_ml : day`
 
 ```{r}
 null_model = lmer(
@@ -187,38 +121,15 @@ null_model = lmer(
   REML = FALSE,
   control = lmerControl(optimizer = "Nelder_Mead")
 )
-```
 
-Get the p value and the delta AIC of the full model compared to the null model.
+summary(null_model)
+plot(null_model)
+qqnorm(resid(null_model))
+stats = compute.model.stats(full_model,
+                            null_model,
+                            "mixed_model")
 
-```{r}
-
-AIC = AIC(full_model, null_model) %>% 
-  rownames_to_column("model")
-
-AIC_full = AIC %>%
-           filter(model == "full_model") %>%
-           pull(AIC)
-
-AIC_null = AIC %>%
-           filter(model == "null_model") %>%
-           pull(AIC)
-
-deltaAIC = AIC_full - AIC_null
-deltaAIC = round(deltaAIC, digits = 2)
-
-anova = anova(full_model, null_model)
-anova
-p_value = anova$`Pr(>Chisq)`[2]
-if (p_value < 0.001){
-   p_value = "< 0.001"
- } else {
-   p_value = round(p_value, digits = 3)
- }
-```
-
-```{r}
-print(paste0("P value = ", p_value, ", ΔAIC = ", deltaAIC))
+stats
 ```
 
 ##### Patch size - Biomass {.tabset .tabset-pills}

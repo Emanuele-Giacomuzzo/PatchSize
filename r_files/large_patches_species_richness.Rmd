@@ -1,0 +1,23 @@
+---
+title: "small_patches"
+author: "Emanuele Giacomuzzo"
+date: "2022-10-17"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+response_variable = "species_richness"
+```
+
+```{r}
+plot.patches.boxplots(patch_type_input,
+                       response_variable)
+
+plot.patches.points(patch_type_input,
+                       response_variable)
+
+plot.patches.points.ES(patch_type_input,
+                       paste0(response_variable, "_d"))
+```

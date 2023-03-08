@@ -8,7 +8,7 @@ editor_options:
 ---
 
 ```{r}
-plot.patches.classes.density.points(eco_metaeco_type_input,
+plot.patches.classes.density.points(patch_type_input,
                                     time_point_input)
 ```
 
@@ -29,15 +29,15 @@ for(time_point_input in 0:7) {
         aes(
           x = log_size_class,
           y = log_abundance,
-          group = interaction(log_size_class, eco_metaeco_type),
-          color = eco_metaeco_type
+          group = interaction(log_size_class, patch_type),
+          color = patch_type
         )
       ) +
       geom_point(stat = "summary", fun = "mean") +
       geom_line(
         stat = "summary",
         fun = "mean",
-        aes(group = eco_metaeco_type)
+        aes(group = patch_type)
       ) +
       geom_errorbar(
         aes(ymax = log_abundance_upper_ci,

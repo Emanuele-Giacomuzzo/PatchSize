@@ -1,0 +1,52 @@
+---
+title: "All patches"
+output: html_document
+date: "2023-03-04"
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+
+patch_type_input = c(
+      #"Small isolated",
+      #"Medium isolated",
+      "Large isolated",
+      #"Small connected to large"
+      "Large connected to small"
+    )
+
+for (time_point_input in 1:7) {
+  p = ds_patches %>%
+    filter(patch_type %in% patch_type_input,
+           time_point == time_point_input) %>%
+    ggplot(
+      aes(
+        x = species_richness,
+        y = bioarea_per_ml,
+        #group = interaction(species_richness, patch_type),
+        color = patch_type
+      )
+    ) +
+    geom_point() +
+    labs(title = time_point_input)
+  
+  print(time_point_input)
+  
+  print(p)
+  
+}
+
+ds_patches %>%
+    filter(patch_type %in% patch_type_input,
+           species_richness < 11) %>%
+    ggplot(
+      aes(
+        x = shannon,
+        y = bioarea_per_ml,
+        #group = interaction(species_richness, patch_type),
+        color = patch_type
+      )
+    ) +
+    geom_point()
+```

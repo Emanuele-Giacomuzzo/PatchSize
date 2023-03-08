@@ -9,7 +9,7 @@ editor_options:
 ```{r}
 for(size_class_input in 1:nr_of_size_classes){
   
-  print(plot.patches.classes.points.ES(eco_metaeco_type_input,
+  print(plot.patches.classes.points.ES(patch_type_input,
                                        size_class_input))
   
 }

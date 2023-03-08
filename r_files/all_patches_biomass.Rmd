@@ -19,8 +19,8 @@ ds_patches %>%
           filter(disturbance == disturbance_input) %>%
           ggplot(aes(x = day,
              y = bioarea_per_ml,
-             group = interaction(day, eco_metaeco_type),
-             fill = eco_metaeco_type)) +
+             group = interaction(day, patch_type),
+             fill = patch_type)) +
           geom_boxplot(width = boxplot_width) +
           labs(x = "Day",
                y = y_axis_bioarea_density,
@@ -51,8 +51,8 @@ ds_patches %>%
     aes(
       x = day,
       y = bioarea_tot,
-      group = interaction(day, eco_metaeco_type),
-      fill = eco_metaeco_type
+      group = interaction(day, patch_type),
+      fill = patch_type
     )
   ) +
   geom_boxplot(width = boxplot_width) +

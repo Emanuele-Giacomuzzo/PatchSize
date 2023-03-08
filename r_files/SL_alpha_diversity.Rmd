@@ -11,7 +11,7 @@ response_variable = "shannon"
 ```
 
 ```{r}
-p_connected_alpha_effect_size = plot.patches.points.ES(eco_metaeco_type_input,
+p_connected_alpha_effect_size = plot.patches.points.ES(patch_type_input,
                        paste0(response_variable, "_d"))
 
 p_connected_alpha_effect_size
@@ -28,21 +28,21 @@ filtered_data = ds_patches_effect_size %>%
                          filter(time_point >= first_time_point_model,
                                 time_point <= last_time_point_model,
                                 disturbance == disturbance_input,
-                                eco_metaeco_type %in% eco_metaeco_type)
+                                patch_type %in% patch_type)
 ```
 
 2.  Construct a full model that captures our two hypotheses.\
     \
-    The first hypothesis proposes that small patches connected to large ones will exhibit greater biomass compared to small isolated patches, while large patches connected to small ones will display lower biomass relative to large isolated patches. As such, the effect size of bioarea per volume will depend on the patch type (`shannon_d ~ eco_metaeco_type`).
+    The first hypothesis proposes that small patches connected to large ones will exhibit greater biomass compared to small isolated patches, while large patches connected to small ones will display lower biomass relative to large isolated patches. As such, the effect size of bioarea per volume will depend on the patch type (`shannon_d ~ patch_type`).
 
     \
     The second hypothesis states that as the experiment progresses, small patches connected to large ones will exhibit a greater increase in biomass compared to isolated patches, while large patches will display a decreased increase in biomass relative to large isolated patches. Therefore, the effect size of bioarea per volume will depend on the interaction between patch type and day\
-    (`shannon_d ~ eco_metaeco_type : day`).
+    (`shannon_d ~ patch_type : day`).
 
 ```{r}
 full_model = lm(shannon_d ~
-                  eco_metaeco_type + 
-                  eco_metaeco_type : day,
+                  patch_type + 
+                  patch_type : day,
                 data = filtered_data)
 ```
 
@@ -104,7 +104,7 @@ print(paste0("P value = ", p_value_connected_alpha, ", ΔAIC = ", deltaAIC_conne
 
 ```{r}
 null_model = lm(shannon_d ~
-                  eco_metaeco_type : day,
+                  patch_type : day,
                 data = filtered_data)
 ```
 
@@ -139,13 +139,13 @@ if (p_value < 0.001){
 print(paste0("P value = ", p_value_connected_alpha, ", ΔAIC = ", deltaAIC_connected_alpha))
 ```
 
-7.  Test the effect of the interaction between patch type and day (`eco_metaeco_type * day`).
+7.  Test the effect of the interaction between patch type and day (`patch_type * day`).
 
     Construct the null model.
 
 ```{r}
 null_model = lm(shannon_d ~
-                  eco_metaeco_type,
+                  patch_type,
                 data = filtered_data)
 ```
 

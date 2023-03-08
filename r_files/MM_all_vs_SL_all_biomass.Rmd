@@ -21,7 +21,7 @@ p_MM_SL_metaecos_biomass
 
 **Analysis**
 
-1.  Filter the data. Filter between time point 2 and time point 7 (last time point). We exclude time point 0 and time point 1, as these happened before the first disturbance took place (the first disturbance took place right after time point 1).
+-   Filter the data.
 
 ```{r}
 filtered_data = ds_metaecosystems %>%
@@ -31,51 +31,38 @@ filtered_data = ds_metaecosystems %>%
                                 metaecosystem_type %in% metaecosystem_type_input)
 ```
 
-2.  Construct a full model that captures all our hypotheses.\
-    \
-    The first hypothesis proposes that the total bioarea of medium-medium and the small-large meta-ecosystems is different. As such, the total bioarea will depend on the meta-ecosystem type (`total_metaecosystem_bioarea ~ metaecosystem_type`).\
-    \
-    The second hypothesis proposes that the total bioarea of isolated depends on the connection between patches\
-    (`total_metaecosystem_bioarea ~ connection`).\
-    \
-    The third hypothesis proposes that the flow of non-living material has different effects whether the meta-ecosystem is medium-medium or small-large\
-    (`total_metaecosystem_bioarea ~ metaecosystem_type * connection`)\
+-   I'm not sure how to write the model so that it compares the four systems. So I write 4 models for now.
+
+**Small-Large meta-ecosystems vs Small-Large isolated**
 
 ```{r}
+
+metaecosystem_type_input_model = c("Small-Large meta-patch",
+                             "Small-Large isolated")
+
+plot.metaecos.points(metaecosystem_type_input_model,
+                     response_variable)
+
+filtered_data = ds_metaecosystems %>%
+                         filter(time_point >= first_time_point_model,
+                                time_point <= last_time_point_model,
+                                metaecosystem_type %in% metaecosystem_type_input_model)
+
 full_model = lmer(
   total_metaecosystem_bioarea ~
     day +
-    metaecosystem_type +
-    metaecosystem_type : day +
     connection +
     connection : day + 
-    metaecosystem_type : connection +
-    metaecosystem_type : connection : day + 
     (day | system_nr),
   data = filtered_data,
   REML = FALSE,
   control = lmerControl(optimizer = "Nelder_Mead")
 )
-```
 
-Check the output of the model.
-
-```{r}
 summary(full_model)
-```
-
-Check that the residuals of the model are okay (model diagnostics)
-
-```{r}
 plot(full_model)
 qqnorm(resid(full_model))
-```
 
-3.  Test the full model.
-
-    Construct the null model for all hypotheses.
-
-```{r}
 null_model = lmer(
   total_metaecosystem_bioarea ~
     day +
@@ -84,89 +71,158 @@ null_model = lmer(
   REML = FALSE,
   control = lmerControl(optimizer = "Nelder_Mead")
 )
+
+summary(null_model)
+plot(null_model)
+qqnorm(resid(null_model))
+model_stats = compute.model.stats(full_model,
+                    null_model,
+                    "mixed_model")
+
+model_stats
 ```
 
-Get the p value and the delta AIC of the full model compared to the null model.
+**Medium-Medium meta-patch vs MM from isolated**
 
 ```{r}
+metaecosystem_type_input_model = c("Medium-Medium meta-patch",
+                             "Medium-Medium isolated")
 
-AIC = AIC(full_model, null_model) %>% 
-  rownames_to_column("model")
+plot.metaecos.points(metaecosystem_type_input_model,
+                     response_variable)
 
-AIC_full = AIC %>%
-           filter(model == "full_model") %>%
-           pull(AIC)
+filtered_data = ds_metaecosystems %>%
+                         filter(time_point >= first_time_point_model,
+                                time_point <= last_time_point_model,
+                                metaecosystem_type %in% metaecosystem_type_input_model)
 
-AIC_null = AIC %>%
-           filter(model == "null_model") %>%
-           pull(AIC)
-
-deltaAIC = AIC_full - AIC_null
-deltaAIC = round(deltaAIC, digits = 2)
-
-anova = anova(full_model, null_model)
-anova
-p_value = anova$`Pr(>Chisq)`[2]
-if (p_value < 0.001){
-  p_value = "< 0.001"
-} else {
-  p_value = round(p_value, digits = 3)
-}
-```
-
-```{r}
-print(paste0("P value = ", p_value, ", ΔAIC = ", deltaAIC))
-```
-
-4.  Test hypothesis 1
-
-    Construct the null model.
-
-```{r}
-null_model = lmer(
+full_model = lmer(
   total_metaecosystem_bioarea ~
     day +
     connection +
     connection : day + 
-    metaecosystem_type : connection +
-    metaecosystem_type : connection : day + 
     (day | system_nr),
   data = filtered_data,
   REML = FALSE,
   control = lmerControl(optimizer = "Nelder_Mead")
 )
+
+summary(full_model)
+plot(full_model)
+qqnorm(resid(full_model))
+
+null_model = lmer(
+  total_metaecosystem_bioarea ~
+    day +
+    (day | system_nr),
+  data = filtered_data,
+  REML = FALSE,
+  control = lmerControl(optimizer = "Nelder_Mead")
+)
+
+summary(null_model)
+plot(null_model)
+qqnorm(resid(null_model))
+model_stats = compute.model.stats(full_model,
+                    null_model,
+                    "mixed_model")
+
+model_stats
 ```
 
-Get the p value and the delta AIC of the full model compared to the null model.
+**Small-Large meta-patch vs Medium-Medium meta-patch**
 
 ```{r}
+metaecosystem_type_input_model = c("Small-Large meta-patch",
+                             "Medium-Medium meta-patch")
 
-AIC = AIC(full_model, null_model) %>% 
-  rownames_to_column("model")
+plot.metaecos.points(metaecosystem_type_input_model,
+                     response_variable)
 
-AIC_full = AIC %>%
-           filter(model == "full_model") %>%
-           pull(AIC)
+filtered_data = ds_metaecosystems %>%
+                         filter(time_point >= first_time_point_model,
+                                time_point <= last_time_point_model,
+                                metaecosystem_type %in% metaecosystem_type_input_model)
 
-AIC_null = AIC %>%
-           filter(model == "null_model") %>%
-           pull(AIC)
+full_model = lmer(
+  total_metaecosystem_bioarea ~
+    day +
+    patch_size_symmetry +
+    patch_size_symmetry : day + 
+    (day | system_nr),
+  data = filtered_data,
+  REML = FALSE,
+  control = lmerControl(optimizer = "Nelder_Mead")
+)
 
-deltaAIC = AIC_full - AIC_null
-deltaAIC = round(deltaAIC, digits = 2)
+summary(full_model)
+plot(full_model)
+qqnorm(resid(full_model))
 
-anova = anova(full_model, null_model)
-anova
-# p_value = anova$`Pr(>Chisq)`[2]
-# if (p_value < 0.001){
-#   p_value = "< 0.001"
-# } else {
-#   p_value = round(p_value, digits = 3)
-# }
+null_model = lmer(
+  total_metaecosystem_bioarea ~
+    day +
+    (day | system_nr),
+  data = filtered_data,
+  REML = FALSE,
+  control = lmerControl(optimizer = "Nelder_Mead")
+)
+
+summary(null_model)
+plot(null_model)
+qqnorm(resid(null_model))
+model_stats = compute.model.stats(full_model,
+                    null_model,
+                    "mixed_model")
+
+model_stats
 ```
+
+**SL from isolated vs MM from isolated**
 
 ```{r}
-# print(paste0("P value = ", p_value, ", ΔAIC = ", deltaAIC))
-```
+metaecosystem_type_input_model = c("Small-Large isolated",
+                             "Medium-Medium isolated")
 
-The full model and the null model result to be the same. So, it seems like taking off `metaecosystem_type` and `metaecosystem_type : day` doesn't have an effect, I'm not sure why this is the case.
+plot.metaecos.points(metaecosystem_type_input_model,
+                     response_variable)
+
+filtered_data = ds_metaecosystems %>%
+                         filter(time_point >= first_time_point_model,
+                                time_point <= last_time_point_model,
+                                metaecosystem_type %in% metaecosystem_type_input_model)
+
+full_model = lmer(
+  total_metaecosystem_bioarea ~
+    day +
+    patch_size_symmetry +
+    patch_size_symmetry : day + 
+    (day | system_nr),
+  data = filtered_data,
+  REML = FALSE,
+  control = lmerControl(optimizer = "Nelder_Mead")
+)
+
+summary(full_model)
+plot(full_model)
+qqnorm(resid(full_model))
+
+null_model = lmer(
+  total_metaecosystem_bioarea ~
+    day +
+    (day | system_nr),
+  data = filtered_data,
+  REML = FALSE,
+  control = lmerControl(optimizer = "Nelder_Mead")
+)
+
+
+summary(null_model)
+plot(null_model)
+qqnorm(resid(null_model))
+model_stats = compute.model.stats(full_model,
+                    null_model,
+                    "mixed_model")
+
+model_stats
+```

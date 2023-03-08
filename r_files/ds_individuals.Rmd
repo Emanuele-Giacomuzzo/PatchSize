@@ -7,8 +7,6 @@ editor_options:
   chunk_output_type: console
 ---
 
-### Body size (ds_individuals)
-
 ```{r ds_individuals-import-time-points}
 load(here("data", "morphology", "t0.RData"));t0 = morph_mvt; rm(morph_mvt)
 load(here("data", "morphology", "t1.RData"));t1 = morph_mvt; rm(morph_mvt)
@@ -89,6 +87,7 @@ ds_individuals$time_point = as.character(ds_individuals$time_point)
 
 #Select useful columns
 ds_individuals = ds_individuals %>% 
+  rename(patch_type = eco_metaeco_type) %>%
   select(culture_ID, 
          patch_size, 
          patch_size_volume,
@@ -100,27 +99,27 @@ ds_individuals = ds_individuals %>%
          day, 
          metaecosystem, 
          system_nr, 
-         eco_metaeco_type) %>%
+         patch_type) %>%
   rename(patch_size_ml = patch_size_volume)
 ```
 
 ```{r}
 #Rename the patches
 
-ds_individuals$eco_metaeco_type[ds_individuals$eco_metaeco_type == "S"] = "Small isolated"
-ds_individuals$eco_metaeco_type[ds_individuals$eco_metaeco_type == "S (S_S)"] = "Small connected to small"
-ds_individuals$eco_metaeco_type[ds_individuals$eco_metaeco_type == "S (S_L)"] = "Small connected to large"
-ds_individuals$eco_metaeco_type[ds_individuals$eco_metaeco_type == "M"] = "Medium isolated"
-ds_individuals$eco_metaeco_type[ds_individuals$eco_metaeco_type == "M (M_M)"] = "Medium connected to medium"
-ds_individuals$eco_metaeco_type[ds_individuals$eco_metaeco_type == "L"] = "Large isolated"
-ds_individuals$eco_metaeco_type[ds_individuals$eco_metaeco_type == "L (L_L)"] = "Large connected to large"
-ds_individuals$eco_metaeco_type[ds_individuals$eco_metaeco_type == "L (S_L)"] = "Large connected to small"
+ds_individuals$patch_type[ds_individuals$patch_type == "S"] = "Small isolated"
+ds_individuals$patch_type[ds_individuals$patch_type == "S (S_S)"] = "Small connected to small"
+ds_individuals$patch_type[ds_individuals$patch_type == "S (S_L)"] = "Small connected to large"
+ds_individuals$patch_type[ds_individuals$patch_type == "M"] = "Medium isolated"
+ds_individuals$patch_type[ds_individuals$patch_type == "M (M_M)"] = "Medium connected to medium"
+ds_individuals$patch_type[ds_individuals$patch_type == "L"] = "Large isolated"
+ds_individuals$patch_type[ds_individuals$patch_type == "L (L_L)"] = "Large connected to large"
+ds_individuals$patch_type[ds_individuals$patch_type == "L (S_L)"] = "Large connected to small"
 
 #Reorder the patches
 
 ds_individuals = ds_individuals %>%
-  mutate(eco_metaeco_type = factor(
-    eco_metaeco_type,
+  mutate(patch_type = factor(
+    patch_type,
     levels = c(
       "Small isolated",
       "Small connected to small",
@@ -132,18 +131,4 @@ ds_individuals = ds_individuals %>%
       "Large connected to small"
     )
   ))
-```
-
-```{r}
-saveRDS(ds_individuals, file = here("results", "ds_individuals.RData"))
-```
-
-I'm not showing the whole dataset because it's too large.
-
-```{r ds_individuals-datatable, eval = displays_datasets}
-datatable(head(ds_individuals),
-          rownames = FALSE,
-          options = list(scrollX = TRUE),
-          filter = list(position = 'top', 
-                        clear = FALSE))
 ```

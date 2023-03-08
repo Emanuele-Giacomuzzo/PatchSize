@@ -7,7 +7,7 @@ editor_options:
 ---
 
 ```{r}
-eco_metaeco_type_input = c("Small isolated", 
+patch_type_input = c("Small isolated", 
                            "Small connected to small",
                            "Small connected to large")
 colour_level_1 = colour_S

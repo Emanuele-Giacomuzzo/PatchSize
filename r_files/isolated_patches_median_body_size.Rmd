@@ -5,6 +5,6 @@ date: "2023-02-11"
 ---
 
 ```{r}
-plot.patches.median.body.size.boxplots(eco_metaeco_type_input)
-plot.patches.median.body.size.points(eco_metaeco_type_input)
+plot.patches.median.body.size.boxplots(patch_type_input)
+plot.patches.median.body.size.points(patch_type_input)
 ```

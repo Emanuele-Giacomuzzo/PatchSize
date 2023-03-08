@@ -12,7 +12,7 @@ for (species_input in protist_species){
   
   response_variable = species_input
   
-  print(plot.patches.boxplots(eco_metaeco_type_input,
+  print(plot.patches.boxplots(patch_type_input,
                        response_variable))
   
 }

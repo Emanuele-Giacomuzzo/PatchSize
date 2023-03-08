@@ -7,32 +7,29 @@ editor_options:
   chunk_output_type: console
 ---
 
-### Patches (`ds_patches`)
-
 -   Every row is a patch at a certain time point.
 -   The value of different videos have been already averaged.
 
 ```{r}
-#Assemble the dataset
+#Assemble the dataset. When importing the data, each row is a video.
+#Watch out:  This is because we wanted to be able to identify Tet, but that meant that we couldn't get rid of the food of Ble (food was Chi). This is why we ran two analysis. The first analysis was the main analysis keeping the Ble food and Tet. This allowed us to identify and quantify all species but Ble. The second analysis was the Ble analysis getting rid of both the food of Ble and Tet. This allowed us to identify and quantify Ble. Because of this, I call the Ble of the main analsysis a Ble_biased. 
 time_points_ds = NULL
 for (time_point in first_time_point:last_time_point) {
   
-  load(here("data", "population", paste0(paste0("t",time_point),".RData")))
+  load(here("data", "population", paste0("t",time_point,".RData")))
   
   time_points_ds[[time_point+1]] = pop_output %>%
-    left_join(read.csv(here("data", 
-                            "population_species_ID_Ble", 
-                            paste0("species_ID_t", time_point, ".csv"))) %>%
+    left_join(read.csv(here("data", "species_ID_Ble_analysis", paste0("species_ID_t", time_point, ".csv"))) %>%
                 select(file,
                        Ble),
               by = "file") %>%
-    left_join(read.csv(here("data", 
-                            "population_species_ID", 
-                            paste0("species_ID_t", time_point, ".csv"))) %>%
+    left_join(read.csv(here("data", "species_ID_main_analysis", paste0("species_ID_t", time_point, ".csv"))) %>%
                 select(file,
-                       Cep:Tet),
+                       Ble:Tet) %>%
+                rename(Ble_biased = Ble),
               by = "file")
   
+  #Write here
   if(time_point == 0) {
     
     time_points_ds[[time_point+1]] = time_points_ds[[time_point+1]][rep(row.names(pop_output),
@@ -53,16 +50,127 @@ for (time_point in first_time_point:last_time_point) {
   
 }
 
+
+#Bind everything together
 ds_patches = time_points_ds %>%
   bind_rows() %>%
   left_join(culture_info,
-            by = "culture_ID")
+            by = "culture_ID") 
+
+#Rename columns 
+ds_patches = ds_patches %>%
+  rename(indiv_per_μL = indiv_per_volume,
+         bioarea_per_μL = bioarea_per_volume) %>%
+  rename_with( ~ paste0(., "_indiv_per_μL"), first_protist:last_protist)
+```
+
+```{r eval = FALSE}
+
+### --- CHECK THAT THE SPECIES ID WORKED PROPERLY --- ###
+volume_recorded_μl = 34.4
+
+#Check that all individuals have been identified in the species ID script.
+ds_patches %>%
+  mutate(
+    indiv_identified_per_μL =
+      Ble_biased_indiv_per_μL +
+      Cep_indiv_per_μL +
+      Col_indiv_per_μL +
+      Eug_indiv_per_μL +
+      Eup_indiv_per_μL +
+      Lox_indiv_per_μL +
+      Pau_indiv_per_μL +
+      Pca_indiv_per_μL +
+      Spi_indiv_per_μL +
+      Spi_te_indiv_per_μL +
+      Tet_indiv_per_μL,
+    individuals_not_identified = indiv_per_μL - indiv_identified_per_μL
+  ) %>%
+  select(individuals_not_identified) %>%
+  pull() %>%
+  hist()
+
+#Create dataset where we have the number of individuals for each species in each video. This can be used to look at the videos and see if the number of individuals make sense.
+t = NULL
+for(time_point in first_time_point:last_time_point){
+  
+  t[[time_point + 1]] = read.csv(here(
+    "data",
+    "species_ID_main_analysis",
+    paste0("species_ID_t", time_point, ".csv")
+  )) %>%
+    select(file,
+           first_protist:last_protist) %>%
+    rename_with( ~ paste0(., "_indiv_per_μL"), first_protist:last_protist) %>%
+    mutate(
+      time_point = time_point,
+      Ble_indiv_per_video = Ble_indiv_per_μL * volume_recorded_μl,
+      Cep_indiv_per_video = Cep_indiv_per_μL * volume_recorded_μl,
+      Col_indiv_per_video = Col_indiv_per_μL * volume_recorded_μl,
+      Eug_indiv_per_video = Eug_indiv_per_μL * volume_recorded_μl,
+      Eup_indiv_per_video = Eup_indiv_per_μL * volume_recorded_μl,
+      Lox_indiv_per_video = Lox_indiv_per_μL * volume_recorded_μl,
+      Pau_indiv_per_video = Pau_indiv_per_μL * volume_recorded_μl,
+      Pca_indiv_per_video = Pca_indiv_per_μL * volume_recorded_μl,
+      Spi_indiv_per_video = Spi_indiv_per_μL * volume_recorded_μl,
+      Spi_indiv_te_per_video = Spi_te_indiv_per_μL * volume_recorded_μl,
+      Tet_indiv_per_video = Tet_indiv_per_μL * volume_recorded_μl
+    )
+}
+
+t = t %>%
+  bind_rows() %>%
+  select(time_point,
+         file,
+         Ble_indiv_per_video: Tet_indiv_per_video)
+```
+
+```{r}
+#Rename patches
+ds_patches$patch_type <- recode(
+  ds_patches$eco_metaeco_type,
+  "S" = "Small isolated",
+  "S (S_S)" = "Small connected to small",
+  "S (S_L)" = "Small connected to large",
+  "M" = "Medium isolated",
+  "M (M_M)" = "Medium connected to medium",
+  "L" = "Large isolated",
+  "L (L_L)" = "Large connected to large",
+  "L (S_L)" = "Large connected to small"
+)
+```
+
+```{r}
+#Reorder patches
+ds_patches = ds_patches %>%
+  mutate(patch_type = factor(
+    patch_type,
+    levels = c(
+      "Small isolated",
+      "Small connected to small",
+      "Small connected to large",
+      "Medium isolated",
+      "Medium connected to medium",
+      "Large isolated",
+      "Large connected to large",
+      "Large connected to small"
+    )
+  ))
+```
+
+```{r}
+ds_patches$size_of_the_connected_patch = NA
+ds_patches$size_of_the_connected_patch[ds_patches$patch_type == "Small connected to small"] = "Small"
+ds_patches$size_of_the_connected_patch[ds_patches$patch_type == "Small connected to large"] = "Large"
+ds_patches$size_of_the_connected_patch[ds_patches$patch_type == "Medium connected to medium"] = "Medium"
+ds_patches$size_of_the_connected_patch[ds_patches$patch_type == "Large connected to large"] = "Large"
+ds_patches$size_of_the_connected_patch[ds_patches$patch_type == "Large connected to small"] = "Small"
 ```
 
 ```{r}
 #Filter out problematic cultures 
 ds_patches = ds_patches %>%
-  filter(! culture_ID %in% ecosystems_to_take_off)
+  filter(! culture_ID %in% patches_to_take_off)
 ```
 
 ```{r}
@@ -72,17 +180,18 @@ ds_patches = ds_patches %>%
     culture_ID,
     patch_size,
     patch_size_volume,
+    size_of_the_connected_patch,
     disturbance,
     metaecosystem_type,
     time_point,
     day,
     metaecosystem,
     system_nr,
-    eco_metaeco_type
+    patch_type
   ) %>%
   summarise(
     bioarea_per_volume = mean(bioarea_per_volume),
-    indiv_per_volume = mean(indiv_per_volume),
+    indiv_per_μL = mean(indiv_per_μL),
     Ble = mean(Ble),
     Cep = mean(Cep),
     Col = mean(Col),
@@ -96,29 +205,30 @@ ds_patches = ds_patches %>%
     Tet = mean(Tet)
   ) %>%
   rename(patch_size_ml = patch_size_volume) %>%
-  mutate(indiv_per_volume_Lynn = Ble + Cep + Col + Eug + Eup + Lox + Pau + Pca + Spi + Spi_te + Tet) %>%
+  mutate(indiv_identified_per_μL = Ble + Cep + Col + Eug + Eup + Lox + Pau + Pca + Spi + Spi_te + Tet) %>%
   ungroup()
 ```
 
 ```{r}
 #Change all the measures to ml
-#1. Bioarea_per_volume in the original data is in µm2 / µl -> convert to µm2 / ml
-#2. Indiv_per_volume & all protists in the original data are in individuals / µl -> convert to individuals / ml
+#1. To convert bioarea_per_volume from µm2/µl to µm2/ml, multiply by 1000
+#2. To convert indiv_per_μL from µm2/µl to µm2/ml, multiply by 1000
+#3. To convert protists (Ble to Tet) from individuals/µl to individuals/ml, multiply by 1000
 ds_patches = ds_patches %>%
-  mutate(bioarea_per_ml = bioarea_per_volume / 1000,
-         indiv_per_ml = indiv_per_volume / 1000,
-         indiv_per_ml_Lynn = indiv_per_volume_Lynn / 1000,
-         Ble = Ble / 1000,
-         Cep = Cep / 1000,
-         Col = Col / 1000,
-         Eug = Eug / 1000,
-         Eup = Eup / 1000,
-         Lox = Lox / 1000,
-         Pau = Pau / 1000,
-         Pca = Pca / 1000,
-         Spi = Spi / 1000,
-         Spi_te = Spi_te / 1000,
-         Tet = Tet / 1000)
+  mutate(bioarea_per_ml = bioarea_per_volume * 1000,
+         indiv_per_ml = indiv_per_μL * 1000,
+         indiv_per_ml_Lynn = indiv_identified_per_μL * 1000,
+         Ble = Ble * 1000,
+         Cep = Cep * 1000,
+         Col = Col * 1000,
+         Eug = Eug * 1000,
+         Eup = Eup * 1000,
+         Lox = Lox * 1000,
+         Pau = Pau * 1000,
+         Pca = Pca * 1000,
+         Spi = Spi * 1000,
+         Spi_te = Spi_te * 1000,
+         Tet = Tet * 1000)
 ```
 
 ```{r}
@@ -192,55 +302,10 @@ for (row in 1:nrow(ds_patches)) {
 }
 ```
 
-```{r add_baselines_(ds_patches)}
-
-#Add baselines (from t1).
-baselines <- ds_patches %>%
-  filter(time_point == 1) %>%
-  group_by(culture_ID) %>%
-  summarise(across(vars, .names = "baseline_{.col}"))
-
-ds_patches = full_join(ds_patches, baselines)
-```
-
 ```{r}
-
-#Rename patches
-ds_patches$eco_metaeco_type <- recode(
-  ds_patches$eco_metaeco_type,
-  "S" = "Small isolated",
-  "S (S_S)" = "Small connected to small",
-  "S (S_L)" = "Small connected to large",
-  "M" = "Medium isolated",
-  "M (M_M)" = "Medium connected to medium",
-  "L" = "Large isolated",
-  "L (L_L)" = "Large connected to large",
-  "L (S_L)" = "Large connected to small"
-)
-```
-
-```{r}
-#Reorder patches
-ds_patches = ds_patches %>%
-  mutate(eco_metaeco_type = factor(
-    eco_metaeco_type,
-    levels = c(
-      "Small isolated",
-      "Small connected to small",
-      "Small connected to large",
-      "Medium isolated",
-      "Medium connected to medium",
-      "Large isolated",
-      "Large connected to large",
-      "Large connected to small"
-    )
-  ))
-```
-
-```{r}
-#Calculate how the community of a certain treatment diverges from the community of the control 
+#Compute divergence from isolated. This is the difference in community composition of each culture from the other isolated cultures (Bray-Curtis)
 ds_patches$beta_diversity_from_isolated = NA
-for (disturbance in c("Low", "High")){
+for (disturbance in c("low", "high")){
   for (time_point_input in first_time_point:last_time_point) {
     for(treatment_input in c("Small connected to large", "Large connected to small")){
       
@@ -248,16 +313,16 @@ for (disturbance in c("Low", "High")){
       if(treatment_input == "Large connected to small"){control_input = "Large isolated"}
       
       treatment_group = ds_patches %>%
-        filter(eco_metaeco_type %in% treatment_input,
+        filter(patch_type %in% treatment_input,
                time_point == time_point_input,
-               disturbance == disturbance_input) %>%
+               disturbance == disturbance) %>%
         select(culture_ID, 
                first_protist:last_protist)
       
       control_group = ds_patches %>%
-        filter(eco_metaeco_type %in% control_input,
+        filter(patch_type %in% control_input,
                time_point == time_point_input,
-               disturbance == disturbance_input) %>%
+               disturbance == disturbance) %>%
         select(culture_ID, 
                first_protist:last_protist)
       
@@ -286,4 +351,36 @@ for (disturbance in c("Low", "High")){
     }
   }
 }
+```
+
+```{r}
+#Compute temporal divergence. This is the difference in community composition of each culture from its previous time point (Bray-Curtis)
+ds_patches$beta_diversity_from_previous_time = NA
+for(culture_ID_input in 1:n_cultures) {
+  for(time_point_input in first_time_point + 1 :last_time_point){
+    
+    bray_curtis = ds_patches %>%
+    filter(
+      culture_ID == culture_ID_input,
+      time_point %in% c(time_point_input, time_point_input - 1)
+    ) %>%
+    select(first_protist:last_protist) %>%
+    vegdist(.,
+            method = "bray")
+  
+  ds_patches$beta_diversity_from_previous_time[ds_patches$culture_ID == culture_ID_input &
+                                                 ds_patches$time_point == time_point_input] = bray_curtis
+    
+  }
+}
+```
+
+```{r}
+#To consider the initial values for different cultures when analyzing their temporal trends, we add baselines from time point 1. These baselines are used because at time point 0, we only measured the community of the large bottle that the experiment was assembled from. Additionally, the first perturbation had already occurred by time point 2, which is the starting point for our models.
+baselines <- ds_patches %>%
+  filter(time_point == 1) %>%
+  group_by(culture_ID) %>%
+  summarise(across(vars, .names = "baseline_{.col}"))
+
+ds_patches = full_join(ds_patches, baselines)
 ```

@@ -9,7 +9,7 @@ editor_options:
 #### Median body size (`ds_median_body_size)`
 
 ```{r ds_median_body_size-create}
-eco_metaeco_types = unique(ds_patches$eco_metaeco_type)
+patch_types = unique(ds_patches$patch_type)
 
 ds_median_body_size = ds_individuals %>%
   group_by(culture_ID, time_point, replicate_video) %>%
@@ -24,20 +24,8 @@ ds_median_body_size = ds_individuals %>%
     time_point,
     day,
     metaecosystem,
-    eco_metaeco_type
+    patch_type
   ) %>%
   summarise(median_body_size = median(mean_area)) %>%
   ungroup()
-```
-
-```{r}
-saveRDS(ds_median_body_size, file = here("results", "ds_median_body_size.RData"))
-```
-
-```{r ds_median_body_size-datatable}
-datatable(ds_median_body_size,
-          rownames = FALSE,
-          options = list(scrollX = TRUE),
-          filter = list(position = 'top', 
-                        clear = FALSE))
 ```

@@ -6,46 +6,44 @@ editor_options:
   chunk_output_type: console
 ---
 
-### Meta-ecosystems (`ds_metaecosystems`)
+-   Each row is a meta-patch.
 
--   Each row is a meta-ecosystem.
-
--   It contains also "fake" meta-ecosystems which I created from isolated patches (`metecosystem type = S_L_from_isolated` & `metecosystem type = M_M_from_isolated`).
+-   It contains also "fake" meta-ecosystems which I created from isolated patches (`metpatch type = S_L_from_isolated` & `metpatch type = M_M_from_isolated`).
 
 ```{r}
 ### Create a data frame with all the experimental meta-ecosystems and all the possible meta-ecosystems from isolated
 culture_ID_of_isolated_S_low = ds_patches %>%
-  filter(eco_metaeco_type == "Small isolated",
+  filter(patch_type == "Small isolated",
          disturbance == "low") %>%
   pull(culture_ID) %>%
   unique()
 
 culture_ID_of_isolated_L_low = ds_patches %>%
-  filter(eco_metaeco_type == "Large isolated",
+  filter(patch_type == "Large isolated",
          disturbance == "low") %>%
   pull(culture_ID) %>%
   unique()
 
 culture_ID_of_isolated_S_high = ds_patches %>%
-  filter(eco_metaeco_type == "Small isolated",
+  filter(patch_type == "Small isolated",
          disturbance == "high") %>%
   pull(culture_ID) %>%
   unique()
 
 culture_ID_of_isolated_L_high = ds_patches %>%
-  filter(eco_metaeco_type == "Large isolated",
+  filter(patch_type == "Large isolated",
          disturbance == "high") %>%
   pull(culture_ID) %>%
   unique()
 
 culture_ID_of_isolated_M_low = ds_patches %>%
-  filter(eco_metaeco_type == "Medium isolated",
+  filter(patch_type == "Medium isolated",
          disturbance == "low") %>%
   pull(culture_ID) %>%
   unique()
 
 culture_ID_of_isolated_M_high = ds_patches %>%
-  filter(eco_metaeco_type == "Medium isolated",
+  filter(patch_type == "Medium isolated",
          disturbance == "high") %>%
   pull(culture_ID) %>%
   unique()
@@ -217,11 +215,11 @@ ds_metaecosystems = as.data.frame(ds_metaecosystems)
 #Rename the meta-ecosystems
 ds_metaecosystems$metaecosystem_type <- recode(
   ds_metaecosystems$metaecosystem_type,
-  "S_S" = "Small-Small meta-ecosystem",
-  "M_M" = "Medium-Medium meta-ecosystem",
+  "S_S" = "Small-Small meta-patch",
+  "M_M" = "Medium-Medium meta-patch",
   "M_M_from_isolated" = "Medium-Medium isolated",
-  "L_L" = "Large-Large meta-ecosystem",
-  "S_L" = "Small-Large meta-ecosystem",
+  "L_L" = "Large-Large meta-patch",
+  "S_L" = "Small-Large meta-patch",
   "S_L_from_isolated" = "Small-Large isolated"
 )
 ```
@@ -232,17 +230,16 @@ ds_metaecosystems$metaecosystem_type <- recode(
 ds_metaecosystems = ds_metaecosystems %>%
   mutate(metaecosystem_type = factor(metaecosystem_type,
                                      levels = c(
-                                       "Small-Small meta-ecosystem",
-                                       "Medium-Medium meta-ecosystem",
+                                       "Small-Small meta-patch",
+                                       "Medium-Medium meta-patch",
                                        "Medium-Medium isolated",
-                                       "Large-Large meta-ecosystem",
-                                       "Small-Large meta-ecosystem",
+                                       "Large-Large meta-patch",
+                                       "Small-Large meta-patch",
                                        "Small-Large isolated"
                                      )))
 ```
 
 ```{r}
-
 #Add whether systems are connected or not 
 ds_metaecosystems$connection <-
   ifelse(
@@ -254,20 +251,12 @@ ds_metaecosystems$connection <-
 ```
 
 ```{r}
-
 #Add whether patch sizes are symmetric or not
 ds_metaecosystems$patch_size_symmetry <-
   ifelse(
     ds_metaecosystems$metaecosystem_type %in% c("Small-Large isolated",
-                                                "Small-Large meta-ecosystem"),
+                                                "Small-Large meta-patch"),
     yes = "asymmetric",
     no = "symmetric"
   )
-```
-
-
-
-```{r save-ds_metaecosystems}
-saveRDS(ds_metaecosystems, file = here("results", "ds_metaecosystems.RData"))
-#ds_metaecosystems = readRDS(file = here("results", "ds_metaecosystems.RData"))
 ```

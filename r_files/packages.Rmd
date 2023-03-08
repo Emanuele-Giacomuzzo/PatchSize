@@ -57,6 +57,7 @@ library("viridis") #To create small multiple plots
 library("hrbrthemes") #To create small multiple plots
 library("treemapify")
 library("Rmisc")
+library("emmeans")
 
 conflict_prefer("load", "base")
 conflict_prefer("here", "here")
@@ -66,4 +67,6 @@ conflict_prefer("mutate", "dplyr")
 conflict_prefer("arrange", "dplyr")
 conflict_prefer("summarise", "dplyr")
 conflict_prefer("rename", "dplyr")
+conflict_prefer("vif", "car")
+conflict_prefer("recode", "dplyr")
 ```
