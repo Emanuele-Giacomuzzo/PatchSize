@@ -9,12 +9,7 @@ editor_options:
 ```{r}
 ds_classes_effect_size = ds_classes %>%
   group_by(
-    patch_type,
-    metaecosystem,
-    patch_size,
-    disturbance,
-    day,
-    time_point,
+    across(all_of(columns_patches)),
     size_class_n,
     log_size_class
   ) %>%

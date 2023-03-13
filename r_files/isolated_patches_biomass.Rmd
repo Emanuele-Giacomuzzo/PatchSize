@@ -10,7 +10,7 @@ editor_options:
 ##### Time - Biomass
 
 ```{r}
-response_variable = "bioarea_per_ml"
+response_variable = "bioarea_µm2_per_ml"
 ```
 
 ```{r}

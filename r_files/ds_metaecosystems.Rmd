@@ -126,7 +126,7 @@ for (combination in 1:number_of_combinations){
       filter(culture_ID %in% current_IDs,
              time_point == time_point_input) %>%
       ungroup() %>%
-      select(Ble:Tet)
+      select(protist_species_indiv_per_ml[1]:protist_species_indiv_per_ml[n_protist_species])
     
     #Alpha diversity: Shannon (mean between the two patches)
     shannon_patch_1 = diversity(species_density_of_the_two_patches[1,], index = "shannon")
@@ -164,18 +164,18 @@ for (combination in 1:number_of_combinations){
     ds_metaecosystems_single_rows[[row_n]] = ds_patches %>%
     filter(culture_ID %in% current_IDs,
            time_point == time_point_input) %>%
-    summarise(total_metaecosystem_bioarea = sum(bioarea_tot),
-              total_metaecosystem_Ble = sum(Ble_tot),
-              total_metaecosystem_Cep = sum(Cep_tot),
-              total_metaecosystem_Col = sum(Col_tot),
-              total_metaecosystem_Eug = sum(Eug_tot),
-              total_metaecosystem_Eup = sum(Eup_tot),
-              total_metaecosystem_Lox = sum(Lox_tot),
-              total_metaecosystem_Pau = sum(Pau_tot),
-              total_metaecosystem_Pca = sum(Pca_tot),
-              total_metaecosystem_Spi = sum(Spi_tot),
-              total_metaecosystem_Spi_te = sum(Spi_te_tot),
-              total_metaecosystem_Tet = sum(Tet_tot)) %>% 
+    summarise(total_metaecosystem_bioarea = sum(bioarea_tot_µm2),
+              total_metaecosystem_Ble_indiv = sum(Ble_tot_indiv),
+              total_metaecosystem_Cep_indiv = sum(Cep_tot_indiv),
+              total_metaecosystem_Col_indiv = sum(Col_tot_indiv),
+              total_metaecosystem_Eug_indiv = sum(Eug_tot_indiv),
+              total_metaecosystem_Eup_indiv = sum(Eup_tot_indiv),
+              total_metaecosystem_Lox_indiv = sum(Lox_tot_indiv),
+              total_metaecosystem_Pau_indiv = sum(Pau_tot_indiv),
+              total_metaecosystem_Pca_indiv = sum(Pca_tot_indiv),
+              total_metaecosystem_Spi_indiv = sum(Spi_tot_indiv),
+              total_metaecosystem_Spi_te_indiv = sum(Spi_te_tot_indiv),
+              total_metaecosystem_Tet_indiv = sum(Tet_tot_indiv)) %>% 
     mutate(system_nr = current_system_nr,
            metaecosystem_type = current_metaeco_type,
            disturbance = current_disturbance,
@@ -201,7 +201,7 @@ baselines <- ds_metaecosystems %>%
   ungroup() %>%
   filter(time_point == 1) %>%
   group_by(system_nr) %>%
-  summarise(across(vars_metaecos, .names = "baseline_{.col}"))
+  summarise(across(variables_metaecos, .names = "baseline_{.col}"))
 
 ds_metaecosystems = full_join(ds_metaecosystems, baselines)
 ```

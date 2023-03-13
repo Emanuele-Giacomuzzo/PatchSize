@@ -9,6 +9,7 @@ editor_options:
 ```{r experiment}
 #Protist parameters
 protist_species = c("Ble", "Cep", "Col", "Eug", "Eup", "Lox", "Pau", "Pca", "Spi", "Spi_te", "Tet")
+protist_species_indiv_per_ml = paste0(protist_species, "_indiv_per_ml")
 n_protist_species = length(protist_species)
 first_protist = protist_species[1]
 last_protist = protist_species[n_protist_species]
@@ -25,6 +26,25 @@ patch_types = c("Small isolated",
                 "Large connected to large",
                 "Large connected to small")
 patches_to_take_off = 60 #Culture ID = 60 because it was spilled (small isolated @ high disturbance, system nr = 40)
+
+#Define treatments and controls
+treatments_and_controls = data.frame(
+  treatment = c(
+    "Small connected to small",
+    "Small connected to large",
+    "Medium connected to medium",
+    "Large connected to large",
+    "Large connected to small"
+  ),
+  control = c(
+    "Small isolated",
+    "Small isolated",
+    "Medium isolated",
+    "Large isolated",
+    "Large isolated"
+  )
+)
+n_of_treatments = nrow(treatments_and_controls)
 
 #Meta-ecosystems parameters
 system_nr_metaecosystems = culture_info %>%
@@ -54,18 +74,43 @@ time_point_day = data.frame(
 resource_flow_days = c(5, 9, 13, 17, 21, 25)
 first_resource_flow = resource_flow_days[1]
 
+#Columns without baseline
+columns_patches = c(
+  "time_point",
+  "day",
+  "culture_ID",
+  "system_nr",
+  "disturbance",
+  "patch_type",
+  "patch_size",
+  "patch_size_ml",
+  "size_of_the_connected_patch",
+  "metaecosystem",
+  "metaecosystem_type"
+)
+
 #Variables whose effect size I want to calculate
-vars = c("bioarea_per_ml",
-         "indiv_per_ml",
-         "species_richness",
-         "shannon",
-         "evenness_pielou",
-         protist_species,
-         paste0(protist_species, "_dominance"),
-         "beta_diversity_from_previous_time")
+variables_patches = c(
+  "bioarea_µm2_per_ml",
+  "bioarea_tot_µm2",
+  "indiv_per_ml",
+  "indiv_tot",
+  "species_richness",
+  "shannon",
+  "simpson",
+  "inv_simpson",
+  "evenness_pielou",
+  "beta_diversity_from_isolated",
+  "beta_diversity_from_previous_time",
+  paste0(protist_species, "_indiv_per_ml"),
+  paste0(protist_species, "_tot_indiv"),
+  paste0(protist_species, "_dominance")
+)
+
+baseline_columns = paste0("baseline_", variables_patches)
 
 #Variables I want to calculate for meta-ecosystems
-vars_metaecos = c(
+variables_metaecos = c(
   "total_metaecosystem_bioarea",
   "jaccard_index",
   "bray_curtis",
@@ -92,7 +137,7 @@ axis_names = data.frame(variable = NA,
   add_row(variable = "patch_size_ml", axis_name = "Patch size (ml)") %>%
   add_row(variable = "log_size_class", axis_name = "Log size (μm2)") %>%
   add_row(variable = "size_class_abundance", axis_name = "Density (ind/ml)") %>%
-  add_row(variable = "bioarea_per_ml", axis_name = "Bioarea Density (µm²/ml)") %>%
+  add_row(variable = "bioarea_µm2_per_ml", axis_name = "Bioarea Density (µm²/ml)") %>%
   add_row(variable = "bioarea_per_ml_d", axis_name = "Bioarea Density ES") %>%
   add_row(variable = "bioarea_tot", axis_name = "Tot Bioarea (µm²)") %>%
   add_row(variable = "total_metaecosystem_bioarea", axis_name = "Tot Bioarea (µm²)") %>%
@@ -105,17 +150,17 @@ axis_names = data.frame(variable = NA,
   add_row(variable = "indiv_per_ml_d", axis_name = "Abundance ES") %>%
   add_row(variable = "median_body_size", axis_name = "Median body size (µm²)") %>%
   add_row(variable = "median_body_size_d", axis_name = "Median Body Size ES") %>%
-  add_row(variable = "Ble", axis_name = "Ble Density (ind/ml)") %>% 
-  add_row(variable = "Cep", axis_name = "Cep Density (ind/ml)") %>%
-  add_row(variable = "Col", axis_name = "Col Density (ind/ml)") %>%
-  add_row(variable = "Eug", axis_name = "Eug Density (ind/ml)") %>%
-  add_row(variable = "Eup", axis_name = "Eup Density (ind/ml)") %>%
-  add_row(variable = "Lox", axis_name = "Lox Density (ind/ml)") %>%
-  add_row(variable = "Pau", axis_name = "Pau Density (ind/ml)") %>%
-  add_row(variable = "Pca", axis_name = "Pca Density (ind/ml)") %>%
-  add_row(variable = "Spi", axis_name = "Spi Density (ind/ml)") %>%
-  add_row(variable = "Spi_te", axis_name = "Spi te Density (ind/ml)") %>%
-  add_row(variable = "Tet", axis_name = "Tet Density (ind/ml)") %>%
+  add_row(variable = "Ble_indiv_per_ml", axis_name = "Ble Density (ind/ml)") %>% 
+  add_row(variable = "Cep_indiv_per_ml", axis_name = "Cep Density (ind/ml)") %>%
+  add_row(variable = "Col_indiv_per_ml", axis_name = "Col Density (ind/ml)") %>%
+  add_row(variable = "Eug_indiv_per_ml", axis_name = "Eug Density (ind/ml)") %>%
+  add_row(variable = "Eup_indiv_per_ml", axis_name = "Eup Density (ind/ml)") %>%
+  add_row(variable = "Lox_indiv_per_ml", axis_name = "Lox Density (ind/ml)") %>%
+  add_row(variable = "Pau_indiv_per_ml", axis_name = "Pau Density (ind/ml)") %>%
+  add_row(variable = "Pca_indiv_per_ml", axis_name = "Pca Density (ind/ml)") %>%
+  add_row(variable = "Spi_indiv_per_ml", axis_name = "Spi Density (ind/ml)") %>%
+  add_row(variable = "Spi_te_indiv_per_ml", axis_name = "Spi te Density (ind/ml)") %>%
+  add_row(variable = "Tet_indiv_per_ml", axis_name = "Tet Density (ind/ml)") %>%
   add_row(variable = "Ble_d", axis_name = "Ble Density ES") %>%
   add_row(variable = "Cep_d", axis_name = "Cep Density ES") %>%
   add_row(variable = "Col_d", axis_name = "Col Density ES") %>%

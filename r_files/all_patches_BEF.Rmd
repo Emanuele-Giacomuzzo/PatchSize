@@ -7,7 +7,6 @@ editor_options:
 ---
 
 ```{r}
-
 patch_type_input = c(
       #"Small isolated",
       #"Medium isolated",
@@ -23,7 +22,7 @@ for (time_point_input in 1:7) {
     ggplot(
       aes(
         x = species_richness,
-        y = bioarea_per_ml,
+        y = bioarea_µm2_per_ml,
         #group = interaction(species_richness, patch_type),
         color = patch_type
       )
@@ -43,7 +42,7 @@ ds_patches %>%
     ggplot(
       aes(
         x = shannon,
-        y = bioarea_per_ml,
+        y = bioarea_µm2_per_ml,
         #group = interaction(species_richness, patch_type),
         color = patch_type
       )

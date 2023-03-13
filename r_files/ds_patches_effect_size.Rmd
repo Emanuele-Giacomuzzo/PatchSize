@@ -10,18 +10,13 @@ editor_options:
 
 #Calculate the mean & sd of response variables for each treatment at each time point
 ds_patches_effect_size <- ds_patches %>%
-  group_by(disturbance, 
-           patch_type, 
-           patch_size,
-           size_of_the_connected_patch,
-           time_point, 
-           day) %>%
-  summarise(across(all_of(vars),
+  group_by(across(all_of(columns_patches))) %>%
+  summarise(across(all_of(variables_patches),
                    list(mean = mean, sd = sd)),
             sample_size = n())
 
 #Initialise columns
-for (var in vars) {
+for (var in variables_patches) {
   ds_patches_effect_size <- ds_patches_effect_size %>%
     mutate(
       !!paste0(var, "_d") := NA,
@@ -29,26 +24,6 @@ for (var in vars) {
       !!paste0(var, "_d_lower") := NA
     )
 }
-
-#Define treatments and controls
-treatments_and_controls = data.frame(
-  treatment = c(
-    "Small connected to small",
-    "Small connected to large",
-    "Medium connected to medium",
-    "Large connected to large",
-    "Large connected to small"
-  ),
-  control = c(
-    "Small isolated",
-    "Small isolated",
-    "Medium isolated",
-    "Large isolated",
-    "Large isolated"
-  )
-)
-
-n_of_treatments = nrow(treatments_and_controls)
 ```
 
 ```{r}
@@ -60,21 +35,21 @@ for (disturbance_regime in c("low", "high")) {
     for (time_point_input in first_time_point:last_time_point) {
       row_n = row_n + 1
       
-      eco_metaeco_treatment = treatments_and_controls$treatment[treatment_n]
+      treatment = treatments_and_controls$treatment[treatment_n]
       
       treatment_row = ds_patches_effect_size %>%
         filter(
           disturbance == disturbance_regime,
-          patch_type == eco_metaeco_treatment,
+          patch_type == treatment,
           time_point == time_point_input
         )
       
-      eco_metaeco_control = treatments_and_controls$control[treatment_n]
+      control = treatments_and_controls$control[treatment_n]
       
       control_row = ds_patches_effect_size %>%
         filter(
           disturbance == disturbance_regime,
-          patch_type == eco_metaeco_control,
+          patch_type == control,
           time_point == time_point_input
         )
       
@@ -90,19 +65,19 @@ for (disturbance_regime in c("low", "high")) {
       )
       
       ds_patches_effect_size$bioarea_per_ml_d[
-        ds_patches_effect_size$patch_type == eco_metaeco_treatment &
+        ds_patches_effect_size$patch_type == treatment &
         ds_patches_effect_size$time_point == time_point_input &
         ds_patches_effect_size$disturbance == disturbance_regime] = 
         hedges_d_bioarea$d
       
       ds_patches_effect_size$bioarea_per_ml_d_upper[
-        ds_patches_effect_size$patch_type == eco_metaeco_treatment &
+        ds_patches_effect_size$patch_type == treatment &
         ds_patches_effect_size$time_point == time_point_input &
         ds_patches_effect_size$disturbance == disturbance_regime] = 
         hedges_d_bioarea$upper_CI
       
       ds_patches_effect_size$bioarea_per_ml_d_lower[
-        ds_patches_effect_size$patch_type == eco_metaeco_treatment &
+        ds_patches_effect_size$patch_type == treatment &
         ds_patches_effect_size$time_point == time_point_input &
         ds_patches_effect_size$disturbance == disturbance_regime] = 
         hedges_d_bioarea$lower_CI
@@ -119,19 +94,19 @@ for (disturbance_regime in c("low", "high")) {
     )
     
     ds_patches_effect_size$indiv_per_ml_d[
-      ds_patches_effect_size$patch_type == eco_metaeco_treatment &
+      ds_patches_effect_size$patch_type == treatment &
       ds_patches_effect_size$time_point == time_point_input &
       ds_patches_effect_size$disturbance == disturbance_regime] = 
       hedges_d_indiv_per_ml$d
     
     ds_patches_effect_size$indiv_per_ml_d_lower[
-      ds_patches_effect_size$patch_type == eco_metaeco_treatment &
+      ds_patches_effect_size$patch_type == treatment &
       ds_patches_effect_size$time_point == time_point_input &
       ds_patches_effect_size$disturbance == disturbance_regime] = 
       hedges_d_indiv_per_ml$lower_CI
     
     ds_patches_effect_size$indiv_per_ml_d_upper[
-      ds_patches_effect_size$patch_type == eco_metaeco_treatment &
+      ds_patches_effect_size$patch_type == treatment &
       ds_patches_effect_size$time_point == time_point_input &
       ds_patches_effect_size$disturbance == disturbance_regime] = 
       hedges_d_indiv_per_ml$upper_CI
@@ -149,19 +124,19 @@ for (disturbance_regime in c("low", "high")) {
     )
     
     ds_patches_effect_size$species_richness_d[
-      ds_patches_effect_size$patch_type == eco_metaeco_treatment &
+      ds_patches_effect_size$patch_type == treatment &
       ds_patches_effect_size$time_point == time_point_input &
       ds_patches_effect_size$disturbance == disturbance_regime] = 
       hedges_d_species_richness$d
     
     ds_patches_effect_size$species_richness_d_upper[
-      ds_patches_effect_size$patch_type == eco_metaeco_treatment &
+      ds_patches_effect_size$patch_type == treatment &
       ds_patches_effect_size$time_point == time_point_input &
       ds_patches_effect_size$disturbance == disturbance_regime] = 
       hedges_d_species_richness$upper_CI
     
     ds_patches_effect_size$species_richness_d_lower[
-      ds_patches_effect_size$patch_type == eco_metaeco_treatment &
+      ds_patches_effect_size$patch_type == treatment &
       ds_patches_effect_size$time_point == time_point_input &
       ds_patches_effect_size$disturbance == disturbance_regime] = 
       hedges_d_species_richness$lower_CI
@@ -178,19 +153,19 @@ for (disturbance_regime in c("low", "high")) {
     )
     
     ds_patches_effect_size$evenness_pielou_d[
-      ds_patches_effect_size$patch_type == eco_metaeco_treatment &
+      ds_patches_effect_size$patch_type == treatment &
       ds_patches_effect_size$time_point == time_point_input &
       ds_patches_effect_size$disturbance == disturbance_regime] = 
       hedges_d_evenness_pielou$d
     
     ds_patches_effect_size$evenness_pielou_d_upper[
-      ds_patches_effect_size$patch_type == eco_metaeco_treatment &
+      ds_patches_effect_size$patch_type == treatment &
       ds_patches_effect_size$time_point == time_point_input &
       ds_patches_effect_size$disturbance == disturbance_regime] = 
       hedges_d_evenness_pielou$upper_CI
     
     ds_patches_effect_size$evenness_pielou_d_lower[
-      ds_patches_effect_size$patch_type == eco_metaeco_treatment &
+      ds_patches_effect_size$patch_type == treatment &
       ds_patches_effect_size$time_point == time_point_input &
       ds_patches_effect_size$disturbance == disturbance_regime] = 
       hedges_d_evenness_pielou$lower_CI
@@ -207,19 +182,19 @@ for (disturbance_regime in c("low", "high")) {
     )
     
     ds_patches_effect_size$shannon_d[
-      ds_patches_effect_size$patch_type == eco_metaeco_treatment &
+      ds_patches_effect_size$patch_type == treatment &
       ds_patches_effect_size$time_point == time_point_input &
       ds_patches_effect_size$disturbance == disturbance_regime] = 
       hedges_d_shannon$d
     
     ds_patches_effect_size$shannon_d_upper[
-      ds_patches_effect_size$patch_type == eco_metaeco_treatment &
+      ds_patches_effect_size$patch_type == treatment &
       ds_patches_effect_size$time_point == time_point_input &
       ds_patches_effect_size$disturbance == disturbance_regime] = 
       hedges_d_shannon$upper_CI
     
     ds_patches_effect_size$shannon_d_lower[
-      ds_patches_effect_size$patch_type == eco_metaeco_treatment &
+      ds_patches_effect_size$patch_type == treatment &
       ds_patches_effect_size$time_point == time_point_input &
       ds_patches_effect_size$disturbance == disturbance_regime] = 
       hedges_d_shannon$lower_CI
@@ -236,19 +211,19 @@ for (disturbance_regime in c("low", "high")) {
     )
     
     ds_patches_effect_size$Ble_d[
-      ds_patches_effect_size$patch_type == eco_metaeco_treatment &
+      ds_patches_effect_size$patch_type == treatment &
       ds_patches_effect_size$time_point == time_point_input &
       ds_patches_effect_size$disturbance == disturbance_regime] = 
       hedges_d_Ble$d
     
     ds_patches_effect_size$Ble_d_lower[
-      ds_patches_effect_size$patch_type == eco_metaeco_treatment &
+      ds_patches_effect_size$patch_type == treatment &
       ds_patches_effect_size$time_point == time_point_input &
       ds_patches_effect_size$disturbance == disturbance_regime] = 
       hedges_d_Ble$lower_CI
     
     ds_patches_effect_size$Ble_d_upper[
-      ds_patches_effect_size$patch_type == eco_metaeco_treatment &
+      ds_patches_effect_size$patch_type == treatment &
       ds_patches_effect_size$time_point == time_point_input &
       ds_patches_effect_size$disturbance == disturbance_regime] = 
       hedges_d_Ble$upper_CI
@@ -265,19 +240,19 @@ for (disturbance_regime in c("low", "high")) {
     )
     
     ds_patches_effect_size$Cep_d[
-      ds_patches_effect_size$patch_type == eco_metaeco_treatment &
+      ds_patches_effect_size$patch_type == treatment &
       ds_patches_effect_size$time_point == time_point_input &
       ds_patches_effect_size$disturbance == disturbance_regime] = 
       hedges_d_Cep$d
     
     ds_patches_effect_size$Cep_d_lower[
-      ds_patches_effect_size$patch_type == eco_metaeco_treatment &
+      ds_patches_effect_size$patch_type == treatment &
       ds_patches_effect_size$time_point == time_point_input &
       ds_patches_effect_size$disturbance == disturbance_regime] = 
       hedges_d_Cep$lower_CI
     
     ds_patches_effect_size$Cep_d_upper[
-      ds_patches_effect_size$patch_type == eco_metaeco_treatment &
+      ds_patches_effect_size$patch_type == treatment &
       ds_patches_effect_size$time_point == time_point_input &
       ds_patches_effect_size$disturbance == disturbance_regime] = 
       hedges_d_Cep$upper_CI
@@ -294,19 +269,19 @@ for (disturbance_regime in c("low", "high")) {
     )
     
     ds_patches_effect_size$Col_d[
-      ds_patches_effect_size$patch_type == eco_metaeco_treatment &
+      ds_patches_effect_size$patch_type == treatment &
       ds_patches_effect_size$time_point == time_point_input &
       ds_patches_effect_size$disturbance == disturbance_regime] = 
       hedges_d_Col$d
     
     ds_patches_effect_size$Col_d_lower[
-      ds_patches_effect_size$patch_type == eco_metaeco_treatment &
+      ds_patches_effect_size$patch_type == treatment &
       ds_patches_effect_size$time_point == time_point_input &
       ds_patches_effect_size$disturbance == disturbance_regime] = 
       hedges_d_Col$lower_CI
     
     ds_patches_effect_size$Col_d_upper[
-      ds_patches_effect_size$patch_type == eco_metaeco_treatment &
+      ds_patches_effect_size$patch_type == treatment &
       ds_patches_effect_size$time_point == time_point_input &
       ds_patches_effect_size$disturbance == disturbance_regime] = 
       hedges_d_Col$upper_CI
@@ -323,19 +298,19 @@ for (disturbance_regime in c("low", "high")) {
     )
     
     ds_patches_effect_size$Eug_d[
-      ds_patches_effect_size$patch_type == eco_metaeco_treatment &
+      ds_patches_effect_size$patch_type == treatment &
       ds_patches_effect_size$time_point == time_point_input &
       ds_patches_effect_size$disturbance == disturbance_regime] = 
       hedges_d_Eug$d
     
     ds_patches_effect_size$Eug_d_lower[
-      ds_patches_effect_size$patch_type == eco_metaeco_treatment &
+      ds_patches_effect_size$patch_type == treatment &
       ds_patches_effect_size$time_point == time_point_input &
       ds_patches_effect_size$disturbance == disturbance_regime] = 
       hedges_d_Eug$lower_CI
     
     ds_patches_effect_size$Eug_d_upper[
-      ds_patches_effect_size$patch_type == eco_metaeco_treatment &
+      ds_patches_effect_size$patch_type == treatment &
       ds_patches_effect_size$time_point == time_point_input &
       ds_patches_effect_size$disturbance == disturbance_regime] = 
       hedges_d_Eug$upper_CI
@@ -352,19 +327,19 @@ for (disturbance_regime in c("low", "high")) {
     )
     
     ds_patches_effect_size$Eup_d[
-      ds_patches_effect_size$patch_type == eco_metaeco_treatment &
+      ds_patches_effect_size$patch_type == treatment &
       ds_patches_effect_size$time_point == time_point_input &
       ds_patches_effect_size$disturbance == disturbance_regime] = 
       hedges_d_Eup$d
     
     ds_patches_effect_size$Eup_d_lower[
-      ds_patches_effect_size$patch_type == eco_metaeco_treatment &
+      ds_patches_effect_size$patch_type == treatment &
       ds_patches_effect_size$time_point == time_point_input &
       ds_patches_effect_size$disturbance == disturbance_regime] = 
       hedges_d_Eup$lower_CI
     
     ds_patches_effect_size$Eup_d_upper[
-      ds_patches_effect_size$patch_type == eco_metaeco_treatment &
+      ds_patches_effect_size$patch_type == treatment &
       ds_patches_effect_size$time_point == time_point_input &
       ds_patches_effect_size$disturbance == disturbance_regime] = 
       hedges_d_Eup$upper_CI
@@ -381,19 +356,19 @@ for (disturbance_regime in c("low", "high")) {
     )
     
     ds_patches_effect_size$Lox_d[
-      ds_patches_effect_size$patch_type == eco_metaeco_treatment &
+      ds_patches_effect_size$patch_type == treatment &
       ds_patches_effect_size$time_point == time_point_input &
       ds_patches_effect_size$disturbance == disturbance_regime] = 
       hedges_d_Lox$d
     
     ds_patches_effect_size$Lox_d_lower[
-      ds_patches_effect_size$patch_type == eco_metaeco_treatment &
+      ds_patches_effect_size$patch_type == treatment &
       ds_patches_effect_size$time_point == time_point_input &
       ds_patches_effect_size$disturbance == disturbance_regime] = 
       hedges_d_Lox$lower_CI
     
     ds_patches_effect_size$Lox_d_upper[
-      ds_patches_effect_size$patch_type == eco_metaeco_treatment &
+      ds_patches_effect_size$patch_type == treatment &
       ds_patches_effect_size$time_point == time_point_input &
       ds_patches_effect_size$disturbance == disturbance_regime] = 
       hedges_d_Lox$upper_CI
@@ -410,19 +385,19 @@ for (disturbance_regime in c("low", "high")) {
     )
     
     ds_patches_effect_size$Pau_d[
-      ds_patches_effect_size$patch_type == eco_metaeco_treatment &
+      ds_patches_effect_size$patch_type == treatment &
       ds_patches_effect_size$time_point == time_point_input &
       ds_patches_effect_size$disturbance == disturbance_regime] = 
       hedges_d_Pau$d
     
     ds_patches_effect_size$Pau_d_lower[
-      ds_patches_effect_size$patch_type == eco_metaeco_treatment &
+      ds_patches_effect_size$patch_type == treatment &
       ds_patches_effect_size$time_point == time_point_input &
       ds_patches_effect_size$disturbance == disturbance_regime] = 
       hedges_d_Pau$lower_CI
     
     ds_patches_effect_size$Pau_d_upper[
-      ds_patches_effect_size$patch_type == eco_metaeco_treatment &
+      ds_patches_effect_size$patch_type == treatment &
       ds_patches_effect_size$time_point == time_point_input &
       ds_patches_effect_size$disturbance == disturbance_regime] = 
       hedges_d_Pau$upper_CI
@@ -439,19 +414,19 @@ for (disturbance_regime in c("low", "high")) {
     )
     
     ds_patches_effect_size$Pca_d[
-      ds_patches_effect_size$patch_type == eco_metaeco_treatment &
+      ds_patches_effect_size$patch_type == treatment &
       ds_patches_effect_size$time_point == time_point_input &
       ds_patches_effect_size$disturbance == disturbance_regime] = 
       hedges_d_Pca$d
     
     ds_patches_effect_size$Pca_d_lower[
-      ds_patches_effect_size$patch_type == eco_metaeco_treatment &
+      ds_patches_effect_size$patch_type == treatment &
       ds_patches_effect_size$time_point == time_point_input &
       ds_patches_effect_size$disturbance == disturbance_regime] = 
       hedges_d_Pca$lower_CI
     
     ds_patches_effect_size$Pca_d_upper[
-      ds_patches_effect_size$patch_type == eco_metaeco_treatment &
+      ds_patches_effect_size$patch_type == treatment &
       ds_patches_effect_size$time_point == time_point_input &
       ds_patches_effect_size$disturbance == disturbance_regime] = 
       hedges_d_Pca$upper_CI
@@ -468,19 +443,19 @@ for (disturbance_regime in c("low", "high")) {
     )
     
     ds_patches_effect_size$Spi_d[
-      ds_patches_effect_size$patch_type == eco_metaeco_treatment &
+      ds_patches_effect_size$patch_type == treatment &
       ds_patches_effect_size$time_point == time_point_input &
       ds_patches_effect_size$disturbance == disturbance_regime] = 
       hedges_d_Spi$d
     
     ds_patches_effect_size$Spi_d_lower[
-      ds_patches_effect_size$patch_type == eco_metaeco_treatment &
+      ds_patches_effect_size$patch_type == treatment &
       ds_patches_effect_size$time_point == time_point_input &
       ds_patches_effect_size$disturbance == disturbance_regime] = 
       hedges_d_Spi$lower_CI
     
     ds_patches_effect_size$Spi_d_upper[
-      ds_patches_effect_size$patch_type == eco_metaeco_treatment &
+      ds_patches_effect_size$patch_type == treatment &
       ds_patches_effect_size$time_point == time_point_input &
       ds_patches_effect_size$disturbance == disturbance_regime] = 
       hedges_d_Spi$upper_CI
@@ -497,19 +472,19 @@ for (disturbance_regime in c("low", "high")) {
     )
     
     ds_patches_effect_size$Spi_te_d[
-      ds_patches_effect_size$patch_type == eco_metaeco_treatment &
+      ds_patches_effect_size$patch_type == treatment &
       ds_patches_effect_size$time_point == time_point_input &
       ds_patches_effect_size$disturbance == disturbance_regime] = 
       hedges_d_Spi_te$d
     
     ds_patches_effect_size$Spi_te_d_lower[
-      ds_patches_effect_size$patch_type == eco_metaeco_treatment &
+      ds_patches_effect_size$patch_type == treatment &
       ds_patches_effect_size$time_point == time_point_input &
       ds_patches_effect_size$disturbance == disturbance_regime] = 
       hedges_d_Spi_te$lower_CI
     
     ds_patches_effect_size$Spi_te_d_upper[
-      ds_patches_effect_size$patch_type == eco_metaeco_treatment &
+      ds_patches_effect_size$patch_type == treatment &
       ds_patches_effect_size$time_point == time_point_input &
       ds_patches_effect_size$disturbance == disturbance_regime] = 
       hedges_d_Spi_te$upper_CI
@@ -526,19 +501,19 @@ for (disturbance_regime in c("low", "high")) {
     )
     
     ds_patches_effect_size$Tet_d[
-      ds_patches_effect_size$patch_type == eco_metaeco_treatment &
+      ds_patches_effect_size$patch_type == treatment &
       ds_patches_effect_size$time_point == time_point_input &
       ds_patches_effect_size$disturbance == disturbance_regime] = 
       hedges_d_Tet$d
     
     ds_patches_effect_size$Tet_d_lower[
-      ds_patches_effect_size$patch_type == eco_metaeco_treatment &
+      ds_patches_effect_size$patch_type == treatment &
       ds_patches_effect_size$time_point == time_point_input &
       ds_patches_effect_size$disturbance == disturbance_regime] = 
       hedges_d_Tet$lower_CI
     
     ds_patches_effect_size$Tet_d_upper[
-      ds_patches_effect_size$patch_type == eco_metaeco_treatment &
+      ds_patches_effect_size$patch_type == treatment &
       ds_patches_effect_size$time_point == time_point_input &
       ds_patches_effect_size$disturbance == disturbance_regime] = 
       hedges_d_Tet$upper_CI
@@ -555,19 +530,19 @@ for (disturbance_regime in c("low", "high")) {
     )
     
     ds_patches_effect_size$Ble_dominance_d[
-      ds_patches_effect_size$patch_type == eco_metaeco_treatment &
+      ds_patches_effect_size$patch_type == treatment &
       ds_patches_effect_size$time_point == time_point_input &
       ds_patches_effect_size$disturbance == disturbance_regime] = 
       hedges_d_Ble_dominance$d
     
     ds_patches_effect_size$Ble_dominance_d_lower[
-      ds_patches_effect_size$patch_type == eco_metaeco_treatment &
+      ds_patches_effect_size$patch_type == treatment &
       ds_patches_effect_size$time_point == time_point_input &
       ds_patches_effect_size$disturbance == disturbance_regime] = 
       hedges_d_Ble_dominance$lower_CI
     
     ds_patches_effect_size$Ble_dominance_d_upper[
-      ds_patches_effect_size$patch_type == eco_metaeco_treatment &
+      ds_patches_effect_size$patch_type == treatment &
       ds_patches_effect_size$time_point == time_point_input &
       ds_patches_effect_size$disturbance == disturbance_regime] = 
       hedges_d_Ble_dominance$upper_CI
@@ -584,19 +559,19 @@ for (disturbance_regime in c("low", "high")) {
     )
     
     ds_patches_effect_size$Cep_dominance_d[
-      ds_patches_effect_size$patch_type == eco_metaeco_treatment &
+      ds_patches_effect_size$patch_type == treatment &
       ds_patches_effect_size$time_point == time_point_input &
       ds_patches_effect_size$disturbance == disturbance_regime] = 
       hedges_d_Cep_dominance$d
     
     ds_patches_effect_size$Cep_dominance_d_lower[
-      ds_patches_effect_size$patch_type == eco_metaeco_treatment &
+      ds_patches_effect_size$patch_type == treatment &
       ds_patches_effect_size$time_point == time_point_input &
       ds_patches_effect_size$disturbance == disturbance_regime] = 
       hedges_d_Cep_dominance$lower_CI
     
     ds_patches_effect_size$Cep_dominance_d_upper[
-      ds_patches_effect_size$patch_type == eco_metaeco_treatment &
+      ds_patches_effect_size$patch_type == treatment &
       ds_patches_effect_size$time_point == time_point_input &
       ds_patches_effect_size$disturbance == disturbance_regime] = 
       hedges_d_Cep_dominance$upper_CI
@@ -613,19 +588,19 @@ for (disturbance_regime in c("low", "high")) {
     )
     
     ds_patches_effect_size$Col_dominance_d[
-      ds_patches_effect_size$patch_type == eco_metaeco_treatment &
+      ds_patches_effect_size$patch_type == treatment &
       ds_patches_effect_size$time_point == time_point_input &
       ds_patches_effect_size$disturbance == disturbance_regime] = 
       hedges_d_Col_dominance$d
     
     ds_patches_effect_size$Col_dominance_d_lower[
-      ds_patches_effect_size$patch_type == eco_metaeco_treatment &
+      ds_patches_effect_size$patch_type == treatment &
       ds_patches_effect_size$time_point == time_point_input &
       ds_patches_effect_size$disturbance == disturbance_regime] = 
       hedges_d_Col_dominance$lower_CI
     
     ds_patches_effect_size$Col_dominance_d_upper[
-      ds_patches_effect_size$patch_type == eco_metaeco_treatment &
+      ds_patches_effect_size$patch_type == treatment &
       ds_patches_effect_size$time_point == time_point_input &
       ds_patches_effect_size$disturbance == disturbance_regime] = 
       hedges_d_Col_dominance$upper_CI
@@ -642,19 +617,19 @@ for (disturbance_regime in c("low", "high")) {
     )
     
     ds_patches_effect_size$Eug_dominance_d[
-      ds_patches_effect_size$patch_type == eco_metaeco_treatment &
+      ds_patches_effect_size$patch_type == treatment &
       ds_patches_effect_size$time_point == time_point_input &
       ds_patches_effect_size$disturbance == disturbance_regime] = 
       hedges_d_Eug_dominance$d
     
     ds_patches_effect_size$Eug_dominance_d_lower[
-      ds_patches_effect_size$patch_type == eco_metaeco_treatment &
+      ds_patches_effect_size$patch_type == treatment &
       ds_patches_effect_size$time_point == time_point_input &
       ds_patches_effect_size$disturbance == disturbance_regime] = 
       hedges_d_Eug_dominance$lower_CI
     
     ds_patches_effect_size$Eug_dominance_d_upper[
-      ds_patches_effect_size$patch_type == eco_metaeco_treatment &
+      ds_patches_effect_size$patch_type == treatment &
       ds_patches_effect_size$time_point == time_point_input &
       ds_patches_effect_size$disturbance == disturbance_regime] = 
       hedges_d_Eug_dominance$upper_CI
@@ -671,19 +646,19 @@ for (disturbance_regime in c("low", "high")) {
     )
     
     ds_patches_effect_size$Eup_dominance_d[
-      ds_patches_effect_size$patch_type == eco_metaeco_treatment &
+      ds_patches_effect_size$patch_type == treatment &
       ds_patches_effect_size$time_point == time_point_input &
       ds_patches_effect_size$disturbance == disturbance_regime] = 
       hedges_d_Eup_dominance$d
     
     ds_patches_effect_size$Eup_dominance_d_lower[
-      ds_patches_effect_size$patch_type == eco_metaeco_treatment &
+      ds_patches_effect_size$patch_type == treatment &
       ds_patches_effect_size$time_point == time_point_input &
       ds_patches_effect_size$disturbance == disturbance_regime] = 
       hedges_d_Eup_dominance$lower_CI
     
     ds_patches_effect_size$Eup_dominance_d_upper[
-      ds_patches_effect_size$patch_type == eco_metaeco_treatment &
+      ds_patches_effect_size$patch_type == treatment &
       ds_patches_effect_size$time_point == time_point_input &
       ds_patches_effect_size$disturbance == disturbance_regime] = 
       hedges_d_Eup_dominance$upper_CI
@@ -700,19 +675,19 @@ for (disturbance_regime in c("low", "high")) {
     )
     
     ds_patches_effect_size$Lox_dominance_d[
-      ds_patches_effect_size$patch_type == eco_metaeco_treatment &
+      ds_patches_effect_size$patch_type == treatment &
       ds_patches_effect_size$time_point == time_point_input &
       ds_patches_effect_size$disturbance == disturbance_regime] = 
       hedges_d_Lox_dominance$d
     
     ds_patches_effect_size$Lox_dominance_d_lower[
-      ds_patches_effect_size$patch_type == eco_metaeco_treatment &
+      ds_patches_effect_size$patch_type == treatment &
       ds_patches_effect_size$time_point == time_point_input &
       ds_patches_effect_size$disturbance == disturbance_regime] = 
       hedges_d_Lox_dominance$lower_CI
     
     ds_patches_effect_size$Lox_dominance_d_upper[
-      ds_patches_effect_size$patch_type == eco_metaeco_treatment &
+      ds_patches_effect_size$patch_type == treatment &
       ds_patches_effect_size$time_point == time_point_input &
       ds_patches_effect_size$disturbance == disturbance_regime] = 
       hedges_d_Lox_dominance$upper_CI
@@ -729,19 +704,19 @@ for (disturbance_regime in c("low", "high")) {
     )
     
     ds_patches_effect_size$Pau_dominance_d[
-      ds_patches_effect_size$patch_type == eco_metaeco_treatment &
+      ds_patches_effect_size$patch_type == treatment &
       ds_patches_effect_size$time_point == time_point_input &
       ds_patches_effect_size$disturbance == disturbance_regime] = 
       hedges_d_Pau_dominance$d
     
     ds_patches_effect_size$Pau_dominance_d_lower[
-      ds_patches_effect_size$patch_type == eco_metaeco_treatment &
+      ds_patches_effect_size$patch_type == treatment &
       ds_patches_effect_size$time_point == time_point_input &
       ds_patches_effect_size$disturbance == disturbance_regime] = 
       hedges_d_Pau_dominance$lower_CI
     
     ds_patches_effect_size$Pau_dominance_d_upper[
-      ds_patches_effect_size$patch_type == eco_metaeco_treatment &
+      ds_patches_effect_size$patch_type == treatment &
       ds_patches_effect_size$time_point == time_point_input &
       ds_patches_effect_size$disturbance == disturbance_regime] = 
       hedges_d_Pau_dominance$upper_CI
@@ -758,19 +733,19 @@ for (disturbance_regime in c("low", "high")) {
     )
     
     ds_patches_effect_size$Pca_dominance_d[
-      ds_patches_effect_size$patch_type == eco_metaeco_treatment &
+      ds_patches_effect_size$patch_type == treatment &
       ds_patches_effect_size$time_point == time_point_input &
       ds_patches_effect_size$disturbance == disturbance_regime] = 
       hedges_d_Pca_dominance$d
     
     ds_patches_effect_size$Pca_dominance_d_lower[
-      ds_patches_effect_size$patch_type == eco_metaeco_treatment &
+      ds_patches_effect_size$patch_type == treatment &
       ds_patches_effect_size$time_point == time_point_input &
       ds_patches_effect_size$disturbance == disturbance_regime] = 
       hedges_d_Pca_dominance$lower_CI
     
     ds_patches_effect_size$Pca_dominance_d_upper[
-      ds_patches_effect_size$patch_type == eco_metaeco_treatment &
+      ds_patches_effect_size$patch_type == treatment &
       ds_patches_effect_size$time_point == time_point_input &
       ds_patches_effect_size$disturbance == disturbance_regime] = 
       hedges_d_Pca_dominance$upper_CI
@@ -787,19 +762,19 @@ for (disturbance_regime in c("low", "high")) {
     )
     
     ds_patches_effect_size$Spi_dominance_d[
-      ds_patches_effect_size$patch_type == eco_metaeco_treatment &
+      ds_patches_effect_size$patch_type == treatment &
       ds_patches_effect_size$time_point == time_point_input &
       ds_patches_effect_size$disturbance == disturbance_regime] = 
       hedges_d_Spi_dominance$d
     
     ds_patches_effect_size$Spi_dominance_d_lower[
-      ds_patches_effect_size$patch_type == eco_metaeco_treatment &
+      ds_patches_effect_size$patch_type == treatment &
       ds_patches_effect_size$time_point == time_point_input &
       ds_patches_effect_size$disturbance == disturbance_regime] = 
       hedges_d_Spi_dominance$lower_CI
     
     ds_patches_effect_size$Spi_dominance_d_upper[
-      ds_patches_effect_size$patch_type == eco_metaeco_treatment &
+      ds_patches_effect_size$patch_type == treatment &
       ds_patches_effect_size$time_point == time_point_input &
       ds_patches_effect_size$disturbance == disturbance_regime] = 
       hedges_d_Spi_dominance$upper_CI
@@ -816,19 +791,19 @@ for (disturbance_regime in c("low", "high")) {
     )
     
     ds_patches_effect_size$Spi_te_dominance_d[
-      ds_patches_effect_size$patch_type == eco_metaeco_treatment &
+      ds_patches_effect_size$patch_type == treatment &
       ds_patches_effect_size$time_point == time_point_input &
       ds_patches_effect_size$disturbance == disturbance_regime] = 
       hedges_d_Spi_te_dominance$d
     
     ds_patches_effect_size$Spi_te_dominance_d_lower[
-      ds_patches_effect_size$patch_type == eco_metaeco_treatment &
+      ds_patches_effect_size$patch_type == treatment &
       ds_patches_effect_size$time_point == time_point_input &
       ds_patches_effect_size$disturbance == disturbance_regime] = 
       hedges_d_Spi_te_dominance$lower_CI
     
     ds_patches_effect_size$Spi_te_dominance_d_upper[
-      ds_patches_effect_size$patch_type == eco_metaeco_treatment &
+      ds_patches_effect_size$patch_type == treatment &
       ds_patches_effect_size$time_point == time_point_input &
       ds_patches_effect_size$disturbance == disturbance_regime] = 
       hedges_d_Spi_te_dominance$upper_CI
@@ -845,19 +820,19 @@ for (disturbance_regime in c("low", "high")) {
     )
     
     ds_patches_effect_size$Tet_dominance_d[
-      ds_patches_effect_size$patch_type == eco_metaeco_treatment &
+      ds_patches_effect_size$patch_type == treatment &
       ds_patches_effect_size$time_point == time_point_input &
       ds_patches_effect_size$disturbance == disturbance_regime] = 
       hedges_d_Tet_dominance$d
     
     ds_patches_effect_size$Tet_dominance_d_lower[
-      ds_patches_effect_size$patch_type == eco_metaeco_treatment &
+      ds_patches_effect_size$patch_type == treatment &
       ds_patches_effect_size$time_point == time_point_input &
       ds_patches_effect_size$disturbance == disturbance_regime] = 
       hedges_d_Tet_dominance$lower_CI
     
     ds_patches_effect_size$Tet_dominance_d_upper[
-      ds_patches_effect_size$patch_type == eco_metaeco_treatment &
+      ds_patches_effect_size$patch_type == treatment &
       ds_patches_effect_size$time_point == time_point_input &
       ds_patches_effect_size$disturbance == disturbance_regime] = 
       hedges_d_Tet_dominance$upper_CI
@@ -874,19 +849,19 @@ for (disturbance_regime in c("low", "high")) {
     )
     
     ds_patches_effect_size$beta_diversity_from_previous_time_d[
-      ds_patches_effect_size$patch_type == eco_metaeco_treatment &
+      ds_patches_effect_size$patch_type == treatment &
       ds_patches_effect_size$time_point == time_point_input &
       ds_patches_effect_size$disturbance == disturbance_regime] = 
       hedges_d_beta_diversity_from_previous_time$d
     
     ds_patches_effect_size$beta_diversity_from_previous_time_d_lower[
-      ds_patches_effect_size$patch_type == eco_metaeco_treatment &
+      ds_patches_effect_size$patch_type == treatment &
       ds_patches_effect_size$time_point == time_point_input &
       ds_patches_effect_size$disturbance == disturbance_regime] = 
       hedges_d_beta_diversity_from_previous_time$lower_CI
     
     ds_patches_effect_size$beta_diversity_from_previous_time_d_upper[
-      ds_patches_effect_size$patch_type == eco_metaeco_treatment &
+      ds_patches_effect_size$patch_type == treatment &
       ds_patches_effect_size$time_point == time_point_input &
       ds_patches_effect_size$disturbance == disturbance_regime] = 
       hedges_d_beta_diversity_from_previous_time$upper_CI
@@ -901,7 +876,7 @@ for (disturbance_regime in c("low", "high")) {
 baselines <- ds_patches_effect_size %>%
   filter(time_point == 1) %>%
   group_by(patch_type) %>%
-  summarise(across(paste0(vars, "_d"), 
+  summarise(across(paste0(variables_patches, "_d"), 
                    .names = "baseline_{.col}"))
 
 ds_patches_effect_size = full_join(ds_patches_effect_size, baselines)

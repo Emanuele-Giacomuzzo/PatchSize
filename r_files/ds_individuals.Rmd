@@ -7,6 +7,43 @@ editor_options:
   chunk_output_type: console
 ---
 
+```{r eval = FALSE}
+
+#####IN PROGRESS#######
+
+time_points_ds = NULL
+for (time_point in first_time_point:last_time_point) {
+  
+  load(here("data", "morphology", paste0("t",time_point,".RData")))
+  
+  time_points_ds[[time_point+1]] = morph_mvt
+  
+  #Initially, at time point 0, 12 videos were captured of the large bottle from which the community was assembled. In order to analyze the data, each of these 12 videos are assigned to each culture. 
+  if(time_point == 0) {
+    
+    original_n_rows = nrow(time_points_ds[[time_point+1]])
+    ID_vector = rep(1:cultures_n, 
+                    each = original_n_rows)
+    time_points_ds[[time_point+1]] = time_points_ds[[time_point+1]] %>%
+      slice(rep(1:n(), 
+                cultures_n)) %>%
+      mutate(culture_ID = ID_vector)
+  }
+  
+  time_points_ds[[time_point+1]] = time_points_ds[[time_point+1]] %>%
+    select(file,
+           culture_ID,
+           bioarea_per_volume,
+           indiv_per_volume,
+           protist_species[1]:protist_species[n_protist_species]) %>%
+    mutate(time_point = time_point,
+           day = sampling_days[time_point + 1])
+  
+}
+
+```
+
+
 ```{r ds_individuals-import-time-points}
 load(here("data", "morphology", "t0.RData"));t0 = morph_mvt; rm(morph_mvt)
 load(here("data", "morphology", "t1.RData"));t1 = morph_mvt; rm(morph_mvt)

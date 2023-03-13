@@ -9,10 +9,10 @@ editor_options:
 #### Median body size (`ds_median_body_size)`
 
 ```{r ds_median_body_size-create}
-patch_types = unique(ds_patches$patch_type)
-
 ds_median_body_size = ds_individuals %>%
-  group_by(culture_ID, time_point, replicate_video) %>%
+  group_by(time_point, 
+           culture_ID,
+           replicate_video) %>%
   mutate(median_body_size = median(mean_area)) %>%
   ungroup() %>%
   group_by(

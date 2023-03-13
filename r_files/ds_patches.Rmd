@@ -29,7 +29,8 @@ for (time_point in first_time_point:last_time_point) {
                 rename(Ble_biased = Ble),
               by = "file")
   
-  #Write here
+  #Initially, at time point 0, 12 videos were captured of the large bottle from which the community was assembled. In order to analyze the data,
+  #each of these 12 videos are assigned to each culture. 
   if(time_point == 0) {
     
     time_points_ds[[time_point+1]] = time_points_ds[[time_point+1]][rep(row.names(pop_output),
@@ -59,18 +60,31 @@ ds_patches = time_points_ds %>%
 
 #Rename columns 
 ds_patches = ds_patches %>%
-  rename(indiv_per_μL = indiv_per_volume,
-         bioarea_per_μL = bioarea_per_volume) %>%
+  rename(patch_type = eco_metaeco_type,
+         indiv_per_μL = indiv_per_volume,
+         bioarea_µm2_per_μL = bioarea_per_volume,
+         patch_size_ml = patch_size_volume) %>%
   rename_with( ~ paste0(., "_indiv_per_μL"), first_protist:last_protist)
 ```
 
 ```{r eval = FALSE}
 
 ### --- CHECK THAT THE SPECIES ID WORKED PROPERLY --- ###
+
+#During the video analysis process, we encountered an issue with Blepherisma as it was added to the culture not as a monoculture, but alongside its prey, Chilomonas, which was the same size as Tetrahymena. This made it impossible to remove Chilomonas without removing Tetrahymena from the analysis. To overcome this problem, we conducted two separate analyses.
+
+#The first analysis, referred to as the main analysis, was carried out to analyze the biomass and identify the species. ImageJ software was set so that it would detect smaller protists, including Tetrahymena and Chilomonas, to ensure all protists in the experiment were included in the biomass. The results of this analysis were used for species identification.
+
+#The second analysis, called the Blepherisma analysis, was conducted solely to calculate the density of Blepherisma. To achieve this, ImageJ was set up to exclude smaller protists, allowing us to use the Blepherisma videos as a training dataset after removing its prey. By doing this, we were able to estimate the density of Blepherisma accurately. From this analysis, we only retained the density of Blepherisma for further analysis.
+
+#We now want to make sure that everything worked correctly with the species identification. To do so, we want to look only at the species identification of the main analysis. We will use the number of individuals of Blepherisma that were found in the main analysis - which we here refer to as Ble_biased. So, first let's calculate the percentage of individuals that have identified by the species identification script. 
+
+#Volume recorded in the video 
 volume_recorded_μl = 34.4
 
 #Check that all individuals have been identified in the species ID script.
-ds_patches %>%
+check = ds_patches %>%
+  filter(indiv_per_μL > 0) %>%
   mutate(
     indiv_identified_per_μL =
       Ble_biased_indiv_per_μL +
@@ -84,51 +98,69 @@ ds_patches %>%
       Spi_indiv_per_μL +
       Spi_te_indiv_per_μL +
       Tet_indiv_per_μL,
-    individuals_not_identified = indiv_per_μL - indiv_identified_per_μL
-  ) %>%
-  select(individuals_not_identified) %>%
-  pull() %>%
-  hist()
+    individuals_identified_percent = (indiv_identified_per_μL / indiv_per_μL) * 100
+  )
 
-#Create dataset where we have the number of individuals for each species in each video. This can be used to look at the videos and see if the number of individuals make sense.
-t = NULL
-for(time_point in first_time_point:last_time_point){
-  
-  t[[time_point + 1]] = read.csv(here(
-    "data",
-    "species_ID_main_analysis",
-    paste0("species_ID_t", time_point, ".csv")
-  )) %>%
-    select(file,
-           first_protist:last_protist) %>%
-    rename_with( ~ paste0(., "_indiv_per_μL"), first_protist:last_protist) %>%
-    mutate(
-      time_point = time_point,
-      Ble_indiv_per_video = Ble_indiv_per_μL * volume_recorded_μl,
-      Cep_indiv_per_video = Cep_indiv_per_μL * volume_recorded_μl,
-      Col_indiv_per_video = Col_indiv_per_μL * volume_recorded_μl,
-      Eug_indiv_per_video = Eug_indiv_per_μL * volume_recorded_μl,
-      Eup_indiv_per_video = Eup_indiv_per_μL * volume_recorded_μl,
-      Lox_indiv_per_video = Lox_indiv_per_μL * volume_recorded_μl,
-      Pau_indiv_per_video = Pau_indiv_per_μL * volume_recorded_μl,
-      Pca_indiv_per_video = Pca_indiv_per_μL * volume_recorded_μl,
-      Spi_indiv_per_video = Spi_indiv_per_μL * volume_recorded_μl,
-      Spi_indiv_te_per_video = Spi_te_indiv_per_μL * volume_recorded_μl,
-      Tet_indiv_per_video = Tet_indiv_per_μL * volume_recorded_μl
-    )
-}
+min(check$individuals_identified_percent)
+max(check$individuals_identified_percent)
 
-t = t %>%
-  bind_rows() %>%
+#Now that we know that all individuals have been identified, let's look at how they were classified. Let's start from the confusion matrix of main analysis.
+read.csv(here("data", "species_ID_main_analysis", "confusion_matrix.csv")) %>%
+  mutate(class.error = round(class.error, digits = 2),
+         miscalculated_percent = class.error * 100,
+         class.error = NULL)
+
+#Now the confusion matrix of the Blepherisma analysis.
+read.csv(here("data", "species_ID_Ble_analysis", "confusion_matrix.csv")) %>%
+  mutate(class.error = round(class.error, digits = 2),
+         miscalculated_percent = class.error * 100,
+         class.error = NULL)
+
+#Let's now build a table for the main analysis and one for the Ble analysis to see if the number of individuals per species that we see in the analysis matches the ones in the videos. BEMOVI, as well as the species identification script I'm using (originally written by Lynn Govaert), calculate the number of individuals per volume as the average number of individuals in each frame (individuals/μL = Σframes of all individuals / frames per video / volume recorded). Therefore, in the tables the number of individuals per frame will represent an average over the frames we recorded. 
+
+table_main_analysis = check %>%
+  mutate(indiv_per_frame = indiv_per_μL * volume_recorded_μl,
+         Ble_right_indiv_per_frame = Ble_indiv_per_μL * volume_recorded_μl,
+         Ble_indiv_per_frame = Ble_biased_indiv_per_μL * volume_recorded_μl,
+         Cep_indiv_per_frame = Cep_indiv_per_μL * volume_recorded_μl,
+         Col_indiv_per_frame = Col_indiv_per_μL * volume_recorded_μl,
+         Eug_indiv_per_frame = Eug_indiv_per_μL * volume_recorded_μl,
+         Eup_indiv_per_frame = Eup_indiv_per_μL * volume_recorded_μl,
+         Lox_indiv_per_frame = Lox_indiv_per_μL * volume_recorded_μl,
+         Pau_indiv_per_frame = Pau_indiv_per_μL * volume_recorded_μl,
+         Pca_indiv_per_frame = Pca_indiv_per_μL * volume_recorded_μl,
+         Spi_indiv_per_frame = Spi_indiv_per_μL * volume_recorded_μl,
+         Spi_te_indiv_per_frame = Spi_te_indiv_per_μL * volume_recorded_μl,
+         Tet_indiv_per_frame = Tet_indiv_per_μL * volume_recorded_μl) %>%
   select(time_point,
          file,
-         Ble_indiv_per_video: Tet_indiv_per_video)
+         culture_ID,
+         indiv_per_frame,
+         Ble_right_indiv_per_frame,
+         paste0(protist_species, "_indiv_per_frame"))
+
+write.csv(table_main_analysis, 
+          here("results", "table_main_analysis.csv"),
+          row.names = FALSE)
+
+table_Ble_analysis = check %>%
+  mutate(indiv_per_frame = indiv_per_μL * volume_recorded_μl,
+         Ble_indiv_per_frame = Ble_indiv_per_μL * volume_recorded_μl) %>%
+  select(time_point,
+         file,
+         culture_ID,
+         indiv_per_frame,
+         Ble_indiv_per_frame)
+
+write.csv(table_Ble_analysis, 
+          here("results", "table_Ble_analysis.csv"),
+          row.names = FALSE)
 ```
 
 ```{r}
 #Rename patches
 ds_patches$patch_type <- recode(
-  ds_patches$eco_metaeco_type,
+  ds_patches$patch_type,
   "S" = "Small isolated",
   "S (S_S)" = "Small connected to small",
   "S (S_L)" = "Small connected to large",
@@ -137,6 +169,13 @@ ds_patches$patch_type <- recode(
   "L" = "Large isolated",
   "L (L_L)" = "Large connected to large",
   "L (S_L)" = "Large connected to small"
+)
+
+ds_patches$patch_size <- recode(
+  ds_patches$patch_size,
+  "S" = "Small",
+  "M" = "Medium",
+  "L" = "Large"
 )
 ```
 
@@ -176,112 +215,111 @@ ds_patches = ds_patches %>%
 ```{r}
 ### Average videos (gets rid of useless columns)
 ds_patches = ds_patches %>%
-  group_by(
-    culture_ID,
-    patch_size,
-    patch_size_volume,
-    size_of_the_connected_patch,
-    disturbance,
-    metaecosystem_type,
-    time_point,
-    day,
-    metaecosystem,
-    system_nr,
-    patch_type
-  ) %>%
+  group_by(across(all_of(columns_patches))) %>%
   summarise(
-    bioarea_per_volume = mean(bioarea_per_volume),
+    bioarea_µm2_per_μL = mean(bioarea_µm2_per_μL),
     indiv_per_μL = mean(indiv_per_μL),
-    Ble = mean(Ble),
-    Cep = mean(Cep),
-    Col = mean(Col),
-    Eug = mean(Eug),
-    Eup = mean(Eup),
-    Lox = mean(Lox),
-    Pau = mean(Pau),
-    Pca = mean(Pca),
-    Spi = mean(Spi),
-    Spi_te = mean(Spi_te),
-    Tet = mean(Tet)
+    Ble_indiv_per_μL = mean(Ble_indiv_per_μL),
+    Cep_indiv_per_μL = mean(Cep_indiv_per_μL),
+    Col_indiv_per_μL = mean(Col_indiv_per_μL),
+    Eug_indiv_per_μL = mean(Eug_indiv_per_μL),
+    Eup_indiv_per_μL = mean(Eup_indiv_per_μL),
+    Lox_indiv_per_μL = mean(Lox_indiv_per_μL),
+    Pau_indiv_per_μL = mean(Pau_indiv_per_μL),
+    Pca_indiv_per_μL = mean(Pca_indiv_per_μL),
+    Spi_indiv_per_μL = mean(Spi_indiv_per_μL),
+    Spi_te_indiv_per_μL = mean(Spi_te_indiv_per_μL),
+    Tet_indiv_per_μL = mean(Tet_indiv_per_μL)
   ) %>%
-  rename(patch_size_ml = patch_size_volume) %>%
-  mutate(indiv_identified_per_μL = Ble + Cep + Col + Eug + Eup + Lox + Pau + Pca + Spi + Spi_te + Tet) %>%
   ungroup()
 ```
 
 ```{r}
 #Change all the measures to ml
-#1. To convert bioarea_per_volume from µm2/µl to µm2/ml, multiply by 1000
+#1. To convert bioarea_µm2_per_μL from µm2/µl to µm2/ml, multiply by 1000
 #2. To convert indiv_per_μL from µm2/µl to µm2/ml, multiply by 1000
 #3. To convert protists (Ble to Tet) from individuals/µl to individuals/ml, multiply by 1000
 ds_patches = ds_patches %>%
-  mutate(bioarea_per_ml = bioarea_per_volume * 1000,
+  mutate(bioarea_µm2_per_ml = bioarea_µm2_per_μL * 1000,
          indiv_per_ml = indiv_per_μL * 1000,
-         indiv_per_ml_Lynn = indiv_identified_per_μL * 1000,
-         Ble = Ble * 1000,
-         Cep = Cep * 1000,
-         Col = Col * 1000,
-         Eug = Eug * 1000,
-         Eup = Eup * 1000,
-         Lox = Lox * 1000,
-         Pau = Pau * 1000,
-         Pca = Pca * 1000,
-         Spi = Spi * 1000,
-         Spi_te = Spi_te * 1000,
-         Tet = Tet * 1000)
+         Ble_indiv_per_ml = Ble_indiv_per_μL * 1000,
+         Cep_indiv_per_ml = Cep_indiv_per_μL * 1000,
+         Col_indiv_per_ml = Col_indiv_per_μL * 1000,
+         Eug_indiv_per_ml = Eug_indiv_per_μL * 1000,
+         Eup_indiv_per_ml = Eup_indiv_per_μL * 1000,
+         Lox_indiv_per_ml = Lox_indiv_per_μL * 1000,
+         Pau_indiv_per_ml = Pau_indiv_per_μL * 1000,
+         Pca_indiv_per_ml = Pca_indiv_per_μL * 1000,
+         Spi_indiv_per_ml = Spi_indiv_per_μL * 1000,
+         Spi_te_indiv_per_ml = Spi_te_indiv_per_μL * 1000,
+         Tet_indiv_per_ml = Tet_indiv_per_μL * 1000) %>%
+  select(-c("bioarea_µm2_per_μL",
+         "indiv_per_μL",
+         "Ble_indiv_per_μL",
+         "Cep_indiv_per_μL",
+         "Col_indiv_per_μL",
+         "Eug_indiv_per_μL",
+         "Eup_indiv_per_μL",
+         "Lox_indiv_per_μL",
+         "Pau_indiv_per_μL",
+         "Pca_indiv_per_μL",
+         "Spi_indiv_per_μL",
+         "Spi_te_indiv_per_μL",
+         "Tet_indiv_per_μL"))
 ```
 
 ```{r}
 #Calculate total response variable for the whole patch
 ds_patches = ds_patches %>%
-  mutate(bioarea_tot = bioarea_per_ml * patch_size_ml,
+  mutate(bioarea_tot_µm2 = bioarea_µm2_per_ml * patch_size_ml,
          indiv_tot = indiv_per_ml * patch_size_ml,
-         Ble_tot = Ble * patch_size_ml,
-         Cep_tot = Cep * patch_size_ml,
-         Col_tot = Col * patch_size_ml,
-         Eug_tot = Eug * patch_size_ml,
-         Eup_tot = Eup * patch_size_ml,
-         Lox_tot = Lox * patch_size_ml,
-         Pau_tot = Pau * patch_size_ml,
-         Pca_tot = Pca * patch_size_ml,
-         Spi_tot = Spi * patch_size_ml,
-         Spi_te_tot = Spi_te * patch_size_ml,
-         Tet_tot = Tet * patch_size_ml)
+         Ble_tot_indiv = Ble_indiv_per_ml * patch_size_ml,
+         Cep_tot_indiv = Cep_indiv_per_ml * patch_size_ml,
+         Col_tot_indiv = Col_indiv_per_ml * patch_size_ml,
+         Eug_tot_indiv = Eug_indiv_per_ml * patch_size_ml,
+         Eup_tot_indiv = Eup_indiv_per_ml * patch_size_ml,
+         Lox_tot_indiv = Lox_indiv_per_ml * patch_size_ml,
+         Pau_tot_indiv = Pau_indiv_per_ml * patch_size_ml,
+         Pca_tot_indiv = Pca_indiv_per_ml * patch_size_ml,
+         Spi_tot_indiv = Spi_indiv_per_ml * patch_size_ml,
+         Spi_te_tot_indiv = Spi_te_indiv_per_ml * patch_size_ml,
+         Tet_tot_indiv = Tet_indiv_per_ml * patch_size_ml)
 ```
 
 ```{r}
 #Calculate species dominance
 ds_patches = ds_patches %>%
-  mutate(Ble_dominance = (Ble / indiv_per_ml_Lynn) * 100,
-         Cep_dominance = (Cep / indiv_per_ml_Lynn) * 100,
-         Col_dominance = (Col / indiv_per_ml_Lynn) * 100,
-         Eug_dominance = (Eug / indiv_per_ml_Lynn) * 100,
-         Eup_dominance = (Eup  / indiv_per_ml_Lynn) * 100,
-         Lox_dominance = (Lox / indiv_per_ml_Lynn) * 100,
-         Pau_dominance = (Pau / indiv_per_ml_Lynn) * 100,
-         Pca_dominance = (Pca / indiv_per_ml_Lynn) * 100,
-         Spi_dominance = (Spi / indiv_per_ml_Lynn) * 100,
-         Spi_te_dominance = (Spi_te / indiv_per_ml_Lynn) * 100,
-         Tet_dominance = (Tet / indiv_per_ml_Lynn) * 100)
+  mutate(Ble_dominance = (Ble_indiv_per_ml / indiv_per_ml) * 100,
+         Cep_dominance = (Cep_indiv_per_ml / indiv_per_ml) * 100,
+         Col_dominance = (Col_indiv_per_ml / indiv_per_ml) * 100,
+         Eug_dominance = (Eug_indiv_per_ml / indiv_per_ml) * 100,
+         Eup_dominance = (Eup_indiv_per_ml / indiv_per_ml) * 100,
+         Lox_dominance = (Lox_indiv_per_ml / indiv_per_ml) * 100,
+         Pau_dominance = (Pau_indiv_per_ml / indiv_per_ml) * 100,
+         Pca_dominance = (Pca_indiv_per_ml / indiv_per_ml) * 100,
+         Spi_dominance = (Spi_indiv_per_ml / indiv_per_ml) * 100,
+         Spi_te_dominance = (Spi_te_indiv_per_ml / indiv_per_ml) * 100,
+         Tet_dominance = (Tet_indiv_per_ml / indiv_per_ml) * 100)
 ```
 
 ```{r calculate_alpha_diversity_(ds_patches)}
 
 #Calculate alpha diversity (shannon, simpson, inv simpson, evenness)
-ds_patches$species_richness = NA
-ds_patches$shannon = NA
-ds_patches$simpson = NA
-ds_patches$inv_simpson = NA
-ds_patches$evenness_pielou = NA
+ds_patches = ds_patches %>%
+  mutate(species_richness = NA,
+         shannon = NA,
+         simpson = NA,
+         inv_simpson = NA,
+         evenness_pielou = NA)
 
 for (row in 1:nrow(ds_patches)) {
   
   species_vector = ds_patches %>%
     slice(row) %>%
-    select(protist_species[1]:protist_species[n_protist_species])
+    select(protist_species_indiv_per_ml[1]:protist_species_indiv_per_ml[n_protist_species])
   
   ds_patches[row,]$species_richness = species_vector %>%
-    mutate_at(vars(protist_species),
+    mutate_at(vars(protist_species_indiv_per_ml),
               funs(ifelse(. > 0,
                           yes = 1,
                           no = 0))) %>%
@@ -317,14 +355,14 @@ for (disturbance in c("low", "high")){
                time_point == time_point_input,
                disturbance == disturbance) %>%
         select(culture_ID, 
-               first_protist:last_protist)
+               protist_species_indiv_per_ml[1]:protist_species_indiv_per_ml[n_protist_species])
       
       control_group = ds_patches %>%
         filter(patch_type %in% control_input,
                time_point == time_point_input,
                disturbance == disturbance) %>%
         select(culture_ID, 
-               first_protist:last_protist)
+               protist_species_indiv_per_ml[1]:protist_species_indiv_per_ml[n_protist_species])
       
       pairwise_bray_curtis = NA
       row = 0
@@ -351,6 +389,13 @@ for (disturbance in c("low", "high")){
     }
   }
 }
+#Warnings
+#1: In vegdist(rbind(treatment_group[treatment_iteration,  ... :
+#  you have empty rows: their dissimilarities may be
+#                 meaningless in method “bray”
+#2: In vegdist(rbind(treatment_group[treatment_iteration,  ... :
+#  missing values in results
+#...
 ```
 
 ```{r}
@@ -364,7 +409,7 @@ for(culture_ID_input in 1:n_cultures) {
       culture_ID == culture_ID_input,
       time_point %in% c(time_point_input, time_point_input - 1)
     ) %>%
-    select(first_protist:last_protist) %>%
+    select(protist_species_indiv_per_ml[1]:protist_species_indiv_per_ml[n_protist_species]) %>%
     vegdist(.,
             method = "bray")
   
@@ -373,6 +418,14 @@ for(culture_ID_input in 1:n_cultures) {
     
   }
 }
+#Warnings
+#1: In vegdist(., method = "bray") :
+#   you have empty rows: their dissimilarities may be
+#                  meaningless in method “bray”
+# 2: In vegdist(., method = "bray") :
+#   you have empty rows: their dissimilarities may be
+#                  meaningless in method “bray”
+#...
 ```
 
 ```{r}
@@ -380,7 +433,15 @@ for(culture_ID_input in 1:n_cultures) {
 baselines <- ds_patches %>%
   filter(time_point == 1) %>%
   group_by(culture_ID) %>%
-  summarise(across(vars, .names = "baseline_{.col}"))
+  summarise(across(variables_patches, .names = "baseline_{.col}"))
 
 ds_patches = full_join(ds_patches, baselines)
+```
+
+```{r}
+#Finalise the dataset by arranging the columns in the order that makes the most sense.
+ds_patches_1 = ds_patches %>%
+  select(columns_patches,
+         variables_patches,
+         baseline_columns)
 ```
