@@ -41,12 +41,12 @@ filtered_data = ds_patches %>%
 
 ```{r}
 full_model = lmer(
-  bioarea_per_ml ~
+  bioarea_µm2_per_ml ~
     day +
     patch_size_ml +
     patch_size_ml : day +
-    baseline_bioarea_per_ml + 
-    baseline_bioarea_per_ml : day +
+    baseline_bioarea_µm2_per_ml + 
+    baseline_bioarea_µm2_per_ml : day +
     (day | culture_ID),
   data = filtered_data,
   REML = FALSE,
@@ -62,10 +62,10 @@ qqnorm(resid(full_model))
 
 ```{r}
 null_model = lmer(
-  bioarea_per_ml ~
+  bioarea_µm2_per_ml ~
     day +
-    baseline_bioarea_per_ml + 
-    baseline_bioarea_per_ml : day +
+    baseline_bioarea_µm2_per_ml + 
+    baseline_bioarea_µm2_per_ml : day +
     (day | culture_ID),
   data = filtered_data,
   REML = FALSE,
@@ -86,11 +86,11 @@ stats
 
 ```{r}
 null_model = lmer(
-  bioarea_per_ml ~
+  bioarea_µm2_per_ml ~
     day +
     patch_size_ml : day +
-    baseline_bioarea_per_ml + 
-    baseline_bioarea_per_ml : day +
+    baseline_bioarea_µm2_per_ml + 
+    baseline_bioarea_µm2_per_ml : day +
     (day | culture_ID),
   data = filtered_data,
   REML = FALSE,
@@ -111,11 +111,11 @@ stats
 
 ```{r}
 null_model = lmer(
-  bioarea_per_ml ~
+  bioarea_µm2_per_ml ~
     day +
     patch_size_ml +
-    baseline_bioarea_per_ml + 
-    baseline_bioarea_per_ml : day +
+    baseline_bioarea_µm2_per_ml + 
+    baseline_bioarea_µm2_per_ml : day +
     (day | culture_ID),
   data = filtered_data,
   REML = FALSE,

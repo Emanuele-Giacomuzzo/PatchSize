@@ -56,27 +56,27 @@ for (disturbance_regime in c("low", "high")) {
       ### Bioarea density
       
       hedges_d_bioarea = calculate.hedges_d(
-        treatment_row$bioarea_per_ml_mean,
-        treatment_row$bioarea_per_ml_sd,
+        treatment_row$bioarea_µm2_per_ml_mean,
+        treatment_row$bioarea_µm2_per_ml_sd,
         treatment_row$sample_size,
-        control_row$bioarea_per_ml_mean,
-        control_row$bioarea_per_ml_sd,
+        control_row$bioarea_µm2_per_ml_mean,
+        control_row$bioarea_µm2_per_ml_sd,
         control_row$sample_size
       )
       
-      ds_patches_effect_size$bioarea_per_ml_d[
+      ds_patches_effect_size$bioarea_µm2_per_ml_d[
         ds_patches_effect_size$patch_type == treatment &
         ds_patches_effect_size$time_point == time_point_input &
         ds_patches_effect_size$disturbance == disturbance_regime] = 
         hedges_d_bioarea$d
       
-      ds_patches_effect_size$bioarea_per_ml_d_upper[
+      ds_patches_effect_size$bioarea_µm2_per_ml_d_upper[
         ds_patches_effect_size$patch_type == treatment &
         ds_patches_effect_size$time_point == time_point_input &
         ds_patches_effect_size$disturbance == disturbance_regime] = 
         hedges_d_bioarea$upper_CI
       
-      ds_patches_effect_size$bioarea_per_ml_d_lower[
+      ds_patches_effect_size$bioarea_µm2_per_ml_d_lower[
         ds_patches_effect_size$patch_type == treatment &
         ds_patches_effect_size$time_point == time_point_input &
         ds_patches_effect_size$disturbance == disturbance_regime] = 

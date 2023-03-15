@@ -6,7 +6,7 @@ editor_options:
   chunk_output_type: console
 ---
 
-```{r packages, echo = FALSE, results = FALSE, message = FALSE, cache = FALSE}
+```{r packages, echo = FALSE, results = FALSE, message = FALSE}
 
 #Packages, conflicts, functions
 

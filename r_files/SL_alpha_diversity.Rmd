@@ -39,7 +39,7 @@ filtered_data = ds_patches_effect_size %>%
     The second hypothesis states that as the experiment progresses, small patches connected to large ones will exhibit a greater increase in biomass compared to isolated patches, while large patches will display a decreased increase in biomass relative to large isolated patches. Therefore, the effect size of bioarea per volume will depend on the interaction between patch type and day\
     (`shannon_d ~ patch_type : day`).
 
-```{r}
+```{r eval = FALSE}
 full_model = lm(shannon_d ~
                   patch_type + 
                   patch_type : day,
@@ -48,20 +48,20 @@ full_model = lm(shannon_d ~
 
 3.  Check the output of the model.
 
-```{r}
+```{r eval = FALSE}
 summary(full_model)
 ```
 
 4.  Check that the residuals of the model are okay (model diagnostics)
 
-```{r}
+```{r eval = FALSE}
 par(mfrow = c(2, 3))
 plot(full_model, which = 1:5)
 ```
 
 5.  Construct the null model for both hypotheses, where there is no dependency of bioarea per volume on either patch type or the interaction between patch type and day.
 
-```{r}
+```{r eval = FALSE}
 null_model = lm(shannon_d ~
                   1,
                 data = filtered_data)
@@ -69,7 +69,7 @@ null_model = lm(shannon_d ~
 
 5.  Get the p value and the delta AIC of the full model compared to the null model.
 
-```{r}
+```{r eval = FALSE}
 AIC = AIC(full_model, null_model) %>% 
   rownames_to_column("model")
 
@@ -94,7 +94,7 @@ if(p_value < 0.001){
 }
 ```
 
-```{r}
+```{r eval = FALSE}
 print(paste0("P value = ", p_value_connected_alpha, ", ΔAIC = ", deltaAIC_connected_alpha))
 ```
 
@@ -102,7 +102,7 @@ print(paste0("P value = ", p_value_connected_alpha, ", ΔAIC = ", deltaAIC_conne
 
     Construct the null model.
 
-```{r}
+```{r eval = FALSE}
 null_model = lm(shannon_d ~
                   patch_type : day,
                 data = filtered_data)
@@ -110,7 +110,7 @@ null_model = lm(shannon_d ~
 
 Get the p value and AIC.
 
-```{r}
+```{r eval = FALSE}
 AIC = AIC(full_model, null_model) %>% 
   rownames_to_column("model")
 
@@ -135,7 +135,7 @@ if (p_value < 0.001){
 }
 ```
 
-```{r}
+```{r eval = FALSE}
 print(paste0("P value = ", p_value_connected_alpha, ", ΔAIC = ", deltaAIC_connected_alpha))
 ```
 
@@ -143,7 +143,7 @@ print(paste0("P value = ", p_value_connected_alpha, ", ΔAIC = ", deltaAIC_conne
 
     Construct the null model.
 
-```{r}
+```{r eval = FALSE}
 null_model = lm(shannon_d ~
                   patch_type,
                 data = filtered_data)
@@ -151,7 +151,7 @@ null_model = lm(shannon_d ~
 
 Get the p value and AIC.
 
-```{r}
+```{r eval = FALSE}
 
 AIC = AIC(full_model, null_model) %>% 
   rownames_to_column("model")
@@ -177,7 +177,7 @@ if (p_value < 0.001){
 }
 ```
 
-```{r}
+```{r eval = FALSE}
 print(paste0("P value = ", p_value_connected_alpha, ", ΔAIC = ", deltaAIC_connected_alpha))
 ```
 

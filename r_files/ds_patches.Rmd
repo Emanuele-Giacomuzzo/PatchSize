@@ -33,11 +33,18 @@ for (time_point in first_time_point:last_time_point) {
   #each of these 12 videos are assigned to each culture. 
   if(time_point == 0) {
     
-    time_points_ds[[time_point+1]] = time_points_ds[[time_point+1]][rep(row.names(pop_output),
-                                                                        nrow(culture_info)), ] %>%
+    #Parameters
+    video_nrs = row.names(pop_output)
+    n_cultures = nrow(culture_info)
+    repeated_video_nrs = rep(x = video_nrs,
+                             times = n_cultures)
+    repeated_culture_nrs = rep(x = 1:n_cultures,
+                               times = n_videos_taken_t0)
+    
+    time_points_ds[[time_point+1]] = time_points_ds[[time_point+1]][repeated_video_nrs, ] %>%
       arrange(file) %>%
-      mutate(culture_ID = rep(1 :n_cultures,
-                              times = n_videos_taken_t0))
+      mutate(culture_ID = repeated_culture_nrs)
+    
   }
   
   time_points_ds[[time_point+1]] = time_points_ds[[time_point+1]] %>%
@@ -65,9 +72,23 @@ ds_patches = ds_patches %>%
          bioarea_µm2_per_μL = bioarea_per_volume,
          patch_size_ml = patch_size_volume) %>%
   rename_with( ~ paste0(., "_indiv_per_μL"), first_protist:last_protist)
+
+#Save to then check if the row that was deleted was the one you wanted 
+ds_patches_before_taking_off_videos = ds_patches
+
+#Take off problematic videos
+ds_patches = ds_patches %>%
+  filter(!(time_point %in% videos_to_take_off$time_point & 
+           file %in% videos_to_take_off$file))
+
+#Check that the videos you took off are the right ones
+setdiff(ds_patches_before_taking_off_videos,
+        ds_patches) %>%
+  select(time_point,
+         file)
 ```
 
-```{r eval = FALSE}
+```{r echo = FALSE, results = "hide"}
 
 ### --- CHECK THAT THE SPECIES ID WORKED PROPERLY --- ###
 
@@ -105,16 +126,33 @@ min(check$individuals_identified_percent)
 max(check$individuals_identified_percent)
 
 #Now that we know that all individuals have been identified, let's look at how they were classified. Let's start from the confusion matrix of main analysis.
+#confusion_matrix_main_analysis = 
 read.csv(here("data", "species_ID_main_analysis", "confusion_matrix.csv")) %>%
-  mutate(class.error = round(class.error, digits = 2),
-         miscalculated_percent = class.error * 100,
-         class.error = NULL)
+  mutate(
+    class.error = round(class.error, digits = 2),
+    indiv_misclass_percent = class.error * 100,
+    class.error = NULL
+  )
+
+# confusion_matrix_as_matrix = confusion_matrix_main_analysis %>%
+#   select(Ble:Tet) %>%
+#   as.matrix()
+# 
+# indiv_of_this_species_present = rowSums(confusion_matrix_as_matrix)
+# indiv_idd_as_this_species = colSums(confusion_matrix_as_matrix)
+# indiv_idd_as_this_species_correctly = diag(confusion_matrix_as_matrix)
+# indiv_idd_as_this_species_wrongly = indiv_idd_as_this_species - indiv_idd_as_this_species_correctly
+# 
+# indiv_idd_as_this_species_but_that_are_not = (indiv_idd_as_this_species_wrongly / indiv_idd_as_this_species_correctly) * 100
+# indiv_idd_as_this_species_but_that_are_not = round(indiv_idd_as_this_species_but_that_are_not, digits = 1)
 
 #Now the confusion matrix of the Blepherisma analysis.
+#confusion_matrix_Ble_analysis = 
 read.csv(here("data", "species_ID_Ble_analysis", "confusion_matrix.csv")) %>%
   mutate(class.error = round(class.error, digits = 2),
-         miscalculated_percent = class.error * 100,
-         class.error = NULL)
+         indiv_misclass_percent = class.error * 100,
+         class.error = NULL) %>%
+  filter(X == "Ble") 
 
 #Let's now build a table for the main analysis and one for the Ble analysis to see if the number of individuals per species that we see in the analysis matches the ones in the videos. BEMOVI, as well as the species identification script I'm using (originally written by Lynn Govaert), calculate the number of individuals per volume as the average number of individuals in each frame (individuals/μL = Σframes of all individuals / frames per video / volume recorded). Therefore, in the tables the number of individuals per frame will represent an average over the frames we recorded. 
 
@@ -135,9 +173,12 @@ table_main_analysis = check %>%
   select(time_point,
          file,
          culture_ID,
+         patch_type,
+         bioarea_µm2_per_μL,
          indiv_per_frame,
          Ble_right_indiv_per_frame,
-         paste0(protist_species, "_indiv_per_frame"))
+         paste0(protist_species, "_indiv_per_frame")) %>%
+  mutate(bioarea_µm2_per_μL = round(bioarea_µm2_per_μL, digits = 0))
 
 write.csv(table_main_analysis, 
           here("results", "table_main_analysis.csv"),
@@ -148,9 +189,12 @@ table_Ble_analysis = check %>%
          Ble_indiv_per_frame = Ble_indiv_per_μL * volume_recorded_μl) %>%
   select(time_point,
          file,
+         patch_type,
          culture_ID,
+         bioarea_µm2_per_μL,
          indiv_per_frame,
-         Ble_indiv_per_frame)
+         Ble_indiv_per_frame) %>%
+  mutate(bioarea_µm2_per_μL = round(bioarea_µm2_per_μL, digits = 0))
 
 write.csv(table_Ble_analysis, 
           here("results", "table_Ble_analysis.csv"),

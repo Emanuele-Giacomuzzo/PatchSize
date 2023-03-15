@@ -10,7 +10,7 @@ editor_options:
 ```{r}
 for (species_input in protist_species){
   
-  response_variable = species_input
+  response_variable = paste0(species_input, "_indiv_per_ml")
   
   print(plot.patches.boxplots(patch_type_input,
                        response_variable))

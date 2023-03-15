@@ -39,7 +39,7 @@ filtered_data = ds_patches_effect_size %>%
 
 -   Full model
 
-```{r}
+```{r eval = FALSE}
 full_model = lm(shannon_d ~                  
                   patch_type +
                   patch_type : day,
@@ -52,7 +52,7 @@ plot(full_model, which = 1:5)
 
 -   Effects of `patch_type`
 
-```{r}
+```{r eval = FALSE}
 null_model = lm(shannon_d ~                  
                   patch_type : day,
                   data = filtered_data)
@@ -69,7 +69,7 @@ stats
 
 -   Effects of `patch_type : day`
 
-```{r}
+```{r eval = FALSE}
 null_model = lm(shannon_d ~                  
                   patch_type,
                   data = filtered_data)

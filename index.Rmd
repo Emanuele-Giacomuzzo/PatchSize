@@ -18,7 +18,7 @@ editor_options:
   chunk_output_type: console
 ---
 
-```{r echo=FALSE}
+```{r echo=FALSE, results = FALSE, message = FALSE}
 knitr::opts_chunk$set(message = FALSE,
                       cache = FALSE,
                       autodep = FALSE)

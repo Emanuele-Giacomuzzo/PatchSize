@@ -69,6 +69,10 @@ time_point_day = data.frame(
   time_point = first_time_point:last_time_point,
   day = sampling_days
 )
+videos_to_take_off = data.frame(time_point = NA,
+                                file = NA) %>%
+  add_row(time_point = "7", file = "sample_00137") %>%
+  slice(-1)
 
 #Resource flow parameters
 resource_flow_days = c(5, 9, 13, 17, 21, 25)
@@ -138,7 +142,7 @@ axis_names = data.frame(variable = NA,
   add_row(variable = "log_size_class", axis_name = "Log size (μm2)") %>%
   add_row(variable = "size_class_abundance", axis_name = "Density (ind/ml)") %>%
   add_row(variable = "bioarea_µm2_per_ml", axis_name = "Bioarea Density (µm²/ml)") %>%
-  add_row(variable = "bioarea_per_ml_d", axis_name = "Bioarea Density ES") %>%
+  add_row(variable = "bioarea_µm2_per_ml_d", axis_name = "Bioarea Density ES") %>%
   add_row(variable = "bioarea_tot", axis_name = "Tot Bioarea (µm²)") %>%
   add_row(variable = "total_metaecosystem_bioarea", axis_name = "Tot Bioarea (µm²)") %>%
   add_row(variable = "mean_shannon", axis_name = "α Diversity") %>%

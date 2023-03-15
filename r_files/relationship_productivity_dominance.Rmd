@@ -17,7 +17,7 @@ for(species_input in protist_species){
   print(ds_patches %>%
   filter(disturbance == disturbance_input) %>%
   ggplot(aes(x = get(paste0(species_input, "_dominance")),
-             y = bioarea_per_ml)) +
+             y = bioarea_µm2_per_ml)) +
   geom_point() +
     labs(x = paste0(species_input, "_dominance")))
   

@@ -149,12 +149,13 @@ figure_caption_3 = paste(
 )
 
 figure_caption_4 = paste(
-  "Figure 4. Effect of the resource flow on the patches of meta-ecosystems. The effects of resource flow have been measured as effect size (Hedge's d) compared to their respective isolated patches. Top: effects of resource flow on the biomass (bioarea is used as a proxy for biomass) of the small and the large patches. Flow from the small to the large increased the biomass of the small patch. Flow from the small patch decreased the biomass of the biomass of the large patch. Bottom: effects of resource flow on the alpha diversity (Shannon Index) of the small and the large patches. Flow from the large to the small increased the biodiveristy of the small patch. Flow from the small patch to the large patch had no effect on alpha diversity of the large patch. All patches were sampled at the same time but points were jettered to make the figure clearar. Vertical grey lines: disturbances events followed by resource flow. The effect of patch size and size of the connected patch on biomass was analyzed using two linear models, one for small patches and the other for large patches. We used the same type of models for analysing the shannon index. Biomass models: ",
-  results_small_patches_biomass_patch_type_day,
-  results_large_patches_biomass_patch_type_day,
-  "Alpha diversity models: ",
-  results_small_patches_shannon_patch_type_day,
-  results_large_patches_shannon_patch_type_day
+  "Figure 4. Effect of the resource flow on the patches of meta-ecosystems. The effects of resource flow have been measured as effect size (Hedge's d) compared to their respective isolated patches. Top: effects of resource flow on the biomass (bioarea is used as a proxy for biomass) of the small and the large patches. Flow from the small to the large increased the biomass of the small patch. Flow from the small patch decreased the biomass of the biomass of the large patch. Bottom: effects of resource flow on the alpha diversity (Shannon Index) of the small and the large patches. Flow from the large to the small increased the biodiveristy of the small patch. Flow from the small patch to the large patch had no effect on alpha diversity of the large patch. All patches were sampled at the same time but points were jettered to make the figure clearar. Vertical grey lines: disturbances events followed by resource flow. The effect of patch size and size of the connected patch on biomass was analyzed using two linear models, one for small patches and the other for large patches. We used the same type of models for analysing the shannon index."#,
+  # "Biomass models:",
+  # results_small_patches_biomass_patch_type_day,
+  # results_large_patches_biomass_patch_type_day,
+  # "Alpha diversity models: ",
+  # results_small_patches_shannon_patch_type_day,
+  # results_large_patches_shannon_patch_type_day
   )
 ```
 

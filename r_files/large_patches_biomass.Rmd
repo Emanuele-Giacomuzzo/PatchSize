@@ -39,8 +39,8 @@ filtered_data = ds_patches_effect_size %>%
 
 -   Full model
 
-```{r}
-full_model = lm(bioarea_per_ml_d ~                  
+```{r eval = FALSE}
+full_model = lm(bioarea_µm2_per_ml_d ~                  
                   patch_type +
                   patch_type : day,
                   data = filtered_data)
@@ -52,8 +52,8 @@ plot(full_model, which = 1:5)
 
 -   Effects of `patch_type`
 
-```{r}
-null_model = lm(bioarea_per_ml_d ~                  
+```{r eval = FALSE}
+null_model = lm(bioarea_µm2_per_ml_d ~                  
                   patch_type : day,
                   data = filtered_data)
 
@@ -69,8 +69,8 @@ print(paste0("P value = ", stats$p_value, ", ΔAIC = ", stats$deltaAIC, ", R2 = 
 
 -   Effects of `patch_type : day`
 
-```{r}
-null_model = lm(bioarea_per_ml_d ~                  
+```{r eval = FALSE}
+null_model = lm(bioarea_µm2_per_ml_d ~                  
                   patch_type,
                   data = filtered_data)
 
