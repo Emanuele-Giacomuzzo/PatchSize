@@ -33,19 +33,6 @@ ds_classes_effect_size = ds_classes %>%
 ```
 
 ```{r}
-treatments_and_controls = data.frame(
-  treatment = c("Small connected to small", 
-                "Small connected to large", 
-                "Large connected to large", 
-                "Large connected to small"),
-  control = c("Small isolated", 
-              "Small isolated",
-              "Large isolated", 
-              "Large isolated")
-)
-
-n_of_treatments = nrow(treatments_and_controls)
-
 row_n = 0
 for (disturbance in c("low", "high")) {
   for (treatment_n in 1:n_of_treatments) {

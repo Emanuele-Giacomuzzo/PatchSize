@@ -29,6 +29,7 @@ library("here")
 
 show_results = TRUE
 recompute_analyses = FALSE #Lengthy analyses have been suppressed. Set recompute_analyses = TRUE to redo them.
+control = FALSE
 disturbance_input = "low"
 
 print(paste("!!", disturbance_input, "!!", "(this document showcases only the analysis done for the", disturbance_input, "disturbance)"))

@@ -35,7 +35,7 @@ filtered_data = ds_metaecosystems %>%
 
 **Small-Large meta-ecosystems vs Small-Large isolated**
 
-```{r}
+```{r eval = FALSE}
 
 metaecosystem_type_input_model = c("Small-Large meta-patch",
                              "Small-Large isolated")
@@ -84,7 +84,7 @@ model_stats
 
 **Medium-Medium meta-patch vs MM from isolated**
 
-```{r}
+```{r eval = FALSE}
 metaecosystem_type_input_model = c("Medium-Medium meta-patch",
                              "Medium-Medium isolated")
 
@@ -132,7 +132,7 @@ model_stats
 
 **Small-Large meta-patch vs Medium-Medium meta-patch**
 
-```{r}
+```{r eval = FALSE}
 metaecosystem_type_input_model = c("Small-Large meta-patch",
                              "Medium-Medium meta-patch")
 
@@ -180,7 +180,7 @@ model_stats
 
 **SL from isolated vs MM from isolated**
 
-```{r}
+```{r eval = FALSE}
 metaecosystem_type_input_model = c("Small-Large isolated",
                              "Medium-Medium isolated")
 

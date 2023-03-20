@@ -13,6 +13,8 @@ protist_species_indiv_per_ml = paste0(protist_species, "_indiv_per_ml")
 n_protist_species = length(protist_species)
 first_protist = protist_species[1]
 last_protist = protist_species[n_protist_species]
+protists_low_threshold_analysis = c("Col", "Eug", "Eup", "Lox", "Pau", "Pca", "Spi_te", "Tet")
+protists_high_threshold_analysis = c("Ble", "Cep", "Spi")
 
 #Patches parameters 
 culture_info = read.csv(here("data", "PatchSizePilot_culture_info.csv"), header = TRUE)
@@ -58,6 +60,7 @@ metaecosystems_to_take_off = culture_info %>%
   unique
 
 #Sampling parameters
+volume_recorded_μl = 34.4
 time_point_names = c("t0", "t1", "t2", "t3", "t4", "t5", "t6", "t7")
 sampling_days = c(0, 4, 8, 12, 16, 20, 24, 28)
 first_time_point = 0
@@ -73,6 +76,7 @@ videos_to_take_off = data.frame(time_point = NA,
                                 file = NA) %>%
   add_row(time_point = "7", file = "sample_00137") %>%
   slice(-1)
+total_number_of_video_rows = (12*110) + (110*5) + (220*2)
 
 #Resource flow parameters
 resource_flow_days = c(5, 9, 13, 17, 21, 25)
@@ -108,7 +112,7 @@ variables_patches = c(
   "beta_diversity_from_previous_time",
   paste0(protist_species, "_indiv_per_ml"),
   paste0(protist_species, "_tot_indiv"),
-  paste0(protist_species, "_dominance")
+  paste0(protist_species_indiv_per_ml, "_dominance")
 )
 
 baseline_columns = paste0("baseline_", variables_patches)

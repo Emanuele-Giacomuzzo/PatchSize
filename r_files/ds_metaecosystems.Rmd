@@ -6,9 +6,9 @@ editor_options:
   chunk_output_type: console
 ---
 
--   Each row is a meta-patch.
+-   Each row is a meta-ecosystem.
 
--   It contains also "fake" meta-ecosystems which I created from isolated patches (`metpatch type = S_L_from_isolated` & `metpatch type = M_M_from_isolated`).
+-   It contains also "fake" meta-ecosystems which I created from isolated patches (`metaecosystem type = Small-Large isolated` & `metaecosystem type = Medium-Medium isolated`).
 
 ```{r}
 ### Create a data frame with all the experimental meta-ecosystems and all the possible meta-ecosystems from isolated
@@ -52,14 +52,14 @@ culture_ID_of_isolated_M_high = ds_patches %>%
 combinations_S_and_L_low = crossing(culture_ID_of_isolated_S_low,
                                     culture_ID_of_isolated_L_low) %>%
                             mutate(disturbance = "low",
-                                   metaecosystem_type = "S_L_from_isolated") %>%
+                                   metaecosystem_type = "Small-Large isolated") %>%
                             rename(ID_first_patch = culture_ID_of_isolated_S_low,
                                    ID_second_patch = culture_ID_of_isolated_L_low)
 
 combinations_S_and_L_high = crossing(culture_ID_of_isolated_S_high,
                                     culture_ID_of_isolated_L_high) %>%
                             mutate(disturbance = "high",
-                                   metaecosystem_type = "S_L_from_isolated") %>%
+                                   metaecosystem_type = "Small-Large isolated") %>%
                             rename(ID_first_patch = culture_ID_of_isolated_S_high,
                                    ID_second_patch = culture_ID_of_isolated_L_high)
 
@@ -69,7 +69,7 @@ combinations_M_and_M_low = combn(unique(culture_ID_of_isolated_M_low,
                             t() %>%
                             as.data.frame() %>%
                             mutate(disturbance = "low",
-                                   metaecosystem_type = "M_M_from_isolated") %>%
+                                   metaecosystem_type = "Medium-Medium isolated") %>%
                             rename(ID_first_patch = V1,
                                    ID_second_patch = V2)
 
@@ -79,7 +79,7 @@ combinations_M_and_M_high = combn(unique(culture_ID_of_isolated_M_high,
                             t() %>%
                             as.data.frame() %>%
                             mutate(disturbance = "high",
-                                   metaecosystem_type = "M_M_from_isolated") %>%
+                                   metaecosystem_type = "Medium-Medium isolated") %>%
                             rename(ID_first_patch = V1,
                                    ID_second_patch = V2)
 
@@ -102,141 +102,7 @@ number_of_combinations = nrow(ID_combinations)
 ```
 
 ```{r}
-
-#Compute meta-ecosystems  for each time point 
-
-ds_metaecosystems_single_rows = NULL
-row_n = 0
-for (combination in 1:number_of_combinations){
-  for (time_point_input in first_time_point:last_time_point) {
-    
-    row_n = row_n + 1
-    
-    current_system_nr = ID_combinations[combination,]$system_nr
-    current_IDs = ID_combinations[combination,1:2]
-    current_disturbance = ID_combinations[combination,]$disturbance
-    current_metaeco_type = ID_combinations[combination,]$metaecosystem_type
-    current_day = sampling_days[time_point_input+1]
-    
-    if (current_system_nr %in% metaecosystems_to_take_off)
-      next
-    
-    
-    species_density_of_the_two_patches = ds_patches %>%
-      filter(culture_ID %in% current_IDs,
-             time_point == time_point_input) %>%
-      ungroup() %>%
-      select(protist_species_indiv_per_ml[1]:protist_species_indiv_per_ml[n_protist_species])
-    
-    #Alpha diversity: Shannon (mean between the two patches)
-    shannon_patch_1 = diversity(species_density_of_the_two_patches[1,], index = "shannon")
-    shannon_patch_2 = diversity(species_density_of_the_two_patches[2,], index = "shannon")
-    shannon = (shannon_patch_1 + shannon_patch_2) / 2
-    
-    #Beta diversity: Jaccard
-
-    jaccard_index = vegdist(species_density_of_the_two_patches, 
-                            method = "jaccard") %>%
-                    as.numeric()
-    
-    #Beta diversity: Bray Curtis
-    
-    bray_curtis = vegdist(species_density_of_the_two_patches, 
-                          method = "bray") %>%
-                    as.numeric()
-    
-    #Gamma diversity: Meta-ecosystem richness
-    
-    presence_absence_two_patches = ifelse(test = species_density_of_the_two_patches > 0,
-                                          yes = 1,
-                                          no = 0)
-    
-    summed_columns = colSums(presence_absence_two_patches)
-    
-    presence_absence_metaecosystem = ifelse(test = summed_columns > 0,
-                              yes = 1,
-                              no = 0)
-    
-    metaecosystem_richness = sum(presence_absence_metaecosystem)
-    
-    #Put everything together
-    
-    ds_metaecosystems_single_rows[[row_n]] = ds_patches %>%
-    filter(culture_ID %in% current_IDs,
-           time_point == time_point_input) %>%
-    summarise(total_metaecosystem_bioarea = sum(bioarea_tot_µm2),
-              total_metaecosystem_Ble_indiv = sum(Ble_tot_indiv),
-              total_metaecosystem_Cep_indiv = sum(Cep_tot_indiv),
-              total_metaecosystem_Col_indiv = sum(Col_tot_indiv),
-              total_metaecosystem_Eug_indiv = sum(Eug_tot_indiv),
-              total_metaecosystem_Eup_indiv = sum(Eup_tot_indiv),
-              total_metaecosystem_Lox_indiv = sum(Lox_tot_indiv),
-              total_metaecosystem_Pau_indiv = sum(Pau_tot_indiv),
-              total_metaecosystem_Pca_indiv = sum(Pca_tot_indiv),
-              total_metaecosystem_Spi_indiv = sum(Spi_tot_indiv),
-              total_metaecosystem_Spi_te_indiv = sum(Spi_te_tot_indiv),
-              total_metaecosystem_Tet_indiv = sum(Tet_tot_indiv)) %>% 
-    mutate(system_nr = current_system_nr,
-           metaecosystem_type = current_metaeco_type,
-           disturbance = current_disturbance,
-           time_point = time_point_input,
-           day = current_day,
-           jaccard_index = jaccard_index,
-           bray_curtis = bray_curtis,
-           metaecosystem_richness = metaecosystem_richness,
-           mean_shannon = shannon) %>%
-      ungroup()
-    
-  }
-}
-
-ds_metaecosystems = ds_metaecosystems_single_rows %>%
-  bind_rows()
-```
-
-```{r add-baselines-(ds_metaecosystems)}
-
-#Add baselines (from t1).
-baselines <- ds_metaecosystems %>%
-  ungroup() %>%
-  filter(time_point == 1) %>%
-  group_by(system_nr) %>%
-  summarise(across(variables_metaecos, .names = "baseline_{.col}"))
-
-ds_metaecosystems = full_join(ds_metaecosystems, baselines)
-```
-
-```{r}
-ds_metaecosystems = as.data.frame(ds_metaecosystems)
-```
-
-```{r}
-
-#Rename the meta-ecosystems
-ds_metaecosystems$metaecosystem_type <- recode(
-  ds_metaecosystems$metaecosystem_type,
-  "S_S" = "Small-Small meta-patch",
-  "M_M" = "Medium-Medium meta-patch",
-  "M_M_from_isolated" = "Medium-Medium isolated",
-  "L_L" = "Large-Large meta-patch",
-  "S_L" = "Small-Large meta-patch",
-  "S_L_from_isolated" = "Small-Large isolated"
-)
-```
-
-```{r}
-
-#Reorder the meta-ecosystems
-ds_metaecosystems = ds_metaecosystems %>%
-  mutate(metaecosystem_type = factor(metaecosystem_type,
-                                     levels = c(
-                                       "Small-Small meta-patch",
-                                       "Medium-Medium meta-patch",
-                                       "Medium-Medium isolated",
-                                       "Large-Large meta-patch",
-                                       "Small-Large meta-patch",
-                                       "Small-Large isolated"
-                                     )))
+ds_metaecosystems = create.meatecosystem.ds()
 ```
 
 ```{r}
@@ -248,15 +114,24 @@ ds_metaecosystems$connection <-
     yes = "isolated",
     no = "connected"
   )
-```
 
-```{r}
 #Add whether patch sizes are symmetric or not
 ds_metaecosystems$patch_size_symmetry <-
   ifelse(
     ds_metaecosystems$metaecosystem_type %in% c("Small-Large isolated",
-                                                "Small-Large meta-patch"),
+                                                "Small-Large meta-ecosystem"),
     yes = "asymmetric",
     no = "symmetric"
   )
+```
+
+```{r add-baselines-(ds_metaecosystems)}
+#Add baselines (from t1).
+baselines <- ds_metaecosystems %>%
+  ungroup() %>%
+  filter(time_point == 1) %>%
+  group_by(system_nr) %>%
+  summarise(across(variables_metaecos, .names = "baseline_{.col}"))
+
+ds_metaecosystems = full_join(ds_metaecosystems, baselines)
 ```

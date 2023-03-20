@@ -7,7 +7,7 @@ editor_options:
 ---
 
 ```{r}
-for (species_input in protist_species){
+for (species_input in protist_species_indiv_per_ml){
   
   response_variable = paste0(species_input, "_dominance")
   

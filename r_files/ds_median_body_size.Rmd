@@ -10,22 +10,13 @@ editor_options:
 
 ```{r ds_median_body_size-create}
 ds_median_body_size = ds_individuals %>%
-  group_by(time_point, 
-           culture_ID,
-           replicate_video) %>%
-  mutate(median_body_size = median(mean_area)) %>%
+  group_by(across(columns_patches),
+           file) %>%
+  mutate(median_body_size = median(mean_area_µm2)) %>%
   ungroup() %>%
   group_by(
-    culture_ID,
-    patch_size,
-    patch_size_ml,
-    disturbance,
-    metaecosystem_type,
-    time_point,
-    day,
-    metaecosystem,
-    patch_type
+    across(columns_patches)
   ) %>%
-  summarise(median_body_size = median(mean_area)) %>%
+  summarise(median_body_size = median(mean_area_µm2)) %>%
   ungroup()
 ```
