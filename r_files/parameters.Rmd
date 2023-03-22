@@ -11,6 +11,7 @@ editor_options:
 protist_species = c("Ble", "Cep", "Col", "Eug", "Eup", "Lox", "Pau", "Pca", "Spi", "Spi_te", "Tet")
 protist_species_indiv_per_ml = paste0(protist_species, "_indiv_per_ml")
 protist_species_dominance = paste0(protist_species_indiv_per_ml, "_dominance")
+protist_species_total = paste0(protist_species, "_tot_indiv")
 n_protist_species = length(protist_species)
 first_protist = protist_species[1]
 last_protist = protist_species[n_protist_species]
@@ -223,11 +224,11 @@ colours_treatments = data.frame(treatment = NA,
   add_row(treatment = "Large isolated", colour = "#000000") %>%
   add_row(treatment = "Large connected to large", colour = "#fee0d2") %>%
   add_row(treatment = "Large connected to small", colour = "#67000d") %>%
-  add_row(treatment = "Small-Small meta-patch", colour = "#f7fbff") %>% #Needs to become color-blind friendly
-  add_row(treatment = "Medium-Medium meta-patch", colour = "#1b7837") %>%
+  add_row(treatment = "Small-Small meta-ecosystem", colour = "#f7fbff") %>% #Needs to become color-blind friendly
+  add_row(treatment = "Medium-Medium meta-ecosystem", colour = "#1b7837") %>%
   add_row(treatment = "Medium-Medium isolated", colour = "#d9f0d3") %>%
-  add_row(treatment = "Large-Large meta-patch", colour = "#3182bd") %>% #Needs to become color-blind friendly
-  add_row(treatment = "Small-Large meta-patch", colour = "#762a83") %>%
+  add_row(treatment = "Large-Large meta-ecosystem", colour = "#3182bd") %>% #Needs to become color-blind friendly
+  add_row(treatment = "Small-Large meta-ecosystem", colour = "#762a83") %>%
   add_row(treatment = "Small-Large isolated", colour = "#e7d4e8") %>%
   slice(-1)
 

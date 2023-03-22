@@ -21,6 +21,28 @@ ds_patches = import.protist.pop.data(culture_info,
 ```
 
 ```{r}
+#Reorder dataset
+ds_patches = ds_patches %>%
+  select(time_point,
+         day,
+         file,
+         culture_ID,
+         system_nr,
+         disturbance,
+         eco_metaeco_type,
+         patch_size,
+         patch_size_volume,
+         metaecosystem,
+         metaecosystem_type,
+         bioarea_per_volume,
+         indiv_per_volume,
+         all_of(protist_species),
+         Ble_main_analysis,
+         Cep_main_analysis,
+         Spi_main_analysis)
+```
+
+```{r}
 #Take off problematic videos
 ds_patches = ds_patches %>%
   filter(!(time_point %in% videos_to_take_off$time_point & 
@@ -153,9 +175,39 @@ ds_patches = ds_patches %>%
          Spi_te_tot_indiv = Spi_te_indiv_per_ml * patch_size_ml,
          Tet_tot_indiv = Tet_indiv_per_ml * patch_size_ml)
 
-#Calculate individuals per ml (based on a combination of the two analyses)
+#Calculate individuals per ml (based on a combination of the two analyses).
 ds_patches = ds_patches %>%
   mutate(indiv_per_ml = !!rlang::parse_expr(paste(paste0(protist_species, "_indiv_per_ml"), collapse = " + ")))
+
+#Calculate species dominance
+ds_patches = ds_patches %>%
+  mutate(across(all_of(protist_species_indiv_per_ml), 
+                list(dominance = ~ (. / indiv_per_ml) * 100), 
+                .names = "{col}_dominance"))
+```
+
+```{r}
+#Rearrange
+ds_patches = ds_patches %>%
+  select(time_point,
+         day,
+         file,
+         culture_ID,
+         system_nr,
+         disturbance,
+         patch_type,
+         patch_size,
+         patch_size_ml,
+         size_of_the_connected_patch,
+         metaecosystem,
+         metaecosystem_type,
+         bioarea_µm2_per_ml,
+         bioarea_tot_µm2,
+         indiv_per_ml,
+         indiv_tot,
+         all_of(protist_species_indiv_per_ml),
+         all_of(protist_species_total),
+         all_of(protist_species_dominance))
 ```
 
 ```{r}
@@ -168,12 +220,6 @@ ds_patches = ds_patches %>%
 ```
 
 ```{r}
-#Calculate species dominance
-ds_patches = ds_patches %>%
-  mutate(across(all_of(protist_species_indiv_per_ml), 
-                list(dominance = ~ (. / indiv_per_ml) * 100), 
-                .names = "{col}_dominance"))
-
 #Calculate alpha diversity.
 #This includes shannon, simpson, inv simpson, evenness.
 ds_patches = calculate.alpha.diversity()

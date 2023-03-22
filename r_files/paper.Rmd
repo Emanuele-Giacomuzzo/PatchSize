@@ -60,6 +60,9 @@ The evaporated water was replenished with autoclaved deionized water. Before the
 
 Additionally, we added medium to the cultures during each exchange event to account for the volume sampled at each time point (0.2 ml). However, medium was not added during the sixth exchange as it was right before the final time point. Sampling 0.2 ml of culture at the last time point would not have affected the results as it was the last day of the experiment. [polished]
 
+#### Biodiversity computation
+Evenness was calculated with the Pielou index, as Shannon / log Species richness. 
+
 #### Statistical analysis
 
 ##### Mixed effect models

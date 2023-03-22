@@ -12,59 +12,58 @@ editor_options:
 
 ```{r}
 ### Create a data frame with all the experimental meta-ecosystems and all the possible meta-ecosystems from isolated
-culture_ID_of_isolated_S_low = ds_patches %>%
+culture_ID_isolated_S_low = ds_patches %>%
   filter(patch_type == "Small isolated",
          disturbance == "low") %>%
   pull(culture_ID) %>%
   unique()
 
-culture_ID_of_isolated_L_low = ds_patches %>%
+culture_ID_isolated_L_low = ds_patches %>%
   filter(patch_type == "Large isolated",
          disturbance == "low") %>%
   pull(culture_ID) %>%
   unique()
 
-culture_ID_of_isolated_S_high = ds_patches %>%
+culture_ID_isolated_S_high = ds_patches %>%
   filter(patch_type == "Small isolated",
          disturbance == "high") %>%
   pull(culture_ID) %>%
   unique()
 
-culture_ID_of_isolated_L_high = ds_patches %>%
+culture_ID_isolated_L_high = ds_patches %>%
   filter(patch_type == "Large isolated",
          disturbance == "high") %>%
   pull(culture_ID) %>%
   unique()
 
-culture_ID_of_isolated_M_low = ds_patches %>%
+culture_ID_isolated_M_low = ds_patches %>%
   filter(patch_type == "Medium isolated",
          disturbance == "low") %>%
   pull(culture_ID) %>%
   unique()
 
-culture_ID_of_isolated_M_high = ds_patches %>%
+culture_ID_isolated_M_high = ds_patches %>%
   filter(patch_type == "Medium isolated",
          disturbance == "high") %>%
   pull(culture_ID) %>%
   unique()
 
-
-combinations_S_and_L_low = crossing(culture_ID_of_isolated_S_low,
-                                    culture_ID_of_isolated_L_low) %>%
+combinations_S_and_L_low = crossing(culture_ID_isolated_S_low,
+                                    culture_ID_isolated_L_low) %>%
                             mutate(disturbance = "low",
                                    metaecosystem_type = "Small-Large isolated") %>%
-                            rename(ID_first_patch = culture_ID_of_isolated_S_low,
-                                   ID_second_patch = culture_ID_of_isolated_L_low)
+                            rename(ID_first_patch = culture_ID_isolated_S_low,
+                                   ID_second_patch = culture_ID_isolated_L_low)
 
-combinations_S_and_L_high = crossing(culture_ID_of_isolated_S_high,
-                                    culture_ID_of_isolated_L_high) %>%
+combinations_S_and_L_high = crossing(culture_ID_isolated_S_high,
+                                    culture_ID_isolated_L_high) %>%
                             mutate(disturbance = "high",
                                    metaecosystem_type = "Small-Large isolated") %>%
-                            rename(ID_first_patch = culture_ID_of_isolated_S_high,
-                                   ID_second_patch = culture_ID_of_isolated_L_high)
+                            rename(ID_first_patch = culture_ID_isolated_S_high,
+                                   ID_second_patch = culture_ID_isolated_L_high)
 
-combinations_M_and_M_low = combn(unique(culture_ID_of_isolated_M_low,
-                                        culture_ID_of_isolated_M_low),
+combinations_M_and_M_low = combn(unique(culture_ID_isolated_M_low,
+                                        culture_ID_isolated_M_low),
                                  m = 2) %>%
                             t() %>%
                             as.data.frame() %>%
@@ -73,8 +72,8 @@ combinations_M_and_M_low = combn(unique(culture_ID_of_isolated_M_low,
                             rename(ID_first_patch = V1,
                                    ID_second_patch = V2)
 
-combinations_M_and_M_high = combn(unique(culture_ID_of_isolated_M_high,
-                                         culture_ID_of_isolated_M_high),
+combinations_M_and_M_high = combn(unique(culture_ID_isolated_M_high,
+                                         culture_ID_isolated_M_high),
                                   m = 2) %>%
                             t() %>%
                             as.data.frame() %>%
