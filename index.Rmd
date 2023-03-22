@@ -108,11 +108,11 @@ print(paste("!!", disturbance_input, "!!", "(this document showcases only the an
 ### All {.tabset .tabset-dropdown}
 
 ```{r}
-metaecosystem_type_input = c("Small-Small meta-patch",
-                             "Medium-Medium meta-patch",
+metaecosystem_type_input = c("Small-Small meta-ecosystem",
+                             "Medium-Medium meta-ecosystem",
                              "Medium-Medium isolated",
-                             "Large-Large meta-patch",
-                             "Small-Large meta-patch",
+                             "Large-Large meta-ecosystem",
+                             "Small-Large meta-ecosystem",
                              "Small-Large isolated")
 ```
 
@@ -139,9 +139,9 @@ metaecosystem_type_input = c("Small-Small meta-patch",
 ### MM vs SL (meta-ecosystems and isolated) {.tabset .tabset-dropdown}
 
 ```{r}
-metaecosystem_type_input = c("Medium-Medium meta-patch",
+metaecosystem_type_input = c("Medium-Medium meta-ecosystem",
                              "Medium-Medium isolated",
-                             "Small-Large meta-patch",
+                             "Small-Large meta-ecosystem",
                              "Small-Large isolated")
 ```
 
@@ -176,8 +176,8 @@ metaecosystem_type_input = c("Medium-Medium meta-patch",
 
 ```{r}
 patch_type_input = c("Small isolated",
-                           "Medium isolated",
-                           "Large isolated")
+                     "Medium isolated",
+                     "Large isolated")
 ```
 
 #### Biomass {.tabset .tabset-pills}
@@ -229,8 +229,8 @@ patch_type_input = c("Small isolated",
 
 ```{r}
 patch_type_input = c("Small isolated",
-                           "Small connected to small",
-                           "Small connected to large")
+                     "Small connected to small",
+                     "Small connected to large")
 ```
 
 #### Biomass {.tabset .tabset-pills}
@@ -287,7 +287,7 @@ patch_type_input = c("Small isolated",
 
 ```{r}
 patch_type_input = c("Medium isolated",
-                           "Medium connected to medium")
+                     "Medium connected to medium")
 ```
 
 #### Biomass {.tabset .tabset-pills}
@@ -299,8 +299,8 @@ patch_type_input = c("Medium isolated",
 
 ```{r}
 patch_type_input = c("Large isolated",
-                           "Large connected to large",
-                           "Large connected to small")
+                     "Large connected to large",
+                     "Large connected to small")
 ```
 
 #### Biomass {.tabset .tabset-pills}
@@ -367,7 +367,7 @@ patch_type_input = c("Large isolated",
 
 ```{r}
 patch_type_input = c("Small connected to large",
-                           "Large connected to small")
+                     "Large connected to small")
 ```
 
 #### Biomass {.tabset .tabset-pills}
@@ -491,4 +491,8 @@ print(paste0("Disturbance = ", disturbance_input))
 
 ```{r echo=FALSE, message=FALSE}
 save.image(file = "my_environment.RData")
+```
+
+```{r}
+beep("fanfare")
 ```

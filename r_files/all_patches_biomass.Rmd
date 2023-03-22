@@ -14,29 +14,36 @@ editor_options:
 *Research question: how does the density of bioarea changes across patch types?*
 
 ```{r}
-
 ds_patches %>%
-          filter(disturbance == disturbance_input) %>%
-          ggplot(aes(x = day,
-             y = bioarea_µm2_per_ml,
-             group = interaction(day, patch_type),
-             fill = patch_type)) +
-          geom_boxplot(width = boxplot_width) +
-          labs(x = "Day",
-               y = y_axis_bioarea_density,
-               fill = "") +
-          theme_bw() +
-          theme(panel.grid.major = element_blank(),
-                panel.grid.minor = element_blank(),
-                      legend.position = "bottom") +
-          geom_vline(xintercept = first_resource_flow + 0.6,
-                     linetype="dotdash",
-                     color = "grey",
-                     size=0.7) +
-  geom_hline(yintercept=0,
-             color = zero_line_colour,
-             linetype = zero_line_line_type,
-             size = zero_line_line_width)
+  filter(disturbance == disturbance_input) %>%
+  ggplot(aes(
+    x = day,
+    y = bioarea_µm2_per_ml,
+    group = interaction(day, patch_type),
+    fill = patch_type
+  )) +
+  geom_boxplot(width = boxplot_width) +
+  labs(x = "Day",
+       y = y_axis_bioarea_density,
+       fill = "") +
+  theme_bw() +
+  theme(
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    legend.position = "bottom"
+  ) +
+  geom_vline(
+    xintercept = first_resource_flow + 0.6,
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_hline(
+    yintercept = 0,
+    color = zero_line_colour,
+    linetype = zero_line_line_type,
+    size = zero_line_line_width
+  )
   
 ```
 

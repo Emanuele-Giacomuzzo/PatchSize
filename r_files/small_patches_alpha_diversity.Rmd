@@ -27,7 +27,7 @@ p_small_patches_alpha
 
 -   Filter data
 
-```{r}
+```{r eval = FALSE}
 filtered_data = ds_patches %>%
   filter(
     metaecosystem == "no",
@@ -38,7 +38,7 @@ filtered_data = ds_patches %>%
 
 -   Full model
 
-```{r}
+```{r eval = FALSE}
 full_model = lmer(
   shannon ~
     day +
@@ -59,7 +59,7 @@ qqnorm(resid(full_model))
 
 -   ...
 
-```{r}
+```{r eval = FALSE}
 null_model = lmer(
   shannon ~
     day +
@@ -84,7 +84,7 @@ stats
 
 -   ...
 
-```{r}
+```{r eval = FALSE}
 null_model = lmer(
   shannon ~
     day +

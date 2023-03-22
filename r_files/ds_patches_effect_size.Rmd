@@ -7,7 +7,8 @@ editor_options:
 ---
 
 ```{r}
-ds_patches_effect_size = calculate.effect.sizes(ds_patches)
+ds_patches_effect_size = calculate.effect.sizes(ds_patches,
+                                                variables_patches)
 ```
 
 ```{r}

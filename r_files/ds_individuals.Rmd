@@ -9,8 +9,8 @@ editor_options:
 
 ```{r}
 ds_individuals = import.protist.morph.data(culture_info,
-                                   first_time_point,
-                                   last_time_point)
+                                           first_time_point,
+                                           last_time_point)
 ```
 
 ```{r}

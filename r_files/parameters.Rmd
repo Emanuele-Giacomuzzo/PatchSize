@@ -10,6 +10,7 @@ editor_options:
 #Protist parameters
 protist_species = c("Ble", "Cep", "Col", "Eug", "Eup", "Lox", "Pau", "Pca", "Spi", "Spi_te", "Tet")
 protist_species_indiv_per_ml = paste0(protist_species, "_indiv_per_ml")
+protist_species_dominance = paste0(protist_species_indiv_per_ml, "_dominance")
 n_protist_species = length(protist_species)
 first_protist = protist_species[1]
 last_protist = protist_species[n_protist_species]

@@ -198,7 +198,9 @@ ds_patches = full_join(ds_patches, baselines)
 ```{r}
 #Finalise the dataset by arranging the columns in the order that makes the most sense.
 ds_patches = ds_patches %>%
-  select(columns_patches,
-         variables_patches,
-         baseline_columns)
+  select(any_of(c(
+    columns_patches,
+    variables_patches,
+    baseline_columns
+  )))
 ```
