@@ -58,7 +58,12 @@ print(paste("!!", disturbance_input, "!!", "(this document showcases only the an
 ```{r child = here("r_files", "ds_culture_info.Rmd")}
 ```
 
-### Patches (`ds_patches`)
+### Individuals (ds_individuals)
+
+```{r child = here("r_files", "ds_individuals.Rmd")}
+```
+
+### Patches (`ds_patches`) 
 
 ```{r child = here("r_files", "ds_patches.Rmd")}
 ```
@@ -71,21 +76,6 @@ print(paste("!!", disturbance_input, "!!", "(this document showcases only the an
 ### Meta-ecosystems (`ds_metaecosystems`)
 
 ```{r child = here("r_files", "ds_metaecosystems.Rmd")}
-```
-
-### Individuals (ds_individuals)
-
-```{r child = here("r_files", "ds_individuals.Rmd")}
-```
-
-### Median body size (`ds_median_body_size)`
-
-```{r child = here("r_files", "ds_median_body_size.Rmd")}
-```
-
-### Median body size effect size (`ds_median_body_size_effect_size`)
-
-```{r child = here("r_files", "ds_median_body_size_effect_size.Rmd")}
 ```
 
 ### Size classes (`ds_classes`)
@@ -490,9 +480,9 @@ print(paste0("Disturbance = ", disturbance_input))
 ## Bibliography
 
 ```{r echo=FALSE, message=FALSE}
-save.image(file = "my_environment.RData")
+save.image(file = "environment_at_the_end_of_knitting.RData")
 ```
 
 ```{r}
-beep("fanfare")
+beepr::beep("fanfare")
 ```

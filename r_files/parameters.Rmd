@@ -7,6 +7,10 @@ editor_options:
 ---
 
 ```{r experiment}
+#Disturbance parameters
+disturbance_levels = c("low", "high")
+n_disturbance_levels = length(disturbance_levels)
+
 #Protist parameters
 protist_species = c("Ble", "Cep", "Col", "Eug", "Eup", "Lox", "Pau", "Pca", "Spi", "Spi_te", "Tet")
 protist_species_indiv_per_ml = paste0(protist_species, "_indiv_per_ml")
@@ -55,14 +59,18 @@ system_nr_metaecosystems = culture_info %>%
   filter(metaecosystem == "yes") %>%
   pull(system_nr) %>%
   unique
+
 n_metaecosystems = length(system_nr_metaecosystems)
+
 metaecosystems_to_take_off = culture_info %>%
   filter(culture_ID %in% patches_to_take_off) %>%
   pull(system_nr) %>%
   unique
-
+ 
 #Sampling parameters
+total_frames = 125
 volume_recorded_μl = 34.4
+time_points = 0:7
 time_point_names = c("t0", "t1", "t2", "t3", "t4", "t5", "t6", "t7")
 sampling_days = c(0, 4, 8, 12, 16, 20, 24, 28)
 first_time_point = 0
@@ -74,9 +82,10 @@ time_point_day = data.frame(
   time_point = first_time_point:last_time_point,
   day = sampling_days
 )
-videos_to_take_off = data.frame(time_point = NA,
+videos_to_take_off = data.frame(culture_ID = NA,
+                                time_point = NA,
                                 file = NA) %>%
-  add_row(time_point = "7", file = "sample_00137") %>%
+  add_row(culture_ID = 137-110, time_point = 7, file = 137) %>%
   slice(-1)
 total_number_of_video_rows = (12*110) + (110*5) + (220*2)
 
@@ -94,10 +103,14 @@ columns_patches = c(
   "patch_type",
   "patch_size",
   "patch_size_ml",
-  "size_of_the_connected_patch",
+  "size_connected_patch",
   "metaecosystem",
   "metaecosystem_type"
 )
+
+columns_classes = c(columns_patches,
+                    "size_class_n",
+                    "mean_class_area_µm2")
 
 #Variables whose effect size I want to calculate
 variables_patches = c(
@@ -112,6 +125,7 @@ variables_patches = c(
   "evenness_pielou",
   "beta_diversity_from_isolated",
   "beta_diversity_from_previous_time",
+  "median_body_area_µm2",
   paste0(protist_species, "_indiv_per_ml"),
   paste0(protist_species, "_tot_indiv"),
   paste0(protist_species_indiv_per_ml, "_dominance")
@@ -146,7 +160,7 @@ axis_names = data.frame(variable = NA,
   add_row(variable = "day", axis_name = "Day") %>%
   add_row(variable = "patch_size_ml", axis_name = "Patch size (ml)") %>%
   add_row(variable = "log_size_class", axis_name = "Log size (μm2)") %>%
-  add_row(variable = "size_class_abundance", axis_name = "Density (ind/ml)") %>%
+  add_row(variable = "class_indiv_per_µl", axis_name = "Density (ind/ml)") %>%
   add_row(variable = "bioarea_µm2_per_ml", axis_name = "Bioarea Density (µm²/ml)") %>%
   add_row(variable = "bioarea_µm2_per_ml_d", axis_name = "Bioarea Density ES") %>%
   add_row(variable = "bioarea_tot", axis_name = "Tot Bioarea (µm²)") %>%
@@ -158,8 +172,8 @@ axis_names = data.frame(variable = NA,
   add_row(variable = "metaecosystem_richness", axis_name = "γ Diversity") %>%
   add_row(variable = "indiv_per_ml", axis_name = "Abundance (ind/ml)") %>%
   add_row(variable = "indiv_per_ml_d", axis_name = "Abundance ES") %>%
-  add_row(variable = "median_body_size", axis_name = "Median body size (µm²)") %>%
-  add_row(variable = "median_body_size_d", axis_name = "Median Body Size ES") %>%
+  add_row(variable = "median_body_area_µm2", axis_name = "Median body size (µm²)") %>%
+  add_row(variable = "median_body_area_µm2_d", axis_name = "Median Body Size ES") %>%
   add_row(variable = "Ble_indiv_per_ml", axis_name = "Ble Density (ind/ml)") %>% 
   add_row(variable = "Cep_indiv_per_ml", axis_name = "Cep Density (ind/ml)") %>%
   add_row(variable = "Col_indiv_per_ml", axis_name = "Col Density (ind/ml)") %>%

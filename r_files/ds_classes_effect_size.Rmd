@@ -6,94 +6,14 @@ editor_options:
   chunk_output_type: console
 ---
 
-```{r}
-ds_classes_effect_size = ds_classes %>%
-  group_by(
-    across(all_of(columns_patches)),
-    size_class_n,
-    log_size_class
-  ) %>%
-  summarise(
-    log_abundance_sd = sd(log_abundance),
-    abundance = mean(size_class_abundance),
-    abundance_sd = sd(size_class_abundance),
-    log_abundance = mean(log_abundance),
-    sample_size = n(),
-  ) %>%
-  mutate(
-    log_abundance_se = log_abundance_sd / sqrt(sample_size),
-    log_abundance_lower_ci = log_abundance - qt(1 - (0.05 / 2), sample_size - 1) * log_abundance_se,
-    log_abundance_upper_ci = log_abundance + qt(1 - (0.05 / 2), sample_size - 1) * log_abundance_se
-  ) %>%
-  mutate(abundance_d = NA,
-         abundance_d_upper = NA,
-         abundance_d_lower = NA)
+```{r eval = recompute_analyses}
+ds_classes_effect_size = calculate.effect.sizes.classes(ds_classes,
+                                                        columns_classes,
+                                                        "class_indiv_per_µl")
 
-#Expected number of rows: 12 size classes * 8 patch_types * 2 disturbance types * 8 time points = 1536
+saveRDS(ds_classes_effect_size, file = here("results", "ds_classes_effect_size.RData"))
 ```
 
 ```{r}
-row_n = 0
-for (disturbance in c("low", "high")) {
-  for (treatment_n in 1:n_of_treatments) {
-    for (time_point_input in 0:7) {
-      for (size_class_input in 1:nr_of_size_classes) {
-        row_n = row_n + 1
-        
-        eco_metaeco_treatment = treatments_and_controls$treatment[treatment_n]
-        
-        treatment = ds_classes_effect_size %>%
-          filter(
-            disturbance == disturbance,
-            patch_type == eco_metaeco_treatment,
-            time_point == time_point_input,
-            size_class_n == size_class_input
-          )
-        
-        eco_metaeco_control = treatments_and_controls$control[treatment_n]
-        
-        control = ds_classes_effect_size %>%
-          filter(
-            disturbance == disturbance,
-            patch_type == eco_metaeco_control,
-            time_point == time_point_input,
-            size_class_n == size_class_input
-          )
-        
-        #Body size class abundance
-        
-        hedges_d_size_class = calculate.hedges_d(
-          treatment$abundance,
-          treatment$abundance_sd,
-          treatment$sample_size,
-          control$abundance,
-          control$abundance_sd,
-          control$sample_size
-        )
-        
-        ds_classes_effect_size$abundance_d[
-          ds_classes_effect_size$disturbance == disturbance &
-          ds_classes_effect_size$patch_type == eco_metaeco_treatment &
-          ds_classes_effect_size$time_point == time_point_input &
-          ds_classes_effect_size$size_class_n == size_class_input] = 
-          hedges_d_size_class$d
-        
-        ds_classes_effect_size$abundance_d_upper[
-          ds_classes_effect_size$disturbance == disturbance &
-          ds_classes_effect_size$patch_type == eco_metaeco_treatment &
-          ds_classes_effect_size$time_point == time_point_input &
-          ds_classes_effect_size$size_class_n == size_class_input] =
-          hedges_d_size_class$upper_CI
-        
-        ds_classes_effect_size$abundance_d_lower[
-          ds_classes_effect_size$disturbance == disturbance &
-          ds_classes_effect_size$patch_type == eco_metaeco_treatment &
-          ds_classes_effect_size$time_point == time_point_input &
-          ds_classes_effect_size$size_class_n == size_class_input] =
-          hedges_d_size_class$lower_CI
-        
-      }
-    }
-  }
-}
+ds_classes_effect_size = readRDS(here("results", "ds_classes_effect_size.RData"))
 ```

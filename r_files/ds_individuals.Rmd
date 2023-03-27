@@ -18,6 +18,22 @@ ds_individuals = import.protist.morph.data(culture_info,
 ds_individuals = ds_individuals %>%
   filter(!(time_point %in% videos_to_take_off$time_point & 
            file %in% videos_to_take_off$file))
+
+test_that("Test you took off the right videos.", {
+  expect_equal(nrow(videos_to_take_off),
+               nrow(expand.grid(diff$culture_ID, diff$time_point, diff$file) %>% unique()))
+})
+
+#Take off problematic cultures 
+ds_individuals_before_taking_off_cultures = ds_individuals
+
+ds_individuals = ds_individuals %>%
+  filter(! culture_ID %in% patches_to_take_off)
+
+test_that("Test you took off the right cultures.", {
+  expect_equal(setdiff(ds_individuals_before_taking_off_cultures, ds_individuals) %>% pull(culture_ID) %>% unique(),
+               patches_to_take_off)
+})
 ```
 
 ```{r}
@@ -25,7 +41,7 @@ ds_individuals = ds_individuals %>%
 ds_individuals = ds_individuals %>% 
   rename(patch_type = eco_metaeco_type,
          patch_size_ml = patch_size_volume,
-         mean_area_µm2 = mean_area)
+         body_area_µm2 = mean_area)
 ```
 
 ```{r}
@@ -57,11 +73,31 @@ ds_individuals = ds_individuals %>%
 ```
 
 ```{r}
-#Add the column size_of_the_connected_patch
-ds_individuals$size_of_the_connected_patch = NA
-ds_individuals$size_of_the_connected_patch[ds_individuals$patch_type == "Small connected to small"] = "Small"
-ds_individuals$size_of_the_connected_patch[ds_individuals$patch_type == "Small connected to large"] = "Large"
-ds_individuals$size_of_the_connected_patch[ds_individuals$patch_type == "Medium connected to medium"] = "Medium"
-ds_individuals$size_of_the_connected_patch[ds_individuals$patch_type == "Large connected to large"] = "Large"
-ds_individuals$size_of_the_connected_patch[ds_individuals$patch_type == "Large connected to small"] = "Small"
+#Add the column size_connected_patch
+ds_individuals$size_connected_patch = NA
+ds_individuals$size_connected_patch[ds_individuals$patch_type == "Small connected to small"] = "Small"
+ds_individuals$size_connected_patch[ds_individuals$patch_type == "Small connected to large"] = "Large"
+ds_individuals$size_connected_patch[ds_individuals$patch_type == "Medium connected to medium"] = "Medium"
+ds_individuals$size_connected_patch[ds_individuals$patch_type == "Large connected to large"] = "Large"
+ds_individuals$size_connected_patch[ds_individuals$patch_type == "Large connected to small"] = "Small"
+```
+
+```{r}
+#Reorder columns
+ds_individuals = ds_individuals %>%
+    select(time_point,
+           day, 
+           file, 
+           disturbance, 
+           culture_ID, 
+           system_nr, 
+           patch_type,
+           patch_size, 
+           patch_size_ml,
+           size_connected_patch,
+           metaecosystem, 
+           metaecosystem_type, 
+           body_area_µm2,
+           N_frames
+           )
 ```

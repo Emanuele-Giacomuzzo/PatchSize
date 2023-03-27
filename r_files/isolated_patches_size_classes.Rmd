@@ -9,10 +9,10 @@ editor_options:
 ##### Mean +- 95% CI
 
 ```{r}
-for(size_class_input in 1:nr_of_size_classes){
+for(size_class_input in 1:n_size_classes){
   
   print(plot.patches.classes.points(patch_type_input,
-                            size_class_input))
+                                    size_class_input))
   
 }
 ```

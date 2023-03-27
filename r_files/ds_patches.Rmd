@@ -13,11 +13,15 @@ After the dataset has been assembled
 -   The value of different videos have been already averaged.
 
 ```{r}
-#Assemble dataset
+#Assemble dataset (expected rows: sum(nr_videos * n_cultures))
 ds_patches = import.protist.pop.data(culture_info,
                                      first_time_point,
                                      last_time_point,
                                      protist_species)
+
+test_that("Expected number of rows", {
+  expect_equal(nrow(ds_patches), sum(nr_videos * n_cultures))
+})
 ```
 
 ```{r}
@@ -40,6 +44,10 @@ ds_patches = ds_patches %>%
          Ble_main_analysis,
          Cep_main_analysis,
          Spi_main_analysis)
+
+test_that("Expected number of rows", {
+  expect_equal(nrow(ds_patches), sum(nr_videos * n_cultures))
+})
 ```
 
 ```{r}
@@ -48,9 +56,25 @@ ds_patches = ds_patches %>%
   filter(!(time_point %in% videos_to_take_off$time_point & 
            file %in% videos_to_take_off$file))
 
+test_that("Expected number of rows", {
+  expect_equal(nrow(ds_patches),
+               sum(nr_videos * n_cultures) - nrow(videos_to_take_off))
+})
+
 #Take off problematic cultures 
 ds_patches = ds_patches %>%
   filter(! culture_ID %in% patches_to_take_off)
+
+test_that("Expected number of rows", {
+  expect_equal(
+    nrow(ds_patches),
+    sum(nr_videos * n_cultures) - nrow(videos_to_take_off) - (length(patches_to_take_off) * sum(nr_videos))
+  )
+})
+
+if(TRUE %in% unique(videos_to_take_off$culture_ID == patches_to_take_off)){
+  stop("Adjust your testing code, as the number of rows should consider that videos to take off are also in the patches to take off.")
+}
 ```
 
 ```{r}
@@ -135,13 +159,13 @@ ds_patches = ds_patches %>%
 ```
 
 ```{r}
-#Add the column size_of_the_connected_patch
-ds_patches$size_of_the_connected_patch = NA
-ds_patches$size_of_the_connected_patch[ds_patches$patch_type == "Small connected to small"] = "Small"
-ds_patches$size_of_the_connected_patch[ds_patches$patch_type == "Small connected to large"] = "Large"
-ds_patches$size_of_the_connected_patch[ds_patches$patch_type == "Medium connected to medium"] = "Medium"
-ds_patches$size_of_the_connected_patch[ds_patches$patch_type == "Large connected to large"] = "Large"
-ds_patches$size_of_the_connected_patch[ds_patches$patch_type == "Large connected to small"] = "Small"
+#Add the column size_connected_patch
+ds_patches$size_connected_patch = NA
+ds_patches$size_connected_patch[ds_patches$patch_type == "Small connected to small"] = "Small"
+ds_patches$size_connected_patch[ds_patches$patch_type == "Small connected to large"] = "Large"
+ds_patches$size_connected_patch[ds_patches$patch_type == "Medium connected to medium"] = "Medium"
+ds_patches$size_connected_patch[ds_patches$patch_type == "Large connected to large"] = "Large"
+ds_patches$size_connected_patch[ds_patches$patch_type == "Large connected to small"] = "Small"
 
 #Change all the measures to ml
 ds_patches = ds_patches %>%
@@ -184,6 +208,10 @@ ds_patches = ds_patches %>%
   mutate(across(all_of(protist_species_indiv_per_ml), 
                 list(dominance = ~ (. / indiv_per_ml) * 100), 
                 .names = "{col}_dominance"))
+
+test_that("Check that species dominance is NaN when the cultures collapsed.",{
+  expect_equal(unique(ds_patches$Ble_indiv_per_ml_dominance[ds_patches$indiv_per_ml == 0]),
+                         NaN)})
 ```
 
 ```{r}
@@ -198,7 +226,7 @@ ds_patches = ds_patches %>%
          patch_type,
          patch_size,
          patch_size_ml,
-         size_of_the_connected_patch,
+         size_connected_patch,
          metaecosystem,
          metaecosystem_type,
          bioarea_µm2_per_ml,
@@ -217,6 +245,12 @@ ds_patches = ds_patches %>%
   summarise(across(contains("_per_ml"), mean),
             across(contains("_tot"), mean)) %>%
   ungroup()
+
+test_that("Check that the averaging worked well.",{
+  expect_equal(nrow(ds_patches),
+               (n_cultures - length(patches_to_take_off)) * length(time_points))})
+
+n_rows_ds_patches = nrow(ds_patches)
 ```
 
 ```{r}
@@ -224,21 +258,61 @@ ds_patches = ds_patches %>%
 #This includes shannon, simpson, inv simpson, evenness.
 ds_patches = calculate.alpha.diversity()
 
+test_that("Check that the alpha diversity was calculated right.",{
+  expect_equal(max(ds_patches$species_richness),
+               n_protist_species)})
+
 #Calculate divergence from isolated. 
 #This is the difference in community composition of each culture from the other isolated cultures (Bray-Curtis). The warning appears because in some cases we are comparing with a communities that has completely crashed and so Bray-Curtis is 1.
 ds_patches = calculate.divergence.from.isolated()
 
+test_that("Check that treatmenrt divergence was calculated right.",{
+  expect_true(max(ds_patches$beta_diversity_from_isolated, na.rm = T) <= 1)
+  expect_true(min(ds_patches$beta_diversity_from_isolated, na.rm = T) >= 0)
+})
+
 #Calculate temporal divergence. 
 #This is the difference in community composition of each culture from its previous time point (Bray-Curtis). The warning appears because in some cases we are comparing with a communities that has completely crashed and so Bray-Curtis is 1. 
 ds_patches = calculate.temporal.divergence()
+
+test_that("Check that temporal divergence was calculated right.",{
+  expect_true(max(ds_patches$beta_diversity_from_previous_time, na.rm = T) <= 1)
+  expect_true(min(ds_patches$beta_diversity_from_previous_time, na.rm = T) >= 0)
+})
+
+#Calculate median body size
+ds_median_body_size = ds_individuals %>%
+  group_by(time_point,
+           culture_ID,
+           file) %>%
+  summarise(median_body_area_µm2 = median(body_area_µm2)) %>%
+  group_by(time_point,
+           culture_ID) %>%
+  summarise(median_body_area_µm2 = mean(median_body_area_µm2))
+
+test_that("Check that the median body size is calculated right.",{
+  expect_true(nrow(ds_median_body_size) <= nrow(ds_patches))
+})
+
+ds_patches = full_join(ds_patches, ds_median_body_size)
+
+test_that("Check that the number of rows didn't change.",{
+  expect_equal(nrow(ds_patches),
+               n_rows_ds_patches)})
 
 #Calculate baselines. 
 #To consider the initial values for different cultures when analyzing their temporal trends, we add baselines from time point 1. These baselines are used because at time point 0, we only measured the community of the large bottle that the experiment was assembled from. Additionally, the first perturbation had already occurred by time point 2, which is the starting point for our models.
 baselines <- ds_patches %>%
   filter(time_point == 1) %>%
   group_by(culture_ID) %>%
-  summarise(across(variables_patches, .names = "baseline_{.col}"))
+  summarise(across(all_of(variables_patches), 
+                   .names = "baseline_{.col}"))
+
 ds_patches = full_join(ds_patches, baselines)
+
+test_that("Check that the number of rows didn't change.",{
+  expect_equal(nrow(ds_patches),
+               n_rows_ds_patches)})
 ```
 
 ```{r}

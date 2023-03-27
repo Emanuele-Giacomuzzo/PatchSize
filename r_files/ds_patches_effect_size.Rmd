@@ -8,16 +8,41 @@ editor_options:
 
 ```{r}
 ds_patches_effect_size = calculate.effect.sizes(ds_patches,
-                                                variables_patches)
+                                                columns_patches[columns_patches != "culture_ID" & columns_patches != "system_nr"],
+                                                variables_patches) %>%
+  filter(metaecosystem == "yes")
+
+test_that("Test expected number of rows", {
+  expect_equal(nrow(ds_patches_effect_size), 
+               n_of_treatments * n_time_points * n_disturbance_levels
+  )
+})
 ```
 
 ```{r}
 #Add baselines (from t1).
 baselines <- ds_patches_effect_size %>%
   filter(time_point == 1) %>%
-  group_by(patch_type) %>%
+  group_by(patch_type, disturbance) %>%
   summarise(across(paste0(variables_patches, "_d"), 
-                   .names = "baseline_{.col}"))
+                   .names = "baseline_{.col}")) %>%
+  select(patch_type,
+         disturbance,
+         paste0("baseline_", variables_patches, "_d"))
+
+test_that("Test expected number of rows of baselines.", {
+  expect_equal(nrow(baselines), 
+               n_of_treatments * n_disturbance_levels
+  )
+})
+
+n_rows_ds_patches_ES_before_joining_baselines = nrow(ds_patches_effect_size)
 
 ds_patches_effect_size = full_join(ds_patches_effect_size, baselines)
+
+test_that("Test expected number of rows of baselines.", {
+  expect_equal(n_rows_ds_patches_ES_before_joining_baselines, 
+               nrow(ds_patches_effect_size)
+  )
+})
 ```

@@ -5,5 +5,10 @@ date: "2023-02-11"
 ---
 
 ```{r}
-plot.patches.median.body.size.points.ES(patch_type_input)
+response_variable = "median_body_area_µm2"
+```
+
+```{r}
+plot.patches.points.ES(patch_type_input,
+                       paste0(response_variable, "_d"))
 ```

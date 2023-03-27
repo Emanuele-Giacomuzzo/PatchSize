@@ -9,19 +9,31 @@ editor_options:
 -   Each row is the size class of a culture at a certain time point
 -   I create 24 size classes (@Jacquet2020 created 12 size classes). The first class lower boundary is the smallest body size, the last size class upper boundary is the largest one.
 
-```{r nr_of_size_classes}
-nr_of_size_classes = 12
-smallest_size = min(ds_individuals$mean_area)
-largest_size = max(ds_individuals$mean_area)
+```{r n_size_classes}
+n_size_classes = 12
 ```
 
-The logarithm of the largest individual in the experiment was `r log(largest_size)` μm² compared to 11.4 in @Jacquet2020.
+The logarithm of the largest individual in the experiment was `r log(max(ds_individuals$body_area_µm2))` μm² compared to 11.4 in @Jacquet2020.
 
 ```{r ds_classes_effect_size-create-ds_classes, eval = recompute_analyses}
-create.classes.ds()
+ds_classes = create.classes.ds(ds_individuals,
+                               n_size_classes)
 saveRDS(ds_classes, file = here("results", "ds_classes.RData"))
 ```
 
 ```{r}
 ds_classes = readRDS(here("results", "ds_classes.RData"))
+
+test_that("Tets number of rows of ds_classes.",{
+  expect_equal(nrow(ds_classes),
+               n_cultures * n_size_classes * sum(nr_videos)
+  )})
+```
+
+```{r}
+#Video average
+ds_classes = ds_classes %>%
+  group_by_at(vars(-class_indiv_per_µl,
+                   -replicate_video)) %>%
+  summarise(class_indiv_per_µl = mean(class_indiv_per_µl))
 ```

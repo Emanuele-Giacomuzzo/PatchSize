@@ -58,6 +58,7 @@ library("hrbrthemes") #To create small multiple plots
 library("treemapify")
 library("Rmisc")
 library("emmeans")
+library("testthat")
 
 conflict_prefer("load", "base")
 conflict_prefer("here", "here")

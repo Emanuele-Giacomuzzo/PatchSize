@@ -9,27 +9,21 @@ editor_options:
 ```{r}
 print(paste("Here I'm filtering patches to have only the ones with disturbance", disturbance_input))
 
+ds_individuals = ds_individuals %>%
+  filter(disturbance == disturbance_input)
+
 ds_patches = ds_patches %>%
   filter(disturbance == disturbance_input)
 
 ds_patches_effect_size = ds_patches_effect_size %>%
   filter(disturbance == disturbance_input)
 
-ds_individuals = ds_individuals %>%
+ds_metaecosystems = ds_metaecosystems %>%
   filter(disturbance == disturbance_input)
 
 ds_classes = ds_classes %>%
   filter(disturbance == disturbance_input)
 
-ds_classes_effect_size = ds_classes_effect_size %>%
-  filter(disturbance == disturbance_input)
-
-ds_median_body_size = ds_median_body_size %>%
-  filter(disturbance == disturbance_input)
-
-ds_median_body_size_effect_size = ds_median_body_size_effect_size %>%
-  filter(disturbance == disturbance_input)
-
-ds_metaecosystems = ds_metaecosystems %>%
-  filter(disturbance == disturbance_input)
+#ds_classes_effect_size = ds_classes_effect_size %>%
+#  filter(disturbance == disturbance_input)
 ```

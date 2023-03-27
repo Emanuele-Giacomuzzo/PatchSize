@@ -8,7 +8,16 @@ editor_options:
 ---
 
 ```{r}
-plot.patches.median.body.size.boxplots(patch_type_input)
-plot.patches.median.body.size.points(patch_type_input)
-plot.patches.median.body.size.points.ES(patch_type_input)
+response_variable = "median_body_area_µm2"
+```
+
+```{r}
+plot.patches.boxplots(patch_type_input,
+                      response_variable)
+
+plot.patches.points(patch_type_input,
+                    response_variable)
+
+plot.patches.points.ES(patch_type_input,
+                       paste0(response_variable, "_d"))
 ```
