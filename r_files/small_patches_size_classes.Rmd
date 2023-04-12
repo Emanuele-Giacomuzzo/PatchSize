@@ -1,30 +1,29 @@
 ---
-title: "size_classes_patches_small"
+title: "Large patches - size classes"
 output: html_document
-date: "2022-12-05"
+date: "2022-12-21"
 editor_options: 
   chunk_output_type: console
 ---
 
-##### Means & 95% CI
+##### Means
 
 ```{r}
 for(size_class_input in 1:n_size_classes){
   
   print(plot.patches.classes.points(patch_type_input,
-                                    size_class_input))
+                            size_class_input))
   
 }
 ```
 
-
-##### Effect sizes
+##### ES
 
 ```{r}
 for(size_class_input in 1:n_size_classes){
   
   print(plot.patches.classes.points.ES(patch_type_input,
-                                       size_class_input))
+                            size_class_input))
   
 }
 ```

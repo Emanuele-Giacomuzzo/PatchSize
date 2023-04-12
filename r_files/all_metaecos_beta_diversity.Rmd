@@ -10,10 +10,16 @@ editor_options:
 response_variable = "bray_curtis"
 ```
 
-```{r}
-plot.metaecos.boxplots(metaecosystem_type_input,
-                       response_variable)
+##### Means
 
-plot.metaecos.points(metaecosystem_type_input,
+```{r}
+plot.metaecos.points(ds_metaecosystems, metaecosystem_type_input,
                      response_variable)
+```
+
+##### Boxplots
+
+```{r}
+plot.metaecos.boxplots(ds_metaecosystems, metaecosystem_type_input,
+                       response_variable)
 ```

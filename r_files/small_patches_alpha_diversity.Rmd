@@ -1,5 +1,5 @@
 ---
-title: "small_patches"
+title: "large_patches"
 author: "Emanuele Giacomuzzo"
 date: "2022-10-17"
 output: html_document
@@ -7,132 +7,98 @@ editor_options:
   chunk_output_type: console
 ---
 
-##### Time - Biomass
-
 ```{r}
 response_variable = "shannon"
 ```
 
+##### Means
+
 ```{r}
-plot.patches.boxplots(patch_type_input,
+plot.patches.points(ds_patches, patch_type_input,
                        response_variable)
-
-p_small_patches_alpha = plot.patches.points(patch_type_input,
-                       response_variable)
-
-p_small_patches_alpha
 ```
 
 *Analysis*
 
 -   Filter data
 
-```{r eval = FALSE}
-filtered_data = ds_patches %>%
-  filter(
-    metaecosystem == "no",
-    time_point >= first_time_point_model,
-    time_point <= last_time_point_model
-  )
+```{r}
+
+patch_type_input_model = c("Large connected to large",
+                                 "Large connected to small")
+
+filtered_data = ds_patches_effect_size %>%
+                         filter(time_point >= first_time_point_model,
+                                time_point <= last_time_point_model,
+                                patch_type %in% patch_type_input_model)
 ```
 
 -   Full model
 
 ```{r eval = FALSE}
-full_model = lmer(
-  shannon ~
-    day +
-    patch_size_ml +
-    patch_size_ml : day +
-    baseline_shannon + 
-    baseline_shannon : day +
-    (day | culture_ID),
-  data = filtered_data,
-  REML = FALSE,
-  control = lmerControl(optimizer = "Nelder_Mead")
-)
+full_model = lm(shannon_d ~                  
+                  patch_type +
+                  patch_type : day,
+                  data = filtered_data)
 
 summary(full_model)
-plot(full_model)
-qqnorm(resid(full_model))
+par(mfrow = c(2,3))
+plot(full_model, which = 1:5)
 ```
 
--   ...
+-   Effects of `patch_type`
 
 ```{r eval = FALSE}
-null_model = lmer(
-  shannon ~
-    day +
-    patch_size_ml : day +
-    baseline_shannon + 
-    baseline_shannon : day +
-    (day | culture_ID),
-  data = filtered_data,
-  REML = FALSE,
-  control = lmerControl(optimizer = "Nelder_Mead")
-)
+null_model = lm(shannon_d ~                  
+                  patch_type : day,
+                  data = filtered_data)
 
 summary(null_model)
-plot(null_model)
-qqnorm(resid(null_model))
+par(mfrow = c(2,3))
+plot(null_model, which = 1:5)
 stats = compute.model.stats(full_model,
-                            null_model,
-                            "mixed_model")
+                    null_model,
+                    "linear_model")
 
 stats
 ```
 
--   ...
+-   Effects of `patch_type : day`
 
 ```{r eval = FALSE}
-null_model = lmer(
-  shannon ~
-    day +
-    patch_size_ml +
-    baseline_shannon + 
-    baseline_shannon : day +
-    (day | culture_ID),
-  data = filtered_data,
-  REML = FALSE,
-  control = lmerControl(optimizer = "Nelder_Mead")
-)
+null_model = lm(shannon_d ~                  
+                  patch_type,
+                  data = filtered_data)
 
 summary(null_model)
-plot(null_model)
-qqnorm(resid(null_model))
+par(mfrow = c(2,3))
+plot(null_model, which = 1:5)
 stats = compute.model.stats(full_model,
-                            null_model,
-                            "mixed_model")
+                    null_model,
+                    "linear_model")
 
-stats
-
-results_small_patches_shannon_patch_type_day = paste0(
-  "Interaction between size of the connected patch and day on the shannon effect size in small patches: ",
+results_large_patches_shannon_patch_type_day = paste0(
+  "Effect of the interaction between size of the connected patch and day on shannon effect size in small patches: ",
   "P value = ", 
-  model_stats$p_value, 
+  stats$p_value, 
   ", ΔAIC = ", 
-  model_stats$deltaAIC, 
+  stats$deltaAIC, 
   ", R2 = ", 
-  model_stats$R2)
-results_small_patches_shannon_patch_type_day
+  stats$R2)
+
+results_large_patches_shannon_patch_type_day
 ```
 
-##### Patch size - Biomass {.tabset .tabset-pills}
-
-###### Isolated
+##### Boxplots
 
 ```{r}
-plot.patches.size.response.boxplots(metaecosystem_input = "no",
-                                  trophic_type_input = "NA",
-                                  flow_input = "NA",
-                                  response_variable = response_variable)
+plot.patches.boxplots(patch_type_input,
+                       response_variable)
 ```
 
-###### Connected
+##### ES
 
 ```{r}
-plot.patches.size.response.boxplots(metaecosystem_input = "yes",
-                                  trophic_type_input = "NA",
-                                  flow_input = "NA",
-                                  response_variable = response_variable)
+plot.patches.points.ES(ds_patches_effect_size, patch_type_input,
+                       paste0(response_variable, "_d"))
 ```

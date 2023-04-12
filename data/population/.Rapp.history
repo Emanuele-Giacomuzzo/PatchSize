@@ -1,2 +1,3 @@
 load("/Users/ema/Documents/GitHub/PatchSizePilot/data/population/t1.RData")
 load("/Users/ema/Documents/GitHub/PatchSizePilot/data/population/t0.RData")
+load("/Users/ema/Documents/GitHub/PatchSizePilot/data/population/t6.RData")

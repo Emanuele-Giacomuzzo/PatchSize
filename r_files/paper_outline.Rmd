@@ -6,31 +6,41 @@ date: "2023-02-15"
 
 **INTRODUCTION**
 
--   Needs to study patch function
+-   Meta-ecosystem function
 
-    -   Need to study of patch function for patch services
+    -   Need to study ecosystem function to understand human impact, improve management, and keep having ecosystem services
 
-    -   Need to study of patch function to understand human impact on patches
+    -   We are moving away from the single patch perspective of ecosystem function
 
-    -   Need to study of patch function to develop patch managment
+    -   One of the things we started studying which has an influence on function is the movement of non-living material
 
-    -   Need to understand patch function at a landscape scale
+    -   The study of how flows of non-living material is starting to show us how important they are for ecosystem function
+
+-   Ecosystem size
+
+    -   But the study of non-living material flows has not considered the size of ecosystems
+
+    -   Ecosystem size has an effect on the permeability of subsidies
+
+    -   Ecosystem size has an effect on the production of subsidies
+
+    -   Therefore I run a protist experiment to see the effects of such flows.
 
 -   Flow of resources in determining patch function
 
     -   Effects of resource flow on patch function
 
-    -   Introduce the concept of meta-patch
+    -   Introduce the concept of meta-ecosystem
 
--   Impact of patch size on meta-patch function
+-   Impact of patch size on meta-ecosystem function
 
-    -   Lack of studies on how patch size influences meta-patch function
+    -   Lack of studies on how patch size influences meta-ecosystem function
 
     -   Donor patch size
 
     -   Receiving patch size
 
--   Experiment to test patch size effects on meta-patch function
+-   Experiment to test patch size effects on meta-ecosystem function
 
     -   Protist microcosm experiment
 
@@ -40,7 +50,7 @@ date: "2023-02-15"
 
 -   Conclusion
 
-    -   Effects of resource flow on meta-patch function depend on patch size
+    -   Effects of resource flow on meta-ecosystem function depend on patch size
 
     -   Importance of understanding patch function at a landscape scale for preservation in face of global change.
 
@@ -50,8 +60,26 @@ date: "2023-02-15"
 
 **DISCUSSION**
 
--   Meta-ecosystem fail to incorporate patch size
+-   Meta-ecosystem fail to incorporate patch size, but we show that it matters
 
--   Effects of patch symmetry on meta-patch function
+-   Regional level: effect of patch asymmetry
 
--   Effects of patch symmetry on meta-patch biodiversity
+    -   Functional homogenisation:
+
+    -   Biotic homogenisation:
+
+-   Potential effects of
+
+-   Local level: effect of the size of the patch to which the ecosystem is connected to
+
+    -   Function
+
+    -   Biodiversity
+
+-   Novel mechanism of disturbance on scaling up ecosystem function.
+
+-   Flow of non-living material can change the stability of ecosystems by changing the biodiversity of the landscape (first time meta-ecosystems shown to influence biodiversity?). They increase the stability of ecosystems by increasing alpha diversity, but decrease it by decreasing beta diversity.
+
+**Conclusion**
+
+-   Patch size matters at both regional and local level

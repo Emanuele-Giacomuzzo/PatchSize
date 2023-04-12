@@ -1,0 +1,138 @@
+---
+title: "small_patches"
+author: "Emanuele Giacomuzzo"
+date: "2022-10-17"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+##### Time - Biomass
+
+```{r}
+response_variable = "shannon"
+```
+
+```{r}
+plot.patches.boxplots(patch_type_input,
+                       response_variable)
+
+p_small_patches_alpha = plot.patches.points(ds_patches, patch_type_input,
+                       response_variable)
+
+p_small_patches_alpha
+```
+
+*Analysis*
+
+-   Filter data
+
+```{r eval = FALSE}
+filtered_data = ds_patches %>%
+  filter(
+    metaecosystem == "no",
+    time_point >= first_time_point_model,
+    time_point <= last_time_point_model
+  )
+```
+
+-   Full model
+
+```{r eval = FALSE}
+full_model = lmer(
+  shannon ~
+    day +
+    patch_size_ml +
+    patch_size_ml : day +
+    baseline_shannon + 
+    baseline_shannon : day +
+    (day | culture_ID),
+  data = filtered_data,
+  REML = FALSE,
+  control = lmerControl(optimizer = "Nelder_Mead")
+)
+
+summary(full_model)
+plot(full_model)
+qqnorm(resid(full_model))
+```
+
+-   ...
+
+```{r eval = FALSE}
+null_model = lmer(
+  shannon ~
+    day +
+    patch_size_ml : day +
+    baseline_shannon + 
+    baseline_shannon : day +
+    (day | culture_ID),
+  data = filtered_data,
+  REML = FALSE,
+  control = lmerControl(optimizer = "Nelder_Mead")
+)
+
+summary(null_model)
+plot(null_model)
+qqnorm(resid(null_model))
+stats = compute.model.stats(full_model,
+                            null_model,
+                            "mixed_model")
+
+stats
+```
+
+-   ...
+
+```{r eval = FALSE}
+null_model = lmer(
+  shannon ~
+    day +
+    patch_size_ml +
+    baseline_shannon + 
+    baseline_shannon : day +
+    (day | culture_ID),
+  data = filtered_data,
+  REML = FALSE,
+  control = lmerControl(optimizer = "Nelder_Mead")
+)
+
+summary(null_model)
+plot(null_model)
+qqnorm(resid(null_model))
+stats = compute.model.stats(full_model,
+                            null_model,
+                            "mixed_model")
+
+stats
+
+results_small_patches_shannon_patch_type_day = paste0(
+  "Interaction between size of the connected patch and day on the shannon effect size in small patches: ",
+  "P value = ", 
+  model_stats$p_value, 
+  ", ΔAIC = ", 
+  model_stats$deltaAIC, 
+  ", R2 = ", 
+  model_stats$R2)
+results_small_patches_shannon_patch_type_day
+```
+
+##### Patch size - Biomass {.tabset .tabset-pills}
+
+###### Isolated
+
+```{r}
+plot.patches.size.response.boxplots(metaecosystem_input = "no",
+                                  trophic_type_input = "NA",
+                                  flow_input = "NA",
+                                  response_variable = response_variable)
+```
+
+###### Connected
+
+```{r}
+plot.patches.size.response.boxplots(metaecosystem_input = "yes",
+                                  trophic_type_input = "NA",
+                                  flow_input = "NA",
+                                  response_variable = response_variable)
+```

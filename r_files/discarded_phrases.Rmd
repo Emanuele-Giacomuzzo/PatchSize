@@ -1,0 +1,15 @@
+---
+title: "discarded"
+output: html_document
+date: "2023-04-05"
+---
+
+Two meta-ecosystems of the same total volume but of patches of different size were constructed. The first meta-ecosystem was composed of a small and a large patch (small-large meta-ecosystem). The other meta-ecosystem was composed of two medium patches (medium-medium meta-ecosystem). All patches started with the same protist community (nine water ciliates, one alga, and one rotifer). Non-living material flowed bidirectionally between the two patches, with the same magnitude. Non-living material flows were created by boiling a fixed volume of the community and poring it into the receiving patch. This caused small patches to be more disturbed than medium patches and medium patches be more disturbed than large patches. No dispersal occurred throughout the experiment. We additionally created also the following control treatments: isolated small, medium, and large patches, as well as meta-ecosystems with two small patches (small-small meta-ecosystems), meta-ecosystems with two medium patches (medium-medium meta-ecosystems), and meta-ecosystems with two large patches (large-large meta-ecosystems).
+
+The inflow of non-living material coming from a productive patch have already been shown to be beneficial for the functioning of patches under perturbations (@Colombo2021). Therefore, small patches that receive a lot of non-living material will recover better from the perturbations that cause resource flow, meanwhile the larger patches will recover worse. The effects of resource flow on meta-ecosystem function will depend on how much large patches increase the function of the small patches and how much the small patches decrease the function of the large patches.
+
+We here refer to biomass production as patch function, which we use interchangeably. 
+
+Also, as larger patches are more resistant (@Greig2022), they will produce less detritus. This is why we can actually kind of assume that other types of distrubance which are not exactly killing the same amount of individuals will have a similar effect, as larger patches are more resistant.
+
+As larger patches are more resistant (@Greig2022), they will need less detritus to counteract the effects of perturbations that is creating resource flow.

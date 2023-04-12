@@ -14,9 +14,9 @@ response_variable = "shannon"
 plot.patches.boxplots(patch_type_input,
                        response_variable)
 
-plot.patches.points(patch_type_input,
+plot.patches.points(ds_patches, patch_type_input,
                        response_variable)
 
-plot.patches.points.ES(patch_type_input,
+plot.patches.points.ES(ds_patches_effect_size, patch_type_input,
                        paste0(response_variable, "_d"))
 ```

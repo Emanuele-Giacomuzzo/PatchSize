@@ -1,5 +1,5 @@
 ---
-title: "Body size distribution: small patches"
+title: "large_patches"
 author: "Emanuele Giacomuzzo"
 date: "2022-09-08"
 output: html_document
@@ -19,7 +19,7 @@ for(time_point_input in 0:7) {
   print(
     ds_classes_effect_size %>%
       filter(disturbance == disturbance_input,
-             patch_type %in% c("Small isolated", "Small connected to small", "Small connected to large"),
+             patch_type %in% c("Large isolated", "Large connected to large", "Large connected to small"),
              day == time_point_input*4) %>%
       ggplot(
         aes(
@@ -42,12 +42,12 @@ for(time_point_input in 0:7) {
         position = position_dodge(0.05)
       ) +
       scale_color_manual(
-        values = c(colour_S,
-                   colour_different_size, 
-                   colour_same_size),
-        labels = c(name_S_isolated,
-                   name_S_connected_to_L,
-                   name_S_connected_to_S)
+        values = c(colour_L,
+                   colour_same_size,
+                   colour_different_size),
+        labels = c(name_L_isolated,
+                   name_L_connected_to_L,
+                   name_L_connected_to_S)
       ) +
       theme_bw() +
       theme(
@@ -77,7 +77,7 @@ for(time_point_input in 0:7) {
   print(
     ds_classes_effect_size %>%
       filter(disturbance == disturbance_input,
-             patch_type %in% c("Small connected to small", "Small connected to large"),
+             patch_type %in% c("Large connected to large", "Large connected to small"),
              day == time_point_input * 4) %>%
       ggplot(
         aes(
@@ -95,9 +95,10 @@ for(time_point_input in 0:7) {
         position = position_dodge(0.5)
       ) +
       scale_color_manual(
-        values = c(colour_different_size, colour_same_size),
-        labels = c(name_S_connected_to_L,
-                   name_S_connected_to_S)
+        values = c(colour_same_size,
+                   colour_different_size),
+        labels = c(name_L_connected_to_L,
+                   name_L_connected_to_S)
       ) +
       theme_bw() +
       theme(

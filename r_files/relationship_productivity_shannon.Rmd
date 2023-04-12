@@ -12,11 +12,33 @@ editor_options:
 
 ```{r}
 ds_patches %>%
-  filter(disturbance == disturbance_input) %>%
   ggplot(aes(x = shannon,
-             y = bioarea_µm2_per_ml)) +
+             y = bioarea_mm2_per_ml)) +
   geom_point()
 ```
+
+Small patches
+
+```{r}
+ds_patches %>%
+  filter(patch_size == "Small") %>%
+  ggplot(aes(x = shannon,
+             y = bioarea_mm2_per_ml,
+             color = patch_type)) +
+  geom_point()
+```
+
+Large
+
+```{r}
+ds_patches %>%
+  filter(patch_size == "Large") %>%
+  ggplot(aes(x = shannon,
+             y = bioarea_mm2_per_ml,
+             color = patch_type)) +
+  geom_point()
+```
+
 
 
 #### Single treatments & time points {.tabset .tabset-pills}

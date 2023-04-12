@@ -9,6 +9,7 @@ response_variable = "median_body_area_µm2"
 ```
 
 ```{r}
-plot.patches.points.ES(patch_type_input,
+plot.patches.points.ES(ds_patches_effect_size, 
+                       patch_type_input,
                        paste0(response_variable, "_d"))
 ```

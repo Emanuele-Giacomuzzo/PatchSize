@@ -52,7 +52,8 @@ treatments_and_controls = data.frame(
     "Large isolated"
   )
 )
-n_of_treatments = nrow(treatments_and_controls)
+n_treatments = length(unique(treatments_and_controls$treatment))
+n_controls = length(unique(treatments_and_controls$control))
 
 #Meta-ecosystems parameters
 system_nr_metaecosystems = culture_info %>%
@@ -77,6 +78,12 @@ first_time_point = 0
 last_time_point = length(sampling_days) - 1
 n_time_points = last_time_point + 1
 nr_videos = c(12,1,1,1,1,1,2,2) #Videos taken for each time point for each culture. At t0 we took 12 videos of the large bottle from which we started the  cultures. Write why 2 at the end. 
+
+videos_taken = data.frame(
+  time_point = 0:7,
+  nr_videos = c(12,1,1,1,1,1,2,2)
+)
+
 n_videos_taken_t0 = nr_videos[1]
 time_point_day = data.frame(
   time_point = first_time_point:last_time_point,
@@ -108,14 +115,16 @@ columns_patches = c(
   "metaecosystem_type"
 )
 
+columns_treatments = columns_patches[!columns_patches %in% c("system_nr", "culture_ID")]
+
 columns_classes = c(columns_patches,
                     "size_class_n",
                     "mean_class_area_µm2")
 
 #Variables whose effect size I want to calculate
 variables_patches = c(
-  "bioarea_µm2_per_ml",
-  "bioarea_tot_µm2",
+  "bioarea_mm2_per_ml",
+  "bioarea_tot_mm2",
   "indiv_per_ml",
   "indiv_tot",
   "species_richness",
@@ -135,7 +144,7 @@ baseline_columns = paste0("baseline_", variables_patches)
 
 #Variables I want to calculate for meta-ecosystems
 variables_metaecos = c(
-  "total_metaecosystem_bioarea",
+  "total_metaecosystem_bioarea_mm2",
   "jaccard_index",
   "bray_curtis",
   "metaecosystem_richness"
@@ -144,6 +153,9 @@ variables_metaecos = c(
 #Modeling parameters. We chose the first time point as 2 because it's after the first disturbance. 
 first_time_point_model = 2
 last_time_point_model = last_time_point
+
+#Size classes
+n_size_classes = 12
 ```
 
 ```{r}
@@ -156,18 +168,20 @@ legend_position = "top"
 
 #Axes names
 axis_names = data.frame(variable = NA,
-                    axis_name= NA) %>%
+                        axis_name= NA) %>%
   add_row(variable = "day", axis_name = "Day") %>%
   add_row(variable = "patch_size_ml", axis_name = "Patch size (ml)") %>%
   add_row(variable = "log_size_class", axis_name = "Log size (μm2)") %>%
   add_row(variable = "class_indiv_per_µl", axis_name = "Density (ind/ml)") %>%
-  add_row(variable = "bioarea_µm2_per_ml", axis_name = "Bioarea Density (µm²/ml)") %>%
-  add_row(variable = "bioarea_µm2_per_ml_d", axis_name = "Bioarea Density ES") %>%
-  add_row(variable = "bioarea_tot", axis_name = "Tot Bioarea (µm²)") %>%
-  add_row(variable = "total_metaecosystem_bioarea", axis_name = "Tot Bioarea (µm²)") %>%
+  add_row(variable = "bioarea_mm2_per_ml", axis_name = "Bioarea Density (mm²/ml)") %>%
+  add_row(variable = "bioarea_mm2_per_ml_d", axis_name = "Bioarea Density ES") %>%
+  add_row(variable = "bioarea_tot", axis_name = "Tot Bioarea (mm²)") %>%
+  add_row(variable = "total_metaecosystem_bioarea_mm2", axis_name = "Tot Bioarea (mm²)") %>%
+  add_row(variable = "species_richness", axis_name = "Species Richness") %>%
+  add_row(variable = "species_richness_d", axis_name = "Species Richness ES") %>%
   add_row(variable = "mean_shannon", axis_name = "α Diversity") %>%
-  add_row(variable = "shannon", axis_name = "α Diversity") %>%
-  add_row(variable = "shannon_d", axis_name = "α Diversity ES") %>%
+  add_row(variable = "shannon", axis_name = "Shannon Index") %>%
+  add_row(variable = "shannon_d", axis_name = "Shannon Index ES") %>%
   add_row(variable = "bray_curtis", axis_name = "β Diversity") %>%
   add_row(variable = "metaecosystem_richness", axis_name = "γ Diversity") %>%
   add_row(variable = "indiv_per_ml", axis_name = "Abundance (ind/ml)") %>%
@@ -185,71 +199,77 @@ axis_names = data.frame(variable = NA,
   add_row(variable = "Spi_indiv_per_ml", axis_name = "Spi Density (ind/ml)") %>%
   add_row(variable = "Spi_te_indiv_per_ml", axis_name = "Spi te Density (ind/ml)") %>%
   add_row(variable = "Tet_indiv_per_ml", axis_name = "Tet Density (ind/ml)") %>%
-  add_row(variable = "Ble_d", axis_name = "Ble Density ES") %>%
-  add_row(variable = "Cep_d", axis_name = "Cep Density ES") %>%
-  add_row(variable = "Col_d", axis_name = "Col Density ES") %>%
-  add_row(variable = "Eug_d", axis_name = "Eug Density ES") %>%
-  add_row(variable = "Eup_d", axis_name = "Eup Density ES") %>%
-  add_row(variable = "Lox_d", axis_name = "Lox Density ES") %>%
-  add_row(variable = "Pau_d", axis_name = "Pau Density ES") %>%
-  add_row(variable = "Pca_d", axis_name = "Pca Density ES") %>%
-  add_row(variable = "Spi_d", axis_name = "Spi Density ES") %>%
-  add_row(variable = "Spi_te_d", axis_name = "Spi te Density ES") %>%
-  add_row(variable = "Tet_d", axis_name = "Tet Density ES") %>%
-  add_row(variable = "Ble_dominance", axis_name = "Ble Dominance (%)") %>%
-  add_row(variable = "Cep_dominance", axis_name = "Cep Dominance (%)") %>%
-  add_row(variable = "Col_dominance", axis_name = "Col Dominance (%)") %>%
-  add_row(variable = "Eug_dominance", axis_name = "Eug Dominance (%)") %>%
-  add_row(variable = "Eup_dominance", axis_name = "Eup Dominance (%)") %>%
-  add_row(variable = "Lox_dominance", axis_name = "Lox Dominance (%)") %>%
-  add_row(variable = "Pau_dominance", axis_name = "Pau Dominance (%)") %>%
-  add_row(variable = "Pca_dominance", axis_name = "Pca Dominance (%)") %>%
-  add_row(variable = "Spi_dominance", axis_name = "Spi Dominance (%)") %>%
-  add_row(variable = "Spi_te_dominance", axis_name = "Spi te Dominance (%)") %>%
-  add_row(variable = "Tet_dominance", axis_name = "Tet Dominance (%)") %>%
-  add_row(variable = "Ble_dominance_d", axis_name = "Ble Dominance ES") %>%
-  add_row(variable = "Cep_dominance_d", axis_name = "Cep Dominance ES") %>%
-  add_row(variable = "Col_dominance_d", axis_name = "Col Dominance ES") %>%
-  add_row(variable = "Eug_dominance_d", axis_name = "Eug Dominance ES") %>%
-  add_row(variable = "Eup_dominance_d", axis_name = "Eup Dominance ES") %>%
-  add_row(variable = "Lox_dominance_d", axis_name = "Lox Dominance ES") %>%
-  add_row(variable = "Pau_dominance_d", axis_name = "Pau Dominance ES") %>%
-  add_row(variable = "Pca_dominance_d", axis_name = "Pca Dominance ES") %>%
-  add_row(variable = "Spi_dominance_d", axis_name = "Spi Dominance ES") %>%
-  add_row(variable = "Spi_te_dominance_d", axis_name = "Spi te Dominance ES") %>%
-  add_row(variable = "Tet_dominance_d", axis_name = "Tet Dominance ES") %>%
+  add_row(variable = "Ble_indiv_per_ml_d", axis_name = "Ble Density ES") %>%
+  add_row(variable = "Cep_indiv_per_ml_d", axis_name = "Cep Density ES") %>%
+  add_row(variable = "Col_indiv_per_ml_d", axis_name = "Col Density ES") %>%
+  add_row(variable = "Eug_indiv_per_ml_d", axis_name = "Eug Density ES") %>%
+  add_row(variable = "Eup_indiv_per_ml_d", axis_name = "Eup Density ES") %>%
+  add_row(variable = "Lox_indiv_per_ml_d", axis_name = "Lox Density ES") %>%
+  add_row(variable = "Pau_indiv_per_ml_d", axis_name = "Pau Density ES") %>%
+  add_row(variable = "Pca_indiv_per_ml_d", axis_name = "Pca Density ES") %>%
+  add_row(variable = "Spi_indiv_per_ml_d", axis_name = "Spi Density ES") %>%
+  add_row(variable = "Spi_te_indiv_per_ml_d", axis_name = "Spi te Density ES") %>%
+  add_row(variable = "Tet_indiv_per_ml_d", axis_name = "Tet Density ES") %>%
+  add_row(variable = "Ble_indiv_per_ml_dominance", axis_name = "Ble Dominance (%)") %>%
+  add_row(variable = "Cep_indiv_per_ml_dominance", axis_name = "Cep Dominance (%)") %>%
+  add_row(variable = "Col_indiv_per_ml_dominance", axis_name = "Col Dominance (%)") %>%
+  add_row(variable = "Eug_indiv_per_ml_dominance", axis_name = "Eug Dominance (%)") %>%
+  add_row(variable = "Eup_indiv_per_ml_dominance", axis_name = "Eup Dominance (%)") %>%
+  add_row(variable = "Lox_indiv_per_ml_dominance", axis_name = "Lox Dominance (%)") %>%
+  add_row(variable = "Pau_indiv_per_ml_dominance", axis_name = "Pau Dominance (%)") %>%
+  add_row(variable = "Pca_indiv_per_ml_dominance", axis_name = "Pca Dominance (%)") %>%
+  add_row(variable = "Spi_indiv_per_ml_dominance", axis_name = "Spi Dominance (%)") %>%
+  add_row(variable = "Spi_te_indiv_per_ml_dominance", axis_name = "Spi te Dominance (%)") %>%
+  add_row(variable = "Tet_indiv_per_ml_dominance", axis_name = "Tet Dominance (%)") %>%
+  add_row(variable = "Ble_indiv_per_ml_dominance_d", axis_name = "Ble Dominance ES") %>%
+  add_row(variable = "Cep_indiv_per_ml_dominance_d", axis_name = "Cep Dominance ES") %>%
+  add_row(variable = "Col_indiv_per_ml_dominance_d", axis_name = "Col Dominance ES") %>%
+  add_row(variable = "Eug_indiv_per_ml_dominance_d", axis_name = "Eug Dominance ES") %>%
+  add_row(variable = "Eup_indiv_per_ml_dominance_d", axis_name = "Eup Dominance ES") %>%
+  add_row(variable = "Lox_indiv_per_ml_dominance_d", axis_name = "Lox Dominance ES") %>%
+  add_row(variable = "Pau_indiv_per_ml_dominance_d", axis_name = "Pau Dominance ES") %>%
+  add_row(variable = "Pca_indiv_per_ml_dominance_d", axis_name = "Pca Dominance ES") %>%
+  add_row(variable = "Sp_indiv_per_mli_dominance_d", axis_name = "Spi Dominance ES") %>%
+  add_row(variable = "Spi_te_indiv_per_ml_dominance_d", axis_name = "Spi te Dominance ES") %>%
+  add_row(variable = "Tet_indiv_per_ml_dominance_d", axis_name = "Tet Dominance ES") %>%
   add_row(variable = "dominance", axis_name = "Dominance (%)") %>%
-  add_row(variable = "log_abundance", axis_name = "Log Abundance + 1 (ind/μm²)") %>%
+  add_row(variable = "log_abundance", axis_name = "Log Abundance + 1 (ind/mm²)") %>%
   add_row(variable = "abundance_hedges_d", axis_name = "Density ES") %>%
   add_row(variable = "beta_diversity_from_isolated", axis_name = "Divergence from isolated") %>%
   add_row(variable = "beta_diversity_from_previous_time", axis_name = "Temporal Divergence") %>%
   add_row(variable = "beta_diversity_from_previous_time_d", axis_name = "Temporal Divergence ES") %>%
   add_row(variable = "evenness_pielou", axis_name = "Evenness") %>%
+  add_row(variable = "evenness_pielou_d", axis_name = "Evenness ES") %>%
   slice(-1)
 
 #Colour for each of the treatments 
-colours_treatments = data.frame(treatment = NA,
-                                colour = NA) %>%
-  add_row(treatment = "Small isolated", colour = "#bdbdbd") %>% 
-  add_row(treatment = "Small connected to small", colour = "#fff7bc") %>%
-  add_row(treatment = "Small connected to large", colour = "#feb24c") %>%
-  add_row(treatment = "Medium isolated", colour = "#737373") %>%
-  add_row(treatment = "Medium connected to medium", colour = "#feb24c") %>%
-  add_row(treatment = "Large isolated", colour = "#000000") %>%
-  add_row(treatment = "Large connected to large", colour = "#fee0d2") %>%
-  add_row(treatment = "Large connected to small", colour = "#67000d") %>%
-  add_row(treatment = "Small-Small meta-ecosystem", colour = "#f7fbff") %>% #Needs to become color-blind friendly
-  add_row(treatment = "Medium-Medium meta-ecosystem", colour = "#1b7837") %>%
-  add_row(treatment = "Medium-Medium isolated", colour = "#d9f0d3") %>%
-  add_row(treatment = "Large-Large meta-ecosystem", colour = "#3182bd") %>% #Needs to become color-blind friendly
-  add_row(treatment = "Small-Large meta-ecosystem", colour = "#762a83") %>%
-  add_row(treatment = "Small-Large isolated", colour = "#e7d4e8") %>%
+parameters_treatments = data.frame(treatment = NA,
+                                colour = NA,
+                                linetype = NA) %>%
+  add_row(treatment = "Small isolated", colour = "#bdbdbd", linetype = "solid") %>% 
+  add_row(treatment = "Small connected to small", colour = "#fff7bc", linetype = "solid") %>%
+  add_row(treatment = "Small connected to large", colour = "#feb24c", linetype = "solid") %>%
+  add_row(treatment = "Medium isolated", colour = "#737373", linetype = "solid") %>%
+  add_row(treatment = "Medium connected to medium", colour = "#feb24c", linetype = "solid") %>%
+  add_row(treatment = "Large isolated", colour = "#000000", linetype = "solid") %>%
+  add_row(treatment = "Large connected to large", colour = "#fee0d2", linetype = "solid") %>%
+  add_row(treatment = "Large connected to small", colour = "#67000d", linetype = "solid") %>%
+  add_row(treatment = "Small-Small meta-ecosystem", colour = "#deebf7", linetype = "solid") %>%
+  add_row(treatment = "Medium-Medium meta-ecosystem", colour = "#1b7837", linetype = "solid") %>%
+  add_row(treatment = "Medium-Medium isolated", colour = "#1b7837", linetype = "dashed") %>%
+  add_row(treatment = "Large-Large meta-ecosystem", colour = "#3182bd", linetype = "solid") %>%
+  add_row(treatment = "Small-Large meta-ecosystem", colour = "#762a83", linetype = "solid") %>%
+  add_row(treatment = "Small-Large isolated", colour = "#762a83", linetype = "dashed") %>%
   slice(-1)
 
+#Mena lines
+treatment_lines_linewidth = 1
+treatment_points_size = 2.5
+
 #Resource flow line & caption
-resource_flow_line_type = "dotdash"
-resource_flow_line_colour = "grey"
-resource_flow_line_width = 0.7
+resource_flow_line_type = "solid"
+resource_flow_line_colour = "#d9d9d9"
+resource_flow_line_width = 0.3
 caption_resource_flow = ""
 
 #Zero line  
@@ -266,6 +286,7 @@ zero_line_ES_line_width = 1
 size_legend = 12
 size_x_axis = 16
 size_y_axis = 11
+legend_width_cm = 2
 
 #Publication 
 publication_width = 12

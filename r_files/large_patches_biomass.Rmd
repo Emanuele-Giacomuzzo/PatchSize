@@ -8,18 +8,15 @@ editor_options:
 ---
 
 ```{r}
-response_variable = "bioarea_µm2_per_ml"
+response_variable = "bioarea_mm2_per_ml"
 ```
 
+##### Means
+
 ```{r}
-plot.patches.boxplots(patch_type_input,
-                       response_variable)
-
-plot.patches.points(patch_type_input,
-                       response_variable)
-
-plot.patches.points.ES(patch_type_input,
-                       paste0(response_variable, "_d"))
+plot.patches.points(ds_patches, 
+                    patch_type_input,
+                    response_variable)
 ```
 
 *Analysis*
@@ -90,4 +87,25 @@ results_large_patches_biomass_patch_type_day = paste0(
   ", R2 = ", 
   stats$R2)
 results_large_patches_biomass_patch_type_day
+```
+
+##### Boxplots
+
+```{r}
+plot.patches.boxplots(patch_type_input,
+                       response_variable)
+```
+
+##### Replicates
+
+```{r}
+plot.patches.replicates(patch_type_input,
+                        response_variable)
+```
+
+##### ES
+
+```{r}
+plot.patches.points.ES(ds_patches_effect_size, patch_type_input,
+                       paste0(response_variable, "_d"))
 ```

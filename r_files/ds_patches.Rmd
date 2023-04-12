@@ -19,9 +19,8 @@ ds_patches = import.protist.pop.data(culture_info,
                                      last_time_point,
                                      protist_species)
 
-test_that("Expected number of rows", {
-  expect_equal(nrow(ds_patches), sum(nr_videos * n_cultures))
-})
+expect_equal(nrow(ds_patches), 
+             sum(nr_videos * n_cultures))
 ```
 
 ```{r}
@@ -30,6 +29,7 @@ ds_patches = ds_patches %>%
   select(time_point,
          day,
          file,
+         video_replicate,
          culture_ID,
          system_nr,
          disturbance,
@@ -39,15 +39,13 @@ ds_patches = ds_patches %>%
          metaecosystem,
          metaecosystem_type,
          bioarea_per_volume,
-         indiv_per_volume,
          all_of(protist_species),
          Ble_main_analysis,
          Cep_main_analysis,
          Spi_main_analysis)
 
-test_that("Expected number of rows", {
-  expect_equal(nrow(ds_patches), sum(nr_videos * n_cultures))
-})
+expect_equal(nrow(ds_patches), 
+             sum(nr_videos * n_cultures))
 ```
 
 ```{r}
@@ -56,21 +54,16 @@ ds_patches = ds_patches %>%
   filter(!(time_point %in% videos_to_take_off$time_point & 
            file %in% videos_to_take_off$file))
 
-test_that("Expected number of rows", {
-  expect_equal(nrow(ds_patches),
-               sum(nr_videos * n_cultures) - nrow(videos_to_take_off))
-})
+expect_equal(nrow(ds_patches),
+             sum(nr_videos * n_cultures) - nrow(videos_to_take_off))
 
 #Take off problematic cultures 
 ds_patches = ds_patches %>%
   filter(! culture_ID %in% patches_to_take_off)
 
-test_that("Expected number of rows", {
-  expect_equal(
-    nrow(ds_patches),
-    sum(nr_videos * n_cultures) - nrow(videos_to_take_off) - (length(patches_to_take_off) * sum(nr_videos))
-  )
-})
+
+expect_equal(nrow(ds_patches),
+               sum(nr_videos * n_cultures) - nrow(videos_to_take_off) - (length(patches_to_take_off) * sum(nr_videos)))
 
 if(TRUE %in% unique(videos_to_take_off$culture_ID == patches_to_take_off)){
   stop("Adjust your testing code, as the number of rows should consider that videos to take off are also in the patches to take off.")
@@ -82,7 +75,6 @@ if(TRUE %in% unique(videos_to_take_off$culture_ID == patches_to_take_off)){
   ds_patches = ds_patches %>%
     rename(
       patch_type = eco_metaeco_type,
-      indiv_per_μL = indiv_per_volume,
       bioarea_µm2_per_μL = bioarea_per_volume,
       patch_size_ml = patch_size_volume
     ) %>%
@@ -169,23 +161,62 @@ ds_patches$size_connected_patch[ds_patches$patch_type == "Large connected to sma
 
 #Change all the measures to ml
 ds_patches = ds_patches %>%
-  mutate(bioarea_µm2_per_ml = bioarea_µm2_per_μL * 1000,
-         indiv_per_ml = indiv_per_μL * 1000,
-         Ble_indiv_per_ml = Ble_indiv_per_μL * 1000,
-         Cep_indiv_per_ml = Cep_indiv_per_μL * 1000,
-         Col_indiv_per_ml = Col_indiv_per_μL * 1000,
-         Eug_indiv_per_ml = Eug_indiv_per_μL * 1000,
-         Eup_indiv_per_ml = Eup_indiv_per_μL * 1000,
-         Lox_indiv_per_ml = Lox_indiv_per_μL * 1000,
-         Pau_indiv_per_ml = Pau_indiv_per_μL * 1000,
-         Pca_indiv_per_ml = Pca_indiv_per_μL * 1000,
-         Spi_indiv_per_ml = Spi_indiv_per_μL * 1000,
-         Spi_te_indiv_per_ml = Spi_te_indiv_per_μL * 1000,
-         Tet_indiv_per_ml = Tet_indiv_per_μL * 1000)
+  mutate(bioarea_µm2_per_ml = bioarea_µm2_per_μL * (10^3),
+         bioarea_mm2_per_ml = bioarea_µm2_per_ml / (10^6),
+         Ble_indiv_per_ml = Ble_indiv_per_μL * (10^3),
+         Cep_indiv_per_ml = Cep_indiv_per_μL * (10^3),
+         Col_indiv_per_ml = Col_indiv_per_μL * (10^3),
+         Eug_indiv_per_ml = Eug_indiv_per_μL * (10^3),
+         Eup_indiv_per_ml = Eup_indiv_per_μL * (10^3),
+         Lox_indiv_per_ml = Lox_indiv_per_μL * (10^3),
+         Pau_indiv_per_ml = Pau_indiv_per_μL * (10^3),
+         Pca_indiv_per_ml = Pca_indiv_per_μL * (10^3),
+         Spi_indiv_per_ml = Spi_indiv_per_μL * (10^3),
+         Spi_te_indiv_per_ml = Spi_te_indiv_per_μL * (10^3),
+         Tet_indiv_per_ml = Tet_indiv_per_μL * (10^3))
+```
+
+```{r}
+#Rearrange
+ds_patches = ds_patches %>%
+  select(time_point,
+         day,
+         file,
+         video_replicate,
+         culture_ID,
+         system_nr,
+         disturbance,
+         patch_type,
+         patch_size,
+         patch_size_ml,
+         size_connected_patch,
+         metaecosystem,
+         metaecosystem_type,
+         bioarea_mm2_per_ml,
+         all_of(protist_species_indiv_per_ml))
+```
+
+```{r}
+### Average videos
+ds_patches = ds_patches %>%
+  group_by(across(all_of(columns_patches))) %>%
+  summarise(across(contains("_per_ml"), mean),
+            across(contains("_tot"), mean)) %>%
+  ungroup()
+
+expect_equal(nrow(ds_patches),
+             (n_cultures - length(patches_to_take_off)) * length(time_points))
+```
+
+```{r}
+
+#Calculate individuals per ml (based on a combination of the two analyses). 
+ds_patches = ds_patches %>%
+  mutate(indiv_per_ml = !!rlang::parse_expr(paste(paste0(protist_species, "_indiv_per_ml"), collapse = " + ")))
 
 #Calculate total response variable for the whole patch
 ds_patches = ds_patches %>%
-  mutate(bioarea_tot_µm2 = bioarea_µm2_per_ml * patch_size_ml,
+  mutate(bioarea_tot_mm2 = bioarea_mm2_per_ml * patch_size_ml,
          indiv_tot = indiv_per_ml * patch_size_ml,
          Ble_tot_indiv = Ble_indiv_per_ml * patch_size_ml,
          Cep_tot_indiv = Cep_indiv_per_ml * patch_size_ml,
@@ -199,9 +230,6 @@ ds_patches = ds_patches %>%
          Spi_te_tot_indiv = Spi_te_indiv_per_ml * patch_size_ml,
          Tet_tot_indiv = Tet_indiv_per_ml * patch_size_ml)
 
-#Calculate individuals per ml (based on a combination of the two analyses).
-ds_patches = ds_patches %>%
-  mutate(indiv_per_ml = !!rlang::parse_expr(paste(paste0(protist_species, "_indiv_per_ml"), collapse = " + ")))
 
 #Calculate species dominance
 ds_patches = ds_patches %>%
@@ -209,48 +237,12 @@ ds_patches = ds_patches %>%
                 list(dominance = ~ (. / indiv_per_ml) * 100), 
                 .names = "{col}_dominance"))
 
-test_that("Check that species dominance is NaN when the cultures collapsed.",{
-  expect_equal(unique(ds_patches$Ble_indiv_per_ml_dominance[ds_patches$indiv_per_ml == 0]),
-                         NaN)})
+expect_equal(unique(ds_patches$Ble_indiv_per_ml_dominance[ds_patches$indiv_per_ml == 0]),
+             NaN)
 ```
 
 ```{r}
-#Rearrange
-ds_patches = ds_patches %>%
-  select(time_point,
-         day,
-         file,
-         culture_ID,
-         system_nr,
-         disturbance,
-         patch_type,
-         patch_size,
-         patch_size_ml,
-         size_connected_patch,
-         metaecosystem,
-         metaecosystem_type,
-         bioarea_µm2_per_ml,
-         bioarea_tot_µm2,
-         indiv_per_ml,
-         indiv_tot,
-         all_of(protist_species_indiv_per_ml),
-         all_of(protist_species_total),
-         all_of(protist_species_dominance))
-```
-
-```{r}
-### Average videos
-ds_patches = ds_patches %>%
-  group_by(across(all_of(columns_patches))) %>%
-  summarise(across(contains("_per_ml"), mean),
-            across(contains("_tot"), mean)) %>%
-  ungroup()
-
-test_that("Check that the averaging worked well.",{
-  expect_equal(nrow(ds_patches),
-               (n_cultures - length(patches_to_take_off)) * length(time_points))})
-
-n_rows_ds_patches = nrow(ds_patches)
+n_rows_ds_patches_before_calculations = nrow(ds_patches)
 ```
 
 ```{r}
@@ -258,28 +250,37 @@ n_rows_ds_patches = nrow(ds_patches)
 #This includes shannon, simpson, inv simpson, evenness.
 ds_patches = calculate.alpha.diversity()
 
-test_that("Check that the alpha diversity was calculated right.",{
-  expect_equal(max(ds_patches$species_richness),
-               n_protist_species)})
+expect_equal(max(ds_patches$species_richness),
+             n_protist_species)
+```
 
+```{r eval = recompute_lengthy_analyses }
 #Calculate divergence from isolated. 
 #This is the difference in community composition of each culture from the other isolated cultures (Bray-Curtis). The warning appears because in some cases we are comparing with a communities that has completely crashed and so Bray-Curtis is 1.
-ds_patches = calculate.divergence.from.isolated()
+ds_patches = calculate.treatment.divergence()
 
-test_that("Check that treatmenrt divergence was calculated right.",{
-  expect_true(max(ds_patches$beta_diversity_from_isolated, na.rm = T) <= 1)
-  expect_true(min(ds_patches$beta_diversity_from_isolated, na.rm = T) >= 0)
-})
+expect_true(max(ds_patches$beta_diversity_from_isolated, na.rm = T) <= 1)
+expect_true(min(ds_patches$beta_diversity_from_isolated, na.rm = T) >= 0)
 
+saveRDS(ds_patches, file = here("results", "ds_patches_w_treatment_divergence.RData"))
+```
+
+```{r}
+ds_patches = readRDS(here("results", "ds_patches_w_treatment_divergence.RData"))
+```
+
+Warning appear after the following code, as beta diversity is computed for a culture between when it totally crashed and its previous time point. Because the culture is totally crashed, the Bray-Curtis index is 1.
+
+```{r}
 #Calculate temporal divergence. 
-#This is the difference in community composition of each culture from its previous time point (Bray-Curtis). The warning appears because in some cases we are comparing with a communities that has completely crashed and so Bray-Curtis is 1. 
+#This is the difference in community composition of each culture from its previous time point (Bray-Curtis).
 ds_patches = calculate.temporal.divergence()
 
-test_that("Check that temporal divergence was calculated right.",{
-  expect_true(max(ds_patches$beta_diversity_from_previous_time, na.rm = T) <= 1)
-  expect_true(min(ds_patches$beta_diversity_from_previous_time, na.rm = T) >= 0)
-})
+expect_true(max(ds_patches$beta_diversity_from_previous_time, na.rm = T) <= 1)
+expect_true(min(ds_patches$beta_diversity_from_previous_time, na.rm = T) >= 0)
+```
 
+```{r}
 #Calculate median body size
 ds_median_body_size = ds_individuals %>%
   group_by(time_point,
@@ -290,16 +291,15 @@ ds_median_body_size = ds_individuals %>%
            culture_ID) %>%
   summarise(median_body_area_µm2 = mean(median_body_area_µm2))
 
-test_that("Check that the median body size is calculated right.",{
-  expect_true(nrow(ds_median_body_size) <= nrow(ds_patches))
-})
+expect_true(nrow(ds_median_body_size) <= nrow(ds_patches))
 
 ds_patches = full_join(ds_patches, ds_median_body_size)
 
-test_that("Check that the number of rows didn't change.",{
-  expect_equal(nrow(ds_patches),
-               n_rows_ds_patches)})
+expect_equal(nrow(ds_patches),
+             n_rows_ds_patches_before_calculations)
+```
 
+```{r}
 #Calculate baselines. 
 #To consider the initial values for different cultures when analyzing their temporal trends, we add baselines from time point 1. These baselines are used because at time point 0, we only measured the community of the large bottle that the experiment was assembled from. Additionally, the first perturbation had already occurred by time point 2, which is the starting point for our models.
 baselines <- ds_patches %>%
@@ -310,10 +310,10 @@ baselines <- ds_patches %>%
 
 ds_patches = full_join(ds_patches, baselines)
 
-test_that("Check that the number of rows didn't change.",{
-  expect_equal(nrow(ds_patches),
-               n_rows_ds_patches)})
+expect_equal(nrow(ds_patches),
+             n_rows_ds_patches_before_calculations)
 ```
+
 
 ```{r}
 #Finalise the dataset by arranging the columns in the order that makes the most sense.
@@ -323,4 +323,9 @@ ds_patches = ds_patches %>%
     variables_patches,
     baseline_columns
   )))
+```
+
+
+```{r}
+save(ds_patches, file = here("results", "ds", "ds_patches.RData"))
 ```

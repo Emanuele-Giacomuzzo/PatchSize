@@ -1,0 +1,32 @@
+---
+title: "Untitled"
+output: html_document
+date: "2023-02-11"
+editor_options: 
+  chunk_output_type: console
+---
+
+By time point
+
+```{r}
+for(time_point_input in first_time_point:last_time_point) {
+  
+  print(paste("Time point: ", time_point_input))
+  
+  print(
+    plot.patches.species.composition.stacked(patch_type_input,
+                                             time_point_input)
+  )
+  
+}
+```
+
+By treatment
+
+```{r}
+plot.patches.species.composition.stacked.time("Small isolated")
+```
+
+```{r}
+plot.patches.species.composition.stacked.time("Small connected to large")
+```

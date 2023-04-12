@@ -6,7 +6,7 @@ editor_options:
   chunk_output_type: console
 ---
 
-##### Mean +- 95% CI
+##### Means
 
 ```{r}
 for(size_class_input in 1:n_size_classes){

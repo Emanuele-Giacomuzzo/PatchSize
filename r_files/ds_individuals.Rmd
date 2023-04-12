@@ -15,14 +15,16 @@ ds_individuals = import.protist.morph.data(culture_info,
 
 ```{r}
 #Take off problematic videos
+ds_individuals_before_taking_off_videos = ds_individuals
+
 ds_individuals = ds_individuals %>%
   filter(!(time_point %in% videos_to_take_off$time_point & 
            file %in% videos_to_take_off$file))
 
-test_that("Test you took off the right videos.", {
-  expect_equal(nrow(videos_to_take_off),
-               nrow(expand.grid(diff$culture_ID, diff$time_point, diff$file) %>% unique()))
-})
+diff = setdiff(ds_individuals_before_taking_off_videos, ds_individuals)
+
+expect_equal(nrow(videos_to_take_off),
+             nrow(expand.grid(diff$culture_ID, diff$time_point, diff$file) %>% unique()))
 
 #Take off problematic cultures 
 ds_individuals_before_taking_off_cultures = ds_individuals
@@ -30,10 +32,9 @@ ds_individuals_before_taking_off_cultures = ds_individuals
 ds_individuals = ds_individuals %>%
   filter(! culture_ID %in% patches_to_take_off)
 
-test_that("Test you took off the right cultures.", {
-  expect_equal(setdiff(ds_individuals_before_taking_off_cultures, ds_individuals) %>% pull(culture_ID) %>% unique(),
-               patches_to_take_off)
-})
+
+expect_equal(setdiff(ds_individuals_before_taking_off_cultures, ds_individuals) %>% pull(culture_ID) %>% unique(),
+             patches_to_take_off)
 ```
 
 ```{r}
@@ -88,6 +89,7 @@ ds_individuals = ds_individuals %>%
     select(time_point,
            day, 
            file, 
+           video_replicate,
            disturbance, 
            culture_ID, 
            system_nr, 
@@ -100,4 +102,8 @@ ds_individuals = ds_individuals %>%
            body_area_µm2,
            N_frames
            )
+```
+
+```{r}
+save(ds_individuals, file = here("results", "ds", "ds_individuals.RData"))
 ```

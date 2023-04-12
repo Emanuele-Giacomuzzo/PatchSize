@@ -7,30 +7,116 @@ editor_options:
 ---
 
 ```{r}
-response_variable = "bioarea_µm2_per_ml"
+response_variable = "bioarea_mm2_per_ml"
 ```
 
 ```{r}
-p_connected_biomass_effect_size = plot.patches.points.ES(patch_type_input,
-                                                         paste0(response_variable, "_d"))
-
-p_connected_biomass_effect_size
+p_connected_biomass_effect_size = plot.patches.points.ES(ds_patches_effect_size, 
+                                                         patch_type_input,
+                                                         paste0(response_variable, "_d")) %>%
+  print()
 ```
 
-**Analysis**
-
-The analysis of the biomass effect size of small connected to large and large connected to small here is on the effect size also of large connected to large and small connected to small. The figure is this:
+##### Small
 
 ```{r}
-patch_type_input_model = c(
-  "Small connected to small",
-  "Small connected to large",
-  "Large connected to large",
-  "Large connected to small"
-)
+patch_type_input_model = c("Small connected to small",
+                           "Small connected to large")
 ```
 
 ```{r}
-plot.patches.points.ES(patch_type_input_model,
+filtered_data = ds_patches_effect_size %>%
+                         filter(time_point >= first_time_point_model,
+                                time_point <= last_time_point_model,
+                                patch_type %in% patch_type_input_model)
+```
+
+```{r}
+plot.patches.points.ES(filtered_data, 
+                       patch_type_input_model,
                        paste0(response_variable, "_d"))
+```
+
+**Construct full model**
+
+```{r}
+full_model = lm(get(paste0(response_variable, "_d")) ~
+                  size_connected_patch +
+                  size_connected_patch : day,
+                data = filtered_data)
+```
+
+```{r}
+summary(full_model)
+par(mfrow = c(2, 3))
+plot(full_model, which = 1:5)
+```
+
+**Test `size_connected_patch` and `size_connected_patch : day`**
+
+```{r}
+null_model = lm(get(paste0(response_variable, "_d")) ~
+                  1,
+                data = filtered_data)
+
+summary(null_model)
+par(mfrow = c(2, 3))
+plot(full_model, which = 1:5)
+stats = compute.model.stats(full_model,
+                            null_model,
+                            "linear_model")
+
+stats
+```
+
+##### Large
+
+```{r}
+patch_type_input_model = c("Large connected to small",
+                           "Large connected to large")
+```
+
+```{r}
+filtered_data = ds_patches_effect_size %>%
+                         filter(time_point >= first_time_point_model,
+                                time_point <= last_time_point_model,
+                                patch_type %in% patch_type_input_model)
+```
+
+```{r}
+plot.patches.points.ES(filtered_data, 
+                       patch_type_input_model,
+                       paste0(response_variable, "_d"))
+```
+
+**Construct full model**
+
+```{r}
+full_model = lm(get(paste0(response_variable, "_d")) ~
+                  size_connected_patch +
+                  size_connected_patch : day,
+                data = filtered_data)
+```
+
+```{r}
+summary(full_model)
+par(mfrow = c(2, 3))
+plot(full_model, which = 1:5)
+```
+
+**Test `size_connected_patch` and `size_connected_patch : day`**
+
+```{r}
+null_model = lm(get(paste0(response_variable, "_d")) ~
+                  1,
+                data = filtered_data)
+
+summary(null_model)
+par(mfrow = c(2, 3))
+plot(full_model, which = 1:5)
+stats = compute.model.stats(full_model,
+                            null_model,
+                            "linear_model")
+
+stats
 ```

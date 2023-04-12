@@ -1,25 +1,21 @@
 ---
-title: "Patch biomass: small patches"
+title: "large_patches"
 author: "Emanuele Giacomuzzo"
-date: "2022-08-02"
+date: "2022-08-03"
 output: html_document
-editor_options:
+editor_options: 
   chunk_output_type: console
 ---
 
 ```{r}
-response_variable = "bioarea_µm2_per_ml"
+response_variable = "bioarea_mm2_per_ml"
 ```
 
+##### Means
+
 ```{r}
-plot.patches.boxplots(patch_type_input,
+plot.patches.points(ds_patches, patch_type_input,
                        response_variable)
-
-plot.patches.points(patch_type_input,
-                       response_variable)
-
-plot.patches.points.ES(patch_type_input,
-                       paste0(response_variable, "_d"))
 ```
 
 *Analysis*
@@ -28,8 +24,8 @@ plot.patches.points.ES(patch_type_input,
 
 ```{r}
 
-patch_type_input_model = c("Small connected to small",
-                                 "Small connected to large")
+patch_type_input_model = c("Large connected to large",
+                                 "Large connected to small")
 
 filtered_data = ds_patches_effect_size %>%
                          filter(time_point >= first_time_point_model,
@@ -59,12 +55,12 @@ null_model = lm(bioarea_µm2_per_ml_d ~
 
 summary(null_model)
 par(mfrow = c(2,3))
-plot(null_model, which = 1:5)
-model_stats = compute.model.stats(full_model,
+plot(full_model, which = 1:5)
+stats = compute.model.stats(full_model,
                     null_model,
                     "linear_model")
 
-model_stats
+print(paste0("P value = ", stats$p_value, ", ΔAIC = ", stats$deltaAIC, ", R2 = ", stats$R2))
 ```
 
 -   Effects of `patch_type : day`
@@ -76,20 +72,32 @@ null_model = lm(bioarea_µm2_per_ml_d ~
 
 summary(null_model)
 par(mfrow = c(2,3))
-plot(null_model, which = 1:5)
-model_stats = compute.model.stats(full_model,
+plot(full_model, which = 1:5)
+stats = compute.model.stats(full_model,
                     null_model,
                     "linear_model")
 
-model_stats
-
-results_small_patches_biomass_patch_type_day = paste0(
-  "Interaction between size of the connected patch and day on the biomass effect size in small patches: ",
+results_large_patches_biomass_patch_type_day = paste0(
+  "Interaction between size of the connected patch and day on the biomass effect size in large patches: ",
   "P value = ", 
-  model_stats$p_value, 
+  stats$p_value, 
   ", ΔAIC = ", 
-  model_stats$deltaAIC, 
+  stats$deltaAIC, 
   ", R2 = ", 
-  model_stats$R2)
-results_small_patches_biomass_patch_type_day
+  stats$R2)
+results_large_patches_biomass_patch_type_day
+```
+
+##### Boxplots
+
+```{r}
+plot.patches.boxplots(patch_type_input,
+                       response_variable)
+```
+
+##### ES
+
+```{r}
+plot.patches.points.ES(ds_patches_effect_size, patch_type_input,
+                       paste0(response_variable, "_d"))
 ```

@@ -6,15 +6,9 @@ editor_options:
   chunk_output_type: console
 ---
 
-```{r}
-patch_type_input = c(
-      #"Small isolated",
-      #"Medium isolated",
-      "Large isolated",
-      #"Small connected to large"
-      "Large connected to small"
-    )
+##### Richness - Productivity
 
+```{r}
 for (time_point_input in 1:7) {
   p = ds_patches %>%
     filter(patch_type %in% patch_type_input,
@@ -35,7 +29,11 @@ for (time_point_input in 1:7) {
   print(p)
   
 }
+```
 
+##### Shannon - Productivity
+
+```{r}
 ds_patches %>%
     filter(patch_type %in% patch_type_input,
            species_richness < 11) %>%

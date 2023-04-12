@@ -11,15 +11,11 @@ editor_options:
 response_variable = "shannon"
 ```
 
+##### Means
+
 ```{r}
-plot.patches.boxplots(patch_type_input,
+plot.patches.points(ds_patches, patch_type_input,
                        response_variable)
-
-plot.patches.points(patch_type_input,
-                       response_variable)
-
-plot.patches.points.ES(patch_type_input,
-                       paste0(response_variable, "_d"))
 ```
 
 *Analysis*
@@ -91,4 +87,18 @@ results_large_patches_shannon_patch_type_day = paste0(
   stats$R2)
 
 results_large_patches_shannon_patch_type_day
+```
+
+##### Boxplots
+
+```{r}
+plot.patches.boxplots(patch_type_input,
+                       response_variable)
+```
+
+##### ES
+
+```{r}
+plot.patches.points.ES(ds_patches_effect_size, patch_type_input,
+                       paste0(response_variable, "_d"))
 ```

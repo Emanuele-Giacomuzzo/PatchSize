@@ -26,7 +26,7 @@ for (species_input in protist_species){
   
   response_variable = paste0(species_input, "_indiv_per_ml")
   
-  print(plot.patches.points(patch_type_input,
+  print(plot.patches.points(ds_patches, patch_type_input,
                               response_variable))
   
 }
@@ -39,7 +39,7 @@ for (species_input in protist_species){
   
   response_variable = paste0(species_input, "_indiv_per_ml", "_d")
   
-  print(plot.patches.points.ES(patch_type_input,
+  print(plot.patches.points.ES(ds_patches_effect_size, patch_type_input,
                                response_variable))
   
 }

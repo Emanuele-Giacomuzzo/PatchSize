@@ -2,15 +2,28 @@
 title: "Untitled"
 output: html_document
 date: "2023-02-11"
+editor_options: 
+  chunk_output_type: console
 ---
 
+##### Means
+
 ```{r}
-for (species_input in protist_species_indiv_per_ml){
+for (species_input in protist_species_dominance){
   
-  response_variable = paste0(species_input, "_dominance")
+  print(plot.patches.points(ds_patches, patch_type_input,
+                            species_input))
+  
+}
+```
+
+##### Boxplots
+
+```{r}
+for (species_input in protist_species_dominance){
   
   print(plot.patches.boxplots(patch_type_input,
-                       response_variable))
+                            species_input))
   
 }
 ```

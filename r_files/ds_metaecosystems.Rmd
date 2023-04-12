@@ -96,17 +96,17 @@ combinations_M_and_M_high = combn(culture_ID_isolated_M_high,
                                    ID_first_patch,
                                    ID_second_patch)
 
-test_that("Check nr of combinations is right.",{
-  expect_equal(nrow(combinations_S_and_L_low), 
-               length(culture_ID_isolated_S_low) * length(culture_ID_isolated_L_low))
-  expect_equal(nrow(combinations_S_and_L_high), 
-               length(culture_ID_isolated_S_high) * length(culture_ID_isolated_L_high))
-  expect_equal(nrow(combinations_M_and_M_low), 
-               sum(seq(length(culture_ID_isolated_M_low) -1)))
-  expect_equal(nrow(combinations_M_and_M_high), 
-               sum(seq(length(culture_ID_isolated_M_high) -1)))
-})
+expect_equal(nrow(combinations_S_and_L_low),
+             length(culture_ID_isolated_S_low) * length(culture_ID_isolated_L_low))
 
+expect_equal(nrow(combinations_S_and_L_high),
+             length(culture_ID_isolated_S_high) * length(culture_ID_isolated_L_high))
+
+expect_equal(nrow(combinations_M_and_M_low),
+             sum(seq(length(culture_ID_isolated_M_low) - 1)))
+
+expect_equal(nrow(combinations_M_and_M_high),
+             sum(seq(length(culture_ID_isolated_M_high) - 1)))
 
 ID_combinations_isolated = rbind(
   combinations_S_and_L_low,
@@ -143,20 +143,20 @@ ID_combinations = rbind(ID_combinations_isolated,
 
 n_patches_combinations = nrow(ID_combinations)
 
-test_that("Check nr of combinations is right.",{
-  expect_equal(nrow(ID_combinations), 
-               nrow(ID_combinations_isolated) + nrow(ID_combinations_metaecos))
-})
+expect_equal(nrow(ID_combinations), 
+             nrow(ID_combinations_isolated) + nrow(ID_combinations_metaecos))
 ```
 
+Warning appear after the following code, as 
+- alpha diversity is computed for a culture that is totally crashed, so it has not meaning.
+- beta diversity is computed between a culture that is still alive and one that is totally crashed. Because one of the cultures is totally crashed, the Bray-Curtis index is 1.
+
 ```{r}
-#Warnings are normal, as they are about beta diversity = 1
+#Create the ds_metaecosystem dataset
 ds_metaecosystems = create.meatecosystem.ds()
 
-test_that("Check nr of meta-ecosystem rows is right.",{
-  expect_equal(nrow(ds_metaecosystems), 
-               n_time_points * n_patches_combinations)
-})
+expect_equal(nrow(ds_metaecosystems), 
+             n_time_points * n_patches_combinations)
 ```
 
 ```{r}
@@ -179,6 +179,22 @@ ds_metaecosystems$patch_size_symmetry <-
   )
 ```
 
+```{r}
+#Reorder the meta-ecosystems
+ds_metaecosystems = ds_metaecosystems %>%
+  mutate(metaecosystem_type = factor(
+    metaecosystem_type,
+    levels = c(
+      "Small-Small meta-ecosystem",
+      "Medium-Medium meta-ecosystem",
+      "Medium-Medium isolated",
+      "Large-Large meta-ecosystem",
+      "Small-Large meta-ecosystem",
+      "Small-Large isolated"
+    )
+  ))
+```
+
 ```{r add-baselines-(ds_metaecosystems)}
 #Add baselines (from t1).
 baselines <- ds_metaecosystems %>%
@@ -186,11 +202,14 @@ baselines <- ds_metaecosystems %>%
   group_by(system_nr) %>%
   summarise(across(all_of(variables_metaecos), .names = "baseline_{.col}"))
 
-n_rows_ds_metaecosystems = nrow(ds_metaecosystems)
+n_rows_ds_metaecosystems_before_join = nrow(ds_metaecosystems)
 
 ds_metaecosystems = full_join(ds_metaecosystems, baselines)
 
-test_that("Check that the number of rows didn't change.",{
-  expect_equal(nrow(ds_metaecosystems),
-               n_rows_ds_metaecosystems)})
+expect_equal(nrow(ds_metaecosystems),
+             n_rows_ds_metaecosystems_before_join)
+```
+
+```{r}
+save(ds_metaecosystems, file = here("results", "ds", "ds_metaecosystems.RData"))
 ```

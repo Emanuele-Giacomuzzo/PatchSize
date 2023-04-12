@@ -10,13 +10,23 @@ editor_options:
 response_variable = "evenness_pielou"
 ```
 
+##### Means
+
+```{r}
+plot.patches.points(ds_patches, patch_type_input,
+                       response_variable)
+```
+
+##### Boxplots
+
 ```{r}
 plot.patches.boxplots(patch_type_input,
                        response_variable)
+```
 
-plot.patches.points(patch_type_input,
-                       response_variable)
+##### ES
 
-plot.patches.points.ES(patch_type_input,
+```{r}
+plot.patches.points.ES(ds_patches_effect_size, patch_type_input,
                        paste0(response_variable, "_d"))
 ```

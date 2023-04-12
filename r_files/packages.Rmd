@@ -50,7 +50,7 @@ library("glmulti")
 library("metafor")
 library("job")
 library("scales")
-library("Rmisc")
+#library("Rmisc")
 library("ggpubr")
 library("patchwork")
 library("viridis") #To create small multiple plots
@@ -59,6 +59,9 @@ library("treemapify")
 library("Rmisc")
 library("emmeans")
 library("testthat")
+library("DHARMa") #To test the collinearity between variables in mixed models
+library("bestNormalize") #To perform a Yeo-Johnson transformation
+
 
 conflict_prefer("load", "base")
 conflict_prefer("here", "here")

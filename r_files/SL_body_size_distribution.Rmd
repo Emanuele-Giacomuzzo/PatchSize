@@ -59,4 +59,3 @@ for(time_point_input in first_time_point:last_time_point) {
   )
 }
 ```
-

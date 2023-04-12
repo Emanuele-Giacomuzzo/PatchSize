@@ -10,11 +10,274 @@ editor_options:
 response_variable = "bray_curtis"
 ```
 
-```{r}
-plot.metaecos.boxplots(metaecosystem_type_input,
-                       response_variable)
+##### Means {.tabset .tabset-pills}
 
-p_MM_SL_metaecos_beta = plot.metaecos.points(metaecosystem_type_input,
-                                             response_variable)
-p_MM_SL_metaecos_beta
+```{r}
+p_MM_SL_metaecos_beta = plot.metaecos.points(ds_metaecosystems, metaecosystem_type_input,
+                     response_variable) %>%
+  print()
+```
+
+###### Small-Large meta-ecosystems vs Small-Large isolated
+
+```{r}
+metaecosystem_type_input_model = c("Small-Large meta-ecosystem",
+                                   "Small-Large isolated")
+```
+
+```{r}
+filtered_data = ds_metaecosystems %>%
+                         filter(time_point >= first_time_point_model,
+                                time_point <= last_time_point_model,
+                                metaecosystem_type %in% metaecosystem_type_input_model)
+```
+
+```{r}
+plot.metaecos.points(filtered_data,
+                     metaecosystem_type_input_model,
+                     response_variable)
+```
+
+**Construct the full model**
+
+```{r}
+full_model = lmer(
+  get(response_variable) ~
+    day + 
+    connection +
+    connection : day + 
+    (day | system_nr), 
+  data = filtered_data,
+  REML = FALSE,
+  control = lmerControl(optimizer = "Nelder_Mead")
+)
+
+# Calculate the VIF for each predictor variable
+#car::vif(full_model)
+
+summary(full_model)
+plot(full_model)
+qqnorm(resid(full_model))
+```
+
+**Test the effects of `connection` and `connection:day`**
+
+```{r}
+null_model = lmer(
+  get(response_variable) ~
+    day +
+    (day | system_nr),
+  data = filtered_data,
+  REML = FALSE,
+  control = lmerControl(optimizer = "Nelder_Mead")
+)
+
+summary(null_model)
+plot(null_model)
+qqnorm(resid(null_model))
+model_stats = compute.model.stats(full_model,
+                    null_model,
+                    "mixed_model")
+
+model_stats
+```
+
+###### Medium-Medium meta-ecosystem vs MM from isolated
+
+```{r}
+metaecosystem_type_input_model = c("Medium-Medium meta-ecosystem",
+                                   "Medium-Medium isolated")
+```
+
+```{r}
+filtered_data = ds_metaecosystems %>%
+                         filter(time_point >= first_time_point_model,
+                                time_point <= last_time_point_model,
+                                metaecosystem_type %in% metaecosystem_type_input_model)
+```
+
+```{r}
+plot.metaecos.points(filtered_data,
+                     metaecosystem_type_input_model,
+                     response_variable)
+```
+
+**Construct the full model**
+
+```{r}
+full_model = lmer(
+  get(response_variable) ~
+    day + 
+    connection +
+    connection : day + 
+    (day | system_nr), 
+  data = filtered_data,
+  REML = FALSE,
+  control = lmerControl(optimizer = "Nelder_Mead")
+)
+
+# Calculate the VIF for each predictor variable
+#car::vif(full_model)
+
+summary(full_model)
+plot(full_model)
+qqnorm(resid(full_model))
+```
+
+**Test the effects of `connection` and `connection:day`**
+
+```{r}
+null_model = lmer(
+  get(response_variable) ~
+    day +
+    (day | system_nr),
+  data = filtered_data,
+  REML = FALSE,
+  control = lmerControl(optimizer = "Nelder_Mead")
+)
+
+summary(null_model)
+plot(null_model)
+qqnorm(resid(null_model))
+model_stats = compute.model.stats(full_model,
+                    null_model,
+                    "mixed_model")
+
+model_stats
+```
+
+###### Small-Large meta-ecosystem vs Medium-Medium meta-ecosystem
+
+```{r}
+metaecosystem_type_input_model = c("Medium-Medium meta-ecosystem",
+                                   "Small-Large meta-ecosystem")
+```
+
+```{r}
+filtered_data = ds_metaecosystems %>%
+                         filter(time_point >= first_time_point_model,
+                                time_point <= last_time_point_model,
+                                metaecosystem_type %in% metaecosystem_type_input_model)
+```
+
+```{r}
+plot.metaecos.points(filtered_data,
+                     metaecosystem_type_input_model,
+                     response_variable)
+```
+
+**Construct the full model**
+
+```{r}
+full_model = lmer(
+  get(response_variable) ~
+    day + 
+    patch_size_symmetry +
+    patch_size_symmetry : day + 
+    (day | system_nr), 
+  data = filtered_data,
+  REML = FALSE,
+  control = lmerControl(optimizer = "Nelder_Mead")
+)
+
+# Calculate the VIF for each predictor variable
+#car::vif(full_model)
+
+summary(full_model)
+plot(full_model)
+qqnorm(resid(full_model))
+```
+
+**Test the effects of `patch_size_symmetry` and `patch_size_symmetry:day`**
+
+```{r}
+null_model = lmer(
+  get(response_variable) ~
+    day +
+    (day | system_nr),
+  data = filtered_data,
+  REML = FALSE,
+  control = lmerControl(optimizer = "Nelder_Mead")
+)
+
+summary(null_model)
+plot(null_model)
+qqnorm(resid(null_model))
+model_stats = compute.model.stats(full_model,
+                    null_model,
+                    "mixed_model")
+
+model_stats
+```
+
+###### SL from isolated vs MM from isolated
+
+```{r}
+metaecosystem_type_input_model = c("Small-Large isolated",
+                                   "Medium-Medium isolated")
+```
+
+```{r}
+filtered_data = ds_metaecosystems %>%
+                         filter(time_point >= first_time_point_model,
+                                time_point <= last_time_point_model,
+                                metaecosystem_type %in% metaecosystem_type_input_model)
+```
+
+```{r}
+plot.metaecos.points(filtered_data,
+                     metaecosystem_type_input_model,
+                     response_variable)
+```
+
+**Construct the full model**
+
+```{r}
+full_model = lmer(
+  get(response_variable) ~
+    day + 
+    patch_size_symmetry +
+    patch_size_symmetry : day + 
+    (day | system_nr), 
+  data = filtered_data,
+  REML = FALSE,
+  control = lmerControl(optimizer = "Nelder_Mead")
+)
+
+# Calculate the VIF for each predictor variable
+#car::vif(full_model)
+
+summary(full_model)
+plot(full_model)
+qqnorm(resid(full_model))
+```
+
+**Test the effects of `patch_size_symmetry` and `patch_size_symmetry:day`**
+
+```{r}
+null_model = lmer(
+  get(response_variable) ~
+    day +
+    (day | system_nr),
+  data = filtered_data,
+  REML = FALSE,
+  control = lmerControl(optimizer = "Nelder_Mead")
+)
+
+summary(null_model)
+plot(null_model)
+qqnorm(resid(null_model))
+model_stats = compute.model.stats(full_model,
+                    null_model,
+                    "mixed_model")
+
+model_stats
+```
+
+##### Boxplots
+
+```{r}
+plot.metaecos.boxplots(ds_metaecosystems,
+                       metaecosystem_type_input,
+                       response_variable)
 ```

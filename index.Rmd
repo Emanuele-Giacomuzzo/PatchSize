@@ -18,6 +18,14 @@ editor_options:
   chunk_output_type: console
 ---
 
+```{r echo=FALSE, results = FALSE}
+disturbance_global_input = "high"
+```
+
+```{r echo = FALSE}
+print(paste("!!", disturbance_global_input, "!!", "(this document showcases only the analysis done for the", disturbance_global_input, "disturbance)"))
+```
+
 ```{r echo=FALSE, results = FALSE, message = FALSE}
 knitr::opts_chunk$set(message = FALSE,
                       cache = FALSE,
@@ -28,11 +36,8 @@ start_time = Sys.time()
 library("here")
 
 show_results = TRUE
-recompute_analyses = FALSE #Lengthy analyses have been suppressed. Set recompute_analyses = TRUE to redo them.
-control = FALSE
-disturbance_input = "low"
-
-print(paste("!!", disturbance_input, "!!", "(this document showcases only the analysis done for the", disturbance_input, "disturbance)"))
+recompute_lengthy_analyses = FALSE
+recompute_datasets = FALSE
 ```
 
 #  {.tabset}
@@ -60,32 +65,39 @@ print(paste("!!", disturbance_input, "!!", "(this document showcases only the an
 
 ### Individuals (ds_individuals)
 
-```{r child = here("r_files", "ds_individuals.Rmd")}
+```{r child = here("r_files", "ds_individuals.Rmd"), eval = recompute_datasets}
 ```
 
 ### Patches (`ds_patches`) 
 
-```{r child = here("r_files", "ds_patches.Rmd")}
+```{r child = here("r_files", "ds_patches.Rmd"), eval = recompute_datasets}
 ```
 
 ### Patch effect sizes (`ds_patches_effect_size`)
 
-```{r child = here("r_files", "ds_patches_effect_size.Rmd")}
+```{r child = here("r_files", "ds_patches_effect_size.Rmd"), eval = recompute_datasets}
 ```
 
 ### Meta-ecosystems (`ds_metaecosystems`)
 
-```{r child = here("r_files", "ds_metaecosystems.Rmd")}
+```{r child = here("r_files", "ds_metaecosystems.Rmd"), eval = recompute_datasets}
 ```
 
 ### Size classes (`ds_classes`)
 
-```{r child = here("r_files", "ds_classes.Rmd")}
+```{r child = here("r_files", "ds_classes.Rmd"), eval = recompute_datasets}
 ```
 
 ### Size classes effect size (`ds_classes_effect_size`)
 
-```{r child = here("r_files", "ds_classes_effect_size.Rmd")}
+```{r child = here("r_files", "ds_classes_effect_size.Rmd"), eval = recompute_datasets}
+```
+
+```{r}
+files <- list.files(path = here("results", "ds"))
+for (i in 1:length(files)) {
+  load(here("results", "ds", files[i]))
+}
 ```
 
 ### Filter according to disturbance
@@ -95,7 +107,7 @@ print(paste("!!", disturbance_input, "!!", "(this document showcases only the an
 
 ## Meta-ecosystems {.tabset .tabset-pills}
 
-### All {.tabset .tabset-dropdown}
+### All {.tabset .tabset-pills}
 
 ```{r}
 metaecosystem_type_input = c("Small-Small meta-ecosystem",
@@ -106,51 +118,53 @@ metaecosystem_type_input = c("Small-Small meta-ecosystem",
                              "Small-Large isolated")
 ```
 
-#### Biomass {.tabset .tabset-pills}
+#### Biomass {.tabset .tabset-dropdown}
 
 ```{r child = here("r_files", "all_metaecos_biomass.Rmd"), eval = show_results}
 ```
 
-#### Alpha diversity (Shannon) {.tabset .tabset-pills}
+#### Shannon {.tabset .tabset-dropdown}
 
 ```{r child = here("r_files", "all_metaecos_alpha_diversity.Rmd"), eval = show_results}
 ```
 
-#### Beta diversity {.tabset .tabset-pills}
+#### Beta diversity {.tabset .tabset-dropdown}
 
 ```{r child = here("r_files", "all_metaecos_beta_diversity.Rmd"), eval = show_results}
 ```
 
-#### Gamma diversity {.tabset .tabset-pills}
+#### Gamma diversity {.tabset .tabset-dropdown}
 
 ```{r child = here("r_files", "all_metaecos_gamma_diversity.Rmd"), eval = show_results}
 ```
 
-### MM vs SL (meta-ecosystems and isolated) {.tabset .tabset-dropdown}
+### MM vs SL (meta-ecosystems and isolated) {.tabset .tabset-pills}
 
 ```{r}
-metaecosystem_type_input = c("Medium-Medium meta-ecosystem",
-                             "Medium-Medium isolated",
-                             "Small-Large meta-ecosystem",
-                             "Small-Large isolated")
+metaecosystem_type_input = c(
+  "Medium-Medium meta-ecosystem",
+  "Medium-Medium isolated",
+  "Small-Large meta-ecosystem",
+  "Small-Large isolated"
+)
 ```
 
-#### Biomass {.tabset .tabset-pills}
+#### Biomass {.tabset .tabset-dropdown}
 
 ```{r child = here("r_files", "MM_all_vs_SL_all_biomass.Rmd"), eval = show_results}
 ```
 
-#### Alpha diversity (Shannon) {.tabset .tabset-pills}
+#### Shannon {.tabset .tabset-dropdown}
 
 ```{r child = here("r_files", "MM_all_vs_SL_all_alpha_diversity.Rmd"), eval = show_results}
 ```
 
-#### Beta diversity {.tabset .tabset-pills}
+#### Beta diversity {.tabset .tabset-dropdown}
 
 ```{r child = here("r_files", "MM_all_vs_SL_all_beta_diversity.Rmd"), eval = show_results}
 ```
 
-#### Gamma diversity {.tabset .tabset-pills}
+#### Gamma diversity {.tabset .tabset-dropdown}
 
 ```{r child = here("r_files", "MM_all_vs_SL_all_gamma_diversity.Rmd"), eval = show_results}
 ```
@@ -159,10 +173,22 @@ metaecosystem_type_input = c("Medium-Medium meta-ecosystem",
 
 ### All {.tabset .tabset-dropdown}
 
-```{r child = here("r_files", "all_patches_BEF.Rmd"), eval = show_results}
+```{r}
+patch_type_input = c(
+      "Small isolated",
+      "Medium isolated",
+      "Large isolated",
+      "Small connected to large",
+      "Large connected to small"
+    )
 ```
 
-### Isolated {.tabset .tabset-dropdown}
+#### BEF
+
+```{r child = here("r_files", "all_patches_BEF.Rmd"), eval = FALSE}
+```
+
+### Isolated {.tabset .tabset-pills}
 
 ```{r}
 patch_type_input = c("Small isolated",
@@ -170,52 +196,65 @@ patch_type_input = c("Small isolated",
                      "Large isolated")
 ```
 
-#### Biomass {.tabset .tabset-pills}
+#### Biomass {.tabset .tabset-dropdown}
 
 ```{r child = here("r_files", "isolated_patches_biomass.Rmd"), eval = show_results}
 ```
 
-#### Alpha diversity (Shannon) {.tabset .tabset-pills}
+#### Shannon {.tabset .tabset-dropdown}
 
 ```{r child = here("r_files", "isolated_patches_alpha_diversity.Rmd"), eval = show_results}
 ```
 
-#### Evenness {.tabset .tabset-pills}
+#### Evenness {.tabset .tabset-dropdown}
 
 ```{r child = here("r_files", "isolated_patches_evenness.Rmd"), eval = show_results}
 ```
 
-#### Species densities {.tabset .tabset-pills}
+#### Species densities {.tabset .tabset-dropdown}
 
 ```{r child = here("r_files", "isolated_patches_species_densities.Rmd"), eval = show_results}
 ```
 
-#### Species dominance {.tabset .tabset-pills}
+#### Species dominance {.tabset .tabset-dropdown}
 
 ```{r child = here("r_files", "isolated_patches_species_dominance.Rmd"), eval = show_results}
 ```
 
-#### Species composition {.tabset .tabset-pills}
+#### Species composition {.tabset .tabset-dropdown}
 
 ```{r child = here("r_files", "isolated_patches_species_composition.Rmd"), eval = show_results}
 ```
 
-#### Size classes densities {.tabset .tabset-pills}
+#### Size classes densities {.tabset .tabset-dropdown}
 
 ```{r child = here("r_files", "isolated_patches_size_classes.Rmd"), eval = show_results}
 ```
 
-#### Body size distribution {.tabset .tabset-pills}
+#### Body size distribution {.tabset .tabset-dropdown}
 
 ```{r child = here("r_files", "isolated_patches_body_size_distribution.Rmd"), eval = FALSE}
 ```
 
-#### Median body size {.tabset .tabset-pills}
+#### Median body size {.tabset .tabset-dropdown}
 
 ```{r child = here("r_files", "isolated_patches_median_body_size.Rmd"), eval = show_results}
 ```
 
-### Small {.tabset .tabset-dropdown}
+### Connected 
+
+```{r}
+patch_type_input = c("Small connected to large",
+                     "Medium connected to medium",
+                     "Large connected to small")
+```
+
+#### Biomass
+
+```{r child = here("r_files", "connected_patches_biomass.Rmd"), eval = show_results}
+```
+
+### Small {.tabset .tabset-pills}
 
 ```{r}
 patch_type_input = c("Small isolated",
@@ -223,69 +262,79 @@ patch_type_input = c("Small isolated",
                      "Small connected to large")
 ```
 
-#### Biomass {.tabset .tabset-pills}
+#### Biomass {.tabset .tabset-dropdown}
 
 ```{r child = here("r_files", "small_patches_biomass.Rmd"), eval = show_results}
 ```
 
-#### Alpha diversity (Shannon) {.tabset .tabset-pills}
+#### Shannon {.tabset .tabset-dropdown}
 
 ```{r child = here("r_files", "small_patches_alpha_diversity.Rmd"), eval = show_results}
 ```
 
-#### Alpha diversity (Species richness) {.tabset .tabset-pills}
+#### Species richness {.tabset .tabset-dropdown}
 
 ```{r child = here("r_files", "small_patches_species_richness.Rmd"), eval = show_results}
 ```
 
-#### Evenness {.tabset .tabset-pills}
+#### Evenness {.tabset .tabset-dropdown}
 
 ```{r child = here("r_files", "small_patches_evenness.Rmd"), eval = show_results}
 ```
 
-#### Species densities {.tabset .tabset-pills}
+#### Species densities {.tabset .tabset-dropdown}
 
 ```{r child = here("r_files", "small_patches_species_densities.Rmd"), eval = show_results}
 ```
 
-#### Species dominance {.tabset .tabset-pills}
+#### Species dominance {.tabset .tabset-dropdown}
 
 ```{r child = here("r_files", "small_patches_species_dominance.Rmd"), eval = show_results}
 ```
 
-#### Species composition {.tabset .tabset-pills}
+#### Species composition {.tabset .tabset-dropdown}
 
 ```{r child = here("r_files", "small_patches_species_composition.Rmd"), eval = show_results}
 ```
+ 
+#### Treatment divergence {.tabset .tabset-dropdown}
 
-#### Size classes densities {.tabset .tabset-pills}
+```{r child = here("r_files", "small_patches_treatment_divergence.Rmd"), eval = show_results}
+```
+
+#### Temporal divergence {.tabset .tabset-dropdown}
+
+```{r child = here("r_files", "small_patches_temporal_divergence.Rmd"), eval = show_results}
+```
+
+#### Size classes densities {.tabset .tabset-dropdown}
 
 ```{r child = here("r_files", "small_patches_size_classes.Rmd"), eval = show_results}
 ```
 
-#### Body size distribution {.tabset .tabset-pills}
+#### Body size distribution {.tabset .tabset-dropdown}
 
 ```{r child = here("r_files", "small_patches_body_size_distribution.Rmd"), eval = FALSE}
 ```
 
-#### Median body size {.tabset .tabset-pills}
+#### Median body size {.tabset .tabset-dropdown}
 
 ```{r child = here("r_files", "small_patches_median_body_size.Rmd"), eval = show_results}
 ```
 
-### Medium {.tabset .tabset-dropdown}
+### Medium {.tabset .tabset-pills}
 
 ```{r}
 patch_type_input = c("Medium isolated",
                      "Medium connected to medium")
 ```
 
-#### Biomass {.tabset .tabset-pills}
+#### Biomass {.tabset .tabset-dropdown}
 
 ```{r child = here("r_files", "medium_patches_biomass.Rmd"), eval = show_results}
 ```
 
-### Large {.tabset .tabset-dropdown}
+### Large {.tabset .tabset-pills}
 
 ```{r}
 patch_type_input = c("Large isolated",
@@ -293,71 +342,73 @@ patch_type_input = c("Large isolated",
                      "Large connected to small")
 ```
 
-#### Biomass {.tabset .tabset-pills}
+#### Biomass {.tabset .tabset-dropdown}
 
 ```{r child = here("r_files", "large_patches_biomass.Rmd"), eval = show_results}
 ```
 
-#### Alpha diversity (Shannon) {.tabset .tabset-pills}
+#### Shannon {.tabset .tabset-dropdown}
 
 ```{r child = here("r_files", "large_patches_alpha_diversity.Rmd"), eval = show_results}
 ```
 
-#### Alpha diversity (Species richness) {.tabset .tabset-pills}
+#### Species richness {.tabset .tabset-dropdown}
 
 ```{r child = here("r_files", "large_patches_species_richness.Rmd"), eval = show_results}
 ```
 
-#### Evenness {.tabset .tabset-pills}
+#### Evenness {.tabset .tabset-dropdown}
 
 ```{r child = here("r_files", "large_patches_evenness.Rmd"), eval = show_results}
 ```
 
-#### Species densities {.tabset .tabset-pills}
+#### Species densities {.tabset .tabset-dropdown}
 
 ```{r child = here("r_files", "large_patches_species_densities.Rmd"), eval = show_results}
 ```
 
-#### Species dominance {.tabset .tabset-pills}
+#### Species dominance {.tabset .tabset-dropdown}
 
 ```{r child = here("r_files", "large_patches_species_dominance.Rmd"), eval = show_results}
 ```
 
-#### Species composition {.tabset .tabset-pills}
+#### Species composition {.tabset .tabset-dropdown}
 
 ```{r child = here("r_files", "large_patches_species_composition.Rmd"), eval = show_results}
 ```
+ 
+#### Treatment divergence {.tabset .tabset-dropdown}
 
-#### Community divergence from isolated
-
-```{r child = here("r_files", "large_community_divergence_from_isolated.Rmd"), eval = show_results}
+```{r child = here("r_files", "large_patches_treatment_divergence.Rmd"), eval = show_results}
 ```
 
-#### Community divergence from previous time point
+#### Temporal divergence {.tabset .tabset-dropdown}
 
-```{r child = here("r_files", "large_community_divergence_from_previous_point.Rmd"), eval = show_results}
+```{r child = here("r_files", "large_patches_temporal_divergence.Rmd"), eval = show_results}
 ```
 
-#### Size classes densities {.tabset .tabset-pills}
+#### Size classes densities {.tabset .tabset-dropdown}
 
 ```{r child = here("r_files", "large_patches_size_classes.Rmd"), eval = show_results}
 ```
 
-#### Body size distribution {.tabset .tabset-pills}
+#### Body size distribution {.tabset .tabset-dropdown}
 
 ```{r child = here("r_files", "large_patches_body_size_distribution.Rmd"), eval = FALSE}
 ```
 
-#### Median body size {.tabset .tabset-pills}
+#### Median body size {.tabset .tabset-dropdown}
 
 ```{r child = here("r_files", "large_patches_median_body_size.Rmd"), eval = show_results}
 ```
 
-### SL {.tabset .tabset-dropdown}
+### SL {.tabset .tabset-pills}
 
 ```{r}
 patch_type_input = c("Small connected to large",
-                     "Large connected to small")
+                     "Small connected to small",
+                     "Large connected to small",
+                     "Large connected to large")
 ```
 
 #### Biomass {.tabset .tabset-pills}
@@ -365,52 +416,42 @@ patch_type_input = c("Small connected to large",
 ```{r child = here("r_files", "SL_biomass.Rmd"), eval = show_results}
 ```
 
-#### Alpha diversity (Shannon) {.tabset .tabset-pills}
+#### Shannon {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "SL_alpha_diversity.Rmd"), eval = show_results}
 ```
 
-#### Alpha diversity (Species richness) {.tabset .tabset-pills}
+#### Species richness {.tabset .tabset-dropdown}
 
 ```{r child = here("r_files", "SL_species_richness.Rmd"), eval = show_results}
 ```
 
-#### Evenness {.tabset .tabset-pills}
+#### Evenness {.tabset .tabset-dropdown}
 
 ```{r child = here("r_files", "SL_evenness.Rmd"), eval = show_results}
 ```
 
-#### Species densities {.tabset .tabset-pills}
+#### Species densities {.tabset .tabset-dropdown}
 
 ```{r child = here("r_files", "SL_species_densities.Rmd"), eval = show_results}
 ```
 
-#### Species dominance {.tabset .tabset-pills}
+#### Species dominance {.tabset .tabset-dropdown}
 
 ```{r child = here("r_files", "SL_species_dominance.Rmd"), eval = show_results}
 ```
 
-#### Species composition {.tabset .tabset-pills}
+#### Temporal divergence {.tabset .tabset-dropdown}
 
-```{r child = here("r_files", "SL_species_composition.Rmd"), eval = show_results}
+```{r child = here("r_files", "SL_temporal_divergence.Rmd"), eval = show_results}
 ```
 
-#### Community divergence from isolated
-
-```{r child = here("r_files", "SL_community_divergence_from_isolated.Rmd"), eval = show_results}
-```
-
-#### Community divergence from previous time point
-
-```{r child = here("r_files", "SL_community_divergence_from_previous_point.Rmd"), eval = show_results}
-```
-
-#### Size classes densities {.tabset .tabset-pills}
+#### Size classes densities {.tabset .tabset-dropdown}
 
 ```{r child = here("r_files", "SL_size_classes.Rmd"), eval = show_results}
 ```
 
-#### Median body size {.tabset .tabset-pills}
+#### Median body size {.tabset .tabset-dropdown}
 
 ```{r child = here("r_files", "SL_median_body_size.Rmd"), eval = show_results}
 ```
@@ -429,7 +470,7 @@ patch_type_input = c("Small connected to large",
 ```{r child = here("r_files", "relationship_productivity_dominance.Rmd"), eval = show_results}
 ```
 
-## Evaporation {.tabset .tabset-dropdown}
+## Evaporation {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "evaporation.Rmd"), eval = FALSE}
 ```
@@ -449,11 +490,6 @@ patch_type_input = c("Small connected to large",
 ```{r child = here("r_files", "species_id_script.Rmd"), class.source = "fold-show"}
 ```
 
-## Paper
-
-```{r child = here("r_files", "paper.Rmd"), eval = show_results}
-```
-
 ## Running time
 
 ```{r running-time, echo = FALSE, eval = TRUE}
@@ -471,18 +507,45 @@ In the .bib file get rid of:
 
 -   web_page
 
-Check that disturbance_input is what you set:
+Check that disturbance_global_input is what you set:
 
 ```{r}
-print(paste0("Disturbance = ", disturbance_input))
+print(paste0("Disturbance = ", disturbance_global_input))
 ```
 
-## Bibliography
+If you want to change a certain part of the code:
+
+```{batch eval = FALSE}
+cd /Users/ema/Documents/GitHub/PatchSizePilot/r_files
+sed -i '' 's/total_metaecosystem_bioarea/total_metaecosystem_bioarea_mm2/g' *.Rmd
+cd /Users/ema/Documents/GitHub/Functions 
+sed -i '' 's/old/new/g' *.R
+
+critical_rows=ds_patches %>% filter(disturbance == "high", patch_size == "Small", time_point == 7)
+critical_rows_ES=ds_effect_size %>% filter(disturbance == "high", patch_size == "Small", time_point == 7)
+
+#Why is median_body_area_µm2_d of small connected to large NaN at time_point == 7, disturbance == "high"?
+
+treatment_row$beta_diversity_from_isolated_mean
+control_row$beta_diversity_from_isolated_mean
+```
+
+The only type of patch where all cultures crashed was small connected to small at high disturbance.
+
+## Paper outline
+
+```{r child = here("r_files", "paper_outline.Rmd"), eval = show_results}
+```
+
+## Paper
+
+```{r child = here("r_files", "paper.Rmd"), eval = show_results}
+```
 
 ```{r echo=FALSE, message=FALSE}
 save.image(file = "environment_at_the_end_of_knitting.RData")
 ```
 
-```{r}
+```{r echo = FALSE}
 beepr::beep("fanfare")
 ```

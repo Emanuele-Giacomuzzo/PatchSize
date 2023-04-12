@@ -12,9 +12,8 @@ editor_options:
 
 ```{r}
 ds_patches %>%
-  filter(disturbance == disturbance_input) %>%
   ggplot(aes(x = evenness_pielou,
-             y = bioarea_µm2_per_ml)) +
+             y = bioarea_mm2_per_ml)) +
   geom_point()
 ```
 

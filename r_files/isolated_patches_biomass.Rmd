@@ -7,46 +7,47 @@ editor_options:
   chunk_output_type: console
 ---
 
-##### Time - Biomass
-
 ```{r}
-response_variable = "bioarea_µm2_per_ml"
+response_variable = "bioarea_mm2_per_ml"
 ```
 
-```{r}
-plot.patches.boxplots(patch_type_input,
-                       response_variable)
+##### Time - Biomass {.tabset .tabset-dropdown}
 
-p_isolated_biomass = plot.patches.points(patch_type_input,
-                       response_variable)
+###### Means
+
+```{r}
+p_isolated_biomass = plot.patches.points(ds_patches, 
+                                         patch_type_input,
+                                         response_variable)
 
 p_isolated_biomass
 ```
 
 *Analysis*
 
--   Filter data
-
 ```{r}
 filtered_data = ds_patches %>%
   filter(
-    disturbance == disturbance_input,
     metaecosystem == "no",
     time_point >= first_time_point_model,
     time_point <= last_time_point_model
   )
 ```
 
--   Full model
+```{r}
+plot.patches.points(filtered_data,
+                    patch_type_input,
+                    response_variable)
+```
+
+**Construct the full model**
 
 ```{r}
 full_model = lmer(
-  bioarea_µm2_per_ml ~
+  get(response_variable) ~
     day +
     patch_size_ml +
     patch_size_ml : day +
-    baseline_bioarea_µm2_per_ml + 
-    baseline_bioarea_µm2_per_ml : day +
     (day | culture_ID),
   data = filtered_data,
   REML = FALSE,
@@ -62,10 +63,8 @@ qqnorm(resid(full_model))
 
 ```{r}
 null_model = lmer(
-  bioarea_µm2_per_ml ~
+  get(response_variable) ~
     day +
-    baseline_bioarea_µm2_per_ml + 
-    baseline_bioarea_µm2_per_ml : day +
     (day | culture_ID),
   data = filtered_data,
   REML = FALSE,
@@ -82,71 +81,17 @@ stats = compute.model.stats(full_model,
 stats
 ```
 
--   Test `patch_size_ml`
+###### Boxplots
 
 ```{r}
-null_model = lmer(
-  bioarea_µm2_per_ml ~
-    day +
-    patch_size_ml : day +
-    baseline_bioarea_µm2_per_ml + 
-    baseline_bioarea_µm2_per_ml : day +
-    (day | culture_ID),
-  data = filtered_data,
-  REML = FALSE,
-  control = lmerControl(optimizer = "Nelder_Mead")
-)
-
-summary(null_model)
-plot(null_model)
-qqnorm(resid(null_model))
-stats = compute.model.stats(full_model,
-                            null_model,
-                            "mixed_model")
-
-stats
-```
-
--   Test `patch_size_ml : day`
-
-```{r}
-null_model = lmer(
-  bioarea_µm2_per_ml ~
-    day +
-    patch_size_ml +
-    baseline_bioarea_µm2_per_ml + 
-    baseline_bioarea_µm2_per_ml : day +
-    (day | culture_ID),
-  data = filtered_data,
-  REML = FALSE,
-  control = lmerControl(optimizer = "Nelder_Mead")
-)
-
-summary(null_model)
-plot(null_model)
-qqnorm(resid(null_model))
-stats = compute.model.stats(full_model,
-                            null_model,
-                            "mixed_model")
-
-stats
+plot.patches.boxplots(patch_type_input,
+                       response_variable)
 ```
 
 ##### Patch size - Biomass {.tabset .tabset-pills}
 
-###### Isolated
-
 ```{r}
 plot.patches.size.response.boxplots(metaecosystem_input = "no",
-                                  trophic_type_input = "NA",
-                                  flow_input = "NA",
-                                  response_variable = response_variable)
-```
-
-###### Connected
-
-```{r}
-plot.patches.size.response.boxplots(metaecosystem_input = "yes",
                                   trophic_type_input = "NA",
                                   flow_input = "NA",
                                   response_variable = response_variable)

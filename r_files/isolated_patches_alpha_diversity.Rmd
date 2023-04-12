@@ -7,46 +7,45 @@ editor_options:
   chunk_output_type: console
 ---
 
-##### Day - Shannon {.tabset .tabset-pills}
-
 ```{r}
 response_variable = "shannon"
 ```
 
+##### Time - Shannon {.tabset .tabset-dropdown}
+
+###### Means
+
 ```{r}
-plot.patches.boxplots(patch_type_input,
-                       response_variable)
-
-p_isolated_alpha = plot.patches.points(patch_type_input,
-                                       response_variable)
-
-p_isolated_alpha
+p_isolated_alpha = plot.patches.points(ds_patches, patch_type_input,
+                       response_variable) %>%
+  print()
 ```
 
 *Analysis*
 
--   Filter data
-
 ```{r}
 filtered_data = ds_patches %>%
   filter(
-    disturbance == disturbance_input,
     metaecosystem == "no",
     time_point >= first_time_point_model,
     time_point <= last_time_point_model
   )
 ```
 
--   Full model
+```{r}
+plot.patches.points(filtered_data,
+                    patch_type_input,
+                    response_variable)
+```
+
+**Construct the full model**
 
 ```{r}
 full_model = lmer(
-  shannon ~
+  get(response_variable) ~
     day +
     patch_size_ml +
     patch_size_ml : day +
-    baseline_shannon + 
-    baseline_shannon : day +
     (day | culture_ID),
   data = filtered_data,
   REML = FALSE,
@@ -62,10 +61,8 @@ qqnorm(resid(full_model))
 
 ```{r}
 null_model = lmer(
-  shannon ~
+  get(response_variable) ~
     day +
-    baseline_shannon + 
-    baseline_shannon : day +
     (day | culture_ID),
   data = filtered_data,
   REML = FALSE,
@@ -78,72 +75,21 @@ qqnorm(resid(null_model))
 stats = compute.model.stats(full_model,
                             null_model,
                             "mixed_model")
+
 stats
 ```
 
--   Test `patch_size_ml`
+###### Boxplots
 
 ```{r}
-null_model = lmer(
-  shannon ~
-    day +
-    patch_size_ml : day +
-    baseline_shannon + 
-    baseline_shannon : day +
-    (day | culture_ID),
-  data = filtered_data,
-  REML = FALSE,
-  control = lmerControl(optimizer = "Nelder_Mead")
-)
-
-summary(null_model)
-plot(null_model)
-qqnorm(resid(null_model))
-stats = compute.model.stats(full_model,
-                            null_model,
-                            "mixed_model")
-stats
+plot.patches.boxplots(patch_type_input,
+                       response_variable)
 ```
 
--   Test `patch_size_ml : day`
-
-```{r}
-null_model = lmer(
-  shannon ~
-    day +
-    patch_size_ml +
-    baseline_shannon + 
-    baseline_shannon : day +
-    (day | culture_ID),
-  data = filtered_data,
-  REML = FALSE,
-  control = lmerControl(optimizer = "Nelder_Mead")
-)
-
-summary(null_model)
-plot(null_model)
-qqnorm(resid(null_model))
-stats = compute.model.stats(full_model,
-                            null_model,
-                            "mixed_model")
-stats
-```
-
-##### Patch size - Shannon {.tabset .tabset-pills}
-
-###### Isolated
+##### Patch size - Biomass {.tabset .tabset-pills}
 
 ```{r}
 plot.patches.size.response.boxplots(metaecosystem_input = "no",
-                                  trophic_type_input = "NA",
-                                  flow_input = "NA",
-                                  response_variable = response_variable)
-```
-
-###### Connected
-
-```{r}
-plot.patches.size.response.boxplots(metaecosystem_input = "yes",
                                   trophic_type_input = "NA",
                                   flow_input = "NA",
                                   response_variable = response_variable)
