@@ -299,3 +299,14 @@ ggarrange_margin_bottom = 0
 ggarrange_margin_left = 0
 ggarrange_margin_right = 0
 ```
+
+```{r}
+results_table = data.frame(
+  Response = as.character(NA),
+  Levels = as.character(NA),
+  ΔAIC = NA,
+  p = as.character(NA),
+  ΔR2 = NA
+) %>%
+  slice(-1)
+```

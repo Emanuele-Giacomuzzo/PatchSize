@@ -81,6 +81,11 @@ model_stats = compute.model.stats(full_model,
                     "mixed_model")
 
 model_stats
+
+results_table = fill.results.table(results_table,
+                                   response_variable,
+                                   metaecosystem_type_input_model,
+                                   model_stats)
 ```
 
 ###### Medium-Medium meta-ecosystem vs MM from isolated
@@ -145,6 +150,11 @@ model_stats = compute.model.stats(full_model,
                     "mixed_model")
 
 model_stats
+
+results_table = fill.results.table(results_table,
+                                   response_variable,
+                                   metaecosystem_type_input_model,
+                                   model_stats)
 ```
 
 ###### Small-Large meta-ecosystem vs Medium-Medium meta-ecosystem
@@ -209,6 +219,11 @@ model_stats = compute.model.stats(full_model,
                     "mixed_model")
 
 model_stats
+
+results_table = fill.results.table(results_table,
+                                   response_variable,
+                                   metaecosystem_type_input_model,
+                                   model_stats)
 ```
 
 ###### SL from isolated vs MM from isolated
@@ -273,6 +288,11 @@ model_stats = compute.model.stats(full_model,
                     "mixed_model")
 
 model_stats
+
+results_table = fill.results.table(results_table,
+                                   response_variable,
+                                   metaecosystem_type_input_model,
+                                   model_stats)
 ```
 
 ##### Boxplots

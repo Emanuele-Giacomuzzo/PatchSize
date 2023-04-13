@@ -271,6 +271,34 @@ ggarrange(
 #### Appendix
 
 ```{r}
+results_table$Levels <- gsub("Small-Large meta-ecosystem", "SL (meta-eco)", results_table$Levels)
+results_table$Levels <- gsub("Small-Large isolated", "SL (isolated)", results_table$Levels)
+results_table$Levels <- gsub("Medium-Medium meta-ecosystem", "MM (meta-eco)", results_table$Levels)
+results_table$Levels <- gsub("Medium-Medium isolated", "MM (isolated)", results_table$Levels)
+
+results_table$Levels <- gsub("Small isolated", "S (isolated)", results_table$Levels)
+results_table$Levels <- gsub("Medium isolated", "M (isolated)", results_table$Levels)
+results_table$Levels <- gsub("Large isolated", "L (isolated)", results_table$Levels)
+
+results_table$Levels <- gsub("Small connected to small", "S(s)", results_table$Levels)
+results_table$Levels <- gsub("Small connected to large", "S(l)", results_table$Levels)
+results_table$Levels <- gsub("Large connected to large", "L(l)", results_table$Levels)
+results_table$Levels <- gsub("Large connected to small", "L(s)", results_table$Levels)
+
+results_table$Response <- gsub("mean_shannon", "Alpha Diversity", results_table$Response)
+results_table$Response <- gsub("shannon", "Shannon Index", results_table$Response)
+results_table$Response <- gsub("bray_curtis", "Beta Diversity", results_table$Response)
+results_table$Response <- gsub("bioarea_mm2_per_ml", "Bioarea Density", results_table$Response)
+results_table$Response <- gsub("total_metaecosystem_bioarea_mm2", "Tot Bioarea", results_table$Response)
+
+results_table$significant = ""
+results_table$significant[results_table$ΔAIC <= -2] = "*"
+
+results_table %>%
+  arrange(Response, Levels) %>%
+  kbl() %>%
+  kable_styling()
+
 p_MM_SL_metaecos_gamma
 ```
 

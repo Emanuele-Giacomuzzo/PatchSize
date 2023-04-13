@@ -67,6 +67,11 @@ stats = compute.model.stats(full_model,
                             "linear_model")
 
 stats
+
+results_table = fill.results.table(results_table,
+                                   response_variable,
+                                   patch_type_input_model,
+                                   model_stats)
 ```
 
 ##### Large
@@ -119,4 +124,9 @@ stats = compute.model.stats(full_model,
                             "linear_model")
 
 stats
+
+results_table = fill.results.table(results_table,
+                                   response_variable,
+                                   patch_type_input_model,
+                                   model_stats)
 ```

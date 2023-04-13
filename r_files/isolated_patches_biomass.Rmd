@@ -79,6 +79,11 @@ stats = compute.model.stats(full_model,
                             "mixed_model")
 
 stats
+
+results_table = fill.results.table(results_table,
+                                   response_variable,
+                                   patch_type_input,
+                                   model_stats)
 ```
 
 ###### Boxplots
