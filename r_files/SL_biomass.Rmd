@@ -7,13 +7,13 @@ editor_options:
 ---
 
 ```{r}
-response_variable = "bioarea_mm2_per_ml"
+response_variable = "bioarea_mm2_per_ml_d"
 ```
 
 ```{r}
 p_connected_biomass_effect_size = plot.patches.points.ES(ds_patches_effect_size, 
                                                          patch_type_input,
-                                                         paste0(response_variable, "_d")) %>%
+                                                         response_variable) %>%
   print()
 ```
 
@@ -24,54 +24,7 @@ patch_type_input_model = c("Small connected to small",
                            "Small connected to large")
 ```
 
-```{r}
-filtered_data = ds_patches_effect_size %>%
-                         filter(time_point >= first_time_point_model,
-                                time_point <= last_time_point_model,
-                                patch_type %in% patch_type_input_model)
-```
-
-```{r}
-plot.patches.points.ES(filtered_data, 
-                       patch_type_input_model,
-                       paste0(response_variable, "_d"))
-```
-
-**Construct full model**
-
-```{r}
-full_model = lm(get(paste0(response_variable, "_d")) ~
-                  size_connected_patch +
-                  size_connected_patch : day,
-                data = filtered_data)
-```
-
-```{r}
-summary(full_model)
-par(mfrow = c(2, 3))
-plot(full_model, which = 1:5)
-```
-
-**Test `size_connected_patch` and `size_connected_patch : day`**
-
-```{r}
-null_model = lm(get(paste0(response_variable, "_d")) ~
-                  1,
-                data = filtered_data)
-
-summary(null_model)
-par(mfrow = c(2, 3))
-plot(full_model, which = 1:5)
-stats = compute.model.stats(full_model,
-                            null_model,
-                            "linear_model")
-
-stats
-
-results_table = fill.results.table(results_table,
-                                   response_variable,
-                                   patch_type_input_model,
-                                   model_stats)
+```{r child = here("r_files", "ES_analysis.Rmd")}
 ```
 
 ##### Large
@@ -81,52 +34,5 @@ patch_type_input_model = c("Large connected to small",
                            "Large connected to large")
 ```
 
-```{r}
-filtered_data = ds_patches_effect_size %>%
-                         filter(time_point >= first_time_point_model,
-                                time_point <= last_time_point_model,
-                                patch_type %in% patch_type_input_model)
-```
-
-```{r}
-plot.patches.points.ES(filtered_data, 
-                       patch_type_input_model,
-                       paste0(response_variable, "_d"))
-```
-
-**Construct full model**
-
-```{r}
-full_model = lm(get(paste0(response_variable, "_d")) ~
-                  size_connected_patch +
-                  size_connected_patch : day,
-                data = filtered_data)
-```
-
-```{r}
-summary(full_model)
-par(mfrow = c(2, 3))
-plot(full_model, which = 1:5)
-```
-
-**Test `size_connected_patch` and `size_connected_patch : day`**
-
-```{r}
-null_model = lm(get(paste0(response_variable, "_d")) ~
-                  1,
-                data = filtered_data)
-
-summary(null_model)
-par(mfrow = c(2, 3))
-plot(full_model, which = 1:5)
-stats = compute.model.stats(full_model,
-                            null_model,
-                            "linear_model")
-
-stats
-
-results_table = fill.results.table(results_table,
-                                   response_variable,
-                                   patch_type_input_model,
-                                   model_stats)
+```{r child = here("r_files", "ES_analysis.Rmd")}
 ```

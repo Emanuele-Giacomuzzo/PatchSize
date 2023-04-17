@@ -124,6 +124,12 @@ where d is Hedge's d, n1 is the sample size of group 1, n2 is the sample size of
 
 ### Results
 
+#### Meta-ecosystem: total area of patches, but not their size ratio, determines function.
+
+#### Meta-ecosystem: non-living material flows induce ecological homogenization.
+
+#### Patch: the function of a patch is contingent upon the size of its connected patch
+
 ### Discussion
 
 Previous models and experiments in ecosystem function have generally assumed that all patches are the same size. However, the size of both the receiving and donor patches has the potential to significantly alter meta-ecosystem dynamics, as it can impact both the production and reception of subsidies. We would expect more subsidies coming out of larger donor patches because of two main reasons. The first is larger ecosystems have a higher area:perimeter ratio, which means that from the same length of the ecotone we would have more area associated to it. For example, the larger lakes and rivers, the more emerging insects come out per metre of their ecotone (@Gratton2009). The second reason for more subsidies coming out of larger ecosystems is that if the the subsidies are a fixed fraction of the total production, larger ecosystems might be more productive because of higher biodiversity (@Benedetti-Cecchi2005) and therefore give away more subsidies. We also would expect that the subsidies coming out of larger patches would be more full in nitrogen and phosphorus compared to carbon, as larger patches often have longer food chains (@Post2000) and nitrogen and phosphorus ratios increase along trophic levels. Furthermore, we would expect that the size of the receiving patch would be important for different reasons. First, if smaller patches would be really less productive, the same amount of non-living material flowing in would have a stronger effect on the recipient ecosystem (ref). Second, more non-living material would be flowing in, as they have a higher ratio between perimeter and area. Studies supporting this show that non-living material increases the secondary production the most in small islands (@Polis1996) and salmon subsidies provide nitrogen the most in small river watersheds (@Hocking2009).
@@ -271,34 +277,130 @@ ggarrange(
 #### Appendix
 
 ```{r}
-results_table$Levels <- gsub("Small-Large meta-ecosystem", "SL (meta-eco)", results_table$Levels)
-results_table$Levels <- gsub("Small-Large isolated", "SL (isolated)", results_table$Levels)
-results_table$Levels <- gsub("Medium-Medium meta-ecosystem", "MM (meta-eco)", results_table$Levels)
-results_table$Levels <- gsub("Medium-Medium isolated", "MM (isolated)", results_table$Levels)
+results_table %>%
+  write.csv(file = here("results", "results_table.csv"), 
+            row.names = F)
+```
 
-results_table$Levels <- gsub("Small isolated", "S (isolated)", results_table$Levels)
-results_table$Levels <- gsub("Medium isolated", "M (isolated)", results_table$Levels)
-results_table$Levels <- gsub("Large isolated", "L (isolated)", results_table$Levels)
+```{r}
+results_table = read.csv(here("results", "results_table.csv"))
 
-results_table$Levels <- gsub("Small connected to small", "S(s)", results_table$Levels)
-results_table$Levels <- gsub("Small connected to large", "S(l)", results_table$Levels)
-results_table$Levels <- gsub("Large connected to large", "L(l)", results_table$Levels)
-results_table$Levels <- gsub("Large connected to small", "L(s)", results_table$Levels)
+names_levels = data.frame(
+  old = NA,
+  new = NA) %>%
+  add_row(old = "Small-Large meta-ecosystem , Small-Large isolated", 
+          new = "SL (connect vs isolated)") %>%
+  add_row(old = "Medium-Medium meta-ecosystem , Medium-Medium isolated", 
+          new = "MM (connect vs isolated)") %>%
+  add_row(old = "Small-Large meta-ecosystem , Medium-Medium meta-ecosystem", 
+          new = "Metaecos (SL vs MM)") %>%
+  add_row(old = "Medium-Medium isolated , Small-Large isolated", 
+          new = "Isolated (SL vs MM)") %>%
+  add_row(old = "Medium-Medium meta-ecosystem , Small-Large meta-ecosystem", 
+          new = "Metaecos (SL vs MM)") %>%
+  add_row(old = "Small-Large isolated , Medium-Medium isolated", 
+          new = "Isolated (SL vs MM)") %>%
+  add_row(old = "Small isolated , Medium isolated , Large isolated", 
+          new = "Isolated patches") %>%
+  add_row(old = "Small connected to small , Small connected to large", 
+          new = "Small (connected to S or L)") %>%
+  add_row(old = "Large connected to small , Large connected to large", 
+          new = "Large (connected to S or L)") %>%
+  slice(-1)
 
-results_table$Response <- gsub("mean_shannon", "Alpha Diversity", results_table$Response)
-results_table$Response <- gsub("shannon", "Shannon Index", results_table$Response)
-results_table$Response <- gsub("bray_curtis", "Beta Diversity", results_table$Response)
-results_table$Response <- gsub("bioarea_mm2_per_ml", "Bioarea Density", results_table$Response)
-results_table$Response <- gsub("total_metaecosystem_bioarea_mm2", "Tot Bioarea", results_table$Response)
+names_responses = data.frame(
+  old = NA,
+  new = NA) %>%
+  add_row(old = "mean_shannon", 
+          new = "Alpha Diversity") %>%
+  add_row(old = "bioarea_mm2_per_ml_d", 
+          new = "Bioarea Density ES") %>%
+  add_row(old = "shannon_d", 
+          new = "Shannon Index ES") %>%
+  add_row(old = "bioarea_mm2_per_ml", 
+          new = "Bioarea Density") %>%
+  add_row(old = "shannon", 
+          new = "Shannon Index") %>%
+  add_row(old = "total_metaecosystem_bioarea_mm2", 
+          new = "Tot Bioarea") %>%
+  add_row(old = "bray_curtis", 
+          new = "Beta Diversity") %>%
+  add_row(old = "metaecosystem_richness", 
+          new = "Gamma Diversity") %>%
+  slice(-1)
 
-results_table$significant = ""
-results_table$significant[results_table$ΔAIC <= -2] = "*"
+for(name_input in 1:nrow(names_levels)){
+  results_table$Levels <- gsub(names_levels$old[name_input], 
+                               names_levels$new[name_input], 
+                               results_table$Levels)
+}
+
+for(name_input in 1:nrow(names_responses)) {
+  results_table$Response <- gsub(names_responses$old[name_input],
+                                 names_responses$new[name_input],
+                                 results_table$Response)
+}
+
+results_table$Response <- factor(results_table$Response, levels = c("Bioarea Density",
+                                                                    "Shannon Index",
+                                                                    "Tot Bioarea",
+                                                                    "Alpha Diversity",
+                                                                    "Beta Diversity",
+                                                                    "Gamma Diversity",
+                                                                    "Bioarea Density ES",
+                                                                    "Log Bioarea Density ES",
+                                                                    "Shannon Index ES",
+                                                                    "Log Shannon Index ES",
+                                                                    ""))
+
+results_table$Levels <- factor(results_table$Levels, levels = c("Metaecos (SL vs MM)",
+                                                                "SL (connect vs isolated)",
+                                                                "MM (connect vs isolated)", 
+                                                                "Isolated patches",
+                                                                "Small (connected to S or L)",
+                                                                "Large (connected to S or L)"))
+```
+
+```{r}
+compar_ex = "All the comparisons are carried out with the null model."
 
 results_table %>%
   arrange(Response, Levels) %>%
-  kbl() %>%
+  filter(Levels == "Isolated patches") %>%
+  mutate(ΔR2_full = NULL,
+                          ΔR2_int = NULL,
+                          ΔR2_fix = NULL) %>%
+  kbl(caption = paste("Results of the mixed models for the isolated patches.", compar_ex)) %>%
   kable_styling()
 
+results_table %>%
+  arrange(Response, Levels) %>%
+  filter(
+    Levels %in% c(
+      "Metaecos (SL vs MM)",
+      "SL (connect vs isolated)",
+      "MM (connect vs isolated)"
+    )
+  ) %>%
+  mutate(ΔR2_full = NULL,
+         ΔR2_int = NULL,
+         ΔR2_fix = NULL) %>%
+  kbl(
+    caption = paste(
+      "Results of the mixed models for the meta-ecosystems and isolated systems",
+      compar_ex
+    )
+  ) %>%
+  kable_styling()
+
+results_table %>%
+  filter(Response %in% c("Bioarea Density ES", "Shannon Index ES")) %>%
+  arrange(Response, Levels) %>%
+  kbl(caption = paste("Results of the linear models for the connected patches", compar_ex)) %>%
+  kable_styling()
+```
+
+```{r}
 p_MM_SL_metaecos_gamma
 ```
 

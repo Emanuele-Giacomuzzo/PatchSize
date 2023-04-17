@@ -1,0 +1,118 @@
+---
+title: "Untitled"
+output: html_document
+date: "2023-04-14"
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+filtered_data = ds_metaecosystems %>%
+                         filter(time_point >= first_time_point_model,
+                                time_point <= last_time_point_model,
+                                metaecosystem_type %in% metaecosystem_type_input_model)
+```
+
+```{r}
+plot.metaecos.points(filtered_data,
+                     metaecosystem_type_input_model,
+                     response_variable)
+```
+
+- Null model
+
+```{r}
+null_model = lmer(
+  get(response_variable) ~
+    day + 
+    (day | system_nr), 
+  data = filtered_data,
+  REML = FALSE,
+  control = lmerControl(optimizer = "Nelder_Mead")
+)
+
+summary(null_model)
+plot(null_model)
+qqnorm(resid(null_model))
+```
+
+- Full model (with `connection` and `connection:day`)
+
+```{r}
+full_model = lmer(
+  get(response_variable) ~
+    day + 
+    connection +
+    connection : day + 
+    (day | system_nr), 
+  data = filtered_data,
+  REML = FALSE,
+  control = lmerControl(optimizer = "Nelder_Mead")
+)
+
+summary(full_model)
+plot(full_model)
+qqnorm(resid(full_model))
+
+model_stats_full = compute.model.stats(full_model,
+                                       null_model,
+                                       "mixed_model") %>%
+  print()
+```
+
+- Interaction model (with `connection:day`)
+
+```{r}
+interaction_model = lmer(
+  get(response_variable) ~
+    day + 
+    connection : day + 
+    (day | system_nr), 
+  data = filtered_data,
+  REML = FALSE,
+  control = lmerControl(optimizer = "Nelder_Mead")
+)
+
+summary(interaction_model)
+plot(interaction_model)
+qqnorm(resid(interaction_model))
+
+model_stats_interaction = compute.model.stats(interaction_model,
+                                              null_model,
+                                              "mixed_model") %>%
+  print()
+```
+
+- Fixed model (with `connection`)
+
+```{r}
+fixed_model = lmer(
+  get(response_variable) ~
+    day + 
+    connection + 
+    (day | system_nr), 
+  data = filtered_data,
+  REML = FALSE,
+  control = lmerControl(optimizer = "Nelder_Mead")
+)
+
+summary(fixed_model)
+plot(fixed_model)
+qqnorm(resid(fixed_model))
+
+model_stats_fixed = compute.model.stats(fixed_model,
+                                              null_model,
+                                              "mixed_model") %>%
+  print()
+```
+
+```{r}
+results_table = fill.results.table(
+  results_table,
+  response_variable,
+  metaecosystem_type_input_model,
+  model_stats_full,
+  model_stats_interaction,
+  model_stats_fixed
+)
+```

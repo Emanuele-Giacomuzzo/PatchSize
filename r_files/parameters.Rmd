@@ -304,9 +304,15 @@ ggarrange_margin_right = 0
 results_table = data.frame(
   Response = as.character(NA),
   Levels = as.character(NA),
-  ΔAIC = NA,
-  p = as.character(NA),
-  ΔR2 = NA
+  ΔAIC_full = NA,
+  p_full = as.character(NA),
+  ΔR2_full = NA,
+  ΔAIC_int = NA,
+  p_int = as.character(NA),
+  ΔR2_int = NA,
+  ΔAIC_fix = NA,
+  p_fix = as.character(NA),
+  ΔR2_fix = NA
 ) %>%
   slice(-1)
 ```

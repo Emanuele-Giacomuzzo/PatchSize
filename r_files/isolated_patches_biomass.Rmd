@@ -18,72 +18,11 @@ response_variable = "bioarea_mm2_per_ml"
 ```{r}
 p_isolated_biomass = plot.patches.points(ds_patches, 
                                          patch_type_input,
-                                         response_variable)
-
-p_isolated_biomass
+                                         response_variable) %>%
+  print()
 ```
 
-*Analysis*
-
-```{r}
-filtered_data = ds_patches %>%
-  filter(
-    metaecosystem == "no",
-    time_point >= first_time_point_model,
-    time_point <= last_time_point_model
-  )
-```
-
-```{r}
-plot.patches.points(filtered_data,
-                    patch_type_input,
-                    response_variable)
-```
-
-**Construct the full model**
-
-```{r}
-full_model = lmer(
-  get(response_variable) ~
-    day +
-    patch_size_ml +
-    patch_size_ml : day +
-    (day | culture_ID),
-  data = filtered_data,
-  REML = FALSE,
-  control = lmerControl(optimizer = "Nelder_Mead")
-)
-
-summary(full_model)
-plot(full_model)
-qqnorm(resid(full_model))
-```
-
--   Test `patch_size_ml` and `patch_size_ml : day`
-
-```{r}
-null_model = lmer(
-  get(response_variable) ~
-    day +
-    (day | culture_ID),
-  data = filtered_data,
-  REML = FALSE,
-  control = lmerControl(optimizer = "Nelder_Mead")
-)
-
-summary(null_model)
-plot(null_model)
-qqnorm(resid(null_model))
-stats = compute.model.stats(full_model,
-                            null_model,
-                            "mixed_model")
-
-stats
-
-results_table = fill.results.table(results_table,
-                                   response_variable,
-                                   patch_type_input,
-                                   model_stats)
+```{r child = here("r_files", "isolated_patches_analysis.Rmd")}
 ```
 
 ###### Boxplots
