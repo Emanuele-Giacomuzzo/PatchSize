@@ -1,0 +1,129 @@
+---
+title: "Untitled"
+output: html_document
+date: "2023-04-26"
+---
+
+```{r}
+results_table %>%
+  write.csv(file = here("results", "results_table.csv"), 
+            row.names = F)
+```
+
+```{r}
+results_table = read.csv(here("results", "results_table.csv"))
+
+names_levels = data.frame(
+  old = NA,
+  new = NA) %>%
+  add_row(old = "Small-Large meta-ecosystem , Small-Large isolated", 
+          new = "SL (connect vs isolated)") %>%
+  add_row(old = "Medium-Medium meta-ecosystem , Medium-Medium isolated", 
+          new = "MM (connect vs isolated)") %>%
+  add_row(old = "Small-Large meta-ecosystem , Medium-Medium meta-ecosystem", 
+          new = "Metaecos (SL vs MM)") %>%
+  add_row(old = "Medium-Medium isolated , Small-Large isolated", 
+          new = "Isolated (SL vs MM)") %>%
+  add_row(old = "Medium-Medium meta-ecosystem , Small-Large meta-ecosystem", 
+          new = "Metaecos (SL vs MM)") %>%
+  add_row(old = "Small-Large isolated , Medium-Medium isolated", 
+          new = "Isolated (SL vs MM)") %>%
+  add_row(old = "Small isolated , Medium isolated , Large isolated", 
+          new = "Isolated patches") %>%
+  add_row(old = "Small connected to small , Small connected to large", 
+          new = "Small (connected to S or L)") %>%
+  add_row(old = "Large connected to small , Large connected to large", 
+          new = "Large (connected to S or L)") %>%
+  slice(-1)
+
+names_responses = data.frame(
+  old = NA,
+  new = NA) %>%
+  add_row(old = "mean_shannon", 
+          new = "Alpha Diversity") %>%
+  add_row(old = "bioarea_mm2_per_ml_d", 
+          new = "Bioarea Density ES") %>%
+  add_row(old = "shannon_d", 
+          new = "Shannon Index ES") %>%
+  add_row(old = "bioarea_mm2_per_ml", 
+          new = "Bioarea Density") %>%
+  add_row(old = "shannon", 
+          new = "Shannon Index") %>%
+  add_row(old = "total_metaecosystem_bioarea_mm2", 
+          new = "Tot Bioarea") %>%
+  add_row(old = "bray_curtis", 
+          new = "Beta Diversity") %>%
+  add_row(old = "metaecosystem_richness", 
+          new = "Gamma Diversity") %>%
+  slice(-1)
+
+for(name_input in 1:nrow(names_levels)){
+  results_table$Levels <- gsub(names_levels$old[name_input], 
+                               names_levels$new[name_input], 
+                               results_table$Levels)
+}
+
+for(name_input in 1:nrow(names_responses)) {
+  results_table$Response <- gsub(names_responses$old[name_input],
+                                 names_responses$new[name_input],
+                                 results_table$Response)
+}
+
+results_table$Response <- factor(results_table$Response, levels = c("Bioarea Density",
+                                                                    "Shannon Index",
+                                                                    "Tot Bioarea",
+                                                                    "Alpha Diversity",
+                                                                    "Beta Diversity",
+                                                                    "Gamma Diversity",
+                                                                    "Bioarea Density ES",
+                                                                    "Log Bioarea Density ES",
+                                                                    "Shannon Index ES",
+                                                                    "Log Shannon Index ES",
+                                                                    ""))
+
+results_table$Levels <- factor(results_table$Levels, levels = c("Metaecos (SL vs MM)",
+                                                                "SL (connect vs isolated)",
+                                                                "MM (connect vs isolated)", 
+                                                                "Isolated patches",
+                                                                "Small (connected to S or L)",
+                                                                "Large (connected to S or L)"))
+```
+
+```{r}
+compar_ex = "All the comparisons are carried out with the null model."
+
+results_table %>%
+  arrange(Response, Levels) %>%
+  filter(Levels == "Isolated patches") %>%
+  mutate(ΔR2_full = NULL,
+                          ΔR2_int = NULL,
+                          ΔR2_fix = NULL) %>%
+  kbl(caption = paste("Results of the mixed models for the isolated patches.", compar_ex)) %>%
+  kable_styling()
+
+results_table %>%
+  arrange(Response, Levels) %>%
+  filter(
+    Levels %in% c(
+      "Metaecos (SL vs MM)",
+      "SL (connect vs isolated)",
+      "MM (connect vs isolated)"
+    )
+  ) %>%
+  mutate(ΔR2_full = NULL,
+         ΔR2_int = NULL,
+         ΔR2_fix = NULL) %>%
+  kbl(
+    caption = paste(
+      "Results of the mixed models for the meta-ecosystems and isolated systems",
+      compar_ex
+    )
+  ) %>%
+  kable_styling()
+
+results_table %>%
+  filter(Response %in% c("Bioarea Density ES", "Shannon Index ES")) %>%
+  arrange(Response, Levels) %>%
+  kbl(caption = paste("Results of the linear models for the connected patches", compar_ex)) %>%
+  kable_styling()
+```

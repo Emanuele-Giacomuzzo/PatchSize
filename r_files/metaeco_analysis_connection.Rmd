@@ -116,3 +116,108 @@ results_table = fill.results.table(
   model_stats_fixed
 )
 ```
+
+Let's now try a different approach.
+
+```{r eval = FALSE}
+ID_combinations_w_combination_sets =  ID_combinations_w_combination_sets %>%
+  filter(disturbance == disturbance_global_input)
+
+n_combination_sets = ID_combinations_w_combination_sets %>%
+  filter(metaecosystem_type %in% metaecosystem_type_input_model,
+         connection == "isolated") %>%
+  pull(combination_set) %>%
+  max()
+
+for (combination_set_input in 1:n_combination_sets) {
+  system_nr_isolated = ID_combinations_w_combination_sets %>%
+    filter(
+      metaecosystem_type %in% metaecosystem_type_input_model,
+      connection == "isolated",
+      combination_set == combination_set_input
+    ) %>%
+    pull(system_nr)
+  
+  filtered_data = ds_metaecosystems %>%
+    filter(
+      time_point >= first_time_point_model,
+      time_point <= last_time_point_model,
+      metaecosystem_type %in% metaecosystem_type_input_model,
+      connection == "connected" |
+        (connection == "isolated" &
+           system_nr %in% system_nr_isolated)
+    )
+  
+  null_model = lmer(
+    get(response_variable) ~
+      day +
+      (day | system_nr),
+    data = filtered_data,
+    REML = FALSE,
+    control = lmerControl(optimizer = "Nelder_Mead")
+  )
+  
+  full_model = lmer(
+    get(response_variable) ~
+      day +
+      connection +
+      connection:day +
+      (day | system_nr),
+    data = filtered_data,
+    REML = FALSE,
+    control = lmerControl(optimizer = "Nelder_Mead")
+  )
+  
+  model_stats_full = compute.model.stats(full_model,
+                                         null_model,
+                                         "mixed_model")
+  
+  interaction_model = lmer(
+    get(response_variable) ~
+      day +
+      connection:day +
+      (day | system_nr),
+    data = filtered_data,
+    REML = FALSE,
+    control = lmerControl(optimizer = "Nelder_Mead")
+  )
+  
+  model_stats_interaction = compute.model.stats(interaction_model,
+                                                null_model,
+                                                "mixed_model")
+  
+  fixed_model = lmer(
+    get(response_variable) ~
+      day +
+      connection +
+      (day | system_nr),
+    data = filtered_data,
+    REML = FALSE,
+    control = lmerControl(optimizer = "Nelder_Mead")
+  )
+  
+  model_stats_fixed = compute.model.stats(fixed_model,
+                                          null_model,
+                                          "mixed_model")
+  
+  iterated_results_table = fill.results.table(
+    iterated_results_table,
+    response_variable,
+    metaecosystem_type_input_model,
+    model_stats_full,
+    model_stats_interaction,
+    model_stats_fixed
+  )
+  
+  iterated_results_table$combination_set = combination_set_input
+}
+
+# results_table = fill.results.table(
+#     results_table,
+#     response_variable,
+#     metaecosystem_type_input_model,
+#     model_stats_full,
+#     model_stats_interaction,
+#     model_stats_fixed
+#   )
+```

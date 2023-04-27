@@ -8,8 +8,56 @@ Two meta-ecosystems of the same total volume but of patches of different size we
 
 The inflow of non-living material coming from a productive patch have already been shown to be beneficial for the functioning of patches under perturbations (@Colombo2021). Therefore, small patches that receive a lot of non-living material will recover better from the perturbations that cause resource flow, meanwhile the larger patches will recover worse. The effects of resource flow on meta-ecosystem function will depend on how much large patches increase the function of the small patches and how much the small patches decrease the function of the large patches.
 
-We here refer to biomass production as patch function, which we use interchangeably. 
+We here refer to biomass production as patch function, which we use interchangeably.
 
 Also, as larger patches are more resistant (@Greig2022), they will produce less detritus. This is why we can actually kind of assume that other types of distrubance which are not exactly killing the same amount of individuals will have a similar effect, as larger patches are more resistant.
 
 As larger patches are more resistant (@Greig2022), they will need less detritus to counteract the effects of perturbations that is creating resource flow.
+
+The explanation lies in the quantity of detritus exchanged between patches. Detritus is essential for patches to recover from perturbations. In the absence of resource flows, asymmetric size would lead to a more productive meta-ecosystem since the production of large and small isolated patches together was greater than that of two medium-sized patches. However, the reciprocal flow of resources between asymmetric-sized patches can reduce the function of the meta-ecosystem. This is due to the non-symmetric effects of the reciprocal flow of resources on small and large patches. The influx of resources from a large patch enhances the function of a small patch less than the small amount of resources from small patches increases the function of large patches. Consequently, the overall function of the meta-ecosystem decreases.
+
+Effects of disturbance on scaling up ecosystem function
+
+[Not sure if this paragraph should be in, as I would like to run an experiment to test this prediction]. Our experiment showed that when patches are isolated, having small and large patches might increase function more than having medium patches. This is opposed to what @Benedetti-Cecchi2005 predicted. They predict that the patch size-productivity relationship is concave and therefore because of more Jensen's inequality function should decline with increasing variance in patch size. The reason why we think that our two conclusions are in disagreement is because @Benedetti-Cecchi2005 did a meta-analysis of biodiversity experiments where disturbance was not considered. In that case, we think that patch size-productivity will be concave. However, we believe that when patches are disturbed, as in our experiment, smaller patches are less resistant to many disturbances (e.g., fire) (@Greig2022). This should cause the small patches to go down more than large patches showing a convex relationship between patch size and productivity. This should cause a larger increase in the variance of patch size to increase the function of the landscape.
+
+As the volume exchanged between patches remained the same (e.g., 5.25 ml flowed from patch 1 to 2 and 5.25 ml from patch 2 to 1), the patch volume remained constant over time.
+
+To determine the 95% confidence interval of means, I used a code that can be found on a Stack Overflow thread (<https://stackoverflow.com/questions/35953394/calculating-length-of-95-ci-using-dplyr>). The code is based on the formula presented in the Lumen Learning course "Introduction to Statistics" (<https://courses.lumenlearning.com/introstats1/chapter/a-single-population-mean-using-the-student-t-distribution/>). The formula to calculate the upper and lower bounds of the 95% confidence interval is as follows:
+
+$$
+CI_{lower} = mean - (t \: score * \frac{SD}{sample \: size})
+$$
+
+$$
+CI_{upper} = mean + (t \: score * \frac{SD}{sample \: size})
+$$
+
+where the t-score is computed from the student t distribution using the r function qt with percentile = 0.975 and degrees of freedom = sample size - 1.
+
+To determine how response variables change across treatments, we chose to use an effect size with the control being a patch of the same size but isolated. Initially, we considered using the natural logarithm of the response ratio (lnRR), but some values of the response variables in the control or treatment were 0. Adding 1 to all null values, as suggested in the literature, would have inflated the effect sizes. As a result, we searched for alternative effect size metrics and found that Hedge's d (also known as Hedge's g) is the most commonly used and preferred metric today (@Hedges1985). Hedge's d is calculated as the difference in mean between the treatment and control groups divided by the standard deviation of the pooled data. Another option would have been Cohen's d, but this metric is less effective for sample sizes smaller than 20 (as discussed in this post on StatisticsHowTo: <https://www.statisticshowto.com/hedges-g/>).
+
+##### Statistical analysis: mixed effect models
+
+To perform mixed effect modeling on our data, we utilized the R package lme4. The code syntax was obtained from the vignette available at <https://cran.r-project.org/web/packages/lme4/vignettes/lmer.pdf>. Interaction terms were coded following the guidelines provided in chapter 9 of the book "An R Companion to Statistics: Data Analysis and Modeling" by Maarten Speekenbrink (<https://mspeekenbrink.github.io/sdam-r-companion/linear-mixed-effects-models.html>). Model diagnostics were conducted using quantile-quantile plots (plot(mixed_model)) and partial residual plots (qqnorm(resid(mixed_model))), as recommended by @Zuur2009 (page 487).
+
+The effect size of the explanatory variables was computed as marginal and conditional R squared. The marginal R squared represents the amount of variance explained by the fixed effects, while the conditional R squared accounts for both the fixed and random effects. The calculation of marginal and conditional R squared was performed using the MuMIn package, based on the methods of @Nakagawa2017. For the coding and interpretation of these R squared values, refer to the documentation for the r.squaredGLMM function.
+
+Time can either be included as a fixed or random effect. If the data points are dependent on each other (e.g. seasons), time should be included as a random effect. However, since the biomass in our experiment showed a temporal trend and exhibited autocorrelation (i.e. t2 is more similar to t3 than t4), we decided to include time as a fixed effect. For a comprehensive discussion on this topic, see this blog post: <https://dynamicecology.wordpress.com/2015/11/04/is-it-a-fixed-or-random-effect/>.
+
+Some interactions cannot be tested in R, as described in this Stack Overflow thread (<https://stackoverflow.com/questions/40729701/how-to-use-formula-in-r-to-exclude-main-effect-but-retain-interaction>). This is specifically the case when the interaction is between a factor (e.g., patch_type) and a continuous variable (e.g. day), and the factor is the primary predictor. This limitation is due to the model.matrix.default function. To test the effects of day, I must remove the interaction term with patch_type.
+
+##### 
+
+##### Model selection
+
+Model selection was performed using the Akaike Information Criterion (AIC). A difference in AIC of 2 was considered to be the threshold that distinguishes between two models, with the model having the lower AIC being preferred. If the difference in AIC does not exceed 2, the model with the smallest number of parameters is preferred. This approach was suggested by @Halsey2019 as an alternative to using p-values. P-values are not a reliable method of model selection due to the small sample size (five replicates), which can result in larger p-values, and because p-values can be highly variable, leading to many false positives and negatives (e.g., with a p-value of 0.05, there is a 1 in 3 chance that it's a false positive).
+
+**Setup**
+
+To analyze local patch properties, we compared the small patch to other small patches that were either connected to another small patch or isolated instead of being connected to a large patch.
+
+Additionally, we evaluated the effect of patch size by comparing isolated patches of different sizes (small, medium, and large) and meta-ecosystems with patches of different sizes (meta-ecosystems with small, medium, and large patches).
+
+We called the meta-ecosystem with a small and a large patch Small-Large and the one with two medium patches Medium-Medium.
+
+### 

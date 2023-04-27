@@ -247,12 +247,12 @@ parameters_treatments = data.frame(treatment = NA,
                                 colour = NA,
                                 linetype = NA) %>%
   add_row(treatment = "Small isolated", colour = "#bdbdbd", linetype = "solid") %>% 
-  add_row(treatment = "Small connected to small", colour = "#fff7bc", linetype = "solid") %>%
+  add_row(treatment = "Small connected to small", colour = "#feb24c", linetype = "twodash") %>%
   add_row(treatment = "Small connected to large", colour = "#feb24c", linetype = "solid") %>%
   add_row(treatment = "Medium isolated", colour = "#737373", linetype = "solid") %>%
   add_row(treatment = "Medium connected to medium", colour = "#feb24c", linetype = "solid") %>%
   add_row(treatment = "Large isolated", colour = "#000000", linetype = "solid") %>%
-  add_row(treatment = "Large connected to large", colour = "#fee0d2", linetype = "solid") %>%
+  add_row(treatment = "Large connected to large", colour = "#67000d", linetype = "twodash") %>%
   add_row(treatment = "Large connected to small", colour = "#67000d", linetype = "solid") %>%
   add_row(treatment = "Small-Small meta-ecosystem", colour = "#deebf7", linetype = "solid") %>%
   add_row(treatment = "Medium-Medium meta-ecosystem", colour = "#1b7837", linetype = "solid") %>%
@@ -313,6 +313,22 @@ results_table = data.frame(
   ΔAIC_fix = NA,
   p_fix = as.character(NA),
   ΔR2_fix = NA
+) %>%
+  slice(-1)
+
+iterated_results_table = data.frame(
+  Response = as.character(NA),
+  Levels = as.character(NA),
+  ΔAIC_full = NA,
+  p_full = as.character(NA),
+  ΔR2_full = NA,
+  ΔAIC_int = NA,
+  p_int = as.character(NA),
+  ΔR2_int = NA,
+  ΔAIC_fix = NA,
+  p_fix = as.character(NA),
+  ΔR2_fix = NA,
+  combination_set = NA
 ) %>%
   slice(-1)
 ```
