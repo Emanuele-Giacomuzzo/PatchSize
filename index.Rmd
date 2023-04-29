@@ -37,7 +37,7 @@ library("here")
 
 show_results = TRUE
 recompute_lengthy_analyses = FALSE
-recompute_datasets = FALSE
+recompute_datasets = TRUE
 ```
 
 #  {.tabset}
@@ -542,6 +542,17 @@ critical_rows_ES=ds_effect_size %>% filter(disturbance == "high", patch_size == 
 
 treatment_row$beta_diversity_from_isolated_mean
 control_row$beta_diversity_from_isolated_mean
+```
+
+```{bash eval = FALSE}
+# Navigate to the directory
+cd /Users/ema/Documents/GitHub/PatchSizePilot
+
+# Define the value of disturbance_level
+disturbance_level="low"
+
+# Rename the index.html file to index_disturbance_level.html
+mv index.html index_${disturbance_level}.html
 ```
 
 The only type of patch where all cultures crashed was small connected to small at high disturbance.

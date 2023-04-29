@@ -59,9 +59,8 @@ library("treemapify")
 library("Rmisc")
 library("emmeans")
 library("testthat")
-library("DHARMa") #To test the collinearity between variables in mixed models
-library("bestNormalize") #To perform a Yeo-Johnson transformation
-
+library("combinat") #For permutations 
+library("gtools") #Another permutation package
 
 conflict_prefer("load", "base")
 conflict_prefer("here", "here")
@@ -73,4 +72,5 @@ conflict_prefer("summarise", "dplyr")
 conflict_prefer("rename", "dplyr")
 conflict_prefer("vif", "car")
 conflict_prefer("recode", "dplyr")
+conflict_prefer("combn", "combinat")
 ```

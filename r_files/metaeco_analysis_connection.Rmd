@@ -7,120 +7,8 @@ editor_options:
 ---
 
 ```{r}
-filtered_data = ds_metaecosystems %>%
-                         filter(time_point >= first_time_point_model,
-                                time_point <= last_time_point_model,
-                                metaecosystem_type %in% metaecosystem_type_input_model)
-```
-
-```{r}
-plot.metaecos.points(filtered_data,
-                     metaecosystem_type_input_model,
-                     response_variable)
-```
-
-- Null model
-
-```{r}
-null_model = lmer(
-  get(response_variable) ~
-    day + 
-    (day | system_nr), 
-  data = filtered_data,
-  REML = FALSE,
-  control = lmerControl(optimizer = "Nelder_Mead")
-)
-
-summary(null_model)
-plot(null_model)
-qqnorm(resid(null_model))
-```
-
-- Full model (with `connection` and `connection:day`)
-
-```{r}
-full_model = lmer(
-  get(response_variable) ~
-    day + 
-    connection +
-    connection : day + 
-    (day | system_nr), 
-  data = filtered_data,
-  REML = FALSE,
-  control = lmerControl(optimizer = "Nelder_Mead")
-)
-
-summary(full_model)
-plot(full_model)
-qqnorm(resid(full_model))
-
-model_stats_full = compute.model.stats(full_model,
-                                       null_model,
-                                       "mixed_model") %>%
-  print()
-```
-
-- Interaction model (with `connection:day`)
-
-```{r}
-interaction_model = lmer(
-  get(response_variable) ~
-    day + 
-    connection : day + 
-    (day | system_nr), 
-  data = filtered_data,
-  REML = FALSE,
-  control = lmerControl(optimizer = "Nelder_Mead")
-)
-
-summary(interaction_model)
-plot(interaction_model)
-qqnorm(resid(interaction_model))
-
-model_stats_interaction = compute.model.stats(interaction_model,
-                                              null_model,
-                                              "mixed_model") %>%
-  print()
-```
-
-- Fixed model (with `connection`)
-
-```{r}
-fixed_model = lmer(
-  get(response_variable) ~
-    day + 
-    connection + 
-    (day | system_nr), 
-  data = filtered_data,
-  REML = FALSE,
-  control = lmerControl(optimizer = "Nelder_Mead")
-)
-
-summary(fixed_model)
-plot(fixed_model)
-qqnorm(resid(fixed_model))
-
-model_stats_fixed = compute.model.stats(fixed_model,
-                                              null_model,
-                                              "mixed_model") %>%
-  print()
-```
-
-```{r}
-results_table = fill.results.table(
-  results_table,
-  response_variable,
-  metaecosystem_type_input_model,
-  model_stats_full,
-  model_stats_interaction,
-  model_stats_fixed
-)
-```
-
-Let's now try a different approach.
-
-```{r eval = FALSE}
-ID_combinations_w_combination_sets =  ID_combinations_w_combination_sets %>%
+#Compute stats for all patch combinations 
+ID_combinations_w_combination_sets =  all_sets_SL_isolated %>%
   filter(disturbance == disturbance_global_input)
 
 n_combination_sets = ID_combinations_w_combination_sets %>%
@@ -130,7 +18,8 @@ n_combination_sets = ID_combinations_w_combination_sets %>%
   max()
 
 for (combination_set_input in 1:n_combination_sets) {
-  system_nr_isolated = ID_combinations_w_combination_sets %>%
+  
+  system_nr_isolated_systems = ID_combinations_w_combination_sets %>%
     filter(
       metaecosystem_type %in% metaecosystem_type_input_model,
       connection == "isolated",
@@ -145,7 +34,7 @@ for (combination_set_input in 1:n_combination_sets) {
       metaecosystem_type %in% metaecosystem_type_input_model,
       connection == "connected" |
         (connection == "isolated" &
-           system_nr %in% system_nr_isolated)
+           system_nr %in% system_nr_isolated_systems)
     )
   
   null_model = lmer(
@@ -211,13 +100,44 @@ for (combination_set_input in 1:n_combination_sets) {
   
   iterated_results_table$combination_set = combination_set_input
 }
+```
 
-# results_table = fill.results.table(
-#     results_table,
-#     response_variable,
-#     metaecosystem_type_input_model,
-#     model_stats_full,
-#     model_stats_interaction,
-#     model_stats_fixed
-#   )
+```{r}
+#Check that there's nothing wired with the AIC and p-value distributions 
+hist(iterated_results_table$ΔAIC_full, main = "Distribution of ΔAIC of the full model.") 
+hist(iterated_results_table$p_full, main = "Distribution of p-values of the full model.") 
+hist(iterated_results_table$ΔAIC_fix, main = "Distribution of ΔAIC of the fixed model.") 
+hist(iterated_results_table$p_fix, main = "Distribution of p-values of the fixed model.") 
+hist(iterated_results_table$ΔAIC_int, main = "Distribution of ΔAIC of the interation model.") 
+hist(iterated_results_table$p_int, main = "Distribution of p-values of the interation model.") 
+```
+
+```{r}
+#Use the mean p-values and ΔAIC (!!! problem with p-value < 0.001 !!!)
+model_stats_full = data.frame(
+  deltaAIC = mean(iterated_results_table$ΔAIC_full),
+  p_value = mean(iterated_results_table$p_full),
+  R2 = NA
+) 
+
+model_stats_interaction = data.frame(
+  deltaAIC = mean(iterated_results_table$ΔAIC_int),
+  p_value = mean(iterated_results_table$p_int),
+  R2 = NA
+)
+
+model_stats_fixed = data.frame(
+  deltaAIC = mean(iterated_results_table$ΔAIC_fix),
+  p_value = mean(iterated_results_table$p_fix),
+  R2 = NA
+)
+
+results_table = fill.results.table(
+    results_table,
+    response_variable,
+    metaecosystem_type_input_model,
+    model_stats_full,
+    model_stats_interaction,
+    model_stats_fixed
+  )
 ```

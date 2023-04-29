@@ -22,6 +22,27 @@ p_isolated_biomass = plot.patches.points(ds_patches,
   print()
 ```
 
+Let's look at what's happening to the small patches.
+
+```{r}
+
+#Time point 6
+
+ds_patches %>%
+  filter(disturbance == disturbance_global_input,
+         time_point == 6,
+         patch_type == "Small isolated") %>%
+  select(all_of(response_variable))
+
+#Time point 7
+
+ds_patches %>%
+  filter(disturbance == disturbance_global_input,
+         time_point == 7,
+         patch_type == "Small isolated") %>%
+  select(all_of(response_variable))
+```
+
 ```{r child = here("r_files", "isolated_patches_analysis.Rmd")}
 ```
 

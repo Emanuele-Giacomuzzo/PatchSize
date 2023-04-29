@@ -2,6 +2,8 @@
 title: "Untitled"
 output: html_document
 date: "2023-04-26"
+editor_options: 
+  chunk_output_type: console
 ---
 
 ```{r}
@@ -90,14 +92,30 @@ results_table$Levels <- factor(results_table$Levels, levels = c("Metaecos (SL vs
 ```
 
 ```{r}
+#Round up AIC, p-value, and R digitss
+AIC_digits = 1
+p_digits = 3
+R_digits = 2
+
+results_table = results_table %>%
+  mutate(ΔAIC_full = round(ΔAIC_full, digits = AIC_digits),
+         p_full = round(p_full, digits = p_digits),
+         ΔR2_full = round(ΔR2_full, digits = R_digits),
+         ΔAIC_int = round(ΔAIC_int, digits = AIC_digits),
+         p_int = round(p_int, digits = p_digits),
+         ΔR2_int = round(ΔR2_int, digits = R_digits),
+         ΔAIC_fix = round(ΔAIC_fix, digits = AIC_digits),
+         p_fix = round(p_fix, digits = p_digits),
+         ΔR2_fix = round(ΔR2_fix, digits = R_digits))
+
 compar_ex = "All the comparisons are carried out with the null model."
 
 results_table %>%
   arrange(Response, Levels) %>%
   filter(Levels == "Isolated patches") %>%
   mutate(ΔR2_full = NULL,
-                          ΔR2_int = NULL,
-                          ΔR2_fix = NULL) %>%
+         ΔR2_int = NULL,
+         ΔR2_fix = NULL) %>%
   kbl(caption = paste("Results of the mixed models for the isolated patches.", compar_ex)) %>%
   kable_styling()
 
@@ -105,9 +123,7 @@ results_table %>%
   arrange(Response, Levels) %>%
   filter(
     Levels %in% c(
-      "Metaecos (SL vs MM)",
-      "SL (connect vs isolated)",
-      "MM (connect vs isolated)"
+      "Metaecos (SL vs MM)"
     )
   ) %>%
   mutate(ΔR2_full = NULL,
@@ -122,7 +138,36 @@ results_table %>%
   kable_styling()
 
 results_table %>%
-  filter(Response %in% c("Bioarea Density ES", "Shannon Index ES")) %>%
+  arrange(Response, Levels) %>%
+  filter(
+    Levels %in% c(
+      "SL (connect vs isolated)"
+    )
+  ) %>%
+  mutate(ΔR2_full = NULL,
+         ΔR2_int = NULL,
+         ΔR2_fix = NULL) %>%
+  kbl(
+    caption = paste(
+      "Results of the mixed models for the SL meta-ecosystems and SL isolated systems",
+      compar_ex
+    )
+  ) %>%
+  kable_styling()
+
+
+results_table %>%
+  filter(Response %in% c("Bioarea Density ES", 
+                         "Shannon Index ES"),
+         Levels == "Small (connected to S or L)") %>%
+  arrange(Response, Levels) %>%
+  kbl(caption = paste("Results of the linear models for the connected patches", compar_ex)) %>%
+  kable_styling()
+
+results_table %>%
+  filter(Response %in% c("Bioarea Density ES", 
+                         "Shannon Index ES"),
+         Levels == "Large (connected to S or L)") %>%
   arrange(Response, Levels) %>%
   kbl(caption = paste("Results of the linear models for the connected patches", compar_ex)) %>%
   kable_styling()

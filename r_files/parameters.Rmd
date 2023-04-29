@@ -305,13 +305,13 @@ results_table = data.frame(
   Response = as.character(NA),
   Levels = as.character(NA),
   ΔAIC_full = NA,
-  p_full = as.character(NA),
+  p_full = NA,
   ΔR2_full = NA,
   ΔAIC_int = NA,
-  p_int = as.character(NA),
+  p_int = NA,
   ΔR2_int = NA,
   ΔAIC_fix = NA,
-  p_fix = as.character(NA),
+  p_fix = NA,
   ΔR2_fix = NA
 ) %>%
   slice(-1)
@@ -320,13 +320,13 @@ iterated_results_table = data.frame(
   Response = as.character(NA),
   Levels = as.character(NA),
   ΔAIC_full = NA,
-  p_full = as.character(NA),
+  p_full = NA,
   ΔR2_full = NA,
   ΔAIC_int = NA,
-  p_int = as.character(NA),
+  p_int = NA,
   ΔR2_int = NA,
   ΔAIC_fix = NA,
-  p_fix = as.character(NA),
+  p_fix = NA,
   ΔR2_fix = NA,
   combination_set = NA
 ) %>%

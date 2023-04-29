@@ -8,11 +8,31 @@ editor_options:
 ---
 
 ```{r}
-response_variable = "species_richness"
+response_variable = "species_richness_d"
 ```
 
 ```{r}
 plot.patches.points.ES(ds_patches_effect_size, 
                        patch_type_input,
-                       paste0(response_variable, "_d"))
+                       paste0(response_variable))
+```
+
+##### Small
+
+```{r}
+patch_type_input_model = c("Small connected to small",
+                           "Small connected to large")
+```
+
+```{r child = here("r_files", "ES_analysis.Rmd")}
+```
+
+##### Large
+
+```{r}
+patch_type_input_model = c("Large connected to small",
+                           "Large connected to large")
+```
+
+```{r child = here("r_files", "ES_analysis.Rmd")}
 ```

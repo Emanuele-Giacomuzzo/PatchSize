@@ -21,6 +21,29 @@ p_isolated_alpha = plot.patches.points(ds_patches, patch_type_input,
   print()
 ```
 
+Let's look at what's happening to the small patches.
+
+```{r}
+
+#Time point 6
+
+ds_patches %>%
+  filter(disturbance == disturbance_global_input,
+         time_point == 6,
+         patch_type == "Small isolated") %>%
+  select(all_of(response_variable),
+         species_richness)
+
+#Time point 7
+
+ds_patches %>%
+  filter(disturbance == disturbance_global_input,
+         time_point == 7,
+         patch_type == "Small isolated") %>%
+  select(all_of(response_variable),
+         species_richness)
+```
+
 ```{r child = here("r_files", "isolated_patches_analysis.Rmd")}
 ```
 

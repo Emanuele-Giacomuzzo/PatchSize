@@ -250,6 +250,9 @@ n_rows_ds_patches_before_calculations = nrow(ds_patches)
 #This includes shannon, simpson, inv simpson, evenness.
 ds_patches = calculate.alpha.diversity()
 
+#I'm not sure why this is not already done automatically in the previous step 
+ds_patches$shannon[ds_patches$species_richness == 1] = 0
+
 expect_equal(max(ds_patches$species_richness),
              n_protist_species)
 ```

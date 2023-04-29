@@ -93,3 +93,32 @@ results_table = fill.results.table(
   model_stats_fixed
 )
 ```
+
+Let's now see if the model with the intercept is better.
+
+```{r}
+
+for (patch_type_input_model_singular in patch_type_input_model) {
+  
+  filtered_data = ds_patches_effect_size %>%
+    filter(
+        time_point >= first_time_point_model,
+        time_point <= last_time_point_model,
+        patch_type %in% patch_type_input_model_singular
+    )
+  
+  intercept_model = lm(get(response_variable) ~
+                         1,
+                       data = filtered_data)
+  
+  summary(intercept_model)
+  
+  no_intercept_model_2 = lm(get(response_variable) ~
+                              0,
+                            data = filtered_data)
+  
+  AIC(intercept_model, no_intercept_model_2) %>%
+    print()
+  
+}
+```

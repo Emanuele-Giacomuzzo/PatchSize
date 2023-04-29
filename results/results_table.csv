@@ -1,15 +1,17 @@
 "Response","Levels","ΔAIC_full","p_full","ΔR2_full","ΔAIC_int","p_int","ΔR2_int","ΔAIC_fix","p_fix","ΔR2_fix"
-"total_metaecosystem_bioarea_mm2","Small-Large meta-ecosystem , Medium-Medium meta-ecosystem",3.82,"0.915",NA,1.82,"0.674",NA,1.84,"0.691",NA
-"total_metaecosystem_bioarea_mm2","Small-Large meta-ecosystem , Small-Large isolated",-6.01,"0.007",NA,-7.99,"0.002",NA,-6.83,"0.003",NA
-"mean_shannon","Small-Large meta-ecosystem , Medium-Medium meta-ecosystem",-7.31,"0.003",NA,-7.46,"0.002",NA,-1.66,"0.056",NA
-"mean_shannon","Small-Large meta-ecosystem , Small-Large isolated",-9.49,"0.001",NA,-10.12,"< 0.001",NA,-11.45,"< 0.001",NA
-"bray_curtis","Small-Large meta-ecosystem , Medium-Medium meta-ecosystem",-8.72,"0.002",NA,-10.71,"< 0.001",NA,-3.77,"0.016",NA
-"bray_curtis","Small-Large meta-ecosystem , Small-Large isolated",-15.07,"< 0.001",NA,-16.76,"< 0.001",NA,-15.81,"< 0.001",NA
-"metaecosystem_richness","Small-Large meta-ecosystem , Medium-Medium meta-ecosystem",-4.52,"0.014",NA,-5.37,"0.007",NA,-6.49,"0.004",NA
-"metaecosystem_richness","Small-Large meta-ecosystem , Small-Large isolated",1.04,"0.228",NA,-0.86,"0.091",NA,-0.11,"0.147",NA
-"bioarea_mm2_per_ml","Small isolated , Medium isolated , Large isolated",-21.02,"< 0.001",NA,-16.17,"< 0.001",NA,-23,"< 0.001",NA
-"shannon","Small isolated , Medium isolated , Large isolated",-9.73,"0.001",NA,-11.43,"< 0.001",NA,-10.73,"< 0.001",NA
-"bioarea_mm2_per_ml_d","Small connected to small , Small connected to large",-4.61,"0.059",0.59,-5.51,"0.015",0.47,-6.16,"0.022",0.57
-"bioarea_mm2_per_ml_d","Large connected to small , Large connected to large",1.91,"0.41",0.29,1.54,"0.547",0.04,2.33,"0.536",0.13
-"shannon_d","Small connected to small , Small connected to large",4.36,"0.883",0.24,1.06,"0.456",0.15,3.39,"0.86",0.1
-"shannon_d","Large connected to small , Large connected to large",2.44,"0.473",0.26,0.62,"0.295",0.11,1.56,"0.401",0.18
+"total_metaecosystem_bioarea_mm2","Small-Large meta-ecosystem , Medium-Medium meta-ecosystem",3.82264177284867,0.915139182204367,NA,1.82326762488185,0.674196556056287,NA,1.84160562341026,0.690639097572191,NA
+"total_metaecosystem_bioarea_mm2","Small-Large meta-ecosystem , Small-Large isolated",-2.29698096368486,0.0486746125749732,NA,-4.16641155360187,0.0152156707647689,NA,-3.58976604712772,0.0222320975719908,NA
+"mean_shannon","Small-Large meta-ecosystem , Medium-Medium meta-ecosystem",-7.31366941619751,0.00349355754496231,NA,-7.46079121568522,0.00209910508941924,NA,-1.66471779006297,0.05557605442872,NA
+"mean_shannon","Small-Large meta-ecosystem , Small-Large isolated",-2.00715860024311,0.0547253986113066,NA,-3.53874532623254,0.0225272319317592,NA,-3.61624245034274,0.0205452556398932,NA
+"bray_curtis","Small-Large meta-ecosystem , Medium-Medium meta-ecosystem",-8.72208640969212,0.00172756356881004,NA,-10.7117506626128,0.000363365103193839,NA,-3.76955730366903,0.0163061417149693,NA
+"bray_curtis","Small-Large meta-ecosystem , Small-Large isolated",-2.44817329655202,0.0454536836330641,NA,-4.01453038484107,0.0178558817257322,NA,-3.92820701599248,0.0178094004159449,NA
+"metaecosystem_richness","Small-Large meta-ecosystem , Medium-Medium meta-ecosystem",-4.51701767725208,0.0141433767507457,NA,-5.37309009957525,0.00662070681824793,NA,-6.49178774234372,0.00356753083754668,NA
+"metaecosystem_richness","Small-Large meta-ecosystem , Small-Large isolated",-1.28040377944863,0.146438108010957,NA,-2.91985864471821,0.0755109975626811,NA,-2.75996485097394,0.092763710250878,NA
+"bioarea_mm2_per_ml","Small isolated , Medium isolated , Large isolated",-21.0159804450961,3.69699502924532e-06,NA,-16.1741525259619,2.01596379271397e-05,NA,-22.9956423200302,5.74600342498628e-07,NA
+"shannon","Small isolated , Medium isolated , Large isolated",-21.7388150649729,2.57565282299647e-06,NA,-23.6792772919847,4.03132772949262e-07,NA,-14.9156092553768,3.90789066541854e-05,NA
+"bioarea_mm2_per_ml_d","Small connected to small , Small connected to large",-4.60822718436658,0.0585802524620616,0.59,-5.50625050791936,0.0145781818651389,0.47,-6.15897128550077,0.0221567246625702,0.57
+"bioarea_mm2_per_ml_d","Large connected to small , Large connected to large",1.91362992785553,0.410276372144568,0.29,1.54210460533337,0.546811733235156,0.04,2.3348507684962,0.535566099387809,0.13
+"shannon_d","Small connected to small , Small connected to large",2.61122624620258,0.495466220910993,0.25,-0.844547633343065,0.13298063913521,0.21,1.89362190291394,0.453893910115592,0.16
+"shannon_d","Large connected to small , Large connected to large",2.4380141547756,0.473095984700922,0.26,0.618529920895934,0.295207633180289,0.11,1.56271044409765,0.40092392477026,0.18
+"species_richness_d","Small connected to small , Small connected to large",2.5500347524431,0.487470737438217,0.25,-0.620755159037358,0.149279754288204,0.2,1.76297506101687,0.432192429128444,0.17
+"species_richness_d","Large connected to small , Large connected to large",-0.509528384831071,0.204787271655644,0.42,-2.07624910622496,0.0720255931078881,0.29,0.400836056038024,0.259321550657744,0.26

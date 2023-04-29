@@ -1,9 +1,9 @@
 ---
-title: "Paper"
+title: "Paper CHAPTER 1"
 output: html_document
 date: "2022-12-16"
 editor_options: 
-  chunk_output_type: console
+  chunk_output_type: inline
 ---
 
 ### Title page
@@ -34,48 +34,51 @@ In recent years, there has been a growing recognition of the importance of the f
 
 Previous models and experiments in ecosystem function have generally assumed that all patches are the same size. However, the size of both the receiving and donor patches has the potential to significantly alter meta-ecosystem dynamics, as it can impact both the production and reception of subsidies.
 
-In this study, we investigate how patch size affects meta-ecosystem function by using a protist microcosm experiment (@Altermatt2015). Meta-ecosystems were made of two patches exchanging only detritus originated through disturbance. No dispersal happened. We compared meta-ecosystems of the same total volume but with either symmetric or asymmetric patch sizes.\
-[Hard part starts]\
-The flow of detritus was created with an absolute volume, and we predicted that larger patches would be more productive as they would be less perturbed than smaller patches. Therefore, more resources would flow from large patches than from small patches. We also hypothesized that the medium-medium meta-ecosystem would be more productive, as we predicted a concave relationship between patch size and function. Additionally, we expected that the larger the donor ecosystem, the more beneficial it would be for the receiving patch, as it needs detritus to recover from perturbations. Finally, we discuss the broader implications of our findings for the field of ecosystem function and meta-ecosystem theory.\
-[Hard part ends]
+In this study, we investigate how patch size affects meta-ecosystem function by using a protist microcosm experiment (@Altermatt2015). Meta-ecosystems were made of two patches exchanging only detritus originated through disturbance. No dispersal happened. We compared meta-ecosystems of the same total volume but with either symmetric or asymmetric patch sizes. We hypothesise that:
+
+-   H1: larger patches will be more productive as they would be less disturbed
+
+-   H2: more resources will flow from large patches, as they are more productive
+
+-   H3: medium-medium meta-ecosystem will be more productive, as we predicted a concave relationship between patch size and function
+
+-   H4: the larger the donor ecosystem, the more beneficial it would be for the receiving patch, as it needs detritus to recover from disturbances.
+
+We found that ...
+
+Finally, we discuss the broader implications of our findings for the field of ecosystem function and meta-ecosystem theory.
 
 ### Methods
 
 #### Experimental design
 
-The effects of patch size on meta-ecosystems was examined through a protist microcosm experiment (@Altermatt2015). Each meta-ecosystem consisted of two cultures that were exposed to a disturbance regime. During each disturbance event, a portion of the community was transformed into detritus, which flowed bidirectionally between cultures, connecting them through resource flow. Within a meta-ecosystem, only detritus was exchanged. No organism dispersed.\
-[Hard part starts]\
-We would like our reader to focus on a key feature of our study. As a fixed volume was disturbed in each culture, the smaller the culture the more it was disturbed. Therefore, the effect of patch size was probably due to the different level of disturbance applied to different cultures. We saw this in our third experiment, even tough it was for a different type of community, which was similar but did not include the alga *Euglena gracilis*.\
-[Hard part ends]
+The effects of patch size on meta-ecosystems was studied with a protist microcosm experiment (@Altermatt2015). We constructed different meta-ecosystems in which we changed the size of their patches. Each consisted of two protist cultures, which regularly exchanged detritus. No organism dispersed. We had two focal meta-ecosystems, which both had a total volume of 45.0 ml. The first - which we call Small-Large - had a small (7.5 ml) and a large patch (37.5 ml). The second - which we call Medium-Medium - had two medium sized patches (22.5 ml).
 
-Each of our two focal meta-ecosystems had a total volume of 45.0 ml. The first - which we call Small-Large - had a small (7.5 ml) and a large patch (37.5 ml). The second - which we call Medium-Medium - had two medium sized patches (22.5 ml). Two control meta-ecosystems we created: one with the two small patches and one with two large patches. Three control isolated patches were also created: a small isolated, a medium isolated, and a large isolated. See Figure 1.
+Furthermore, we were also interested in the effects of resource flow. Both on meta-ecosystems and single patches. To study such an effect, we constructed as control isolated patches whose detritus would not flow out, so we constructed small, medium, and large patches. Finally, we were interested in knowing whether the size of the patch a certain patch was connected to really mattered, or if the effect we saw was just being part of a meta-ecosystem. So, what we did is we constructed additional control meta-ecosystems. We constructed a meta-ecosystem with two small patches and one with two large patches. This way we could tell the effects of detritus flow on small patches when it came from large patches instead from coming from another small patch, as well as the effects on large patches coming from small patches instead of large patches. See Figure 1. 
 
 ```{r}
-figure_caption_1 = "Figure 1. Experimental design. We studied the effects of patch size on meta-ecosystems by assembling meta-ecosystems made of two-patches exchanging only detritus. No organism dispersed. We compared two meta-ecosystems of the same total volume but with either a small and large patch (Small-Large meta-ecosystem) or two medium patches (Medium-Medium meta-ecosystem). 
-
-
-To also study the effects of detritus flow on their singular patches, we compared them to isolated patches. Each patch started with the same protist community (11 species). A fixed volume was turned into detritus. Therefore, the smaller the patch, the more it was disturbed. Meta-ecosystems and isolated patch treatments were exposed to either low or high disturbance intensities. Each treatment was replicated five times."
+figure_caption_1 = "Figure 1. Experimental design. The effects of patch size on meta-ecosystems were investigated by constructing meta-ecosystems consisting of two patches that exchanged only detritus, without any organism dispersal. Two meta-ecosystems, having the same total volume, were compared; one composed of a small and large patch (Small-Large meta-ecosystem), and the other composed of two medium patches (Medium-Medium meta-ecosystem). We also examined the effect of detritus flow on singular patches by comparing them to isolated patches. Each patch started with the same protist community (11 species). To create detritus flow, a fixed volume of each patch was killed, leading to a greater level of disturbance from large to small patches. This method was also used in isolated patches, with the detritus remaining in the originating patch. Meta-ecosystems and isolated patch treatments were exposed to either low or high disturbance intensities. Each treatment was replicated five times."
 ```
 
-![`r figure_caption_1`](images/Design-02.png){alt="r figure_caption_1"}
+![`r figure_caption_1`](images/Design.png){alt="r figure_caption_1"}
 
 As we noted that part of the cultures evaporated, we added water and medium regularly to keep the volume of cultures unchanged (see supplementary information).
 
 #### Experimental setup
 
-In preparation for the experiment, we cultured 11 microbial species, which we refer to as protists. These were nine water ciliates (*Euplotes aediculatus*, *Colpidium sp.*, *Loxocephalus sp.*, *Paramecium aurelia*, *Paramecium caudatum*, *Spirostomum sp.*, *Spirostomum teres*, *Tetrahymena cf. pyriformis*, and *Blepharisma sp.*), one alga (*Euglena gracilis*), and one rotifer (*Cephalodella sp.*). Protists were cultured in autoclaved bottles with medium (0.46 g/L of Protozoa Pellet by Carolina), two wheat seeds, and a bacterial mix comprising *Serratia fonticola*, *Bacillus subtilis*, and *Brevibacillus brevis* (see @Altermatt2015 for protocols). The bacterial mix constituted 5% of the total culture volume. Protists were brought close to carrying capacity eight days before we assembled the experiment.
+Preparing for the experiment, we cultured 11 microbial species, which we refer to as protists. These were nine water ciliates (*Euplotes aediculatus*, *Colpidium sp.*, *Loxocephalus sp.*, *Paramecium aurelia*, *Paramecium caudatum*, *Spirostomum sp.*, *Spirostomum teres*, *Tetrahymena cf. pyriformis*, and *Blepharisma sp.*), one alga (*Euglena gracilis*), and one rotifer (*Cephalodella sp.*). We cultured protists in autoclaved bottles with standard protist medium (0.46 g of Protozoa Pellet by Carolina per L of water), two wheat seeds, and a bacterial mix (containing *Serratia fonticola*, *Bacillus subtilis*, and *Brevibacillus brevis*) (see @Altermatt2015 for protocols). The bacterial mix constituted 5% of the total culture volume. 
 
-On day zero, we assembled the protist community by filling a large autoclaved bottle with the same volume of each of the eleven protist species, adding some medium to it (15% of the volume). From this large bottle, we pipetted the protist community into sterile 50 ml centrifuge tubes (SPL life sciences skirted conical centrifuge tubes). We pipetted 7.5 ml, 22.5 ml, and 37.5 ml into the small, medium, and large patches, respectively. The cultures were then randomized on foam boards and kept in an incubator at 20°C with constant lighting.\
-[To do: ask if I should put the brand and model of the incubator]
+On day zero, we created the protist community by filling a large autoclaved bottle with the same volume of each of the eleven protist species, adding some standard protist medium to it (15% of the volume). From this large bottle, we pipetted the protist community into sterile 50 ml centrifuge tubes (SPL life sciences skirted conical centrifuge tubes). We pipetted 7.5 ml, 22.5 ml, and 37.5 ml into the small, medium, and large patches, respectively. The cultures were then randomized on foam boards and kept in an incubator (memmert IPP750plus) at 20°C with constant lighting.
 
 #### Disturbance & detritus flow
 
-To connect meta-ecosystem patches through detritus flow, we periodically boiled to death part of the community and made it flow to the other patch. This happened at the same time for both patches, creating a simultaneous bidirectional flow. To make isolated patches comparable to meta-ecosystem patches, we also boiled part of their community, but poured back the boiled community into its original patch. Cultures were subjected to two levels of disturbance: low or high. In low disturbance patches, we subjected 5.25 ml to boiling. In high disturbance patches, 6.75 ml. This meant that at low disturbance 70% of the small patches, 23.3% of the medium patches, and 14% of the large patches was disturbed. At high disturbance, 90% of the small patches, 30% of the medium patches, and 18% of the large patches was disturbed. Patches were disturbed every four days, starting on day five. We boiled cultures using a microwave (Sharp R-202).
+To connect meta-ecosystem patches through detritus flow, we periodically boiled to death part of the community of each patch and made it flow to the other patch. We did this simultaneously for both patches, creating a simultaneous bidirectional detritus flow. To make isolated patches comparable to meta-ecosystem patches, we also boiled part of their community, but poured it back into the originating patch. Each treatment was crossed with two levels of disturbance: low and high. In low disturbance patches we boiled 5.25 ml of each culture; in high disturbance patches 6.75 ml. As a fixed voulme of each patch was killed, this lead to a greater level of disturbance from large to small patches. At low disturbance 70% of the small patches, 23.3% of the medium patches, and 14% of the large patches was disturbed. At high disturbance, 90% of the small patches, 30% of the medium patches, and 18% of the large patches was disturbed. Patches were disturbed every four days, starting on day five. We boiled cultures using a microwave (Sharp R-202).
 
 #### Sampling
 
-To characterise the community, we periodically sampled 0.2 ml of each microcosm, which we filmed for five seconds under a dissecting microscope (@Pennekamp2013; @Pennekamp2015). The patches were sampled every four days, starting on day zero. At day zero, we sampled the community present inside the large bottle from which we assembled the cultures. The last two time points were sampled twice to minimise the large error coming from detecting individuals in sparse cultures.\
-[To do: add that we sampled monocultures]
+To characterise the community, we periodically sampled 0.2 ml of each microcosm, which we filmed for five seconds under a dissecting microscope (@Pennekamp2013; @Pennekamp2015). The patches were sampled every four days, starting on day zero. At day zero, we sampled the community present inside the large bottle from which we assembled the cultures. The last two time points were sampled twice to minimise the large error coming from detecting individuals in sparse cultures.
+
+To identify species in the videos we would have taken during the experiment to sample the protist community, we sampled the monocultures from which we assembled the protist community. We took videos of the monocultures until we reached at least 100 individuals identified. We did this the day before the assembling of the experiment.
 
 #### Deriving biomass and biodiversity
 
@@ -93,26 +96,40 @@ To investigate the effects of resource flow in Small-Large and Medium-Medium met
 
 ### Results
 
-As low and high disturbance results did not differ substantially, we chose to concentrate on the findings from the high disturbance patches for the remainder of the paper. However, if the low disturbance patches exhibited a different pattern, we included such information.
+```{r}
+#### Disturbance effects: low vs high
+# As low and high disturbance results did not differ substantially, we chose to concentrate on the findings from the high disturbance patches for the remainder of the paper. However, if the low disturbance patches exhibited a different pattern, we included such information.
+```
 
-#### Isolated patches: the larger the denser in biomass and more biodiverse
+#### Isolated patches: the larger, the denser in biomass and more biodiverse
 
 As we expected, the larger the patch, the higher its function (see top panel of Figure 2) and its Shannon index (see Figure bottom panel of Figure 2).\
 [To do: add whether it was only the fixed effect or also the interaction]
 
-#### Meta-ecosystem: biodiversity, but not function, impacted by patch size ratio
+#### Meta-ecosystem: asymmetric meta-ecosystems are less biodiverse
 
-The Medium-Medium and Small-Large meta-ecosystems maintained the same total biomass throughout the experiment (Figure 3 top panel). Although the function of the two meta-ecosystems was the same, their biodiversity patterns were different. The Small-Large meta-ecosystem had a higher beta diversity (Figure 3 central panel) but also a lower alpha and gamma diversity (Figure 3 bottom panel). For model selection see Table 1.\
-[To do - add whether there was interaction with time].
+Small-Large meta-ecosystems, when compared to Medium-Medium, where more differentiated (higher β diversity, figure ...). However, they were less biodiverse when it came to the average biodiversity of their patches (lower α diversity, figure ...) (NOT FOR LOW DISTURBANCE) and the total number of species they supported (lower	γ diversity, figure ...) (NOT FOR LOW DISTURBANCE). They maintained the same ecosystem function. See Table 1 for model selection.\
+[To do - add whether there was interaction with time]
+[To do - think about whether I should speak about the type of model I used]
 
-#### Meta-ecosystem: detritus flows induce homogenization
+#### Meta-ecosystem: detritus flows causes homogenisation, a loss of biodiversity, and decreases productivity
 
-#### Patch: the function of a patch is contingent upon the size of its connected patch
+Detritus flowing in the Small-Large meta-ecosystem homogenised the two patches (lower β diversity, figure ...), decreased the number of species that they supported (lower γ diversity, figure ...), and decreased the amount of biomass they produced (figure ...) (NOT IN LOW DISTURBANCE). However, they also increased the average number of species per patch (higher alpha diversity, figure ...). 
+
+#### Patch: the function and biodiversity of a patch is contingent upon the size of its connected patch
+
+The flow of detritus increased the biomass of the small patch, but did not decrease the biomass of the large patch (BUT IT DID IN LOW DISTURBANCE). The flow of detritus had no effect on the biodiversity of neither patch (BUT IT DID IN LOW DISTURBANCE). However, we can't rule out an effect, as models without the size of the patch a patch was connected had a similar AIC (all within delta 1.5).
+
+
 
 The function and biodiversity (Shannon index) of a patch was determined by the size of the patch it was connected to (see table). Small patches that were connected to a large patch instead of a small patch, had higher biomass. However, this was not the case for large patches that were connected to a small patch instead of a large patch (Figure 4 top panel) (however, larger patches had lower biomass when connected to small patches for the low disturbance). No effect on biodiversity was detected (however, a weak effect was detected for the low disturbance) (Figure 4 bottom panel)\
 [To do - think about the implications].
 
 ### Discussion
+
+#### Isolated patches
+
+The disturbance created the change in productivity and biodiversity of isolated patches.
 
 #### Meta-ecosystem: biodiversity, but not function, is impacted by patch size ratio
 
