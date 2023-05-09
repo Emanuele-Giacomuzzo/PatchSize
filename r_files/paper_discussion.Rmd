@@ -1,0 +1,25 @@
+---
+title: "Untitled"
+output: html_document
+date: "2023-05-03"
+---
+
+#### The full story
+
+The relative size of patches, as well as resource flow drives the biodiversity of systems made of two patches. When isolated, small large patches compared to two medium patches are more beta diverse, but have less alpha and gamma biodiversity. They are less alpha diverse because of the concave relationship between size and biodiversity under disturbance. They are more beta diverse because (to answer). They are less gamma diverse because (to answer). However, resources flow can change this. When patches are connected through the flow of resources, such resources will mediate the effects of disturbance. Disturbance is important for patches under disturbance to recover, as shown by Jessica. Resource flow between the small and patches keep the same biodiversity patterns between small and large and two mediums. However, they make them more similar in their alpha diversity, beta diversity.
+
+The relative size of patches influences the productivity of patches, but only when they are isolated. Small and large patches are more productive, as the relationship between size and productivity under disturbance is convex. However, when they are connected it becomes linear (or maybe concave).
+
+#### Meta-ecosystem: biodiversity, but not function, is impacted by patch size ratio
+
+##### Evidences for the role of size in the production and incorporation of subsidies
+
+Previous models and experiments in ecosystem function have generally assumed that all patches are the same size. However, the size of both the receiving and donor patches has the potential to significantly alter meta-ecosystem dynamics, as it can impact both the production and reception of subsidies. We would expect more subsidies coming out of larger donor patches because of two main reasons. The first is larger ecosystems have a higher area:perimeter ratio, which means that from the same length of the ecotone we would have more area associated to it. For example, the larger lakes and rivers, the more emerging insects come out per metre of their ecotone (@Gratton2009). The second reason for more subsidies coming out of larger ecosystems is that if the the subsidies are a fixed fraction of the total production, larger ecosystems might be more productive because of higher biodiversity (@Benedetti-Cecchi2005, @Gonzalez2009) and therefore give away more subsidies. We also would expect that the subsidies coming out of larger patches would be more full in nitrogen and phosphorus compared to carbon, as larger patches often have longer food chains (@Post2000) and nitrogen and phosphorus ratios increase along trophic levels. Furthermore, we would expect that the size of the receiving patch would be important for different reasons. First, if smaller patches would be really less productive, the same amount of resource flow ing in would have a stronger effect on the recipient ecosystem (ref). Second, more detritus would be flowing in, as they have a higher ratio between perimeter and area. Studies supporting this show that detritus increases the secondary production the most in small islands (@Polis1996) and salmon subsidies provide nitrogen the most in small river watersheds (@Hocking2009).
+
+#### Meta-ecosystem: resource flows induce homogenization
+
+Our experiment also showed how the flow of detritus between patches of different size homogenised them. The flow of detritus made the two communities becoming more similar in terms of composition (lower beta diversity) and alpha diversity (more similar Shannon Index), as well as function (more similar function).\
+\
+Patch size has an effect on meta-ecosystem function. However, this will depend upon the amount of resource flow happening between the two patches.\
+\
+When there isn't any flow between the two patches, small-large meta-ecosystems are the most productive. However, the more detritus is exchanged, the less the function of the meta-ecosystem, as it is mainly driven by the largest system.

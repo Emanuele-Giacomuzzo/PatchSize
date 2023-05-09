@@ -1,0 +1,395 @@
+---
+title: "Untitled"
+output: html_document
+date: "2023-04-14"
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+filtered_data = ds_patches_effect_size %>%
+  filter(
+    time_point >= first_time_point_model,
+    time_point <= last_time_point_model,
+    patch_type %in% patch_type_input_model
+  )
+```
+
+```{r}
+plot.patches.points.ES(filtered_data,
+                       patch_type_input_model,
+                       response_variable)
+```
+
+&nbsp;<br>
+&nbsp;<br>
+&nbsp;<br>
+
+```{r}
+null_model = lm(get(response_variable) ~
+                  1,
+                data = filtered_data)
+
+#Robust regression
+#null_model_robust = lmrob(get(response_variable) ~ 
+#                            1, 
+#                          data = filtered_data, 
+#                          method = "MM")
+```
+
+&nbsp;<br>
+&nbsp;<br>
+&nbsp;<br>
+
+<center>[**Full model**]{.underline} [**(with `size_connected_patch` and `size_connected_patch : day`)**]{.underline}</center>
+
+```{r}
+full_model = lm(get(response_variable) ~
+                  size_connected_patch +
+                  size_connected_patch:day,
+                data = filtered_data)
+
+print(summary(full_model), digits = 1)
+par(mfrow = c(2, 3))
+plot(full_model, which = 1:5)
+
+model_stats_full = compute.model.stats(full_model,
+                                       null_model,
+                                       "linear_model") %>%
+  print()
+
+# Create the cook's distance plot
+cook_distances <- influence.measures(full_model)[["infmat"]] %>% 
+  as.data.frame() %>%
+  select(cook.d) %>%
+  pull() %>%
+  as.double()
+filtered_data_to_plot = filtered_data
+filtered_data_to_plot$cook = cook_distances
+filtered_data_to_plot$observation = 1:nrow(filtered_data_to_plot)
+filtered_data_to_plot %>%
+    plot_ly(x = ~observation,
+            y = ~cook,
+            type = "scatter",
+            mode = "markers",
+            marker = list(size = 5, 
+                          color = "#4C78A8"),
+            text = paste("Patch type: ", filtered_data_to_plot$patch_type, "<br>",
+                         "Day: ", filtered_data_to_plot$day, "<br>"),
+            hoverinfo = "text") %>%
+    plotly::layout(
+        title = "Cook's distances",
+        xaxis = list(title = "Observation index"),
+        yaxis = list(title = "Cook's distance")
+    )
+
+#Create the residuals vs leverages plot
+my_residuals <- resid(full_model)
+my_leverages <- hatvalues(full_model)
+filtered_data_to_plot$residuals = my_residuals
+filtered_data_to_plot$leverages = my_leverages
+filtered_data_to_plot %>%
+  plot_ly(x = ~leverages, 
+        y = ~residuals, 
+        type = "scatter", 
+        mode = "markers", 
+        marker = list(size = 5, 
+                          color = "#4C78A8"),
+        text = paste("Patch type: ", filtered_data_to_plot$patch_type, "<br>",
+                         "Day: ", filtered_data_to_plot$day, "<br>"),
+        hoverinfo = "text") %>%
+  plotly::layout(
+        title = "Residuals vs Leverages",
+        xaxis = list(title = "Leverage"),
+        yaxis = list(title = "Residual")
+    )
+
+#Calculate leverage points threshold (taken from rule of the statistical modelling course)
+treshold_leverage_points = 2 * length(coef(full_model)) / nrow(filtered_data) 
+treshold_leverage_points = round(treshold_leverage_points, digits = 2)
+print(paste("Leverage points over", treshold_leverage_points, "could change the results of your model."))
+
+#Robust regression
+#full_model_robust = lmrob(get(response_variable) ~ 
+#                            size_connected_patch +
+#                            size_connected_patch:day,
+#                          data = filtered_data, 
+#                          method = "MM")
+#print(summary(full_model_robust), digits = 1)
+#par(mfrow = c(2, 3))
+#plot(full_model_robust, which = 1:5)
+```
+
+&nbsp;<br>
+&nbsp;<br>
+&nbsp;<br>
+
+<center>[**Fixed model**]{.underline} [**(with `size_connected_patch`)**]{.underline}</center>
+
+```{r}
+fixed_model = lm(get(response_variable) ~
+                   size_connected_patch,
+                 data = filtered_data)
+
+print(summary(fixed_model), digits = 1)
+par(mfrow = c(2, 3))
+plot(fixed_model, which = 1:5)
+model_stats_fixed = compute.model.stats(fixed_model,
+                                        null_model,
+                                        "linear_model") %>%
+  print()
+
+# Create the cook's distance plot
+cook_distances <- influence.measures(fixed_model)[["infmat"]] %>% 
+  as.data.frame() %>%
+  select(cook.d) %>%
+  pull() %>%
+  as.double()
+filtered_data_to_plot = filtered_data
+filtered_data_to_plot$cook = cook_distances
+filtered_data_to_plot$observation = 1:nrow(filtered_data_to_plot)
+filtered_data_to_plot %>%
+    plot_ly(x = ~observation,
+            y = ~cook,
+            type = "scatter",
+            mode = "markers",
+            marker = list(size = 5, 
+                          color = "#4C78A8"),
+            text = paste("Patch type: ", filtered_data_to_plot$patch_type, "<br>",
+                         "Day: ", filtered_data_to_plot$day, "<br>"),
+            hoverinfo = "text") %>%
+    plotly::layout(
+        xaxis = list(title = "Observation index"),
+        yaxis = list(title = "Cook's distance")
+    )
+
+#Create the residuals vs leverages plot
+my_residuals <- resid(fixed_model)
+my_leverages <- hatvalues(fixed_model)
+filtered_data_to_plot$residuals = my_residuals
+filtered_data_to_plot$leverages = my_leverages
+filtered_data_to_plot %>%
+  plot_ly(x = ~leverages, 
+        y = ~residuals, 
+        type = "scatter", 
+        mode = "markers", 
+        marker = list(size = 5, 
+                          color = "#4C78A8"),
+        text = paste("Patch type: ", filtered_data_to_plot$patch_type, "<br>",
+                         "Day: ", filtered_data_to_plot$day, "<br>"),
+        hoverinfo = "text") %>%
+  plotly::layout(
+        title = "Residuals vs Leverages",
+        xaxis = list(title = "Leverage"),
+        yaxis = list(title = "Residual")
+    )
+
+#Calculate leverage points threshold (taken from rule of the statistical modelling course)
+treshold_leverage_points = 2 * length(coef(fixed_model)) / nrow(filtered_data) 
+treshold_leverage_points = round(treshold_leverage_points, digits = 2)
+print(paste("Leverage points over", treshold_leverage_points, "could change the results of your model."))
+```
+
+```{r}
+results_table = fill.results.table(
+  results_table,
+  response_variable,
+  patch_type_input_model,
+  model_stats_full,
+  model_stats_fixed
+)
+```
+
+&nbsp;<br>
+&nbsp;<br>
+&nbsp;<br>
+
+
+Let's now redo the analysis without the outlier of time point 4:
+
+```{r}
+filtered_data = ds_patches_effect_size %>%
+  filter(
+    time_point >= first_time_point_model,
+    time_point <= last_time_point_model,
+    patch_type %in% patch_type_input_model,
+    !time_point == 4
+  )
+```
+
+```{r}
+plot.patches.points.ES(filtered_data,
+                       patch_type_input_model,
+                       response_variable)
+```
+
+&nbsp;<br>
+&nbsp;<br>
+&nbsp;<br>
+
+
+```{r}
+null_model = lm(get(response_variable) ~
+                  1,
+                data = filtered_data)
+
+#Robust regression
+#null_model_robust = lmrob(get(response_variable) ~ 
+#                            1, 
+#                          data = filtered_data, 
+#                          method = "MM")
+```
+
+&nbsp;<br>
+&nbsp;<br>
+&nbsp;<br>
+
+
+<center>[**Full model**]{.underline} [**(with `size_connected_patch` and `size_connected_patch : day`)**]{.underline}</center>
+
+```{r}
+full_model = lm(get(response_variable) ~
+                  size_connected_patch +
+                  size_connected_patch:day,
+                data = filtered_data)
+
+print(summary(full_model), digits = 1)
+par(mfrow = c(2, 3))
+plot(full_model, which = 1:5)
+
+model_stats_full = compute.model.stats(full_model,
+                                       null_model,
+                                       "linear_model") %>%
+  print()
+
+# Create the cook's distance plot
+cook_distances <- influence.measures(full_model)[["infmat"]] %>% 
+  as.data.frame() %>%
+  select(cook.d) %>%
+  pull() %>%
+  as.double()
+filtered_data_to_plot = filtered_data
+filtered_data_to_plot$cook = cook_distances
+filtered_data_to_plot$observation = 1:nrow(filtered_data_to_plot)
+filtered_data_to_plot %>%
+    plot_ly(x = ~observation,
+            y = ~cook,
+            type = "scatter",
+            mode = "markers",
+            marker = list(size = 5, 
+                          color = "#4C78A8"),
+            text = paste("Patch type: ", filtered_data_to_plot$patch_type, "<br>",
+                         "Day: ", filtered_data_to_plot$day, "<br>"),
+            hoverinfo = "text") %>%
+    plotly::layout(
+        xaxis = list(title = "Observation index"),
+        yaxis = list(title = "Cook's distance")
+    )
+
+#Create the residuals vs leverages plot
+my_residuals <- resid(full_model)
+my_leverages <- hatvalues(full_model)
+filtered_data_to_plot$residuals = my_residuals
+filtered_data_to_plot$leverages = my_leverages
+filtered_data_to_plot %>%
+  plot_ly(x = ~leverages, 
+        y = ~residuals, 
+        type = "scatter", 
+        mode = "markers", 
+        marker = list(size = 5, 
+                          color = "#4C78A8"),
+        text = paste("Patch type: ", filtered_data_to_plot$patch_type, "<br>",
+                         "Day: ", filtered_data_to_plot$day, "<br>"),
+        hoverinfo = "text") %>%
+  plotly::layout(
+        title = "Residuals vs Leverages",
+        xaxis = list(title = "Leverage"),
+        yaxis = list(title = "Residual")
+    )
+
+#Calculate leverage points threshold (taken from rule of the statistical modelling course)
+treshold_leverage_points = 2 * length(coef(full_model)) / nrow(filtered_data) 
+treshold_leverage_points = round(treshold_leverage_points, digits = 2)
+print(paste("Leverage points over", treshold_leverage_points, "could change the results of your model."))
+
+#Robust regression
+#full_model_robust = lmrob(get(response_variable) ~ 
+#                            size_connected_patch +
+#                            size_connected_patch:day,
+#                          data = filtered_data, 
+#                          method = "MM")
+#print(summary(full_model_robust), digits = 1)
+#par(mfrow = c(2, 3))
+#plot(full_model_robust, which = 1:5)
+```
+
+&nbsp;<br>
+&nbsp;<br>
+&nbsp;<br>
+
+
+<center>[**Fixed model**]{.underline} [**(with `size_connected_patch`)**]{.underline}</center>
+
+```{r}
+fixed_model = lm(get(response_variable) ~
+                   size_connected_patch,
+                 data = filtered_data)
+
+print(summary(fixed_model), digits = 1)
+par(mfrow = c(2, 3))
+plot(fixed_model, which = 1:5)
+model_stats_fixed = compute.model.stats(fixed_model,
+                                        null_model,
+                                        "linear_model") %>%
+  print()
+
+# Create the cook's distance plot
+cook_distances <- influence.measures(fixed_model)[["infmat"]] %>% 
+  as.data.frame() %>%
+  select(cook.d) %>%
+  pull() %>%
+  as.double()
+filtered_data_to_plot = filtered_data
+filtered_data_to_plot$cook = cook_distances
+filtered_data_to_plot$observation = 1:nrow(filtered_data_to_plot)
+filtered_data_to_plot %>%
+    plot_ly(x = ~observation,
+            y = ~cook,
+            type = "scatter",
+            mode = "markers",
+            marker = list(size = 5, 
+                          color = "#4C78A8"),
+            text = paste("Patch type: ", filtered_data_to_plot$patch_type, "<br>",
+                         "Day: ", filtered_data_to_plot$day, "<br>"),
+            hoverinfo = "text") %>%
+    plotly::layout(
+        xaxis = list(title = "Observation index"),
+        yaxis = list(title = "Cook's distance")
+    )
+
+#Create the residuals vs leverages plot
+my_residuals <- resid(fixed_model)
+my_leverages <- hatvalues(fixed_model)
+filtered_data_to_plot$residuals = my_residuals
+filtered_data_to_plot$leverages = my_leverages
+filtered_data_to_plot %>%
+  plot_ly(x = ~leverages, 
+        y = ~residuals, 
+        type = "scatter", 
+        mode = "markers", 
+        marker = list(size = 5, 
+                          color = "#4C78A8"),
+        text = paste("Patch type: ", filtered_data_to_plot$patch_type, "<br>",
+                         "Day: ", filtered_data_to_plot$day, "<br>"),
+        hoverinfo = "text") %>%
+  plotly::layout(
+        title = "Residuals vs Leverages",
+        xaxis = list(title = "Leverage"),
+        yaxis = list(title = "Residual")
+    )
+
+#Calculate leverage points threshold (taken from rule of the statistical modelling course)
+treshold_leverage_points = 2 * length(coef(fixed_model)) / nrow(filtered_data) 
+treshold_leverage_points = round(treshold_leverage_points, digits = 2)
+print(paste("Leverage points over", treshold_leverage_points, "could change the results of your model."))
+```

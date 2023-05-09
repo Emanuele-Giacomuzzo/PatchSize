@@ -15,8 +15,7 @@ After the dataset has been assembled
 ```{r}
 #Assemble dataset (expected rows: sum(nr_videos * n_cultures))
 ds_patches = import.protist.pop.data(culture_info,
-                                     first_time_point,
-                                     last_time_point,
+                                     time_points,
                                      protist_species)
 
 expect_equal(nrow(ds_patches), 
@@ -317,7 +316,6 @@ expect_equal(nrow(ds_patches),
              n_rows_ds_patches_before_calculations)
 ```
 
-
 ```{r}
 #Finalise the dataset by arranging the columns in the order that makes the most sense.
 ds_patches = ds_patches %>%
@@ -327,7 +325,6 @@ ds_patches = ds_patches %>%
     baseline_columns
   )))
 ```
-
 
 ```{r}
 save(ds_patches, file = here("results", "ds", "ds_patches.RData"))

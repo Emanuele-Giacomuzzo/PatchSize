@@ -1,0 +1,179 @@
+---
+title: "Untitled"
+output: html_document
+date: "2023-04-14"
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+filtered_data = ds_metaecosystems %>%
+                         filter(time_point >= first_time_point_model,
+                                time_point <= last_time_point_model,
+                                metaecosystem_type %in% metaecosystem_type_input_model)
+```
+
+```{r}
+plot.metaecos.points(filtered_data,
+                     metaecosystem_type_input_model,
+                     response_variable)
+```
+
+If you get the warning
+
+*Warning in (function (iprint = 0L, maxfun = 10000L, FtolAbs = 1e-05, FtolRel = \## 1e-15, : unused control arguments ignored*
+
+Ignore it, it just means that you didn't pass the control argument to the Nelder_Mead optimiser, so it uses the default.
+
+```{r}
+#Compute stats for all patch combinations 
+isolated_combinations_sets_filtered =  isolated_combinations_sets %>%
+  filter(disturbance == disturbance_global_input,
+         metaecosystem_type %in% metaecosystem_type_input_model)
+
+n_sets = isolated_combinations_sets_filtered %>%
+  pull(set) %>%
+  max()
+
+iterated_results_table = data.frame(
+  Response = as.character(NA),
+  Levels = as.character(NA),
+  ΔAIC_full = NA,
+  p_full = NA,
+  ΔR2_full = NA,
+  ΔAIC_fix = NA,
+  p_fix = NA,
+  ΔR2_fix = NA,
+  combination_set = NA,
+  system_nr_isolated_systems = as.character(NA)
+) %>%
+  slice(-1)
+
+for (set_input in 1:n_sets) {
+  
+  system_nr_isolated_systems_input = isolated_combinations_sets_filtered %>%
+    filter(
+      metaecosystem_type %in% metaecosystem_type_input_model,
+      connection == "isolated",
+      set == set_input
+    ) %>%
+    pull(system_nr)
+  
+  filtered_data = ds_metaecosystems %>%
+    filter(
+      time_point >= first_time_point_model,
+      time_point <= last_time_point_model,
+      metaecosystem_type %in% metaecosystem_type_input_model,
+      connection == "connected" |
+        (connection == "isolated" &
+           system_nr %in% system_nr_isolated_systems_input)
+    )
+  
+  null_model = lmer(
+    get(response_variable) ~
+      day +
+      (day | system_nr),
+    data = filtered_data,
+    REML = FALSE,
+    control = lmerControl(optimizer = optimizer_input,
+                          optCtrl = list(method = method_input))
+  )
+  
+  full_model = lmer(
+    get(response_variable) ~
+      day +
+      connection +
+      connection:day +
+      (day | system_nr),
+    data = filtered_data,
+    REML = FALSE,
+    control = lmerControl(optimizer = optimizer_input,
+                          optCtrl = list(method = method_input))
+  )
+  
+  model_stats_full = compute.model.stats(full_model,
+                                         null_model,
+                                         "mixed_model")
+  
+  fixed_model = lmer(
+    get(response_variable) ~
+      day +
+      connection +
+      (day | system_nr),
+    data = filtered_data,
+    REML = FALSE,
+    control = lmerControl(optimizer = optimizer_input,
+                          optCtrl = list(method = method_input))
+  )
+  
+  model_stats_fixed = compute.model.stats(fixed_model,
+                                          null_model,
+                                          "mixed_model")
+  
+  iterated_results_table = fill.results.table(
+    iterated_results_table,
+    response_variable,
+    metaecosystem_type_input_model,
+    model_stats_full,
+    model_stats_fixed
+  )
+  
+  iterated_results_table$set[nrow(iterated_results_table)] = set_input
+  iterated_results_table$system_nr_isolated_systems[nrow(iterated_results_table)] = paste(system_nr_isolated_systems_input, collapse = " ")
+}
+```
+
+ <br>  <br>  <br>
+
+<center>[**Full model**]{.underline} [**(with `connection` and `connection : day`)**]{.underline}</center>
+
+```{r}
+hist(iterated_results_table$ΔAIC_full, main = "Distribution of ΔAIC of the full model.") 
+hist(iterated_results_table$p_full, main = "Distribution of p-values of the full model.") 
+
+model_stats_full = data.frame(
+  deltaAIC = mean(iterated_results_table$ΔAIC_full),
+  p_value = mean(iterated_results_table$p_full),
+  R2 = NA
+)
+
+round(model_stats_full, digits = 3) 
+```
+
+ <br>  <br>  <br>
+
+<center>[**Fixed model**]{.underline} [**(with `connection`)**]{.underline}</center>
+
+```{r}
+hist(iterated_results_table$ΔAIC_fix, main = "Distribution of ΔAIC of the fixed model.") 
+hist(iterated_results_table$p_fix, main = "Distribution of p-values of the fixed model.") 
+
+model_stats_fixed = data.frame(
+  deltaAIC = mean(iterated_results_table$ΔAIC_fix),
+  p_value = mean(iterated_results_table$p_fix),
+  R2 = NA
+)
+
+round(model_stats_fixed, digits = 3) 
+```
+
+Use as p-values and ΔAIC the mean of such distributions.
+
+```{r}
+results_table = fill.results.table(
+    results_table,
+    response_variable,
+    metaecosystem_type_input_model,
+    model_stats_full,
+    model_stats_fixed
+  )
+```
+
+Display which system nr produced which AIC in the full model:
+
+```{r}
+iterated_results_table %>% 
+  select(system_nr_isolated_systems,
+         ΔAIC_full) %>%
+  arrange(ΔAIC_full)
+```

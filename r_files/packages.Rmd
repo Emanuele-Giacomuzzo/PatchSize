@@ -61,6 +61,11 @@ library("emmeans")
 library("testthat")
 library("combinat") #For permutations 
 library("gtools") #Another permutation package
+library("magrittr") #for %<>%
+library("plotly")
+library("robustbase") #For robust regression
+
+
 
 conflict_prefer("load", "base")
 conflict_prefer("here", "here")

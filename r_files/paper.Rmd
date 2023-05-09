@@ -1,14 +1,16 @@
 ---
 title: "Paper CHAPTER 1"
-output: html_document
+output:
+  html_document: default
+  pdf_document: default
 date: "2022-12-16"
-editor_options: 
-  chunk_output_type: inline
+editor_options:
+  chunk_output_type: console
 ---
 
 ### Title page
 
-Title: Scaling Up Ecosystem Function with Meta-ecosystem Theory: How Flows of detritus between Patches of Different Size can Homogenise their Productivity
+Title: Patch size drives the effect of resource flow on biodiversity and productivity
 
 Authors: Emanuele Giacomuzzo 1,2, Tianna Peller 1,2 , Isabelle Gounand 3, Florian Altermatt 1,2
 
@@ -52,10 +54,10 @@ Finally, we discuss the broader implications of our findings for the field of ec
 
 #### Experimental design
 
-The effects of patch size on meta-ecosystems was studied with a protist microcosm experiment (@Altermatt2015). Our study involved creating meta-ecosystems that differed in the size of their patches. Each consisted of two protist cultures, which regularly exchanged detritus. No organism dispersed. Two main meta-ecosystems were focused on, both with a total volume of 45.0 ml. The first, named Small-Large, had a small patch (7.5 ml) and a large patch (37.5 ml), while the second, named Medium-Medium, had two medium-sized patches (22.5 ml). To ascertain whether detritus flow was the cause of the differences between Small-Large and Medium-Medium, we compared them to isolated patches. Isolated patches, including small, medium, and large sizes, generated detritus that was retained within the patch. Furthermore, we wanted to know whether the size of the connected patch had a significant impact on a focal patch. To investigate this, we established additional two control meta-ecosystems featuring two small patches and two large patches, respectively. This allowed us to analyze the effects of detritus flow on small patches from large patches rather than from another small patch, and the effects on large patches from small patches rather than from other large patches. See Figure 1.
+The effects of patch size on meta-ecosystems was studied with a protist microcosm experiment (@Altermatt2015). Our study involved creating meta-ecosystems that differed in the size of their patches. Each consisted of two protist cultures, which regularly exchanged detritus. No organism dispersed. Two main meta-ecosystems were focused on, both with a total volume of 45.0 ml. The first, named Small-Large, had a small patch (7.5 ml) and a large patch (37.5 ml), while the second, named Medium-Medium, had two medium-sized patches (22.5 ml). To ascertain whether resource flow was the cause of the differences between Small-Large and Medium-Medium, we compared them to isolated patches. Isolated patches, including small, medium, and large sizes, generated detritus that was retained within the patch. Furthermore, we wanted to know whether the size of the connected patch had a significant impact on a focal patch. To investigate this, we established additional two control meta-ecosystems featuring two small patches and two large patches, respectively. This allowed us to analyze the effects of resource flow on small patches from large patches rather than from another small patch, and the effects on large patches from small patches rather than from other large patches. See Figure 1. As we noted that part of the cultures evaporated, we added water and medium regularly to keep the volume of cultures unchanged (see Appendix).
 
 ```{r}
-figure_caption_1 = "Figure 1. Experimental design. The effects of patch size on meta-ecosystems were investigated by constructing meta-ecosystems consisting of two patches that exchanged only detritus, without any organism dispersal. Two meta-ecosystems, having the same total volume, were compared; one composed of a small and large patch (Small-Large meta-ecosystem), and the other composed of two medium patches (Medium-Medium meta-ecosystem). We also examined the effect of detritus flow on singular patches by comparing them to isolated patches. Each patch started with the same protist community (11 species). To create detritus flow, a fixed volume of each patch was killed, leading to a greater level of disturbance from large to small patches. This method was also used in isolated patches, with the detritus remaining in the originating patch. Meta-ecosystems and isolated patch treatments were exposed to either low or high disturbance intensities. Each treatment was replicated five times.
+figure_caption_1 = "Figure 1. Experimental design. The effects of patch size on meta-ecosystems were investigated by constructing meta-ecosystems consisting of two patches that exchanged only detritus, without any organism dispersal. Two meta-ecosystems, having the same total volume, were compared; one composed of a small and large patch (Small-Large meta-ecosystem), and the other composed of two medium patches (Medium-Medium meta-ecosystem). We also examined the effect of resource flow  on singular patches by comparing them to isolated patches. Each patch started with the same protist community (11 species). To create resource flow , a fixed volume of each patch was killed, leading to a greater level of disturbance from large to small patches. This method was also used in isolated patches, with the detritus remaining in the originating patch. Meta-ecosystems and isolated patch treatments were exposed to either low or high disturbance intensities. Each treatment was replicated five times.
 [To do: think about whether you should also include the Small-Small and Large-Larg]
 [To do: think about whether you should include all these informations again]
 "
@@ -63,17 +65,15 @@ figure_caption_1 = "Figure 1. Experimental design. The effects of patch size on 
 
 ![`r figure_caption_1`](images/Design.png){alt="r figure_caption_1"}
 
-As we noted that part of the cultures evaporated, we added water and medium regularly to keep the volume of cultures unchanged (see supplementary information).
-
 #### Experimental setup
 
-Preparing for the experiment, we cultured 11 microbial species, which we refer to as protists. These included nine water ciliates (*Euplotes aediculatus*, *Colpidium sp.*, *Loxocephalus sp.*, *Paramecium aurelia*, *Paramecium caudatum*, *Spirostomum sp.*, *Spirostomum teres*, *Tetrahymena cf. pyriformis*, and *Blepharisma sp.*), one alga (*Euglena gracilis*), and one rotifer (*Cephalodella sp.*). We cultured protists in autoclaved bottles with standard protist medium (0.46 g of Protozoa Pellet by Carolina per L of water), two wheat seeds, and a bacterial mix (*Serratia fonticola*, *Bacillus subtilis*, and *Brevibacillus brevis*) constituting 5% of the total culture volume. See @Altermatt2015 for protocols. 
+Preparing for the experiment, we cultured 11 microbial species, which we refer to as protists. These included nine water ciliates (*Euplotes aediculatus*, *Colpidium sp.*, *Loxocephalus sp.*, *Paramecium aurelia*, *Paramecium caudatum*, *Spirostomum sp.*, *Spirostomum teres*, *Tetrahymena cf. pyriformis*, and *Blepharisma sp.*), one alga (*Euglena gracilis*), and one rotifer (*Cephalodella sp.*). We cultured protists in autoclaved bottles with standard protist medium (0.46 g of Protozoa Pellet by Carolina per L of water), two wheat seeds, and a bacterial mix (*Serratia fonticola*, *Bacillus subtilis*, and *Brevibacillus brevis*) constituting 5% of the total culture volume. See @Altermatt2015 for protocols.
 
 At the start of the experiment (day zero), we created the protist community by filling a large autoclaved bottle with equal volumes of the eleven protist species and supplemented it with standard protist medium (15% of the volume). From this large bottle, we pipetted the protist community into sterile 50 ml centrifuge tubes (SPL life sciences skirted conical centrifuge tubes). We pipetted 7.5 ml, 22.5 ml, and 37.5 ml into the small, medium, and large patches, respectively. The cultures were then randomized on foam boards and kept in an incubator (memmert IPP750plus) at 20°C with constant lighting.
 
-#### Disturbance & detritus flow
+#### Disturbance & resource flow
 
-To connect meta-ecosystem patches through detritus flow, we periodically boiled a portion of the community in each patch and made it flow into the other patch simultaneously, thereby creating a bidirectional detritus flow. To make isolated patches comparable to meta-ecosystem patches, we also boiled part of their community, but returned it to the originating patch. Each treatment was crossed with two levels of disturbance: low and high. In low disturbance patches we boiled 5.25 ml of each culture; in high disturbance patches 6.75 ml. As a fixed volume was boiled in each patch, this led to a greater level of disturbance from large to small patches. At low disturbance, 70% of small patches, 23.3% of medium patches, and 14% of large patches were disturbed. At high disturbance, 90% of small patches, 30% of medium patches, and 18% of large patches were disturbed. Patches were disturbed every four days starting on day five, using a microwave (Sharp R-202).
+To connect meta-ecosystem patches through resource flow , we periodically boiled a portion of the community in each patch and made it flow into the other patch simultaneously, thereby creating a bidirectional resource flow . To make isolated patches comparable to meta-ecosystem patches, we also boiled part of their community, but returned it to the originating patch. Each treatment was crossed with two levels of disturbance: low and high. In low disturbance patches we boiled 5.25 ml of each culture; in high disturbance patches 6.75 ml. As a fixed volume was boiled in each patch, this led to a greater level of disturbance from large to small patches. At low disturbance, 70% of small patches, 23.3% of medium patches, and 14% of large patches were disturbed. At high disturbance, 90% of small patches, 30% of medium patches, and 18% of large patches were disturbed. Patches were disturbed every four days starting on day five, using a microwave (Sharp R-202).
 
 #### Sampling
 
@@ -87,112 +87,87 @@ To characterise protist communities, we employed the R-package BEMOVI (@Pennekam
 
 To determine the impact of the size of the donor patch on the receiving patch, we employed an effect size measured as Hedge's d (ref). The treatment for each response variable was the connected patch and the control was the isolated patch. Hedge's d represents the difference between the mean of the treatment and the mean of the control, adjusted for the variance of the pooled treatment and control (see Appendix). We compared the effect size of patches connected to donor patches of varying sizes. For example, we compared the effect size of small connected to large and small connected to small.
 
-To analyse response variables, we utilised mixed effect models (ref) with the r package lme4 (ref) whenever possible. Null models included two effects: time as fixed effect and replicates as random effect. The random effect of replicates accounted for the fact that replicates started at different values and evolved differently over time, with the initial value influencing the change over time. In other words, replicates had a random effect on the intercept and slope of the time-response variable relationship, with the intercept and slope set as correlated. However, when modelling effect sizes, random effects of replicates could not be accounted for as replicates were pooled during effect size calculation. Therefore, linear models were used instead. Models were selected based on the Akaike Information Criterion (AIC) (ref), computed using the AIC function of r package base (ref). The evidence that a model was superior to another was calculated as an evidence ratio (@Burnham2011) expressed as $e^(-1/2 * deltaAIC)$.
+To analyse response variables, we utilised mixed effect models (ref) with the r package lme4 (ref) whenever possible. Null models included two effects: time as fixed effect and replicates as random effect. The random effect of replicates accounted for the fact that replicates started at different values and evolved differently over time, with the initial value influencing the change over time. In other words, replicates had a random effect on the intercept and slope of the time-response variable relationship, with the intercept and slope set as correlated. However, when modelling effect sizes, random effects of replicates could not be accounted for as replicates were pooled during effect size calculation. Therefore, linear models were used instead. Models were selected based on the Akaike Information Criterion (AIC) (ref), computed using the AIC function of r package base (ref). The evidence that a model was superior to another was calculated as an evidence ratio (@Burnham2011) expressed as $e^{-\frac{1}{2} \Delta AIC}$.
 
 The effects of resource flow were studied by creating systems consisting of two isolated patches, referred to as isolated systems. Each Small-Large isolated system was composed of one small and one large isolated patch, while Medium-Medium isolated systems were constructed using two medium isolated patches, with the constraint that the patches could not be the same. To compare a meta-ecosystem and an isolated system, multiple comparisons were performed iteratively, resulting in a distribution of p-values and ΔAIC. Each iteration involved isolated systems with differently combined patches (without resampling). The presented p-value and ΔAIC are the means of their respective distributions.
 
+The results of the experiment are reported in the language of evidence, following @Muff2022 and @Bland1986. We speak about no evidence for p \> 0.1, weak evidence for 0.05 \< p \< 0.1, moderate evidence for 0.01 \< p \< 0.05, strong evidence for 0.001 \< p \< 0.01, and very strong evidence for p \< 0.001.
+
 ### Results
 
-```{r}
-#### Disturbance effects: low vs high
-# As low and high disturbance results did not differ substantially, we chose to concentrate on the findings from the high disturbance patches for the remainder of the paper. However, if the low disturbance patches exhibited a different pattern, we included such information.
-```
+As low and high disturbance results did not differ substantially, we chose to concentrate on the findings from the high disturbance patches for the remainder of the paper. However, if the low disturbance patches exhibited a different pattern, we included such information.
 
-#### Isolated patches: the larger, the denser in biomass and more biodiverse
+#### Size impacts positively the productivity and biodiversity of isolated patches
 
-As we expected, the larger the patch, the higher its function (see top panel of Figure 2) and its Shannon index (see Figure bottom panel of Figure 2).\
-[To do: add whether it was only the fixed effect or also the interaction]
+The biomass (bioarea density) and biodiversity (Shannon index) of isolated patches were impacted by their size, with larger patches displaying higher bioarea density (as shown in Figure 2A) and Shannon index (as shown in Figure 2B), as revealed by mixed effects models. The effect of patch size on bioarea density was independent of time, whereas the effect of patch size on Shannon index was influenced by time. These findings were strongly supported with p-values less than 0.001.
 
-#### Meta-ecosystem: asymmetric meta-ecosystems are less biodiverse
+#### Patch size ratio impacts the biodiversity (but not function) of meta-ecosystems
 
-Small-Large meta-ecosystems, when compared to Medium-Medium, where more differentiated (higher β diversity, figure ...). However, they were less biodiverse when it came to the average biodiversity of their patches (lower α diversity, figure ...) (NOT FOR LOW DISTURBANCE) and the total number of species they supported (lower	γ diversity, figure ...) (NOT FOR LOW DISTURBANCE). They maintained the same ecosystem function. See Table 1 for model selection.\
-[To do - add whether there was interaction with time]
-[To do - think about whether I should speak about the type of model I used]
+Patch size ratio had an impact on the biodiversity of meta-ecosystems, as evidenced by mixed effect models. Small-Large meta-ecosystems exhibited higher β diversity compared to Medium-Medium (as seen in Figure 3C, with very strong evidence and a p-value less than 0.001), indicating a higher degree of differentiation. However, they had lower α diversity (as demonstrated in Figure 3B, with strong evidence and a p-value of 0.002) and a lower γ diversity (as shown in Figure 3D, with strong evidence and a p-value of 0.004), indicating a lower average biodiversity of their patches and total number of supported species, respectively. The effect of patch size ratio on α and β diversity was influenced by time, whereas the effect of patch size ratio on γ diversity was not. Despite its impact on biodiversity, patch size ratio did not influence meta-ecosystem productivity (as depicted in Figure 3A, with no evidence and a p-value of 0.264).
 
-#### Meta-ecosystem: detritus flows causes homogenisation, a loss of biodiversity, and decreases productivity
+#### Resource flows increase α diversity, but cause homogenisation and lower productivity
 
-Detritus flowing in the Small-Large meta-ecosystem homogenised the two patches (lower β diversity, figure ...), decreased the number of species that they supported (lower γ diversity, figure ...), and decreased the amount of biomass they produced (figure ...) (NOT IN LOW DISTURBANCE). However, they also increased the average number of species per patch (higher alpha diversity, figure ...). 
+Mixed effects models demonstrated that the movement of resources between small and large patches had a significant impact on their overall biodiversity and productivity. The exchange of resources led to homogenization within the system, resulting in a decrease in beta diversity (as evidenced by Figure 3C, with moderate evidence and p-value of 0.012), making the system consisting of one small and one large patch more similar to that of two medium-sized patches. Additionally, the movement of resources has increased overall alpha diversity, making it more comparable to that of two medium-sized patches (as evidenced by Figure 3B, with moderate evidence and a p-value of 0.019). However, there was no evidence that the movement of resources changed gamma diversity (as evidenced by Figure 3D, with no evidence and p-value of 0.318). Moreover, the movement of resources between small and large patches offset the effect of relative patch size ratio on productivity, as the connection led to a decrease in overall productivity of the system (as shown by Figure 3A, with strong evidence and a p-value of 0.003).
 
-#### Patch: the function and biodiversity of a patch is contingent upon the size of its connected patch
+#### The productivity and biodiversity of a patch is contingent upon the size of its connected patch
 
-The flow of detritus increased the biomass of the small patch, but did not decrease the biomass of the large patch (BUT IT DID IN LOW DISTURBANCE). The flow of detritus had no effect on the biodiversity of neither patch (BUT IT DID IN LOW DISTURBANCE). However, we can't rule out an effect, as models without the size of the patch a patch was connected had a similar AIC (all within delta 1.5).
-
-
-
-The function and biodiversity (Shannon index) of a patch was determined by the size of the patch it was connected to (see table). Small patches that were connected to a large patch instead of a small patch, had higher biomass. However, this was not the case for large patches that were connected to a small patch instead of a large patch (Figure 4 top panel) (however, larger patches had lower biomass when connected to small patches for the low disturbance). No effect on biodiversity was detected (however, a weak effect was detected for the low disturbance) (Figure 4 bottom panel)\
-[To do - think about the implications].
+The size of the donor patch ...
 
 ### Discussion
 
-#### Isolated patches
+#### Size needs to be incorporated into meta-ecosystems
 
-The disturbance created the change in productivity and biodiversity of isolated patches.
+-   We have made great progress in studying productivity and function AND we are now incorporating also resource flows into it
 
-#### Meta-ecosystem: biodiversity, but not function, is impacted by patch size ratio
+-   BUT models have ecosystems of the same size, totally hovering over the great importance of patch size for ecology (donor, vector, receiving) , making theory too abstract, not applicable to real world ecosystem
 
-##### The importance of incorporating size into meta-ecosystems
+    -   Patch size impacts the biotic and physical properties (examples)
 
-The meta-ecosystem theory's theoretical framework has not considered the significance of patch size, despite its established impact on various ecological levels, including genotypes (ref), populations (ref), and communities (ref). To comprehend how patch function can be scaled up to account for resource flows, integrating patch size into the meta-ecosystem framework is crucial.\
-[To do: add some of the properties that change with size]
+    -   Patch size impacts many different organisation levels (examples), so their impact scale up to ecosystem level (examples)
 
-##### Evidences for the role of size in the production and incorporation of subsidies
+-   THEREFORE we here incorporate patch size into meta-ecosystem theory so that we can then use it to understand the biodiversity and function of a real world landscape
 
-Previous models and experiments in ecosystem function have generally assumed that all patches are the same size. However, the size of both the receiving and donor patches has the potential to significantly alter meta-ecosystem dynamics, as it can impact both the production and reception of subsidies. We would expect more subsidies coming out of larger donor patches because of two main reasons. The first is larger ecosystems have a higher area:perimeter ratio, which means that from the same length of the ecotone we would have more area associated to it. For example, the larger lakes and rivers, the more emerging insects come out per metre of their ecotone (@Gratton2009). The second reason for more subsidies coming out of larger ecosystems is that if the the subsidies are a fixed fraction of the total production, larger ecosystems might be more productive because of higher biodiversity (@Benedetti-Cecchi2005, @Gonzalez2009) and therefore give away more subsidies. We also would expect that the subsidies coming out of larger patches would be more full in nitrogen and phosphorus compared to carbon, as larger patches often have longer food chains (@Post2000) and nitrogen and phosphorus ratios increase along trophic levels. Furthermore, we would expect that the size of the receiving patch would be important for different reasons. First, if smaller patches would be really less productive, the same amount of detritus flowing in would have a stronger effect on the recipient ecosystem (ref). Second, more detritus would be flowing in, as they have a higher ratio between perimeter and area. Studies supporting this show that detritus increases the secondary production the most in small islands (@Polis1996) and salmon subsidies provide nitrogen the most in small river watersheds (@Hocking2009).
+#### Resource flows induce homogenization
 
-##### Meta-ecosystem: function isn't impacted by patch size ratio
+#### Resource flows reduce productivity 
 
-Our study suggests that patch size symmetry in a meta-ecosystem may not be critical to its dynamics. How does this
+Size needs to be incorporated when looking at its effects on productivity
 
-##### Meta-ecosystem: biodiversity depends on patch size ratio
+#### Evidences for the role of size in the production and incorporation of subsidies
 
-Our experiment demonstrates that patch size symmetry can have an effect on the biodiversity of a meta-ecosystem. Small-large meta-ecosystems can have higher beta-diversity but also have a lower gamma diversity and a lower alpha diversity (mean across patches).
+-   Our study supports the Subsidized Island Biogeography Hypothesis (@Anderson2001).
 
-#### Meta-ecosystem: detritus flows induce homogenization
+### Acknowledgments
 
-Our experiment also showed how the flow of detritus between patches of different size homogenised them. The flow of detritus made the two communities becoming more similar in terms of composition (lower beta diversity) and alpha diversity (more similar Shannon Index), as well as function (more similar function).\
-\
-Patch size has an effect on meta-ecosystem function. However, this will depend upon the amount of resource flow happening between the two patches.\
-\
-When there isn't any flow between the two patches, small-large meta-ecosystems are the most productive. However, the more detritus is exchanged, the less the function of the meta-ecosystem, as it is mainly driven by the largest system.
+We would like to thank Silvana Käser and Samuel Hürlemann for the excellent support they provided in the lab for a smooth operation regarding the experiment. We would also like to thank Heng Zhang for the support he provided with statistics. Additionally, we would like to sincerely thank Frank Pennekamp and Felix Moerman for providing essential tips on how to use the package BEMOVI. Furthermore, we would like to thank Lynn Govaert for providing an initial script for species identification. ChatGPT was used in helping making the manuscript more concise and clear. The project was funded by the Swiss National Science Foundation (grant no. 10030_197410) and the University of Zurich Research Priority Programme on Global Change and Biodiversity (URPP GCB) acquired by F.A. I.G. was supported by ...
 
-#### Patch: the function of a patch is contingent upon the size of its connected patch
-
-The higher species richness experienced by small patches is in line with the Subsidized Island Biogeography Hypothesis (@Anderson2001).
-
-#### Acknowledgments
-
-We would like to thank Silvana Käser and Samuel Hürlemann for the excellent support they provided in the lab for a smooth operation regarding the experiment. We would also like to thank Heng Zhang for the support he provided with statistics. Additionally, we would like to sincerely thank Frank Pennekamp and Felix Moerman for providing essential tips on how to use the package BEMOVI. Furthermore, we would like to thank Lynn Govaert for providing an initial script for species identification. ChatGPT was used in helping making the manuscript more concise and clear. Emanuele Giacomuzzo and Tianna Peller were supported by ... Isabelle Gounand was supported by ... Florian Altermatt was supported by ...
-
-#### Figure captions
+### Figure captions
 
 ```{r}
 figure_caption_2 = paste(
-  "Figure 2. Effect of patch size on isolated patches' biomass (top panel) and Shannon index (bottom panel). Bioarea is a proxy for biomass. Biomass increase increased with patch size (top panel), as did Shannon index (bottom panel). All patches were sampled at the same time but points were jittered to make the figure clearar. Vertical grey lines: disturbance events."
+  "Figure 2. Effect of patch size on isolated patches' biomass (A) and Shannon index (B). Bioarea is a proxy for biomass. Biomass increase increased with patch size, as did Shannon index. Dots represent means, error bars represent 95% confidence intervals. All patches were sampled at the same time but points were jittered to make the figure clearar. Vertical grey lines: disturbance events."
   )
-#[To do: ask if I should put here the type of model I used to get the results]
+#[To do: put results here] 
 
 figure_caption_3 = paste(
-  "Figure 3. Effect of patch size ratio on meta-ecosystems' biomass (top panel), alpha diversity (medium panel), and beta diversity (bottom panel). All systems were sampled at the same time but points were jettered to make the figure clearar. Vertical grey lines: disturbance events followed by resource flow."
+  "Figure 3. Effect of patch size ratio on meta-ecosystems' biomass (A), alpha diversity (B), beta diversity (C), and gamma diversity (D). Dots represent means, error bars represent 95% confidence intervals. All systems were sampled at the same time but points were jettered to make the figure clearar. Vertical grey lines: disturbance events followed by resource flow."
 )
-#[To do: ask if I should put here the type of model I used to get the results] 
 #[To do: put results here] 
-#[To do - think about whether you want to include also gamma diversity here]
 
 figure_caption_4 = paste(
-  "Figure 4. Effect of incoming resource flow on meta-ecosystem patches' biomass (top panel) and Shannon index (bottom panel). The effects of resource flow were measured as effect size (Hedge's d) compared to their respective isolated patches. All patches were sampled at the same time but points were jettered to make the figure clearar. Vertical grey lines: disturbances events followed by resource flow. The effect of patch size and size of the connected patch on biomass was analyzed using two linear models, one for small patches and the other for large patches. We used the same type of models for analysing the shannon index."
-  #[To do: ask if I should put here the type of model I used to get the results]
+  "Figure 4. Effect of incoming resource flow on meta-ecosystem patches' biomass (A) and Shannon index (B). The effects of resource flow were measured as effect size (Hedge's d) compared to their respective isolated patches. Dots represent effect sizes, error bars represent 95% confidence intervals. All patches were sampled at the same time but points were jettered to make the figure clearar. Vertical grey lines: disturbances events followed by resource flow. The effect of patch size and size of the connected patch on biomass was analyzed using two linear models, one for small patches and the other for large patches. We used the same type of models for analysing the shannon index."
   #[To do: write here results]
-  
-  # "Biomass models:",
-  # results_small_patches_biomass_patch_type_day,
-  # results_large_patches_biomass_patch_type_day,
-  # "Alpha diversity models: ",
-  # results_small_patches_shannon_patch_type_day,
-  # results_large_patches_shannon_patch_type_day
   )
 ```
 
-#### Figures
+### Figures
+
+```{r child = here("r_files", "results_table_paper_version.Rmd"), eval = show_results}
+```
+
+```{r}
+compar_ex = "The full and fixed models are compared to the null model."
+```
 
 ```{r fig-isolated-patches, fig.cap = figure_caption_2}
 
@@ -220,11 +195,29 @@ ggarrange(
   nrow = 2,
   heights = c(0.9,1),
   common.legend = TRUE,
-  align = "v"
+  align = "v",
+  labels = c("(a)", "(b)"),
+  label.x = 0.1,
+  label.y = 0.8
 )
+
+results_table %>%
+  arrange(Response, 
+          Levels) %>%
+  filter(Levels == "Isolated patches") %>%
+  mutate(ΔR2_full = NULL,
+         ΔR2_int = NULL,
+         ΔR2_fix = NULL) %>%
+  kbl(caption = paste(
+    "Table 1. 
+    Isolated patches results. 
+    The full model included patch size and its interaction with time. 
+    The fixed model did not include such interaction.", 
+    compar_ex)) %>%
+  kable_styling()
 ```
 
-```{r fig-connected-systems, fig.cap = figure_caption_3, fig.height = 7}
+```{r fig-connected-systems, fig.cap = figure_caption_3, fig.height = 9}
 ggarrange(
   p_MM_SL_metaecos_biomass +
     rremove("xlab") +
@@ -248,7 +241,18 @@ ggarrange(
                              "cm")) +
     font("legend.text", size = size_legend) +
     font("ylab", size = size_y_axis),
-  p_MM_SL_metaecos_beta +
+   p_MM_SL_metaecos_beta +
+    rremove("xlab") +
+    theme(axis.text.x = element_blank(),
+          axis.ticks.x = element_blank(),
+          plot.margin = unit(c(ggarrange_margin_top,
+                               ggarrange_margin_right,
+                               ggarrange_margin_bottom,
+                               ggarrange_margin_left), 
+                             "cm")) +
+    font("legend.text", size = size_legend) +
+    font("ylab", size = size_y_axis),
+  p_MM_SL_metaecos_gamma +
     theme(plot.margin = unit(c(ggarrange_margin_left,
                                ggarrange_margin_right,
                                ggarrange_margin_bottom,
@@ -257,12 +261,80 @@ ggarrange(
     font("xlab", size = size_x_axis) +
     font("ylab", size = size_y_axis) +
     scale_x_continuous(breaks = unique(ds_patches$day)),
-  heights = c(0.8,0.8,1),
-  nrow = 3,
+  heights = c(0.8,0.8,0.8,1),
+  nrow = 4,
   common.legend = TRUE,
-  align = "v"
+  align = "v",
+  labels = c("(a)", "(b)", "(c)", "(d)"),
+  label.x = 0.1,
+  label.y = 0.8
 )
 
+results_table %>%
+  arrange(Response, 
+          Levels) %>%
+  filter(
+    Levels %in% c(
+      "Metaecos (Small-Large vs Medium-Medium)"
+    )
+  ) %>%
+  mutate(ΔR2_full = NULL,
+         ΔR2_int = NULL,
+         ΔR2_fix = NULL) %>%
+  kbl(
+    caption = paste(
+      "Table 2. 
+      Meta-ecosystems results. 
+      The full model included patch size ratio and its interaction with time. 
+      The fixed model did not include such interaction.",
+      compar_ex
+    )
+  ) %>%
+  kable_styling()
+
+results_table %>%
+  arrange(Response, 
+          Levels) %>%
+  filter(
+    Levels %in% c(
+      "Small-Large (connect vs isolated)"
+    )
+  ) %>%
+  mutate(ΔR2_full = NULL,
+         ΔR2_int = NULL,
+         ΔR2_fix = NULL) %>%
+  kbl(
+    caption = paste(
+      "Table 3. 
+      Small-Large systems results. 
+      The full model included the connection and its interaction with time. 
+      The fixed model did not include such interaction.",
+      compar_ex
+    )
+  ) %>%
+  kable_styling()
+
+results_table %>%
+  arrange(Response, 
+          Levels) %>%
+  filter(
+    Levels %in% c(
+      "Medium-Medium (connect vs isolated)"
+    )
+  ) %>%
+  mutate(ΔR2_full = NULL,
+         ΔR2_int = NULL,
+         ΔR2_fix = NULL) %>%
+  kbl(
+    caption = paste(
+      "Table 4. 
+      Medium-Medium systems results. 
+      The full model included the connection and its interaction with time. 
+      The fixed model did not include such interaction.",
+      compar_ex
+    )
+  ) %>%
+  kable_styling()
 ```
 
 ```{r fig-connected-patches, fig.cap = figure_caption_4}
@@ -291,15 +363,46 @@ ggarrange(
   nrow = 2,
   heights = c(0.9,1),
   common.legend = TRUE,
-  align = "v"
+  align = "v",
+  labels = c("(a)", "(b)"),
+  label.x = 0.1,
+  label.y = 0.8
 )
+
+results_table %>%
+  filter(Response %in% c("Bioarea Density ES", 
+                         "Shannon Index ES"),
+         Levels == "Small (connected to small or large)") %>%
+  arrange(Response, 
+          Levels) %>%
+  kbl(caption = paste(
+    "Table 5. 
+    Small patches results. 
+    The full model included the size of the donor patch and its interaction with time. 
+    The fixed model did not include such interaction.", 
+    compar_ex)) %>%
+  kable_styling()
+
+results_table %>%
+  filter(Response %in% c("Bioarea Density ES", 
+                         "Shannon Index ES"),
+         Levels == "Large (connected to small or large)") %>%
+  arrange(Response, 
+          Levels) %>%
+  kbl(caption = paste(
+    "Table 6. 
+    Large patches results. 
+    The full model included the size of the donor patch and its interaction with time. 
+    The fixed model did not include such interaction.",
+    compar_ex)) %>%
+  kable_styling()
 ```
 
-#### Appendix / Supplemental information
+### Appendix / Supplemental information
 
-##### Experimental design: volume balance
+#### Experimental design: volume balance
 
-During the experiment, we had to adapt to keep the volume of cultures constant. The first way we adapted was by changing after the third disturbance the way we boiled cultures. For the first three disturbances, we boiled 15 tubes in a rack at 800 W for three minutes, which we noticed made evaporate cultures on mean 2.43 ml (SD = 0.87). To reduce evaporation loss, the last three disturbances were carried out boiling four tubes for one minute, reducing evaporation to a mean of 1.25 ml (SD = 0.37).\
+During the experiment, we had to adapt to keep the volume of cultures constant. The first way we adapted was by changing after the third disturbance the way we boiled cultures. For the first three disturbances, we boiled 15 tubes in a rack at 800 W for three minutes, which we noticed made evaporate cultures on mean 2.43 ml (SD = 0.87) per boiling event. To reduce evaporation loss, the last three disturbances were carried out boiling four tubes for one minute, reducing evaporation to a mean of 1.25 ml (SD = 0.37).\
 [Are these nrs for all three events or for each?]
 
 The second way we counteracted volume loss was by replenishing with medium the volume that was sampled. Three days before each sampling day we added medium with the same volume we would have sampled (0.2 ml). We did not do it for the last sampling.
@@ -311,11 +414,11 @@ A large evaporation which we did not anticipated happened to five high level dis
 To see if certain treatments evaporated more, we ran a mixed effect model.\
 [To do: add here all the results of the model selection of water evaporation]
 
-##### Statistical analysis: size distribution
+#### Statistical analysis: size distribution
 
 To study the body size distribution of the community, we constructed 12 body size classes, as in @Jacquet2020, covering the whole breadth of body sizes recorded in the experiment.
 
-##### Statistical analysis: effect size Hedge's d
+#### Statistical analysis: effect size Hedge's d
 
 The effect size of the treatments (connected patch) compared to the control (isolated patches) was measured as the difference between the means of the treatment and the control divided by the standard deviation of pooled control and isolated, called Hedge's d. Hedge's d was calculated as @Rosenberg2013:
 
@@ -355,11 +458,8 @@ $$
 
 where $d$ is Hedge's d, $n1$ is the sample size of group 1, $n2$ is the sample size of group 2, and $df$ is the degrees of freedom.
 
-```{r child = here("r_files", "results_table_paper_version.Rmd"), eval = show_results}
-```
+#### Low disturbance results
 
-```{r}
-p_MM_SL_metaecos_gamma
-```
+In low disturbance, patch size ratio did not affect the biodiversity or function of meta-ecosystems, except for their β diversity (moderate evidence, p = 0.037).
 
-#### Bibliography
+### Bibliography

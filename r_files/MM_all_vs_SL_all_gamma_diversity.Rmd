@@ -25,7 +25,7 @@ metaecosystem_type_input_model = c("Small-Large meta-ecosystem",
                                    "Medium-Medium meta-ecosystem")
 ```
 
-```{r child = here("r_files", "metaeco_analysis_symmetry.Rmd")}
+```{r child = here("r_files", "analysis_metaeco_symmetry.Rmd")}
 ```
 
 ###### Small-Large connected vs isolated
@@ -35,7 +35,12 @@ metaecosystem_type_input_model = c("Small-Large meta-ecosystem",
                                    "Small-Large isolated")
 ```
 
-```{r child = here("r_files", "metaeco_analysis_connection.Rmd")}
+```{r}
+optimizer_input = 'Nelder_Mead'
+method_input = ''
+```
+
+```{r child = here("r_files", "analysis_metaeco_connection.Rmd")}
 ```
 
 ###### Medium-Medium connected vs isolated
@@ -45,7 +50,12 @@ metaecosystem_type_input_model = c("Medium-Medium meta-ecosystem",
                                    "Medium-Medium isolated")
 ```
 
-```{r child = here("r_files", "metaeco_analysis_connection.Rmd"), eval = FALSE}
+```{r}
+optimizer_input = 'Nelder_Mead'
+method_input = ''
+```
+
+```{r child = here("r_files", "analysis_metaeco_connection.Rmd")}
 ```
 
 ##### Boxplots

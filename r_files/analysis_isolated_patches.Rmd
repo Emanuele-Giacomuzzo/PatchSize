@@ -1,0 +1,164 @@
+---
+title: "Untitled"
+output: html_document
+date: "2023-04-14"
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+filtered_data = ds_patches %>%
+  filter(
+    metaecosystem == "no",
+    time_point >= first_time_point_model,
+    time_point <= last_time_point_model
+  )
+```
+
+```{r}
+plot.patches.points(filtered_data,
+                    patch_type_input,
+                    response_variable)
+```
+
+```{r}
+null_model = lmer(
+  get(response_variable) ~
+    day +
+    (day | culture_ID),
+  data = filtered_data,
+  REML = FALSE,
+  control = lmerControl(optimizer = "Nelder_Mead")
+)
+
+print(summary(null_model), digits = 1)
+
+filtered_data %>%
+    mutate(predicted = fitted(null_model),
+           residuals = resid(null_model)) %>%
+    plot_ly(x = ~predicted,
+            y = ~residuals,
+            type = "scatter",
+            mode = "markers",
+            marker = list(size = 5, color = "#4C78A8"),
+            text = paste(" ID: ", filtered_data$culture_ID, "<br>",
+                         "Day: ", filtered_data$day, "<br>",
+                         "Patch Type: ", filtered_data$patch_type, "<br>",
+                         "Biomass density: ", round(filtered_data$bioarea_mm2_per_ml, digits = 2), "<br>",
+                         "Species richness: ", filtered_data$species_richness, "<br>"),
+            hoverinfo = "text") %>%
+    plotly::layout(
+        title = "Residuals vs. Fitted Values",
+        xaxis = list(title = "Fitted Values"),
+        yaxis = list(title = "Residuals")
+    )
+
+qqnorm(resid(null_model))
+```
+
+&nbsp;<br>
+&nbsp;<br>
+&nbsp;<br>
+
+<center>[**Full model**]{.underline} [**(with `patch_size_ml` and `patch_size_ml : day`)**]{.underline}</center>
+
+```{r}
+full_model = lmer(
+  get(response_variable) ~
+    day +
+    patch_size_ml +
+    patch_size_ml : day +
+    (day | culture_ID),
+  data = filtered_data,
+  REML = FALSE,
+  control = lmerControl(optimizer = "Nelder_Mead")
+)
+
+print(summary(full_model), digits = 1)
+
+filtered_data %>%
+    mutate(predicted = fitted(full_model),
+           residuals = resid(full_model)) %>%
+    plot_ly(x = ~predicted,
+            y = ~residuals,
+            type = "scatter",
+            mode = "markers",
+            marker = list(size = 5, color = "#4C78A8"),
+            text = paste(" ID: ", filtered_data$culture_ID, "<br>",
+                         "Day: ", filtered_data$day, "<br>",
+                         "Patch Type: ", filtered_data$patch_type, "<br>",
+                         "Biomass density: ", round(filtered_data$bioarea_mm2_per_ml, digits = 2), "<br>",
+                         "Species richness: ", filtered_data$species_richness, "<br>"),
+            hoverinfo = "text") %>%
+    plotly::layout(
+        title = "Residuals vs. Fitted Values",
+        xaxis = list(title = "Fitted Values"),
+        yaxis = list(title = "Residuals")
+    )
+
+qqnorm(resid(full_model))
+
+model_stats_full = compute.model.stats(full_model,
+                                       null_model,
+                                       "mixed_model") 
+
+model_stats_full %>%
+  mutate(across(everything(), round, digits = 3)) %>%
+  print()
+```
+
+&nbsp;<br>
+&nbsp;<br>
+&nbsp;<br>
+
+<center>[**Fixed model**]{.underline} [**(with `patch_size_ml`)**]{.underline}</center>
+
+```{r}
+fixed_model = lmer(
+  get(response_variable) ~
+    day +
+    patch_size_ml +
+    (day | culture_ID),
+  data = filtered_data,
+  REML = FALSE,
+  control = lmerControl(optimizer = "Nelder_Mead")
+)
+
+print(summary(fixed_model), digits = 1)
+
+filtered_data %>%
+    mutate(predicted = fitted(fixed_model),
+           residuals = resid(fixed_model)) %>%
+    plot_ly(x = ~predicted,
+            y = ~residuals,
+            type = "scatter",
+            mode = "markers",
+            marker = list(size = 5, color = "#4C78A8"),
+            text = paste(" ID: ", filtered_data$culture_ID, "<br>",
+                         "Day: ", filtered_data$day, "<br>",
+                         "Patch Type: ", filtered_data$patch_type, "<br>",
+                         "Biomass density: ", round(filtered_data$bioarea_mm2_per_ml, digits = 2), "<br>",
+                         "Species richness: ", filtered_data$species_richness, "<br>"),
+            hoverinfo = "text") %>%
+    plotly::layout(
+        title = "Residuals vs. Fitted Values",
+        xaxis = list(title = "Fitted Values"),
+        yaxis = list(title = "Residuals")
+    )
+
+qqnorm(resid(fixed_model))
+model_stats_fixed = compute.model.stats(fixed_model,
+                                        null_model,
+                                        "mixed_model")
+model_stats_fixed %>%
+  mutate(across(everything(), round, digits = 3)) %>%
+  print()
+```
+
+```{r}
+results_table = fill.results.table(results_table,
+                                   response_variable,
+                                   patch_type_input,
+                                   model_stats_full,
+                                   model_stats_fixed)
+```

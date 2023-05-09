@@ -1,0 +1,402 @@
+---
+title: "Untitled"
+output: html_document
+date: "2023-05-02"
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+### Create a data frame with all the experimental meta-ecosystems and all the possible meta-ecosystems from isolated
+culture_ID_isolated_S_low = ds_patches %>%
+  filter(patch_type == "Small isolated",
+         disturbance == "low") %>%
+  pull(culture_ID) %>%
+  unique()
+
+culture_ID_isolated_L_low = ds_patches %>%
+  filter(patch_type == "Large isolated",
+         disturbance == "low") %>%
+  pull(culture_ID) %>%
+  unique()
+
+culture_ID_isolated_S_high = ds_patches %>%
+  filter(patch_type == "Small isolated",
+         disturbance == "high") %>%
+  pull(culture_ID) %>%
+  unique()
+
+culture_ID_isolated_L_high = ds_patches %>%
+  filter(patch_type == "Large isolated",
+         disturbance == "high") %>%
+  pull(culture_ID) %>%
+  unique()
+
+culture_ID_isolated_M_low = ds_patches %>%
+  filter(patch_type == "Medium isolated",
+         disturbance == "low") %>%
+  pull(culture_ID) %>%
+  unique()
+
+culture_ID_isolated_M_high = ds_patches %>%
+  filter(patch_type == "Medium isolated",
+         disturbance == "high") %>%
+  pull(culture_ID) %>%
+  unique()
+
+combinations_S_and_L_low = crossing(culture_ID_isolated_S_low,
+                                    culture_ID_isolated_L_low) %>%
+                            mutate(disturbance = "low",
+                                   metaecosystem_type = "Small-Large isolated") %>%
+                            rename(ID_first_patch = culture_ID_isolated_S_low,
+                                   ID_second_patch = culture_ID_isolated_L_low) %>%
+                            select(disturbance,
+                                   metaecosystem_type,
+                                   ID_first_patch,
+                                   ID_second_patch)
+
+combinations_S_and_L_high = crossing(culture_ID_isolated_S_high,
+                                    culture_ID_isolated_L_high) %>%
+                            mutate(disturbance = "high",
+                                   metaecosystem_type = "Small-Large isolated") %>%
+                            rename(ID_first_patch = culture_ID_isolated_S_high,
+                                   ID_second_patch = culture_ID_isolated_L_high) %>%
+                            select(disturbance,
+                                   metaecosystem_type,
+                                   ID_first_patch,
+                                   ID_second_patch)
+
+combinations_M_and_M_low = combinat::combn(culture_ID_isolated_M_low,
+                                   m = 2) %>%
+                            t() %>%
+                            as.data.frame() %>%
+                            rename(ID_first_patch = V1,
+                                   ID_second_patch = V2) %>%
+                            mutate(disturbance = "low",
+                                   metaecosystem_type = "Medium-Medium isolated") %>%
+                            select(disturbance,
+                                   metaecosystem_type,
+                                   ID_first_patch,
+                                   ID_second_patch)
+
+combinations_M_and_M_high = combinat::combn(culture_ID_isolated_M_high,
+                                   m = 2) %>%
+                            t() %>%
+                            as.data.frame() %>%
+                            rename(ID_first_patch = V1,
+                                   ID_second_patch = V2) %>%
+                            mutate(disturbance = "high",
+                                   metaecosystem_type = "Medium-Medium isolated") %>%
+                            select(disturbance,
+                                   metaecosystem_type,
+                                   ID_first_patch,
+                                   ID_second_patch)
+
+expect_equal(nrow(combinations_S_and_L_low),
+             length(culture_ID_isolated_S_low) * length(culture_ID_isolated_L_low))
+
+expect_equal(nrow(combinations_S_and_L_high),
+             length(culture_ID_isolated_S_high) * length(culture_ID_isolated_L_high))
+
+expect_equal(nrow(combinations_M_and_M_low),
+             sum(seq(length(culture_ID_isolated_M_low) - 1)))
+
+expect_equal(nrow(combinations_M_and_M_high),
+             sum(seq(length(culture_ID_isolated_M_high) - 1)))
+
+ID_combinations_isolated = rbind(
+  combinations_S_and_L_low,
+  combinations_S_and_L_high,
+  combinations_M_and_M_low,
+  combinations_M_and_M_high
+) 
+
+ID_combinations_isolated = ID_combinations_isolated %>%
+  mutate(system_nr = 1001:(1000 + nrow(ID_combinations_isolated))) %>%
+  select(system_nr,
+         disturbance,
+         metaecosystem_type,
+         ID_first_patch,
+         ID_second_patch)
+
+ID_combinations_metaecos = ds_patches %>%
+  filter(time_point == 0,
+         metaecosystem == "yes") %>%
+  select(system_nr,
+         disturbance,
+         metaecosystem_type,
+         culture_ID) %>%
+  group_by(system_nr,
+           disturbance,
+           metaecosystem_type) %>%
+  summarise(ID_first_patch = (mean(culture_ID) - 0.5),
+            ID_second_patch = (mean(culture_ID) + 0.5)) %>%
+  as.data.frame()
+
+
+ID_combinations = rbind(ID_combinations_isolated,
+                        ID_combinations_metaecos)
+
+ID_combinations$connection <-
+  ifelse(
+    ID_combinations$metaecosystem_type %in% c("Medium-Medium isolated",
+                                                "Small-Large isolated"),
+    yes = "isolated",
+    no = "connected"
+  )
+
+n_patches_combinations = nrow(ID_combinations)
+
+expect_equal(nrow(ID_combinations), 
+             nrow(ID_combinations_isolated) + nrow(ID_combinations_metaecos))
+
+ID_combinations %<>%
+  mutate(patches_combined = paste0(ID_first_patch, "|", ID_second_patch))
+```
+
+```{r}
+#Create combination sets (for SL isolated) where each sets contains each patch only one time. To find all combinations where all the patches are included, but only one at the time, I keep the small patches on the same order, but then I perform a permutation of the order in which large patches are arranged and coupled to the small patches. 
+
+disturbance_nr = 0
+SL_isolated_sys_sets_low_n_high <- vector("list", 
+                               length(disturbance_levels))
+
+for (disturbance_input in disturbance_levels) {
+  
+  concat_permutations_large = NULL
+  disturbance_nr = disturbance_nr + 1
+  
+  #Find culture ID of small and large patches
+  ID_small_patches = ds_patches %>%
+    filter(disturbance == disturbance_input,
+           patch_type == "Small isolated") %>%
+    pull(culture_ID) %>%
+    unique()
+  
+  ID_large_patches = ds_patches %>%
+    filter(disturbance == disturbance_input,
+           patch_type == "Large isolated") %>%
+    pull(culture_ID) %>%
+    unique()
+  
+  #Force small and large patches vectors to have the same length 
+  if(length(ID_large_patches) < length(ID_small_patches)) {
+    ID_large_patches = c(ID_large_patches,
+                         rep(
+                           "Patch taken off",
+                           times = length(ID_small_patches) - length(ID_large_patches)
+                         ))
+  }
+  
+  if(length(ID_small_patches) < length(ID_large_patches)) {
+    ID_small_patches = c(ID_small_patches,
+                         rep(
+                           "Patch taken off",
+                           times = length(ID_large_patches) - length(ID_small_patches)
+                         ))
+  }
+  
+  #Permutations of the large patches 
+  permutations_large = permn(ID_large_patches)
+  
+  for(list_element in 1:length(permutations_large)){
+    concat_permutations_large = c(concat_permutations_large, 
+                                  permutations_large[[list_element]])
+  }
+  
+  #Assign small patches
+  SL_isolated_sys_sets_low_n_high[[disturbance_nr]]$ID_small_patches = rep(ID_small_patches,
+                                                 times = length(permutations_large))
+  
+  expect_equal(length(SL_isolated_sys_sets_low_n_high[[disturbance_nr]]$ID_small_patches),
+               length(ID_small_patches) * length(permutations_large))
+  
+  #Assign large patches 
+  SL_isolated_sys_sets_low_n_high[[disturbance_nr]]$ID_large_patches = concat_permutations_large
+  
+  expect_equal(length(SL_isolated_sys_sets_low_n_high[[disturbance_nr]]$ID_large_patches),
+               length(ID_large_patches) * length(permutations_large))
+  
+  #Assign set 
+  SL_isolated_sys_sets_low_n_high[[disturbance_nr]]$set = rep(1:length(permutations_large), 
+                                         each = length(ID_small_patches))
+  
+  expect_equal(length(SL_isolated_sys_sets_low_n_high[[disturbance_nr]]$set),
+               length(ID_small_patches) * length(permutations_large))
+  
+  #Finalise
+  SL_isolated_sys_sets_low_n_high[[disturbance_nr]] = SL_isolated_sys_sets_low_n_high[[disturbance_nr]] %>%
+    as.data.frame() %>%
+    mutate(disturbance = disturbance_input,
+           metaecosystem_type = "Small-Large isolated",
+           connection = "isolated"
+           ) %>%
+    rename(ID_first_patch = ID_small_patches,
+           ID_second_patch = ID_large_patches) %>%
+    select(disturbance,
+           metaecosystem_type,
+           ID_first_patch,
+           ID_second_patch,
+           connection,
+           set)
+  
+  expect_equal(nrow(SL_isolated_sys_sets_low_n_high[[disturbance_nr]]),
+               length(ID_small_patches) * length(permutations_large))
+  
+  SL_isolated_sys_sets_low_n_high[[disturbance_nr]] = SL_isolated_sys_sets_low_n_high[[disturbance_nr]] %>%
+    filter(!ID_first_patch == "Patch taken off", 
+           !ID_second_patch == "Patch taken off") %>%
+    mutate(ID_first_patch = as.double(ID_first_patch),
+           ID_second_patch = as.double(ID_second_patch))
+  
+  #Add to the SL_isolated_sys_sets_low_n_high the system nr  
+  ID_combinations_SL_isolated = ID_combinations %>%
+    filter(disturbance == disturbance_input,
+           metaecosystem_type == "Small-Large isolated")
+  
+  SL_isolated_sys_sets_low_n_high[[disturbance_nr]] = full_join(SL_isolated_sys_sets_low_n_high[[disturbance_nr]], 
+                                                     ID_combinations_SL_isolated)
+}
+
+SL_isolated_sys_sets_low_n_high_binded = SL_isolated_sys_sets_low_n_high %>%
+  bind_rows()
+
+expect_equal(nrow(SL_isolated_sys_sets_low_n_high_binded),
+             nrow(SL_isolated_sys_sets_low_n_high[[1]]) + nrow(SL_isolated_sys_sets_low_n_high[[2]]))
+
+expect_equal(
+  length(
+    SL_isolated_sys_sets_low_n_high_binded %>% 
+      pull(system_nr) %>% 
+      unique()),
+  length(
+    ID_combinations %>% 
+      filter(metaecosystem_type == "Small-Large isolated") %>% 
+      pull(system_nr) %>% 
+      unique()
+    )
+  )
+
+SL_isolated_sys_sets_low_n_high = SL_isolated_sys_sets_low_n_high_binded
+```
+
+```{r}
+
+#Initiate
+disturbance_nr = 0
+MM_isolated_sys_sets_low_n_high <- vector("list", 
+                                      length(disturbance_levels))
+
+#Find all the combination sets 
+for (disturbance_input in disturbance_levels) {
+  disturbance_nr = disturbance_nr + 1
+  
+  #Find culture ID of medium patches
+  ID_medium_patches = ds_patches %>%
+    filter(disturbance == disturbance_input,
+           patch_type == "Medium isolated") %>%
+    pull(culture_ID) %>%
+    unique()
+  
+  #Find pairwise combinations
+  ID_MM_isolated_sys = t(combn(ID_medium_patches, 2))
+  n_MM_isolated_sys = nrow(ID_MM_isolated_sys)
+  
+  #Make dataset with all the patch combinations (MM_isolated_sys_sets)
+  MM_isolated_sys_sets = matrix(nrow = 10^4,
+                                ncol = 4)
+  matrix_row = 0
+  for (combination_n in 1:n_MM_isolated_sys) {
+    
+    #Find IDs of the first system 
+    ID_first_system = ID_MM_isolated_sys[combination_n,]
+    
+    for (potential_second_sys in 1:n_MM_isolated_sys) {
+      
+      #Find IDs of the second system 
+      ID_second_system = ID_MM_isolated_sys[potential_second_sys,]
+      
+      shared_elements_first_n_second_system = intersect(ID_first_system, 
+                                                        ID_second_system)
+      
+      if (length(shared_elements_first_n_second_system) == 0) {
+        matrix_row = matrix_row + 1
+
+        #Make first and second system into a set 
+        MM_isolated_sys_sets[matrix_row, ] = c(ID_first_system,
+                                               ID_second_system)
+        
+      }
+    }
+  }
+  
+  #Tidy the dataset with all the patch combinations 
+  MM_isolated_sys_sets = MM_isolated_sys_sets %>% 
+    as.data.frame() %>% 
+    drop_na()
+  
+  #Test 
+  expect_equal(MM_isolated_sys_sets %>% filter(V1 == V2 | V1 == V3 | V1 == V4 | V2 == V3 | V2 == V4 | V3 == V4) %>% nrow(),
+               0)
+  
+  #Reorder the dataset with all the patch combinations 
+  MM_isolated_sys_sets_reordered = data.frame(ID_first_patch = NA,
+                                              ID_second_patch = NA,
+                                              set = NA)
+  n_sets = nrow(MM_isolated_sys_sets)
+  for (set_input in 1:n_sets) {
+    MM_isolated_sys_sets_reordered = MM_isolated_sys_sets_reordered %>%
+      add_row(ID_first_patch = MM_isolated_sys_sets[set_input, 1],
+              ID_second_patch = MM_isolated_sys_sets[set_input, 2],
+              set = set_input) %>%
+      add_row(ID_first_patch = MM_isolated_sys_sets[set_input, 3],
+              ID_second_patch = MM_isolated_sys_sets[set_input, 4],
+              set = set_input)
+  }
+  
+  #Add to a list
+  MM_isolated_sys_sets_low_n_high[[disturbance_nr]] = MM_isolated_sys_sets_reordered %>%
+    drop_na() %>%
+    mutate(disturbance = disturbance_input,
+           metaecosystem_type = "Medium-Medium isolated",
+           connection = "isolated")
+  
+  #Add system nr 
+  ID_combinations_MM_isolated = ID_combinations %>%
+    filter(disturbance == disturbance_input,
+           metaecosystem_type == "Medium-Medium isolated")
+  
+  MM_isolated_sys_sets_low_n_high[[disturbance_nr]] = full_join(MM_isolated_sys_sets_low_n_high[[disturbance_nr]], 
+                                                                ID_combinations_MM_isolated)
+  
+}
+
+#Bind all sets of MM isolated
+MM_isolated_sys_sets_low_n_high = MM_isolated_sys_sets_low_n_high %>%
+  bind_rows()
+ 
+expect_equal(
+  length(
+    MM_isolated_sys_sets_low_n_high %>%
+      pull(system_nr) %>%
+      unique()),
+  length(
+    ID_combinations %>%
+      filter(metaecosystem_type == "Medium-Medium isolated") %>%
+      pull(system_nr) %>%
+      unique()
+    )
+  )
+```
+
+```{r}
+isolated_combinations_sets = rbind(SL_isolated_sys_sets_low_n_high, 
+                                   MM_isolated_sys_sets_low_n_high) %>%
+  select(disturbance,
+         metaecosystem_type,
+         connection,
+         set,
+         system_nr,
+         ID_first_patch,
+         ID_second_patch)
+```

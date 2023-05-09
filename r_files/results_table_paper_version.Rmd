@@ -19,23 +19,23 @@ names_levels = data.frame(
   old = NA,
   new = NA) %>%
   add_row(old = "Small-Large meta-ecosystem , Small-Large isolated", 
-          new = "SL (connect vs isolated)") %>%
+          new = "Small-Large (connect vs isolated)") %>%
   add_row(old = "Medium-Medium meta-ecosystem , Medium-Medium isolated", 
-          new = "MM (connect vs isolated)") %>%
+          new = "Medium-Medium (connect vs isolated)") %>%
   add_row(old = "Small-Large meta-ecosystem , Medium-Medium meta-ecosystem", 
-          new = "Metaecos (SL vs MM)") %>%
+          new = "Metaecos (Small-Large vs Medium-Medium)") %>%
   add_row(old = "Medium-Medium isolated , Small-Large isolated", 
-          new = "Isolated (SL vs MM)") %>%
+          new = "Isolated (Small-Large vs Medium-Medium)") %>%
   add_row(old = "Medium-Medium meta-ecosystem , Small-Large meta-ecosystem", 
-          new = "Metaecos (SL vs MM)") %>%
+          new = "Metaecos (Small-Large vs Medium-Medium)") %>%
   add_row(old = "Small-Large isolated , Medium-Medium isolated", 
-          new = "Isolated (SL vs MM)") %>%
+          new = "Isolated (Small-Large vs Medium-Medium)") %>%
   add_row(old = "Small isolated , Medium isolated , Large isolated", 
           new = "Isolated patches") %>%
   add_row(old = "Small connected to small , Small connected to large", 
-          new = "Small (connected to S or L)") %>%
+          new = "Small (connected to small or large)") %>%
   add_row(old = "Large connected to small , Large connected to large", 
-          new = "Large (connected to S or L)") %>%
+          new = "Large (connected to small or large)") %>%
   slice(-1)
 
 names_responses = data.frame(
@@ -83,16 +83,16 @@ results_table$Response <- factor(results_table$Response, levels = c("Bioarea Den
                                                                     "Log Shannon Index ES",
                                                                     ""))
 
-results_table$Levels <- factor(results_table$Levels, levels = c("Metaecos (SL vs MM)",
-                                                                "SL (connect vs isolated)",
-                                                                "MM (connect vs isolated)", 
+results_table$Levels <- factor(results_table$Levels, levels = c("Metaecos (Small-Large vs Medium-Medium)",
+                                                                "Small-Large (connect vs isolated)",
+                                                                "Medium-Medium (connect vs isolated)", 
                                                                 "Isolated patches",
-                                                                "Small (connected to S or L)",
-                                                                "Large (connected to S or L)"))
+                                                                "Small (connected to small or large)",
+                                                                "Large (connected to small or large)"))
 ```
 
 ```{r}
-#Round up AIC, p-value, and R digitss
+#Round up AIC, p-value, and R digits
 AIC_digits = 1
 p_digits = 3
 R_digits = 2
@@ -101,74 +101,43 @@ results_table = results_table %>%
   mutate(ΔAIC_full = round(ΔAIC_full, digits = AIC_digits),
          p_full = round(p_full, digits = p_digits),
          ΔR2_full = round(ΔR2_full, digits = R_digits),
-         ΔAIC_int = round(ΔAIC_int, digits = AIC_digits),
-         p_int = round(p_int, digits = p_digits),
-         ΔR2_int = round(ΔR2_int, digits = R_digits),
          ΔAIC_fix = round(ΔAIC_fix, digits = AIC_digits),
          p_fix = round(p_fix, digits = p_digits),
          ΔR2_fix = round(ΔR2_fix, digits = R_digits))
+```
 
-compar_ex = "All the comparisons are carried out with the null model."
+```{r}
+results_table %<>%
+  mutate(min_p = pmin(p_full, p_fix),
+         evidence = "",
+         evidence = ifelse(min_p > 0.1, 
+                           "none",
+                           evidence),
+         evidence = ifelse(min_p < 0.1, 
+                           "\\* weak",
+                           evidence),
+         evidence = ifelse(min_p < 0.05, 
+                           "** moderate",
+                           evidence),
+         evidence = ifelse(min_p < 0.01, 
+                           "*** strong",
+                           evidence),
+         evidence = ifelse(min_p < 0.001, 
+                           "**** very strong",
+                           evidence)) %>%
+  select(-min_p)
+```
 
-results_table %>%
-  arrange(Response, Levels) %>%
-  filter(Levels == "Isolated patches") %>%
-  mutate(ΔR2_full = NULL,
-         ΔR2_int = NULL,
-         ΔR2_fix = NULL) %>%
-  kbl(caption = paste("Results of the mixed models for the isolated patches.", compar_ex)) %>%
-  kable_styling()
-
-results_table %>%
-  arrange(Response, Levels) %>%
-  filter(
-    Levels %in% c(
-      "Metaecos (SL vs MM)"
-    )
-  ) %>%
-  mutate(ΔR2_full = NULL,
-         ΔR2_int = NULL,
-         ΔR2_fix = NULL) %>%
-  kbl(
-    caption = paste(
-      "Results of the mixed models for the meta-ecosystems and isolated systems",
-      compar_ex
-    )
-  ) %>%
-  kable_styling()
-
-results_table %>%
-  arrange(Response, Levels) %>%
-  filter(
-    Levels %in% c(
-      "SL (connect vs isolated)"
-    )
-  ) %>%
-  mutate(ΔR2_full = NULL,
-         ΔR2_int = NULL,
-         ΔR2_fix = NULL) %>%
-  kbl(
-    caption = paste(
-      "Results of the mixed models for the SL meta-ecosystems and SL isolated systems",
-      compar_ex
-    )
-  ) %>%
-  kable_styling()
-
-
-results_table %>%
-  filter(Response %in% c("Bioarea Density ES", 
-                         "Shannon Index ES"),
-         Levels == "Small (connected to S or L)") %>%
-  arrange(Response, Levels) %>%
-  kbl(caption = paste("Results of the linear models for the connected patches", compar_ex)) %>%
-  kable_styling()
-
-results_table %>%
-  filter(Response %in% c("Bioarea Density ES", 
-                         "Shannon Index ES"),
-         Levels == "Large (connected to S or L)") %>%
-  arrange(Response, Levels) %>%
-  kbl(caption = paste("Results of the linear models for the connected patches", compar_ex)) %>%
-  kable_styling()
+```{r}
+results_table %<>%
+  mutate(
+    p_full = as.character(p_full),
+    p_full = ifelse(p_full < 0.001,
+                    "< 0.001",
+                    p_full),
+    p_fix = as.character(p_fix),
+    p_fix = ifelse(p_fix < 0.001,
+                   "< 0.001",
+                   p_fix)
+  )
 ```

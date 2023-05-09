@@ -1,20 +1,20 @@
 ---
-title: "PhD Chapter 1 - PatchSize"
+html_document:
+  toc: yes
+  toc_float: yes
+  code_folding: hide
+  number_sections: yes
+  includes:
+    after_body: "tabset-dropdown.html"
 author: "Emanuele Giacomuzzo"
 date: "`r Sys.time()`"
-output: 
+output:
   html_document:
     code_folding: hide
-    profiling: true
+    profiling: yes
 bibliography: library.bib
-html_document:
-    toc: true
-    toc_float: true
-    code_folding: hide
-    number_sections: true
-    includes:
-      after_body: tabset-dropdown.html
-editor_options: 
+title: "PhD Chapter 1 - PatchSize"
+editor_options:
   chunk_output_type: console
 ---
 
@@ -62,7 +62,10 @@ lapply(functions_paths, source)
 
 ### Experimental cultures (`culture_info`)
 
-```{r child = here("r_files", "ds_culture_info.Rmd")}
+This table contains information about the 110 cultures of the experiment.
+
+```{r experimental-cultures}
+culture_info = read.csv(here("data", "PatchSizePilot_culture_info.csv"), header = TRUE)
 ```
 
 ### Individuals (ds_individuals)
@@ -81,6 +84,9 @@ lapply(functions_paths, source)
 ```
 
 ### Meta-ecosystems (`ds_metaecosystems`)
+
+```{r child = here("r_files", "combinations_patches.Rmd")}
+```
 
 ```{r child = here("r_files", "ds_metaecosystems.Rmd"), eval = recompute_datasets}
 ```
@@ -103,6 +109,8 @@ for (i in 1:length(files)) {
 ```
 
 ### Filter according to disturbance
+
+Here I'm filtering patches to have only the ones with disturbance `r disturbance_global_input`.
 
 ```{r}
 ds_individuals = ds_individuals %>%
@@ -486,29 +494,29 @@ patch_type_input = c("Small connected to large",
 
 ## Evaporation {.tabset .tabset-pills}
 
-```{r child = here("r_files", "evaporation.Rmd"), eval = FALSE}
+```{r child = here("r_files", "model_evaporation.Rmd"), eval = FALSE}
 ```
 
-```{r child = here("r_files", "evaporation_tests.Rmd"), eval = show_results}
+```{r child = here("r_files", "test_evaporation.Rmd"), eval = show_results}
 ```
 
 ## Analysis scripts {.tabset .tabset-pills}
 
 ### Video analysis
 
-```{r child = here("r_files", "video_analysis_script.Rmd"), class.source = "fold-show"}
+```{r child = here("r_files", "BEMOVI_script_video_analysis.Rmd"), class.source = "fold-show"}
 ```
 
 ### Species identification 
 
-```{r child = here("r_files", "species_id_script.Rmd"), class.source = "fold-show"}
+```{r child = here("r_files", "BEMOVI_script_species_id.Rmd"), class.source = "fold-show"}
 ```
 
 ## Running time
 
 ```{r running-time, echo = FALSE, eval = TRUE}
 end_time = Sys.time()
-end_time - start_time
+round(end_time - start_time, digits = 1)
 ```
 
 ## Other

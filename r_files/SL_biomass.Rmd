@@ -24,7 +24,7 @@ patch_type_input_model = c("Small connected to small",
                            "Small connected to large")
 ```
 
-```{r child = here("r_files", "ES_analysis.Rmd")}
+```{r child = here("r_files", "analysis_ES.Rmd")}
 ```
 
 ##### Large
@@ -34,5 +34,5 @@ patch_type_input_model = c("Large connected to small",
                            "Large connected to large")
 ```
 
-```{r child = here("r_files", "ES_analysis.Rmd")}
+```{r child = here("r_files", "analysis_ES.Rmd")}
 ```

@@ -1,0 +1,160 @@
+---
+title: "Untitled"
+output: html_document
+date: "2023-04-14"
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+filtered_data = ds_metaecosystems %>%
+                         filter(time_point >= first_time_point_model,
+                                time_point <= last_time_point_model,
+                                metaecosystem_type %in% metaecosystem_type_input_model)
+```
+
+```{r}
+plot.metaecos.points(filtered_data,
+                     metaecosystem_type_input_model,
+                     response_variable)
+```
+
+&nbsp;<br>
+&nbsp;<br>
+&nbsp;<br>
+
+```{r}
+null_model = lmer(
+  get(response_variable) ~
+    day + 
+    (day | system_nr), 
+  data = filtered_data,
+  REML = FALSE,
+  control = lmerControl(optimizer = "Nelder_Mead")
+)
+
+print(summary(null_model), digits = 1)
+
+filtered_data %>%
+    mutate(predicted = fitted(null_model),
+           residuals = resid(null_model)) %>%
+    plot_ly(x = ~predicted,
+            y = ~residuals,
+            type = "scatter",
+            mode = "markers",
+            marker = list(size = 5, color = "#4C78A8"),
+            text = paste(" System nr: ", filtered_data$system_nr, "<br>",
+                         "Day: ", filtered_data$day, "<br>",
+                         "Meta-ecosystem: ", filtered_data$metaecosystem_type, "<br>",
+                         "Tot Biomass: ", round(filtered_data$total_metaecosystem_bioarea_mm2, digits = 0), "<br>"),
+            hoverinfo = "text") %>%
+    plotly::layout(
+        xaxis = list(title = "Fitted Values"),
+        yaxis = list(title = "Residuals")
+    )
+
+qqnorm(resid(null_model))
+```
+
+&nbsp;<br>
+&nbsp;<br>
+&nbsp;<br>
+
+<center>[**Full model**]{.underline} [**(with**]{.underline} `patch_size_symmetry` [**and**]{.underline} `patch_size_symmetry : day`[**)**]{.underline}</center>
+
+```{r}
+full_model = lmer(
+  get(response_variable) ~
+    day + 
+    patch_size_symmetry +
+    patch_size_symmetry : day + 
+    (day | system_nr), 
+  data = filtered_data,
+  REML = FALSE,
+  control = lmerControl(optimizer = "Nelder_Mead")
+)
+
+print(summary(full_model), digits = 1)
+
+filtered_data %>%
+    mutate(predicted = fitted(full_model),
+           residuals = resid(full_model)) %>%
+    plot_ly(x = ~predicted,
+            y = ~residuals,
+            type = "scatter",
+            mode = "markers",
+            marker = list(size = 5, color = "#4C78A8"),
+            text = paste(" System nr: ", filtered_data$system_nr, "<br>",
+                         "Day: ", filtered_data$day, "<br>",
+                         "Meta-ecosystem: ", filtered_data$metaecosystem_type, "<br>",
+                         "Tot Biomass: ", round(filtered_data$total_metaecosystem_bioarea_mm2, digits = 0), "<br>"),
+            hoverinfo = "text") %>%
+    plotly::layout(
+        xaxis = list(title = "Fitted Values"),
+        yaxis = list(title = "Residuals")
+    )
+
+qqnorm(resid(full_model))
+
+model_stats_full = compute.model.stats(full_model,
+                                       null_model,
+                                       "mixed_model")
+
+round(model_stats_full, digits = 3)
+```
+
+&nbsp;<br>
+&nbsp;<br>
+&nbsp;<br>
+
+<center>[**Fixed model**]{.underline} [**(with**]{.underline} `patch_size_symmetry`[**)**]{.underline}</center>
+
+```{r}
+fixed_model = lmer(
+  get(response_variable) ~
+    day + 
+    patch_size_symmetry + 
+    (day | system_nr), 
+  data = filtered_data,
+  REML = FALSE,
+  control = lmerControl(optimizer = "Nelder_Mead")
+)
+
+print(summary(fixed_model), digits = 1)
+
+filtered_data %>%
+    mutate(predicted = fitted(fixed_model),
+           residuals = resid(fixed_model)) %>%
+    plot_ly(x = ~predicted,
+            y = ~residuals,
+            type = "scatter",
+            mode = "markers",
+            marker = list(size = 5, color = "#4C78A8"),
+            text = paste(" System nr: ", filtered_data$system_nr, "<br>",
+                         "Day: ", filtered_data$day, "<br>",
+                         "Meta-ecosystem: ", filtered_data$metaecosystem_type, "<br>",
+                         "Tot Biomass: ", round(filtered_data$total_metaecosystem_bioarea_mm2, digits = 0), "<br>"),
+            hoverinfo = "text") %>%
+    plotly::layout(
+        xaxis = list(title = "Fitted Values"),
+        yaxis = list(title = "Residuals")
+    )
+
+qqnorm(resid(fixed_model))
+
+model_stats_fixed = compute.model.stats(fixed_model,
+                                        null_model,
+                                        "mixed_model") 
+
+round(model_stats_fixed, digits = 3)
+```
+
+```{r}
+results_table = fill.results.table(
+  results_table,
+  response_variable,
+  metaecosystem_type_input_model,
+  model_stats_full,
+  model_stats_fixed
+)
+```
