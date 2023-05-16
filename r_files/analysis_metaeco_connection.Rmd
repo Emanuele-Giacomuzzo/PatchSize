@@ -1,6 +1,9 @@
 ---
 title: "Untitled"
-output: html_document
+output:
+  html_document:
+    code_folding: hide
+    profiling: yes
 date: "2023-04-14"
 editor_options: 
   chunk_output_type: console
@@ -19,11 +22,14 @@ plot.metaecos.points(filtered_data,
                      response_variable)
 ```
 
-If you get the warning
+The p-values and ΔAIC of the connection are computed for all possible combinations of the isolated patches, creating a p-value and ΔAIC distributions. We keep as p-value and ΔAIC of the comparison the mean of such distributions.
 
-*Warning in (function (iprint = 0L, maxfun = 10000L, FtolAbs = 1e-05, FtolRel = \## 1e-15, : unused control arguments ignored*
-
-Ignore it, it just means that you didn't pass the control argument to the Nelder_Mead optimiser, so it uses the default.
+<details>
+  <summary>Click for bootstrapping ΔAIC and p-value</summary>
+  
+&nbsp;<br>
+  
+If you see "*Warning in (function (iprint = 0L, maxfun = 10000L, FtolAbs = 1e-05, FtolRel = \## 1e-15, : unused control arguments ignored*", Ignore it. It just means that you didn't pass the control argument to the Nelder_Mead optimiser, so it uses the default.
 
 ```{r}
 #Compute stats for all patch combinations 
@@ -122,42 +128,111 @@ for (set_input in 1:n_sets) {
   iterated_results_table$system_nr_isolated_systems[nrow(iterated_results_table)] = paste(system_nr_isolated_systems_input, collapse = " ")
 }
 ```
+</details> 
 
- <br>  <br>  <br>
+&nbsp;<br>
+&nbsp;<br>
+&nbsp;<br>
 
 <center>[**Full model**]{.underline} [**(with `connection` and `connection : day`)**]{.underline}</center>
 
+<details>
+  <summary>Click for ΔAIC and p-value dsitributions</summary>
 ```{r}
 hist(iterated_results_table$ΔAIC_full, main = "Distribution of ΔAIC of the full model.") 
 hist(iterated_results_table$p_full, main = "Distribution of p-values of the full model.") 
+```
+</details> 
 
+```{r}
 model_stats_full = data.frame(
   deltaAIC = mean(iterated_results_table$ΔAIC_full),
   p_value = mean(iterated_results_table$p_full),
   R2 = NA
 )
 
-round(model_stats_full, digits = 3) 
+model_stats_full %>%
+  mutate(deltaAIC = round(deltaAIC, digits = 1),
+         p_value = round(p_value, digits = 3),
+         R2 = NULL,
+         evidence = "",
+         evidence = ifelse(p_value > 0.1, 
+                           "none",
+                           evidence),
+         evidence = ifelse(p_value < 0.1, 
+                           "* weak",
+                           evidence),
+         evidence = ifelse(p_value < 0.05, 
+                           "** moderate",
+                           evidence),
+         evidence = ifelse(p_value < 0.01, 
+                           "*** strong",
+                           evidence),
+         evidence = ifelse(p_value < 0.001, 
+                           "**** very strong",
+                           evidence),
+         p_value = ifelse(p_value < 0.001,
+                           "< 0.001",
+                           p_value)) %>%
+  print()
 ```
 
- <br>  <br>  <br>
+<details>
+  <summary>Click for which system nr produced which AIC in the full model</summary>
+```{r}
+iterated_results_table %>% 
+  select(system_nr_isolated_systems,
+         ΔAIC_full) %>%
+  arrange(ΔAIC_full)
+```
+</details> 
+
+&nbsp;<br>
+&nbsp;<br>
+&nbsp;<br>
 
 <center>[**Fixed model**]{.underline} [**(with `connection`)**]{.underline}</center>
 
+<details>
+  <summary>Click for ΔAIC and p-value dsitributions</summary>
 ```{r}
 hist(iterated_results_table$ΔAIC_fix, main = "Distribution of ΔAIC of the fixed model.") 
 hist(iterated_results_table$p_fix, main = "Distribution of p-values of the fixed model.") 
+```
+</details> 
 
+```{r}
 model_stats_fixed = data.frame(
   deltaAIC = mean(iterated_results_table$ΔAIC_fix),
   p_value = mean(iterated_results_table$p_fix),
   R2 = NA
 )
 
-round(model_stats_fixed, digits = 3) 
+model_stats_fixed %>%
+  mutate(deltaAIC = round(deltaAIC, digits = 1),
+         p_value = round(p_value, digits = 3),
+         R2 = NULL,
+         evidence = "",
+         evidence = ifelse(p_value > 0.1, 
+                           "none",
+                           evidence),
+         evidence = ifelse(p_value < 0.1, 
+                           "* weak",
+                           evidence),
+         evidence = ifelse(p_value < 0.05, 
+                           "** moderate",
+                           evidence),
+         evidence = ifelse(p_value < 0.01, 
+                           "*** strong",
+                           evidence),
+         evidence = ifelse(p_value < 0.001, 
+                           "**** very strong",
+                           evidence),
+         p_value = ifelse(p_value < 0.001,
+                           "< 0.001",
+                           p_value)) %>%
+  print()
 ```
-
-Use as p-values and ΔAIC the mean of such distributions.
 
 ```{r}
 results_table = fill.results.table(
@@ -167,13 +242,4 @@ results_table = fill.results.table(
     model_stats_full,
     model_stats_fixed
   )
-```
-
-Display which system nr produced which AIC in the full model:
-
-```{r}
-iterated_results_table %>% 
-  select(system_nr_isolated_systems,
-         ΔAIC_full) %>%
-  arrange(ΔAIC_full)
 ```

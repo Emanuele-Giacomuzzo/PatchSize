@@ -37,7 +37,8 @@ library("here")
 
 show_results = TRUE
 recompute_lengthy_analyses = FALSE
-recompute_datasets = TRUE
+recompute_first_part = TRUE
+save_environment = recompute_first_part
 ```
 
 #  {.tabset}
@@ -70,35 +71,35 @@ culture_info = read.csv(here("data", "PatchSizePilot_culture_info.csv"), header 
 
 ### Individuals (ds_individuals)
 
-```{r child = here("r_files", "ds_individuals.Rmd"), eval = recompute_datasets}
+```{r child = here("r_files", "ds_individuals.Rmd"), eval = recompute_first_part}
 ```
 
 ### Patches (`ds_patches`) 
 
-```{r child = here("r_files", "ds_patches.Rmd"), eval = recompute_datasets}
+```{r child = here("r_files", "ds_patches.Rmd"), eval = recompute_first_part}
 ```
 
 ### Patch effect sizes (`ds_patches_effect_size`)
 
-```{r child = here("r_files", "ds_patches_effect_size.Rmd"), eval = recompute_datasets}
+```{r child = here("r_files", "ds_patches_effect_size.Rmd"), eval = recompute_first_part}
 ```
 
 ### Meta-ecosystems (`ds_metaecosystems`)
 
-```{r child = here("r_files", "combinations_patches.Rmd")}
+```{r child = here("r_files", "combinations_patches.Rmd"), eval = recompute_first_part}
 ```
 
-```{r child = here("r_files", "ds_metaecosystems.Rmd"), eval = recompute_datasets}
+```{r child = here("r_files", "ds_metaecosystems.Rmd"), eval = recompute_first_part}
 ```
 
 ### Size classes (`ds_classes`)
 
-```{r child = here("r_files", "ds_classes.Rmd"), eval = recompute_datasets}
+```{r child = here("r_files", "ds_classes.Rmd"), eval = recompute_first_part}
 ```
 
 ### Size classes effect size (`ds_classes_effect_size`)
 
-```{r child = here("r_files", "ds_classes_effect_size.Rmd"), eval = recompute_datasets}
+```{r child = here("r_files", "ds_classes_effect_size.Rmd"), eval = recompute_first_part}
 ```
 
 ```{r}
@@ -107,6 +108,15 @@ for (i in 1:length(files)) {
   load(here("results", "ds", files[i]))
 }
 ```
+
+```{r echo=FALSE, message=FALSE, eval = save_environment}
+save.image(file = "environment_first_part.RData")
+```
+
+```{r eval = recompute_first_part}
+load(here("environment_first_part.RData"))
+```
+
 
 ### Filter according to disturbance
 
@@ -140,22 +150,22 @@ metaecosystem_type_input = c("Small-Small meta-ecosystem",
                              "Small-Large isolated")
 ```
 
-#### Biomass {.tabset .tabset-dropdown}
+#### Biomass {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "all_metaecos_biomass.Rmd"), eval = show_results}
 ```
 
-#### Shannon {.tabset .tabset-dropdown}
+#### Shannon {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "all_metaecos_alpha_diversity.Rmd"), eval = show_results}
 ```
 
-#### Beta diversity {.tabset .tabset-dropdown}
+#### Beta diversity {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "all_metaecos_beta_diversity.Rmd"), eval = show_results}
 ```
 
-#### Gamma diversity {.tabset .tabset-dropdown}
+#### Gamma diversity {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "all_metaecos_gamma_diversity.Rmd"), eval = show_results}
 ```
@@ -171,29 +181,29 @@ metaecosystem_type_input = c(
 )
 ```
 
-#### Biomass {.tabset .tabset-dropdown}
+#### Biomass {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "MM_all_vs_SL_all_biomass.Rmd"), eval = show_results}
 ```
 
-#### Shannon {.tabset .tabset-dropdown}
+#### Shannon {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "MM_all_vs_SL_all_alpha_diversity.Rmd"), eval = show_results}
 ```
 
-#### Beta diversity {.tabset .tabset-dropdown}
+#### Beta diversity {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "MM_all_vs_SL_all_beta_diversity.Rmd"), eval = show_results}
 ```
 
-#### Gamma diversity {.tabset .tabset-dropdown}
+#### Gamma diversity {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "MM_all_vs_SL_all_gamma_diversity.Rmd"), eval = show_results}
 ```
 
 ## Patches {.tabset .tabset-pills}
 
-### All {.tabset .tabset-dropdown}
+### All {.tabset .tabset-pills}
 
 ```{r}
 patch_type_input = c(
@@ -218,47 +228,47 @@ patch_type_input = c("Small isolated",
                      "Large isolated")
 ```
 
-#### Biomass {.tabset .tabset-dropdown}
+#### Biomass {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "isolated_patches_biomass.Rmd"), eval = show_results}
 ```
 
-#### Shannon {.tabset .tabset-dropdown}
+#### Shannon {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "isolated_patches_alpha_diversity.Rmd"), eval = show_results}
 ```
 
-#### Evenness {.tabset .tabset-dropdown}
+#### Evenness {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "isolated_patches_evenness.Rmd"), eval = show_results}
 ```
 
-#### Species densities {.tabset .tabset-dropdown}
+#### Species densities {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "isolated_patches_species_densities.Rmd"), eval = show_results}
 ```
 
-#### Species dominance {.tabset .tabset-dropdown}
+#### Species dominance {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "isolated_patches_species_dominance.Rmd"), eval = show_results}
 ```
 
-#### Species composition {.tabset .tabset-dropdown}
+#### Species composition {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "isolated_patches_species_composition.Rmd"), eval = show_results}
 ```
 
-#### Size classes densities {.tabset .tabset-dropdown}
+#### Size classes densities {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "isolated_patches_size_classes.Rmd"), eval = show_results}
 ```
 
-#### Body size distribution {.tabset .tabset-dropdown}
+#### Body size distribution {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "isolated_patches_body_size_distribution.Rmd"), eval = FALSE}
 ```
 
-#### Median body size {.tabset .tabset-dropdown}
+#### Median body size {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "isolated_patches_median_body_size.Rmd"), eval = show_results}
 ```
@@ -284,62 +294,62 @@ patch_type_input = c("Small isolated",
                      "Small connected to large")
 ```
 
-#### Biomass {.tabset .tabset-dropdown}
+#### Biomass {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "small_patches_biomass.Rmd"), eval = show_results}
 ```
 
-#### Shannon {.tabset .tabset-dropdown}
+#### Shannon {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "small_patches_alpha_diversity.Rmd"), eval = show_results}
 ```
 
-#### Species richness {.tabset .tabset-dropdown}
+#### Species richness {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "small_patches_species_richness.Rmd"), eval = show_results}
 ```
 
-#### Evenness {.tabset .tabset-dropdown}
+#### Evenness {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "small_patches_evenness.Rmd"), eval = show_results}
 ```
 
-#### Species densities {.tabset .tabset-dropdown}
+#### Species densities {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "small_patches_species_densities.Rmd"), eval = show_results}
 ```
 
-#### Species dominance {.tabset .tabset-dropdown}
+#### Species dominance {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "small_patches_species_dominance.Rmd"), eval = show_results}
 ```
 
-#### Species composition {.tabset .tabset-dropdown}
+#### Species composition {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "small_patches_species_composition.Rmd"), eval = show_results}
 ```
  
-#### Treatment divergence {.tabset .tabset-dropdown}
+#### Treatment divergence {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "small_patches_treatment_divergence.Rmd"), eval = show_results}
 ```
 
-#### Temporal divergence {.tabset .tabset-dropdown}
+#### Temporal divergence {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "small_patches_temporal_divergence.Rmd"), eval = show_results}
 ```
 
-#### Size classes densities {.tabset .tabset-dropdown}
+#### Size classes densities {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "small_patches_size_classes.Rmd"), eval = show_results}
 ```
 
-#### Body size distribution {.tabset .tabset-dropdown}
+#### Body size distribution {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "small_patches_body_size_distribution.Rmd"), eval = FALSE}
 ```
 
-#### Median body size {.tabset .tabset-dropdown}
+#### Median body size {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "small_patches_median_body_size.Rmd"), eval = show_results}
 ```
@@ -351,7 +361,7 @@ patch_type_input = c("Medium isolated",
                      "Medium connected to medium")
 ```
 
-#### Biomass {.tabset .tabset-dropdown}
+#### Biomass {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "medium_patches_biomass.Rmd"), eval = show_results}
 ```
@@ -364,62 +374,62 @@ patch_type_input = c("Large isolated",
                      "Large connected to small")
 ```
 
-#### Biomass {.tabset .tabset-dropdown}
+#### Biomass {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "large_patches_biomass.Rmd"), eval = show_results}
 ```
 
-#### Shannon {.tabset .tabset-dropdown}
+#### Shannon {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "large_patches_alpha_diversity.Rmd"), eval = show_results}
 ```
 
-#### Species richness {.tabset .tabset-dropdown}
+#### Species richness {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "large_patches_species_richness.Rmd"), eval = show_results}
 ```
 
-#### Evenness {.tabset .tabset-dropdown}
+#### Evenness {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "large_patches_evenness.Rmd"), eval = show_results}
 ```
 
-#### Species densities {.tabset .tabset-dropdown}
+#### Species densities {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "large_patches_species_densities.Rmd"), eval = show_results}
 ```
 
-#### Species dominance {.tabset .tabset-dropdown}
+#### Species dominance {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "large_patches_species_dominance.Rmd"), eval = show_results}
 ```
 
-#### Species composition {.tabset .tabset-dropdown}
+#### Species composition {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "large_patches_species_composition.Rmd"), eval = show_results}
 ```
  
-#### Treatment divergence {.tabset .tabset-dropdown}
+#### Treatment divergence {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "large_patches_treatment_divergence.Rmd"), eval = show_results}
 ```
 
-#### Temporal divergence {.tabset .tabset-dropdown}
+#### Temporal divergence {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "large_patches_temporal_divergence.Rmd"), eval = show_results}
 ```
 
-#### Size classes densities {.tabset .tabset-dropdown}
+#### Size classes densities {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "large_patches_size_classes.Rmd"), eval = show_results}
 ```
 
-#### Body size distribution {.tabset .tabset-dropdown}
+#### Body size distribution {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "large_patches_body_size_distribution.Rmd"), eval = FALSE}
 ```
 
-#### Median body size {.tabset .tabset-dropdown}
+#### Median body size {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "large_patches_median_body_size.Rmd"), eval = show_results}
 ```
@@ -443,37 +453,37 @@ patch_type_input = c("Small connected to large",
 ```{r child = here("r_files", "SL_alpha_diversity.Rmd"), eval = show_results}
 ```
 
-#### Species richness {.tabset .tabset-dropdown}
+#### Species richness {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "SL_species_richness.Rmd"), eval = show_results}
 ```
 
-#### Evenness {.tabset .tabset-dropdown}
+#### Evenness {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "SL_evenness.Rmd"), eval = show_results}
 ```
 
-#### Species densities {.tabset .tabset-dropdown}
+#### Species densities {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "SL_species_densities.Rmd"), eval = show_results}
 ```
 
-#### Species dominance {.tabset .tabset-dropdown}
+#### Species dominance {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "SL_species_dominance.Rmd"), eval = show_results}
 ```
 
-#### Temporal divergence {.tabset .tabset-dropdown}
+#### Temporal divergence {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "SL_temporal_divergence.Rmd"), eval = show_results}
 ```
 
-#### Size classes densities {.tabset .tabset-dropdown}
+#### Size classes densities {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "SL_size_classes.Rmd"), eval = show_results}
 ```
 
-#### Median body size {.tabset .tabset-dropdown}
+#### Median body size {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "SL_median_body_size.Rmd"), eval = show_results}
 ```

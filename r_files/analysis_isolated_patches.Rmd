@@ -1,6 +1,9 @@
 ---
 title: "Untitled"
-output: html_document
+output:
+  html_document:
+    code_folding: hide
+    profiling: yes
 date: "2023-04-14"
 editor_options: 
   chunk_output_type: console
@@ -21,6 +24,8 @@ plot.patches.points(filtered_data,
                     response_variable)
 ```
 
+<center>[**Null model**]{.underline}</center>
+
 ```{r}
 null_model = lmer(
   get(response_variable) ~
@@ -30,35 +35,7 @@ null_model = lmer(
   REML = FALSE,
   control = lmerControl(optimizer = "Nelder_Mead")
 )
-
-print(summary(null_model), digits = 1)
-
-filtered_data %>%
-    mutate(predicted = fitted(null_model),
-           residuals = resid(null_model)) %>%
-    plot_ly(x = ~predicted,
-            y = ~residuals,
-            type = "scatter",
-            mode = "markers",
-            marker = list(size = 5, color = "#4C78A8"),
-            text = paste(" ID: ", filtered_data$culture_ID, "<br>",
-                         "Day: ", filtered_data$day, "<br>",
-                         "Patch Type: ", filtered_data$patch_type, "<br>",
-                         "Biomass density: ", round(filtered_data$bioarea_mm2_per_ml, digits = 2), "<br>",
-                         "Species richness: ", filtered_data$species_richness, "<br>"),
-            hoverinfo = "text") %>%
-    plotly::layout(
-        title = "Residuals vs. Fitted Values",
-        xaxis = list(title = "Fitted Values"),
-        yaxis = list(title = "Residuals")
-    )
-
-qqnorm(resid(null_model))
 ```
-
-&nbsp;<br>
-&nbsp;<br>
-&nbsp;<br>
 
 <center>[**Full model**]{.underline} [**(with `patch_size_ml` and `patch_size_ml : day`)**]{.underline}</center>
 
@@ -73,10 +50,18 @@ full_model = lmer(
   REML = FALSE,
   control = lmerControl(optimizer = "Nelder_Mead")
 )
+```
 
+<details>
+  <summary>Click for model output</summary>
+```{r}
 print(summary(full_model), digits = 1)
+```
+</details>
 
-filtered_data %>%
+```{r}
+#Create resid vs fitted
+res_vs_fit = filtered_data %>%
     mutate(predicted = fitted(full_model),
            residuals = resid(full_model)) %>%
     plot_ly(x = ~predicted,
@@ -95,15 +80,44 @@ filtered_data %>%
         xaxis = list(title = "Fitted Values"),
         yaxis = list(title = "Residuals")
     )
+```
 
+<details>
+  <summary>Click for residual plots</summary>
+```{r}
+res_vs_fit
 qqnorm(resid(full_model))
+```
+</details>
 
+```{r}
 model_stats_full = compute.model.stats(full_model,
                                        null_model,
                                        "mixed_model") 
 
 model_stats_full %>%
-  mutate(across(everything(), round, digits = 3)) %>%
+  mutate(deltaAIC = round(deltaAIC, digits = 1),
+         p_value = round(p_value, digits = 3),
+         R2 = NULL,
+         evidence = "",
+         evidence = ifelse(p_value > 0.1, 
+                           "none",
+                           evidence),
+         evidence = ifelse(p_value < 0.1, 
+                           "* weak",
+                           evidence),
+         evidence = ifelse(p_value < 0.05, 
+                           "** moderate",
+                           evidence),
+         evidence = ifelse(p_value < 0.01, 
+                           "*** strong",
+                           evidence),
+         evidence = ifelse(p_value < 0.001, 
+                           "**** very strong",
+                           evidence),
+         p_value = ifelse(p_value < 0.001,
+                           "< 0.001",
+                           p_value)) %>%
   print()
 ```
 
@@ -123,10 +137,18 @@ fixed_model = lmer(
   REML = FALSE,
   control = lmerControl(optimizer = "Nelder_Mead")
 )
+```
 
+<details>
+  <summary>Click for model output</summary>
+```{r}
 print(summary(fixed_model), digits = 1)
+```
+</details> 
 
-filtered_data %>%
+```{r}
+#Create resid vs fitted
+res_vs_fit = filtered_data %>%
     mutate(predicted = fitted(fixed_model),
            residuals = resid(fixed_model)) %>%
     plot_ly(x = ~predicted,
@@ -145,13 +167,44 @@ filtered_data %>%
         xaxis = list(title = "Fitted Values"),
         yaxis = list(title = "Residuals")
     )
+```
 
+<details>
+  <summary>Click for residual plots</summary>
+```{r}
+res_vs_fit
 qqnorm(resid(fixed_model))
+```
+</details> 
+
+```{r}
 model_stats_fixed = compute.model.stats(fixed_model,
-                                        null_model,
-                                        "mixed_model")
+                                       null_model,
+                                       "mixed_model") 
+
 model_stats_fixed %>%
-  mutate(across(everything(), round, digits = 3)) %>%
+  mutate(deltaAIC = round(deltaAIC, digits = 1),
+         p_value = round(p_value, digits = 3),
+         R2 = NULL,
+         evidence = "",
+         evidence = ifelse(p_value > 0.1, 
+                           "none",
+                           evidence),
+         evidence = ifelse(p_value < 0.1, 
+                           "* weak",
+                           evidence),
+         evidence = ifelse(p_value < 0.05, 
+                           "** moderate",
+                           evidence),
+         evidence = ifelse(p_value < 0.01, 
+                           "*** strong",
+                           evidence),
+         evidence = ifelse(p_value < 0.001, 
+                           "**** very strong",
+                           evidence),
+         p_value = ifelse(p_value < 0.001,
+                           "< 0.001",
+                           p_value)) %>%
   print()
 ```
 

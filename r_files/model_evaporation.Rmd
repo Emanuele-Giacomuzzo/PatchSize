@@ -14,7 +14,6 @@ We want to know if there was a systematic bias in the evaporation of different t
 #### Tidy
 
 ```{r tidy-evaporation-effects-on-biomass}
-
 #Columns: exchange & evaporation
 ds_for_evaporation = gather(ds_for_evaporation, 
                             key = exchange, 

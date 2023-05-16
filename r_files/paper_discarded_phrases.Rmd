@@ -62,7 +62,7 @@ We called the meta-ecosystem with a small and a large patch Small-Large and the 
 
 ### 
 
-The size of the donor patch …. had an impact on the biomass of the small patch, but not on the large patch (as seen in Figure 4A, with … evidence and a p-value of …). Additionally, there was moderate evidence (with a p-value of 0.015 or 0.022 and R2 of 0.47 or 0.55) that small patches connected to large patches were more productive than those connected to small patches. However, there was no evidence that the size of the connected patch affected the Shannon index of either patch (as indicated by p-values greater than 0.1 in Figure 4B). This was shown using linear models. 
+The size of the donor patch .... had an impact on the biomass of the small patch, but not on the large patch (as seen in Figure 4A, with ... evidence and a p-value of ...). Additionally, there was moderate evidence (with a p-value of 0.015 or 0.022 and R2 of 0.47 or 0.55) that small patches connected to large patches were more productive than those connected to small patches. However, there was no evidence that the size of the connected patch affected the Shannon index of either patch (as indicated by p-values greater than 0.1 in Figure 4B). This was shown using linear models.
 
 Questions to answer
 
@@ -129,3 +129,7 @@ The shape of the size-productivity relationship depends on the disturbance and r
 Problem:
 
 I need to run another experiment.
+
+One of the things including the number of In terms of productivity, we know that landscapes that have more ecosystems are more productive, as well as landscapes that are better connected (@Oehri2020). We also know that the biodiversity patterns we observe in a landscape depend upon how big, isolated, and heterogeneous its ecosystems are (?).
+
+Furthermore, algal wrack could increase the species richness of dune plants ([[DalVecchio2017]]), marine-derived nitrogen could decrease the number of plant species ([[Obrist2022a]]), and salmon carcasses could decrease the species richness of riparian plants ([[Hocking2011]]).

@@ -11,55 +11,19 @@ editor_options:
 response_variable = "shannon"
 ```
 
-##### Time - Shannon {.tabset .tabset-dropdown}
-
-###### Means
-
 ```{r}
 p_isolated_alpha = plot.patches.points(ds_patches, patch_type_input,
                        response_variable) %>%
   print()
 ```
 
-The last time points it seems like small patches are crashing. Let's what's happening to them. 
-
-Time point 6:
-
-```{r}
-ds_patches %>%
-  filter(disturbance == disturbance_global_input,
-         time_point == 6,
-         patch_type == "Small isolated") %>%
-  select(all_of(response_variable),
-         species_richness)
-```
-
-Time point 7:
-
-```{r}
-ds_patches %>%
-  filter(disturbance == disturbance_global_input,
-         time_point == 7,
-         patch_type == "Small isolated") %>%
-  select(all_of(response_variable),
-         species_richness)
-```
-
-```{r child = here("r_files", "analysis_isolated_patches.Rmd")}
-```
-
-###### Boxplots
-
+<details>
+  <summary>Click for boxplots instead of means</summary>
 ```{r}
 plot.patches.boxplots(patch_type_input,
                        response_variable)
 ```
+</details> 
 
-##### Patch size - Biomass {.tabset .tabset-pills}
-
-```{r}
-plot.patches.size.response.boxplots(metaecosystem_input = "no",
-                                  trophic_type_input = "NA",
-                                  flow_input = "NA",
-                                  response_variable = response_variable)
+```{r child = here("r_files", "analysis_isolated_patches.Rmd")}
 ```

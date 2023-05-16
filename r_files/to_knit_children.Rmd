@@ -1,0 +1,25 @@
+---
+title: "Untitled"
+output: html_document
+date: "2023-05-12"
+---
+
+```{r echo = FALSE, results = FALSE}
+library("here")
+```
+
+```{r child = here("r_files", "packages.Rmd"), echo = FALSE, results = FALSE}
+```
+
+```{r echo = FALSE}
+load("~/Documents/GitHub/PatchSizePilot/environment_at_the_end_of_knitting.RData")
+
+metaecosystem_type_input_model = c("Small-Large meta-ecosystem",
+                                   "Medium-Medium meta-ecosystem")
+
+response_variable = "mean_shannon"
+
+results_table=results_table[1,]
+results_table$p_fix = as.double(results_table$p_fix)
+results_table$p_full = as.double(results_table$p_full)
+```

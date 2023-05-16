@@ -10,8 +10,6 @@ editor_options:
 response_variable = "bray_curtis"
 ```
 
-##### Means {.tabset .tabset-pills}
-
 ```{r}
 p_MM_SL_metaecos_beta = plot.metaecos.points(ds_metaecosystems, 
                                              metaecosystem_type_input,
@@ -19,7 +17,16 @@ p_MM_SL_metaecos_beta = plot.metaecos.points(ds_metaecosystems,
   print()
 ```
 
-###### Small-Large vs Medium-Medium meta-ecosystems
+<details>
+  <summary>Click for boxplots instead of means</summary>
+```{r}
+plot.metaecos.boxplots(ds_metaecosystems,
+                       metaecosystem_type_input,
+                       response_variable)
+```
+</details> 
+
+##### Small-Large vs Medium-Medium meta-ecosystems
 
 ```{r}
 metaecosystem_type_input_model = c("Small-Large meta-ecosystem",
@@ -29,7 +36,7 @@ metaecosystem_type_input_model = c("Small-Large meta-ecosystem",
 ```{r child = here("r_files", "analysis_metaeco_symmetry.Rmd")}
 ```
 
-###### Small-Large connected vs isolated
+##### Small-Large connected vs isolated
 
 ```{r}
 metaecosystem_type_input_model = c("Small-Large meta-ecosystem",
@@ -44,7 +51,7 @@ method_input = ''
 ```{r child = here("r_files", "analysis_metaeco_connection.Rmd")}
 ```
 
-###### Medium-Medium connected vs isolated
+##### Medium-Medium connected vs isolated
 
 ```{r}
 metaecosystem_type_input_model = c("Medium-Medium meta-ecosystem",
@@ -52,18 +59,9 @@ metaecosystem_type_input_model = c("Medium-Medium meta-ecosystem",
 ```
 
 ```{r}
-#Good 
 optimizer_input = 'optimx'
 method_input = 'nlminb'
 ```
 
 ```{r child = here("r_files", "analysis_metaeco_connection.Rmd")}
-```
-
-##### Boxplots
-
-```{r}
-plot.metaecos.boxplots(ds_metaecosystems,
-                       metaecosystem_type_input,
-                       response_variable)
 ```
