@@ -36,7 +36,7 @@ start_time = Sys.time()
 library("here")
 
 show_results = TRUE
-recompute_lengthy_analyses = FALSE
+recompute_lengthy_analyses = TRUE
 recompute_first_part = TRUE
 save_environment = recompute_first_part
 ```
@@ -47,6 +47,7 @@ save_environment = recompute_first_part
 ```
 
 ```{r echo=FALSE, message=FALSE, results=FALSE}
+#Import functions
 functions_paths = list.files(here("..", "Functions"), pattern = ".R$", full.names = TRUE)
 lapply(functions_paths, source)
 ```
@@ -66,6 +67,7 @@ lapply(functions_paths, source)
 This table contains information about the 110 cultures of the experiment.
 
 ```{r experimental-cultures}
+#Import culture info dataset
 culture_info = read.csv(here("data", "PatchSizePilot_culture_info.csv"), header = TRUE)
 ```
 
@@ -89,6 +91,9 @@ culture_info = read.csv(here("data", "PatchSizePilot_culture_info.csv"), header 
 ```{r child = here("r_files", "combinations_patches.Rmd"), eval = recompute_first_part}
 ```
 
+```{r child = here("r_files", "combination_sets_patches.Rmd"), eval = recompute_first_part}
+```
+
 ```{r child = here("r_files", "ds_metaecosystems.Rmd"), eval = recompute_first_part}
 ```
 
@@ -103,6 +108,7 @@ culture_info = read.csv(here("data", "PatchSizePilot_culture_info.csv"), header 
 ```
 
 ```{r}
+#Import datasets
 files <- list.files(path = here("results", "ds"))
 for (i in 1:length(files)) {
   load(here("results", "ds", files[i]))
@@ -110,19 +116,21 @@ for (i in 1:length(files)) {
 ```
 
 ```{r echo=FALSE, message=FALSE, eval = save_environment}
-save.image(file = "environment_first_part.RData")
+#Save environment
+save.image(file = here("environments", "environment_first_part.RData"))
 ```
 
 ```{r eval = recompute_first_part}
-load(here("environment_first_part.RData"))
+#Load environment
+load(here("environments", "environment_first_part.RData"))
 ```
-
 
 ### Filter according to disturbance
 
 Here I'm filtering patches to have only the ones with disturbance `r disturbance_global_input`.
 
 ```{r}
+#Filter data sets according to the global disturbance
 ds_individuals = ds_individuals %>%
   filter(disturbance == disturbance_global_input)
 ds_patches = ds_patches %>%
@@ -188,7 +196,7 @@ metaecosystem_type_input = c(
 
 #### Shannon {.tabset .tabset-pills}
 
-```{r child = here("r_files", "MM_all_vs_SL_all_alpha_diversity.Rmd"), eval = show_results}
+```{r child = here("r_files", "MM_all_vs_SL_all_mean_richness.Rmd"), eval = show_results}
 ```
 
 #### Beta diversity {.tabset .tabset-pills}
@@ -235,7 +243,12 @@ patch_type_input = c("Small isolated",
 
 #### Shannon {.tabset .tabset-pills}
 
-```{r child = here("r_files", "isolated_patches_alpha_diversity.Rmd"), eval = show_results}
+```{r child = here("r_files", "isolated_patches_shannon.Rmd"), eval = show_results}
+```
+
+#### Species richness {.tabset .tabset-pills}
+
+```{r child = here("r_files", "isolated_patches_species_richness.Rmd"), eval = show_results}
 ```
 
 #### Evenness {.tabset .tabset-pills}
@@ -329,6 +342,11 @@ patch_type_input = c("Small isolated",
 ```{r child = here("r_files", "small_patches_species_composition.Rmd"), eval = show_results}
 ```
  
+#### Species last saw {.tabset .tabset-pills}
+
+```{r child = here("r_files", "small_patches_species_last_saw.Rmd"), eval = show_results}
+```
+
 #### Treatment divergence {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "small_patches_treatment_divergence.Rmd"), eval = show_results}
@@ -409,6 +427,11 @@ patch_type_input = c("Large isolated",
 ```{r child = here("r_files", "large_patches_species_composition.Rmd"), eval = show_results}
 ```
  
+#### Species last saw {.tabset .tabset-pills}
+
+```{r child = here("r_files", "large_patches_species_last_saw.Rmd"), eval = show_results}
+```
+
 #### Treatment divergence {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "large_patches_treatment_divergence.Rmd"), eval = show_results}
@@ -450,7 +473,7 @@ patch_type_input = c("Small connected to large",
 
 #### Shannon {.tabset .tabset-pills}
 
-```{r child = here("r_files", "SL_alpha_diversity.Rmd"), eval = show_results}
+```{r child = here("r_files", "SL_shannon.Rmd"), eval = show_results}
 ```
 
 #### Species richness {.tabset .tabset-pills}
@@ -552,25 +575,6 @@ cd /Users/ema/Documents/GitHub/PatchSizePilot/r_files
 sed -i '' 's/total_metaecosystem_bioarea/total_metaecosystem_bioarea_mm2/g' *.Rmd
 cd /Users/ema/Documents/GitHub/Functions 
 sed -i '' 's/old/new/g' *.R
-
-critical_rows=ds_patches %>% filter(disturbance == "high", patch_size == "Small", time_point == 7)
-critical_rows_ES=ds_effect_size %>% filter(disturbance == "high", patch_size == "Small", time_point == 7)
-
-#Why is median_body_area_µm2_d of small connected to large NaN at time_point == 7, disturbance == "high"?
-
-treatment_row$beta_diversity_from_isolated_mean
-control_row$beta_diversity_from_isolated_mean
-```
-
-```{bash eval = FALSE}
-# Navigate to the directory
-cd /Users/ema/Documents/GitHub/PatchSizePilot
-
-# Define the value of disturbance_level
-disturbance_level="low"
-
-# Rename the index.html file to index_disturbance_level.html
-mv index.html index_${disturbance_level}.html
 ```
 
 The only type of patch where all cultures crashed was small connected to small at high disturbance.
@@ -586,7 +590,7 @@ The only type of patch where all cultures crashed was small connected to small a
 ```
 
 ```{r echo=FALSE, message=FALSE}
-save.image(file = "environment_at_the_end_of_knitting.RData")
+save.image(file = here("environments", "environment_at_the_end_of_knitting.RData"))
 ```
 
 ```{r echo = FALSE}

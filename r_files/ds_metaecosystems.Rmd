@@ -23,7 +23,7 @@ expect_equal(nrow(ds_metaecosystems),
 ```
 
 ```{r}
-#Add whether systems are connected or not 
+#Add column connection
 ds_metaecosystems$connection <-
   ifelse(
     ds_metaecosystems$metaecosystem_type %in% c("Medium-Medium isolated",
@@ -31,8 +31,10 @@ ds_metaecosystems$connection <-
     yes = "isolated",
     no = "connected"
   )
+```
 
-#Add whether patch sizes are symmetric or not
+```{r}
+#Add column patch size symmetry
 ds_metaecosystems$patch_size_symmetry <-
   ifelse(
     ds_metaecosystems$metaecosystem_type %in% c("Small-Large isolated",
@@ -40,6 +42,7 @@ ds_metaecosystems$patch_size_symmetry <-
     yes = "asymmetric",
     no = "symmetric"
   )
+
 ```
 
 ```{r}
@@ -59,7 +62,7 @@ ds_metaecosystems = ds_metaecosystems %>%
 ```
 
 ```{r}
-#Add baselines (from t1).
+#Add baselines. See ds_patches for an explanation. 
 baselines <- ds_metaecosystems %>%
   filter(time_point == 1) %>%
   group_by(system_nr) %>%
@@ -74,11 +77,12 @@ expect_equal(nrow(ds_metaecosystems),
 ```
 
 ```{r}
+#Join ...
 full_join(ds_metaecosystems,
           isolated_combinations_sets)
 ```
 
-
 ```{r}
+#Save dataset
 save(ds_metaecosystems, file = here("results", "ds", "ds_metaecosystems.RData"))
 ```

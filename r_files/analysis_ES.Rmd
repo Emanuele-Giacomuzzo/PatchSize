@@ -290,7 +290,7 @@ model_stats_fixed %>%
 ```{r}
 results_table = fill.results.table(results_table,
                                    response_variable,
-                                   patch_type_input,
+                                   patch_type_input_model,
                                    model_stats_full,
                                    model_stats_fixed)
 ```
@@ -577,4 +577,12 @@ model_stats_fixed %>%
                            "**** very strong",
                            evidence)) %>%
   print()
+```
+
+```{r}
+results_table = fill.results.table(results_table,
+                                   response_variable,
+                                   paste(paste0(patch_type_input_model, collapse = " , "), ", without t4"),
+                                   model_stats_full,
+                                   model_stats_fixed)
 ```

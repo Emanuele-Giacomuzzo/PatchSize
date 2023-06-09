@@ -6,9 +6,13 @@ editor_options:
   chunk_output_type: console
 ---
 
-```{r eval = recompute_lengthy_analyses }
+```{r}
+#Define variables to group by 
 vars_to_group_by = columns_classes[columns_classes != "culture_ID" & columns_classes != "system_nr"]
+```
 
+```{r eval = recompute_lengthy_analyses }
+#Calculate effect sizes & save dataset after heavy computation 
 ds_classes_effect_size = calculate.effect.sizes.classes(ds_classes,
                                                         vars_to_group_by,
                                                         "class_indiv_per_µl")
@@ -17,6 +21,7 @@ saveRDS(ds_classes_effect_size, file = here("results", "ds_classes_effect_size.R
 ```
 
 ```{r}
+#Read dataset after heavy computation 
 ds_classes_effect_size = readRDS(here("results", "ds_classes_effect_size.RData")) %>%
   filter(metaecosystem == "yes")
 
@@ -25,5 +30,6 @@ expect_equal(nrow(ds_classes_effect_size),
 ```
 
 ```{r}
+#Save dataset
 save(ds_classes_effect_size, file = here("results", "ds", "ds_classes_effect_size.RData"))
 ```

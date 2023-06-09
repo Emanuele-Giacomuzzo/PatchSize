@@ -10,12 +10,15 @@ editor_options:
 -   I create 12 size classes (as @Jacquet2020). The first class lower boundary is the smallest body size, the last size class upper boundary is the largest one. The logarithm of the largest individual in the experiment was `r log(max(ds_individuals$body_area_µm2))` μm² compared to 11.4 in @Jacquet2020.
 
 ```{r ds_classes_effect_size-create-ds_classes, eval = recompute_lengthy_analyses }
+#Create dataset
 ds_classes = create.classes.ds(ds_individuals,
                                n_size_classes)
+
 saveRDS(ds_classes, file = here("results", "ds_classes.RData"))
 ```
 
 ```{r}
+#Read dataset 
 ds_classes = readRDS(here("results", "ds_classes.RData"))
 
 expect_equal(nrow(ds_classes),
@@ -34,5 +37,6 @@ expect_equal(nrow(ds_classes),
 ```
 
 ```{r}
+#Save dataset
 save(ds_classes, file = here("results", "ds", "ds_classes.RData"))
 ```

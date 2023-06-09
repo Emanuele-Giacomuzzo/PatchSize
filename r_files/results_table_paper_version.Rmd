@@ -7,15 +7,20 @@ editor_options:
 ---
 
 ```{r}
+#Save results table
 results_table %>%
   write.csv(file = here("results", "results_table.csv"), 
             row.names = F)
 ```
 
 ```{r}
+#Read results table
 results_table = read.csv(here("results", "results_table.csv"))
+```
 
-names_levels = data.frame(
+```{r}
+#Define level names
+level_names = data.frame(
   old = NA,
   new = NA) %>%
   add_row(old = "Small-Large meta-ecosystem , Small-Large isolated", 
@@ -36,21 +41,49 @@ names_levels = data.frame(
           new = "Small (connected to small or large)") %>%
   add_row(old = "Large connected to small , Large connected to large", 
           new = "Large (connected to small or large)") %>%
+  add_row(old = "Large connected to small , Large connected to large , without t4", 
+          new = "Large (connected to small or large) without t4") %>%
+  add_row(old = "Small connected to small , Large connected to large , without t4", 
+          new = "Small (connected to small or large) without t4") %>%
   slice(-1)
+```
 
-names_responses = data.frame(
+```{r}
+#Change level names
+for(name_input in 1:nrow(level_names)){
+  results_table$Levels <- gsub(level_names$old[name_input], 
+                               level_names$new[name_input], 
+                               results_table$Levels)
+}
+```
+
+```{r}
+#Reorder level names
+results_table$Levels <- factor(results_table$Levels, levels = c("Metaecos (Small-Large vs Medium-Medium)",
+                                                                "Small-Large (connect vs isolated)",
+                                                                "Medium-Medium (connect vs isolated)", 
+                                                                "Isolated patches",
+                                                                "Small (connected to small or large)",
+                                                                "Large (connected to small or large)",
+                                                                "Small (connected to small or large) without t4",
+                                                                "Large (connected to small or large) without t4"))
+```
+
+```{r}
+#Define response names
+response_names = data.frame(
   old = NA,
   new = NA) %>%
-  add_row(old = "mean_shannon", 
+  add_row(old = "mean_richness", 
           new = "Alpha Diversity") %>%
   add_row(old = "bioarea_mm2_per_ml_d", 
           new = "Bioarea Density ES") %>%
-  add_row(old = "shannon_d", 
-          new = "Shannon Index ES") %>%
+  add_row(old = "species_richness_d", 
+          new = "Species Richness ES") %>%
   add_row(old = "bioarea_mm2_per_ml", 
           new = "Bioarea Density") %>%
-  add_row(old = "shannon", 
-          new = "Shannon Index") %>%
+  add_row(old = "species_richness", 
+          new = "Species Richness") %>%
   add_row(old = "total_metaecosystem_bioarea_mm2", 
           new = "Tot Bioarea") %>%
   add_row(old = "bray_curtis", 
@@ -58,37 +91,30 @@ names_responses = data.frame(
   add_row(old = "metaecosystem_richness", 
           new = "Gamma Diversity") %>%
   slice(-1)
+```
 
-for(name_input in 1:nrow(names_levels)){
-  results_table$Levels <- gsub(names_levels$old[name_input], 
-                               names_levels$new[name_input], 
-                               results_table$Levels)
-}
-
-for(name_input in 1:nrow(names_responses)) {
-  results_table$Response <- gsub(names_responses$old[name_input],
-                                 names_responses$new[name_input],
+```{r}
+#Change response names
+for(name_input in 1:nrow(response_names)) {
+  results_table$Response <- gsub(response_names$old[name_input],
+                                 response_names$new[name_input],
                                  results_table$Response)
 }
+```
 
+```{r}
+#Reorder response names
 results_table$Response <- factor(results_table$Response, levels = c("Bioarea Density",
-                                                                    "Shannon Index",
+                                                                    "Species Richness",
                                                                     "Tot Bioarea",
                                                                     "Alpha Diversity",
                                                                     "Beta Diversity",
                                                                     "Gamma Diversity",
                                                                     "Bioarea Density ES",
                                                                     "Log Bioarea Density ES",
-                                                                    "Shannon Index ES",
-                                                                    "Log Shannon Index ES",
+                                                                    "Species Richness ES",
+                                                                    "Log Species Richness ES",
                                                                     ""))
-
-results_table$Levels <- factor(results_table$Levels, levels = c("Metaecos (Small-Large vs Medium-Medium)",
-                                                                "Small-Large (connect vs isolated)",
-                                                                "Medium-Medium (connect vs isolated)", 
-                                                                "Isolated patches",
-                                                                "Small (connected to small or large)",
-                                                                "Large (connected to small or large)"))
 ```
 
 ```{r}
@@ -107,6 +133,7 @@ results_table = results_table %>%
 ```
 
 ```{r}
+#Add evidence column
 results_table %<>%
   mutate(min_p = pmin(p_full, p_fix),
          evidence = "",
@@ -129,6 +156,7 @@ results_table %<>%
 ```
 
 ```{r}
+#Modify p value column
 results_table %<>%
   mutate(
     p_full = as.character(p_full),

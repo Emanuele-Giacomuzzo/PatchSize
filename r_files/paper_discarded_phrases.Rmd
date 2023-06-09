@@ -133,3 +133,5 @@ I need to run another experiment.
 One of the things including the number of In terms of productivity, we know that landscapes that have more ecosystems are more productive, as well as landscapes that are better connected (@Oehri2020). We also know that the biodiversity patterns we observe in a landscape depend upon how big, isolated, and heterogeneous its ecosystems are (?).
 
 Furthermore, algal wrack could increase the species richness of dune plants ([[DalVecchio2017]]), marine-derived nitrogen could decrease the number of plant species ([[Obrist2022a]]), and salmon carcasses could decrease the species richness of riparian plants ([[Hocking2011]]).
+
+-   This was testified by a meta-analysis which found that the effects of subsidies will depend on how productive the ecosystem is compared to the amount of subsidies that entered it. Lots of subsidies in unproductive ecosystems will have a stronger effects than few subsidies entering productive ecosystems. This can be explained by the fact that a lot of subsidies (coming from large patches) are entering into an unproductive patch (small patches). This was found already in a meta-analysis @Marczak2007.

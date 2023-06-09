@@ -7,8 +7,12 @@ editor_options:
 ---
 
 ```{r}
+#Define the variables to which to group by 
 vars_to_group_by = columns_patches[columns_patches != "culture_ID" & columns_patches != "system_nr"]
+```
 
+```{r}
+#Calculate effect sizes
 ds_patches_effect_size = calculate.effect.sizes(ds_patches,
                                                 vars_to_group_by,
                                                 variables_patches) %>%
@@ -19,7 +23,7 @@ expect_equal(nrow(ds_patches_effect_size),
 ```
 
 ```{r}
-#Add baselines (from t1).
+#Add baselines. See explanation in ds_patches.
 baselines <- ds_patches_effect_size %>%
   filter(time_point == 1) %>%
   group_by(patch_type, disturbance) %>%
@@ -28,7 +32,6 @@ baselines <- ds_patches_effect_size %>%
   select(patch_type,
          disturbance,
          paste0("baseline_", variables_patches, "_d"))
-
 
 expect_equal(nrow(baselines), 
              (n_treatments + n_controls) * n_disturbance_levels)
@@ -42,5 +45,6 @@ expect_equal(n_rows_ds_patches_ES_before_joining_baselines,
 ```
 
 ```{r}
+#Save dataset
 save(ds_patches_effect_size, file = here("results", "ds", "ds_patches_effect_size.RData"))
 ```

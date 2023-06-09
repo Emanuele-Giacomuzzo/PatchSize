@@ -13,7 +13,7 @@ After the dataset has been assembled
 -   The value of different videos have been already averaged.
 
 ```{r}
-#Assemble dataset (expected rows: sum(nr_videos * n_cultures))
+#Import protist population data
 ds_patches = import.protist.pop.data(culture_info,
                                      time_points,
                                      protist_species)
@@ -55,11 +55,12 @@ ds_patches = ds_patches %>%
 
 expect_equal(nrow(ds_patches),
              sum(nr_videos * n_cultures) - nrow(videos_to_take_off))
+```
 
+```{r}
 #Take off problematic cultures 
 ds_patches = ds_patches %>%
   filter(! culture_ID %in% patches_to_take_off)
-
 
 expect_equal(nrow(ds_patches),
                sum(nr_videos * n_cultures) - nrow(videos_to_take_off) - (length(patches_to_take_off) * sum(nr_videos)))
@@ -85,7 +86,9 @@ if(TRUE %in% unique(videos_to_take_off$culture_ID == patches_to_take_off)){
         "Spi_low_threshold_analysis"
       )
     ))
+```
 
+```{r}
 #Rename patches
 ds_patches$patch_type <- recode(
   ds_patches$patch_type,
@@ -98,7 +101,9 @@ ds_patches$patch_type <- recode(
   "L (L_L)" = "Large connected to large",
   "L (S_L)" = "Large connected to small"
 )
+```
 
+```{r}
 #Rename patch sizes
 ds_patches$patch_size <- recode(
   ds_patches$patch_size,
@@ -106,8 +111,10 @@ ds_patches$patch_size <- recode(
   "M" = "Medium",
   "L" = "Large"
 )
+```
 
-#Rename the meta-ecosystems
+```{r}
+#Rename meta-ecosystems
 ds_patches$metaecosystem_type <- recode(
   ds_patches$metaecosystem_type,
   "S_S" = "Small-Small meta-ecosystem",
@@ -133,8 +140,10 @@ ds_patches = ds_patches %>%
       "Large connected to small"
     )
   ))
+```
 
-#Reorder the meta-ecosystems
+```{r}
+#Reorder meta-ecosystems
 ds_patches = ds_patches %>%
   mutate(metaecosystem_type = factor(
     metaecosystem_type,
@@ -150,14 +159,16 @@ ds_patches = ds_patches %>%
 ```
 
 ```{r}
-#Add the column size_connected_patch
+#Add column of the size of the connected patch
 ds_patches$size_connected_patch = NA
 ds_patches$size_connected_patch[ds_patches$patch_type == "Small connected to small"] = "Small"
 ds_patches$size_connected_patch[ds_patches$patch_type == "Small connected to large"] = "Large"
 ds_patches$size_connected_patch[ds_patches$patch_type == "Medium connected to medium"] = "Medium"
 ds_patches$size_connected_patch[ds_patches$patch_type == "Large connected to large"] = "Large"
 ds_patches$size_connected_patch[ds_patches$patch_type == "Large connected to small"] = "Small"
+```
 
+```{r}
 #Change all the measures to ml
 ds_patches = ds_patches %>%
   mutate(bioarea_µm2_per_ml = bioarea_µm2_per_μL * (10^3),
@@ -176,7 +187,7 @@ ds_patches = ds_patches %>%
 ```
 
 ```{r}
-#Rearrange
+#Rearrange columns
 ds_patches = ds_patches %>%
   select(time_point,
          day,
@@ -208,11 +219,12 @@ expect_equal(nrow(ds_patches),
 ```
 
 ```{r}
-
-#Calculate individuals per ml (based on a combination of the two analyses). 
+#Calculate individuals per ml (based on a combination of the two analyses - one with low and one with high thresholds). 
 ds_patches = ds_patches %>%
   mutate(indiv_per_ml = !!rlang::parse_expr(paste(paste0(protist_species, "_indiv_per_ml"), collapse = " + ")))
+```
 
+```{r}
 #Calculate total response variable for the whole patch
 ds_patches = ds_patches %>%
   mutate(bioarea_tot_mm2 = bioarea_mm2_per_ml * patch_size_ml,
@@ -228,8 +240,9 @@ ds_patches = ds_patches %>%
          Spi_tot_indiv = Spi_indiv_per_ml * patch_size_ml,
          Spi_te_tot_indiv = Spi_te_indiv_per_ml * patch_size_ml,
          Tet_tot_indiv = Tet_indiv_per_ml * patch_size_ml)
+```
 
-
+```{r}
 #Calculate species dominance
 ds_patches = ds_patches %>%
   mutate(across(all_of(protist_species_indiv_per_ml), 
@@ -241,24 +254,22 @@ expect_equal(unique(ds_patches$Ble_indiv_per_ml_dominance[ds_patches$indiv_per_m
 ```
 
 ```{r}
+#Keep the number of rows before calculations
 n_rows_ds_patches_before_calculations = nrow(ds_patches)
 ```
 
 ```{r}
-#Calculate alpha diversity.
-#This includes shannon, simpson, inv simpson, evenness.
+#Calculate alpha diversity (Shannon, Simpson, Inverse Simpson, Evenness)
 ds_patches = calculate.alpha.diversity()
 
-#I'm not sure why this is not already done automatically in the previous step 
-ds_patches$shannon[ds_patches$species_richness == 1] = 0
+ds_patches$shannon[ds_patches$species_richness == 1] = 0 #I'm not sure why this is not already done automatically in the previous step 
 
 expect_equal(max(ds_patches$species_richness),
              n_protist_species)
 ```
 
 ```{r eval = recompute_lengthy_analyses }
-#Calculate divergence from isolated. 
-#This is the difference in community composition of each culture from the other isolated cultures (Bray-Curtis). The warning appears because in some cases we are comparing with a communities that has completely crashed and so Bray-Curtis is 1.
+#Calculate divergence from isolated as Bray-Curtis.
 ds_patches = calculate.treatment.divergence()
 
 expect_true(max(ds_patches$beta_diversity_from_isolated, na.rm = T) <= 1)
@@ -268,14 +279,14 @@ saveRDS(ds_patches, file = here("results", "ds_patches_w_treatment_divergence.RD
 ```
 
 ```{r}
+#Read the dataset with the divergence from isolated
 ds_patches = readRDS(here("results", "ds_patches_w_treatment_divergence.RData"))
 ```
 
 Warning appear after the following code, as beta diversity is computed for a culture between when it totally crashed and its previous time point. Because the culture is totally crashed, the Bray-Curtis index is 1.
 
 ```{r}
-#Calculate temporal divergence. 
-#This is the difference in community composition of each culture from its previous time point (Bray-Curtis).
+#Calculate temporal divergence (Bray-Curtis). This is the difference in community composition of each culture from its previous time point.
 ds_patches = calculate.temporal.divergence()
 
 expect_true(max(ds_patches$beta_diversity_from_previous_time, na.rm = T) <= 1)
@@ -302,8 +313,7 @@ expect_equal(nrow(ds_patches),
 ```
 
 ```{r}
-#Calculate baselines. 
-#To consider the initial values for different cultures when analyzing their temporal trends, we add baselines from time point 1. These baselines are used because at time point 0, we only measured the community of the large bottle that the experiment was assembled from. Additionally, the first perturbation had already occurred by time point 2, which is the starting point for our models.
+#Calculate baselines. To consider the initial values for different cultures when analyzing their temporal trends, we add baselines from time point 1. These baselines are used because at time point 0, we only measured the community of the large bottle that the experiment was assembled from. Additionally, the first perturbation had already occurred by time point 2, which is the starting point for our models.
 baselines <- ds_patches %>%
   filter(time_point == 1) %>%
   group_by(culture_ID) %>%
@@ -317,7 +327,27 @@ expect_equal(nrow(ds_patches),
 ```
 
 ```{r}
-#Finalise the dataset by arranging the columns in the order that makes the most sense.
+#Calculate in each culture when was the time we saw of the protis species
+for(culture_ID_input in 1:n_cultures){
+  for(protist_input in protist_species){
+    
+    protist_density_column = paste0(protist_input, "_indiv_per_ml")
+    protist_last_saw_column = paste0(protist_input, "_last_saw_day")
+    
+    day_last_saw = ds_patches %>%
+      filter(culture_ID == culture_ID_input) %>%
+      select(day,
+             all_of(protist_density_column)) %>%
+      slice(which.max(.data[[protist_density_column]])) %>%
+      pull(day)
+    
+    ds_patches[[protist_last_saw_column]][ds_patches$culture_ID == culture_ID_input] = day_last_saw
+  }
+}
+```
+
+```{r}
+#Reorder columns 
 ds_patches = ds_patches %>%
   select(any_of(c(
     columns_patches,

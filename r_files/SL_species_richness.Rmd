@@ -12,9 +12,10 @@ response_variable = "species_richness_d"
 ```
 
 ```{r}
-plot.patches.points.ES(ds_patches_effect_size, 
-                       patch_type_input,
-                       paste0(response_variable))
+p_connected_species_richness_effect_size = plot.patches.points.ES(ds_patches_effect_size,
+                                                                  patch_type_input,
+                                                                  paste0(response_variable)) %>%
+  print()
 ```
 
 ##### Small

@@ -101,7 +101,7 @@ plot.relationship.BEF("Large connected to small",
                       "species_richness")
 ```
 
-### Species richness {.tabset .tabset-pills}
+### Meta-ecosystem richness {.tabset .tabset-pills}
 
 #### All data points
 
@@ -140,6 +140,93 @@ ds_metaecosystems %>%
   filter(metaecosystem_type %in% c("Medium-Medium meta-ecosystem",
                                    "Medium-Medium isolated")) %>%
   ggplot(aes(x = mean_shannon,
+             y = total_metaecosystem_bioarea_mm2,
+             color = metaecosystem_type)) +
+  geom_point()
+```
+### Meta-ecosystem richness {.tabset .tabset-pills}
+
+#### All data points
+
+```{r}
+ds_metaecosystems %>%
+  filter(metaecosystem_type %in% c("Small-Large isolated",
+                                   "Medium-Medium isolated")) %>%
+  ggplot(aes(x = mean_shannon,
+             y = total_metaecosystem_bioarea_mm2,
+             color = metaecosystem_type)) +
+  geom_point()
+```
+
+```{r}
+ds_metaecosystems %>%
+  filter(metaecosystem_type %in% c("Small-Large meta-ecosystem",
+                                   "Medium-Medium meta-ecosystem")) %>%
+  ggplot(aes(x = mean_shannon,
+             y = total_metaecosystem_bioarea_mm2,
+             color = metaecosystem_type)) +
+  geom_point()
+```
+
+```{r}
+ds_metaecosystems %>%
+  filter(metaecosystem_type %in% c("Small-Large meta-ecosystem",
+                                   "Small-Large isolated")) %>%
+  ggplot(aes(x = mean_shannon,
+             y = total_metaecosystem_bioarea_mm2,
+             color = metaecosystem_type)) +
+  geom_point()
+```
+
+```{r}
+ds_metaecosystems %>%
+  filter(metaecosystem_type %in% c("Medium-Medium meta-ecosystem",
+                                   "Medium-Medium isolated")) %>%
+  ggplot(aes(x = mean_shannon,
+             y = total_metaecosystem_bioarea_mm2,
+             color = metaecosystem_type)) +
+  geom_point()
+```
+
+### Meta-ecosystem gamma diversity {.tabset .tabset-pills}
+
+#### All data points
+
+```{r}
+ds_metaecosystems %>%
+  filter(metaecosystem_type %in% c("Small-Large isolated",
+                                   "Medium-Medium isolated")) %>%
+  ggplot(aes(x = metaecosystem_richness,
+             y = total_metaecosystem_bioarea_mm2,
+             color = metaecosystem_type)) +
+  geom_point()
+```
+
+```{r}
+ds_metaecosystems %>%
+  filter(metaecosystem_type %in% c("Small-Large meta-ecosystem",
+                                   "Medium-Medium meta-ecosystem")) %>%
+  ggplot(aes(x = metaecosystem_richness,
+             y = total_metaecosystem_bioarea_mm2,
+             color = metaecosystem_type)) +
+  geom_point()
+```
+
+```{r}
+ds_metaecosystems %>%
+  filter(metaecosystem_type %in% c("Small-Large meta-ecosystem",
+                                   "Small-Large isolated")) %>%
+  ggplot(aes(x = metaecosystem_richness,
+             y = total_metaecosystem_bioarea_mm2,
+             color = metaecosystem_type)) +
+  geom_point()
+```
+
+```{r}
+ds_metaecosystems %>%
+  filter(metaecosystem_type %in% c("Medium-Medium meta-ecosystem",
+                                   "Medium-Medium isolated")) %>%
+  ggplot(aes(x = metaecosystem_richness,
              y = total_metaecosystem_bioarea_mm2,
              color = metaecosystem_type)) +
   geom_point()

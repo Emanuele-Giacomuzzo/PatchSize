@@ -10,7 +10,7 @@ editor_options:
 
 ### Title page
 
-Title: Patch size modulates the effect of resource flow on biodiversity and productivity
+Title: Patch size modulates the effect of resource flow on biodiversity and productivity in meta-ecosystems
 
 Authors: Emanuele Giacomuzzo 1,2, Tianna Peller 1,2 , Isabelle Gounand 3, Florian Altermatt 1,2
 
@@ -24,27 +24,23 @@ Number of words: ... Number of figures: ...
 
 ### Abstract
 
-If we want to know how to manage ecosystems, we need to understand ecosystem function. Scientists in the last years understood certain mechanisms through which ecosystem function is maintained. One of the ways in which it is maintained is through the way by which resources moves between ecosystems through spatial flow in what is known as meta-ecosystems. However, even though patch size has important implications for how much and what type of resources is exchanged, all the studies on meta-ecosystem function have been ignoring the size of the patches making up the meta-ecosystem. In a protist experiment we compared the function of two meta-ecosystems of the same total volume, but with symmetric or asymmetric patch sizes. Meta-ecosystems with asymmetric patches, although they had higher beta diversity and lower alpha and gamma diversity, were as productive as meta-ecosystems with symmetric patches. This tells us that the relative size of the patches embedded in a meta-ecosystem might be not be as relevant to function, as it is for biodiversity. What actually was important is that the relationship between patch size and ecosystem function might be weakened by the
+Ecology in the last years understood certain mechanisms through which ecosystem function and biodiversity are maintained. One of the ways in which it is maintained is through the way by which resources moves between ecosystems through spatial flow in what is known as meta-ecosystems. However, meta-ecosystem theory has looked at meta-ecosystems if they were all composed of patches of the same size. As patches of different size differ in their ecology, it would not be possible to apply meta-ecosystem theory to real world ecosystems. To understand how patch size ratios influence meta-ecosystem\
+\
+\
+\
+In a protist experiment we compared the function of two meta-ecosystems of the same total volume, but with symmetric or asymmetric patch sizes. Meta-ecosystems with asymmetric patches, although they had higher beta diversity and lower alpha and gamma diversity, were as productive as meta-ecosystems with symmetric patches. This tells us that the relative size of the patches embedded in a meta-ecosystem might be not be as relevant to function, as it is for biodiversity. What actually was important is that the relationship between patch size and ecosystem function might be weakened by the
 
 Keywords: ecosystem function, meta-ecosystem, homogenisation, detritus, protists, patch size, scaling, subsidies, subsidies island biogeography, disturbance, resource flow
 
 ### Introduction
 
-Over the past decades, ecologists have made significant progress in unraveling the influence of resource flows on landscape biodiversity. For instance, @Gravel2010 discovered that when resources are depleted from empty patches, it can impede the persistence of fugitive species, therefore leading to lower than expected gamma diversity. Conversely, @Peller2022 demonstrated that gamma biodiversity can also be influenced positively. In cases where species consume resources in one ecosystem and excrete in another, it can contribute to the coexistence of competitors and therefore to higher levels of gamma diversity. Moreover, these resource flows can have implications for productivity. For instance, the exchange of resources between ecosystems has the potential to enhance productivity by redistributing nutrients more effectively @Harvey2021, especially when heterogeneity would otherwise partition different nutrients into different patches @Gulzow2019. Also, how connection between patches are configured, how many patches each patch is connected to, and the number of connections of the most connected patch have been found to influence patch function (@Marleau2014). Ecosystems that are connected through the flow of resources are referred to as meta-ecosystems (@Loreau2003).
+In recent decades, ecologists have made notable advancements in understanding the impact of resource flowing within a landscape. Theoretical studies have shed light on how resource flows can influence the biodiversity of a landscape. For instance, @Gravel2010 predicts that resources flowing out of empty patches can decrease biodiversity, as they can impede the persistence of fugitive species. Also, @Peller2022 predicts that competing species exporting nutrients to habitats different from where they feed can decrease competition, thereby promoting species coexistence and increasing biodiversity. Furthermore, these resource flows can have implications for productivity. For instance, the exchange of resources between ecosystems has the potential to enhance productivity by redistributing nutrients more effectively @Harvey2021, especially when heterogeneity would otherwise partition different nutrients into different patches @Gulzow2019. Ecosystems connected through the flow of resources are called meta-ecosystems @Loreau2003.
 
-However, previous studies examining the impact of resource flows on biodiversity and productivity have focused on resource transfers occurring between ecosystems of equal size. This limitation presents a significant challenge in comprehending the effects of resource flows on real-world landscapes. This is due to the recognition that ecosystems of varying sizes possess distinct ecological characteristics. Notably, larger ecosystems tend to harbor a greater number of species @MacArthur1961 , which can enhance their productivity (ref) and resistance against disturbances @Greg2022. These ecological disparities between small and large patches have the potential to alter the composition of resources generated by the donor ecosystem, as well as the subsequent effects of these resources on the recipient ecosystem. It is plausible that this discrepancy may in part explain why the application of meta-ecosystem theory to natural systems has been limited thus far @Gounand2018.
+However, previous studies examining the impact of resource flows on biodiversity and productivity have focused on resource transfers occurring between ecosystems of equal size. This limitation presents a significant challenge in comprehending the effects of resource flows on real-world landscapes. This is due to the recognition that ecosystems of varying sizes possess distinct ecological characteristics. Notably, larger ecosystems tend to harbor a greater number of species @MacArthur1961, which can enhance their productivity (ref) and resistance against disturbances @Greg2022. These ecological disparities between small and large patches have the potential to alter the composition of resources generated by the donor ecosystem, as well as the subsequent effects of these resources on the recipient ecosystem. It is plausible that this discrepancy may in part explain why the application of meta-ecosystem theory to natural systems has been limited thus far @Gounand2018.
 
-In order to investigate how the size of the patches of a meta-ecosystem mediate the effects of resources on biodiversity and productivity, we conducted a protist microcosm experiment (@Altermatt2015). Meta-ecosystems were made of two patches exchanging only resources originated through disturbance. No dispersal happened. We compared meta-ecosystems of the same total volume but with either symmetric or asymmetric patch sizes. We hypothesise that:
+In order to investigate how the size of the patches of a meta-ecosystem mediate the effects of resources on biodiversity and productivity, we conducted a protist microcosm experiment (@Altermatt2015). Meta-ecosystems were made of two patches exchanging only resources originated through disturbance. No dispersal happened. We compared meta-ecosystems of the same total volume but with either patches of the same size or patch of different sizes.
 
--   H1: larger patches will be more productive as they would be less disturbed
-
--   H2: more resources will flow from large patches, as they are more productive
-
--   H3: medium-medium meta-ecosystem will be more productive, as we predicted a concave relationship between patch size and function
-
--   H4: the larger the donor ecosystem, the more beneficial it would be for the receiving patch, as it needs resources to recover from disturbances.
-
-We found that the patch size ratio of meta-ecosystems matter. Meta-ecosystems with asymmetric patch size have higher β diversity, but lower α and γ diversity than if their patches were of the same size. This was due to the differential effect of disturbance across patch sizes and the differential amount of detritus they received to recover from disturbance. Finally, we discuss the broader implications of our findings for the field of meta-ecosystem theory.
+We found that the patch size ratio of meta-ecosystems matters for their biodiversity but not function. Meta-ecosystems with differing patch sizes had a higher β diversity, but lower α and γ diversity than if their patches were of the same size. This was due to the differential effect of disturbance across patch sizes and the differential amount of detritus they received to recover from disturbance. Furthermore, we found that the size of the donor patch mattered for the biodiversity and productivity of the receiving patch. This was shown by the fact that patches connected to larger patches had higher biodiversity and productivity compared to patches connected to small patches. Finally, we discuss the broader implications of our findings for the field of meta-ecosystem theory.
 
 ### Methods
 
@@ -83,7 +79,7 @@ To characterise protist communities, we employed the R-package BEMOVI (@Pennekam
 
 To determine the impact of the size of the donor patch on the receiving patch, we employed an effect size measured as Hedge's d (ref). The treatment for each response variable was the connected patch and the control was the isolated patch. Hedge's d represents the difference between the mean of the treatment and the mean of the control, adjusted for the variance of the pooled treatment and control (see Appendix). We compared the effect size of patches connected to donor patches of varying sizes. For example, we compared the effect size of small connected to large and small connected to small.
 
-To analyse response variables, we utilised mixed effect models (ref) with the r package lme4 (ref) whenever possible. Null models included two effects: time as fixed effect and replicates as random effect. The random effect of replicates accounted for the fact that replicates started at different values and evolved differently over time, with the initial value influencing the change over time. In other words, replicates had a random effect on the intercept and slope of the time-response variable relationship, with the intercept and slope set as correlated. However, when modelling effect sizes, random effects of replicates could not be accounted for as replicates were pooled during effect size calculation. Therefore, linear models were used instead. Models were selected based on the Akaike Information Criterion (AIC) (ref), computed using the AIC function of r package base (ref). The evidence that a model was superior to another was calculated as an evidence ratio (@Burnham2011) expressed as $e^{-\frac{1}{2} \Delta AIC}$.
+To analyse response variables, we utilised mixed effect models (ref) with the r package lme4 (ref) whenever possible. Null models included two effects: time as fixed effect and replicates as random effect. The random effect of replicates accounted for the fact that replicates started at different values and evolved differently over time, with the initial value influencing the change over time. In other words, replicates had a random effect on the intercept and slope of the time-response variable relationship, with the intercept and slope set as correlated. However, when modelling effect sizes, random effects of replicates could not be accounted for as replicates were pooled during effect size calculation. Therefore, linear models were used instead. Models were selected based on the Akaike Information Criterion (AIC) (ref), computed using the AIC function of r package base (ref). The evidence that a model was superior to another was calculated as an evidence ratio (@Burnham2011) expressed as $e^{-\frac{1}{2} \Delta AIC}$. When models differed of less than two points, the model with the lowest number of predicting variables was chosen.
 
 The effects of resource flow were studied by creating systems consisting of two isolated patches, referred to as isolated systems. Each Small-Large isolated system was composed of one small and one large isolated patch, while Medium-Medium isolated systems were constructed using two medium isolated patches, with the constraint that the patches could not be the same. To compare a meta-ecosystem and an isolated system, multiple comparisons were performed iteratively, resulting in a distribution of p-values and ΔAIC. Each iteration involved isolated systems with differently combined patches (without resampling). The presented p-value and ΔAIC are the means of their respective distributions.
 
@@ -101,60 +97,76 @@ The biomass (bioarea density) and biodiversity (Shannon index) of isolated patch
 
 Patch size ratio had an impact on the biodiversity of meta-ecosystems, as evidenced by mixed effect models. Small-Large meta-ecosystems exhibited higher β diversity compared to Medium-Medium (as seen in Figure 3C, with very strong evidence and a p-value less than 0.001), indicating a higher degree of differentiation. However, they had lower α diversity (as demonstrated in Figure 3B, with strong evidence and a p-value of 0.002) and a lower γ diversity (as shown in Figure 3D, with strong evidence and a p-value of 0.004), indicating a lower average biodiversity of their patches and total number of supported species, respectively. The effect of patch size ratio on α and β diversity was influenced by time, whereas the effect of patch size ratio on γ diversity was not. Despite its impact on biodiversity, patch size ratio did not influence meta-ecosystem productivity (as depicted in Figure 3A, with no evidence and a p-value of 0.264).
 
+We infer a saturating size-diversity curve. This is because\
+\
+\
+\
+from lower biodiversity in a small and a large patches compared to two medium isolated patches. We also infer a convex size-productivity curve from higher productivity in two medium patches compared to two medium isolated patches.
+
 #### Resource flows increase α diversity, but cause homogenisation and lower productivity
 
 Mixed effects models demonstrated that the movement of resources between small and large patches had a significant impact on their overall biodiversity and productivity. The exchange of resources led to homogenization within the system, resulting in a decrease in beta diversity (as evidenced by Figure 3C, with moderate evidence and p-value of 0.012), making the system consisting of one small and one large patch more similar to that of two medium-sized patches. Additionally, the movement of resources has increased overall alpha diversity, making it more comparable to that of two medium-sized patches (as evidenced by Figure 3B, with moderate evidence and a p-value of 0.019). However, there was no evidence that the movement of resources changed gamma diversity (as evidenced by Figure 3D, with no evidence and p-value of 0.318). Moreover, the movement of resources between small and large patches offset the effect of relative patch size ratio on productivity, as the connection led to a decrease in overall productivity of the system (as shown by Figure 3A, with strong evidence and a p-value of 0.003).
 
 #### The productivity and biodiversity of a patch is contingent upon the size of its connected patch
 
-The size of the donor patch ...
+The size of the donor patch influenced the productivity of the patches. Being connected to larger patches increased their productivity. Small patches that were connected to large patches were more productive than the ones connected to other small patches (moderate evidence, p = 0.026, R2 = 0.4). Similarly, large patches that were connected to small patches were less productive than large patches connected to other large patches (weak evidence, p = 0.057).
 
-### Discussion
+The size of the donor patch seemed to have influenced the biodiversity of the small patches (weak evidence, p = 0.067). In the low disturbance ...
 
-Here, we present evidence indicating that the proportionate dimensions of patches within a meta-ecosystem can have an impact on both its biodiversity and productivity. Two key mechanisms contribute to these effects. Firstly, Jensen's inequality, stemming from what we infer is a non-linear relationships between patch size and both biodiversity and productivity\*. Secondly, the redistribution of crucial resources necessary for patch recovery following disturbances. Specifically, the exchange of resources between unproductive small patches and productive large patches results in the abundant allocation of resources to small patches, facilitating their recovery from perturbations. Conversely, due to the scarcity of resources allocated to large patches, their recovery potential is hindered, preventing them from achieving the same level of recuperation as if their resources were preserved.\
-\*[why?]\
-[Ask if I should have a figure in which I explain the mechanism that I think is at play: concave/convex relationship between size and productivity/biodiversity]
+### Discussion (7 - 9 paragraphs)
 
-#### Patch size ratio drives meta-ecosystem α, β, γ biodiversity, but not its productivity
+1.  *Summary of intro, problem, results*\
+    \
+    Recently, there has been a growing awareness of the influence that resource flow can exert on the biodiversity and productivity of landscapes. To better understand this phenomenon, ecologists have developed the concept of meta-ecosystems, which refers to interconnected ecosystems exchanging resources. Nonetheless, the practical implementation of the meta-ecosystem framework in real-world ecosystems has been constrained due to various reasons, one of which is the conventional assumption that all patches within a meta-ecosystem are of equal size. In order to address this limitation, we conducted a microcosm experiment where two patch meta-ecosystems exchanged resources. The findings from our study provide compelling evidence that the relative dimensions of patches within a meta-ecosystem can significantly impact both its biodiversity and productivity. We identified two key mechanisms that contribute to the observed effects of patch size ratio on biodiversity and productivity.\
+2.  *Mechanisms behind the effects of patch size*\
+    \
+    Firstly, Jensen's inequality, stemming from what we infer is a non-linear relationships between patch size and both biodiversity and productivity. The concavity of of the size-biodiversity relationship is in line with the concavity of species-area relationships @Matthews2021. The convexity of the size-productivity relationship in our experiment we believe stems from the inability of small patches to recover from disturbance, as they were disturbed more. This would be in line with patches being less resistant @Greig2022. Secondly, the redistribution of crucial resources necessary for patch recovery following disturbances. Specifically, the exchange of resources between unproductive small patches and productive large patches results in the abundant allocation of resources to small patches, facilitating their recovery from perturbations. Conversely, due to the scarcity of resources allocated to large patches, their recovery potential is hindered, preventing them from achieving the same level of recuperation as if their resources were preserved.
 
-Our experiment indicates that the α diversity within asymmetric meta-ecosystems can be less than that within symmetric meta-ecosystems. This difference can be due to the greater decline in biodiversity when transitioning from large to small patches, compared to the rise seen when moving from medium to large sizes. However, this imbalance in α diversity between symmetric and asymmetric meta-ecosystems can be lessened if the transfer of resources between small and large patches boosts biodiversity more in the smaller patch than it reduces it in the larger one.
+#### Patch size ratio drives α, β, γ biodiversity, but not productivity
 
-It also shows that β diversity within asymmetric meta-ecosystems can be higher than within symmetric meta-ecosystems.\* However, the differences between the two is attenuated by resource flow. \
-\*[How do I show that species composition changes across patch sizes? Can I show that larger patches have a higher Bray-Curtis with small patches than medium patches?]
+3.  *Effects of patch size ratio on α diversity*\
+    \
+    α diversity can be be affected by differences in patch size because of the non linearity of the species-area relationship, as shown in our experiment. In our experiment, differences in patch size caused a decline in mean α diversity, as there was a greater loss transitioning from large to small patches, compared to the rise seen when moving from medium to large sizes. However, this decrease in α diversity can be lessened if the transfer of resources between small and large patches boosts biodiversity more in the smaller patch than it reduces it in the larger one. This was because of an inferred concave species-area relationship. However, when considering species-area relationships of isolated ecosystems, the species-area relationship is supposed to be sigmoid shaped @Tjorve2021. This means that when we want to know whether alpha diversity would be increased or not, it should increase when meta-ecosystems are small (we are in the lower and therefore convex part of the curve) and decrease when meta-ecosystems are large (we are in the upper and therefore concave part of the curve). Furthermore, how strong the effect on alpha diversity is, will depend on the shape of the species-area relationship, which can depend on so many different factors, including stochastic processes, evolution, species interactions, productivity, soil, and climate.\
+4.  *Effects of patch size ratio on* β *diversity\
+    \
+    *β diversity, in contrast, can be increased by differences in patch size, as patch size can change community composition. However, the differences between the two is attenuated by resource flow. However, when resources flow between small and large patches, they make the productivity and biodiversity of both patches more similar to each other. This causes them to be more similar, therefore decreasing their β diversity. Community composition across patches is different because they have different biodiversity (ref). How strong beta diversity will be will depend on how different the species richness of the patches will be according to the species-area relationship. But it will also depend on the productivity-area relationship, as the effects of the detritus will depend on this.\
+5.  *Effects of patch size ratio on* γ *diversity\
+    \
+    *γ diversity, as α diversity, can be reduced by differences in patch size. This is because ... But also the γ diversity can depend on other factors. For example, it is possible that when we have a large predator, mediums patches might not be large enough. Therefore, a larger predator might benefit from a large and small patches so that it can reside in the larger patch.\
+6.  *Effects of patch size ratio on* productivity\
+    \
+    The productivity of the meta-ecosystem, in contrast, can be left unchanged by differences in patch size, even if biodiversity is changed. This is interesting because ...
 
-Gamma diversity is lower in asymmetric meta-ecosystems, as ...\
-[Think about why gamma diversity is lower in asymmetric meta-ecosystems]
+#### Subsidies effects depend on the size of the donor and receiving patches
 
-#### The productivity and biodiversity of a patch is contingent upon the size of its connected patch
-
-Our research unveils a novel aspect that has yet to be explored within the realms of subsidy and meta-ecosystem ecology. Specifically, we provide new insights into the potential impact of the donor patch size on the biodiversity and productivity of the receiving patch. This relationship can be inferred from the observation that larger ecosystems can generate greater subsidies @Gratton2009, and an increased influx of subsidies can exert a more pronounced impact on the productivity and species richness of the recipient ecosystem @Obrist2022b. However, it is important to acknowledge the potential existence of barriers that may hinder the transport of materials from more productive ecosystems to others. Thus, the capacity of a receiving ecosystem to receive more materials may be constrained and needs to be tested.\
-[Add the meta-analysis on productivity differences]
-
-The significance of the receiving ecosystem's size has already been demonstrated in certain instances when assessing the impacts of resource flows. For instance, research by @Polis1996 highlighted that on islands receiving an equal amount of resources per meter of ecotone, the effects on secondary production were more pronounced on smaller islands due to their higher perimeter to area ratio. Additionally, a study by @Hocking2009 revealed that smaller river watersheds rely more on salmon to provide nitrogen to plants and invertebrates compared to larger watersheds.
-
-Our study supports the Subsidized Island Biogeography Hypothesis (@Anderson2001). This is because smaller patches are more influenced in their species richness than are larger patches. Our research also indicates that the subsidised island biogeography hypothesis should consider the size of the patches that are connected to. However, this cannot be to traditionally studied islands, as they are connected to the ocean, which has always the same size. It's more about other types of systems.
+7.  *How we could infer that patch size has an effect on subsidy dynamics*\
+    \
+    Our research unveils a novel aspect that has yet to be explored within the realms of subsidy and meta-ecosystem ecology. Specifically, we provide new insights into the potential impact of the donor patch size on the biodiversity and productivity of the receiving patch. This relationship can be inferred from the observation that larger ecosystems can generate greater subsidies @Gratton2009, and an increased influx of subsidies can exert a more pronounced impact on the productivity and species richness of the recipient ecosystem @Obrist2022b. However, it is important to acknowledge the potential existence of barriers that may hinder the transport of materials from productive ecosystems. @Marczak2007 showed in a meta-analysis that the productivity of the donor ecosystem did not influence the effect that the subsidy had on the receiving taxon. Thus, the capacity of a receiving ecosystem to receive more materials may be constrained and needs to be tested.\
+8.  *An addition to the SIB*\
+    \
+    Our study also shows that the same amount of subsidies can have a greater impact on smaller patches. This can happen when smaller patches are less productive. Our study supports the hypothesis by which the species richness of smaller patches should be affected by subsidies (Subsidised Island Biogeography Hypothesis, @Anderson2001). It actually adds a novel mechanism to it. The meta-analysis of @Marczak2007 showed that if the same amount of subsidies arrive, they will have a greater effect in unproductive ecosystems. This mechanism of smaller patches being more affected by subsidies goes in addition to another mechanism. This is smaller islands having a higher perimeter to area ratio. Therefore, smaller islands will be more susbidised per square meter. For instance, @Polis1996 highlighted that unproductive islands receiving an equal amount of resources per meter of ecotone, secondary production was enhanced more on smaller islands. Additionally, a study by @Hocking2009 revealed that smaller river watersheds rely more on salmon to provide nitrogen to plants and invertebrates compared to larger watersheds.\
+9.  *The decoupling of diversity and productivity*\
+    \
+    Locally the biomass but not diversity of patches is changed. It is not uncommon the decoupling of biodiversity and productivity. But maybe we just didn't detect it because of the limitations of our approach.
 
 #### Looking forward
 
-Our microcosm experiment shows that the function and biodiversity of meta-ecosystems could depend on the relative size between the patches it is composed of. However, there is the need to look at whether this mechanism holds also for natural ecosystems.
+9.  *Testing in natural ecosystems*\
+    \
+    Our microcosm experiment shows that the function and biodiversity of meta-ecosystems could depend on the relative size between the patches it is composed of. However, there is the need to look at whether this mechanism holds also for natural ecosystems. We suggest testing the results of this paper in the following meta-ecosystems: island and ocean, fragmented landscapes, and forest and adjacent ecosystems. A place we suggest testing such prediction would be in the most studied meta-ecosystems. For example, we predict that the larger a forest, the larger its effect on a nearby river or lake. What we found also challenging is to characterise meta-ecosystems in the field. Not many have calculated the flow of resources between ecosystems. This makes it harder, of course.\
+10. *Studying size-productivity relationship*\
+    \
+    We need better data on how the productivity of patches scales with their size. We need to see if this is the case in real world systems. We expect that the convex size-productivity relationship should be more s-shaped. We expect that the larger an ecosystem, the more productive it will be. This is because bigger ecosystems contain more species (ref) and more species most of the times are more productive (ref). However, we also need to say that we don't expect the productivity of a community to increase with size always. @Gratto2009 did not find larger lakes or rivers to have more emerging insects production. Add here the work done on recycling.
 
-If our experiment is right then ...
+#### Conclusions
 
-We need better data on how the productivity of patches scales with their size. We need to see if this is the case in real world systems. We expect that the convex size-productivity relationship should be more s-shaped
+11. *Conclusions*\
+    \
+    What we found has a direction implication for the study of meta-ecosystem biodiversity and productivity. It does as well for subsidies research, as it highlights how the size of the connected patch can be driving the effects of subsidies. As all ecosystems in nature differ in their size, we see a great application potential of our research. It also helps us integrating a feature of natural ecosystems and moving a step closer to integrating realistic features in meta-ecosystem theory. We believe that our work is really important in bringing us a step closer to be able to use meta-ecosystem theory for the management of real world systems.
 
 ### Acknowledgments
 
-We would like to thank Silvana Käser and Samuel Hürlemann for the excellent support they provided in the lab for a smooth operation regarding the experiment. We would also like to thank Heng Zhang for the support he provided with statistics. Additionally, we would like to sincerely thank Frank Pennekamp and Felix Moerman for providing essential tips on how to use the package BEMOVI. Furthermore, we would like to thank Lynn Govaert for providing an initial script for species identification. ChatGPT was used in helping making the manuscript more concise and clear. The project was funded by the Swiss National Science Foundation (grant no. 10030_197410) and the University of Zurich Research Priority Programme on Global Change and Biodiversity (URPP GCB) acquired by F.A. I.G. was supported by ...
-
-### To add
-
--   Scaling up meta-ecosystem including patch size differences needs to consider the shape of the relationship between size and ecosystem function and biodiversity
-
--   Patches of different size have different productivity, biodiversity, and resistance.
-
--   The relationship between patch size and species richness (species-area relationship) is mainly saturating @Matthews2021
-
--   The relationship between species richness and productivity is mainly saturating @Thopmson2018
+We express our gratitude to Silvana Käser and Samuel Hürlemann for their valuable assistance in the lab. We would also like to acknowledge Heng Zhang for his support in statistical analysis, and Frank Pennekamp and Felix Moerman for their helpful guidance with the BEMOVI package. Additionally, we appreciate the contribution of ChatGPT in enhancing the clarity and conciseness of the manuscript. This project received funding from the Swiss National Science Foundation (grant no. 10030_197410) and the University of Zurich Research Priority Programme on Global Change and Biodiversity (URPP GCB), aquired by F.A. I.G. was supported by \...
 
 ### Figure captions
 
@@ -198,7 +210,7 @@ ggarrange(
                              "cm")) +
     font("legend.text", size = size_legend) +
     font("ylab", size = size_y_axis), 
-  p_isolated_alpha +
+  p_isolated_richness +
     theme(plot.margin = unit(c(ggarrange_margin_left,
                                ggarrange_margin_right,
                                ggarrange_margin_bottom,
@@ -366,7 +378,7 @@ ggarrange(
                              "cm")) +
     font("legend.text", size = size_legend) +
     font("ylab", size = size_y_axis), 
-  p_connected_alpha_effect_size +
+  p_connected_species_richness_effect_size +
     theme(plot.margin = unit(c(ggarrange_margin_left,
                                ggarrange_margin_right,
                                ggarrange_margin_bottom,
@@ -386,8 +398,9 @@ ggarrange(
 
 results_table %>%
   filter(Response %in% c("Bioarea Density ES", 
-                         "Shannon Index ES"),
-         Levels == "Small (connected to small or large)") %>%
+                         "Species Richness ES"),
+         Levels == "Small (connected to small or large)" |
+         Levels == "Small (connected to small or large) without t4") %>%
   arrange(Response, 
           Levels) %>%
   kbl(caption = paste(
@@ -400,8 +413,9 @@ results_table %>%
 
 results_table %>%
   filter(Response %in% c("Bioarea Density ES", 
-                         "Shannon Index ES"),
-         Levels == "Large (connected to small or large)") %>%
+                         "Species Richness ES"),
+         Levels == "Large (connected to small or large)" |
+         Levels == "Large (connected to small or large) without t4") %>%
   arrange(Response, 
           Levels) %>%
   kbl(caption = paste(
