@@ -328,6 +328,8 @@ expect_equal(nrow(ds_patches),
 
 ```{r}
 #Calculate in each culture when was the time we saw of the protis species
+protist_last_saw_columns = paste0(protist_species, "_last_saw")
+
 for(culture_ID_input in 1:n_cultures){
   for(protist_input in protist_species){
     
@@ -352,7 +354,8 @@ ds_patches = ds_patches %>%
   select(any_of(c(
     columns_patches,
     variables_patches,
-    baseline_columns
+    baseline_columns,
+    protist_last_saw_columns
   )))
 ```
 

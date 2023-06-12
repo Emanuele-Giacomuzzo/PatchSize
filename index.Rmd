@@ -36,7 +36,7 @@ start_time = Sys.time()
 library("here")
 
 show_results = TRUE
-recompute_lengthy_analyses = TRUE
+recompute_lengthy_analyses = FALSE
 recompute_first_part = TRUE
 save_environment = recompute_first_part
 ```
