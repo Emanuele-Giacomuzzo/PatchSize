@@ -20,8 +20,8 @@ for (protist_input in protist_species) {
       group = patch_type,
       colour = patch_type
     )) +
-    geom_jitter(width = 0.2, height = 0.2) +
-    scale_x_continuous(limits = c(0, 30)) +
+    geom_jitter(width = 0.5, height = 0.3) +
+    scale_x_continuous(limits = c(-2, 30)) +
     labs(title = ,
          x = paste("Last saw", protist_input),
          y = "") +

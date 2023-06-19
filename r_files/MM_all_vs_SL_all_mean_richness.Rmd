@@ -9,9 +9,9 @@ response_variable = "mean_richness"
 ```
 
 ```{r}
-p_MM_SL_metaecos_alpha = plot.metaecos.points(ds_metaecosystems, 
-                                              metaecosystem_type_input,
-                                              response_variable) %>%
+plot.metaecos.points(ds_metaecosystems, 
+                     metaecosystem_type_input,
+                     response_variable) %>%
   print()
 ```
 
@@ -23,43 +23,3 @@ plot.metaecos.boxplots(ds_metaecosystems,
                        response_variable)
 ```
 </details> 
-
-##### Small-Large vs Medium-Medium meta-ecosystems
-
-```{r}
-metaecosystem_type_input_model = c("Small-Large meta-ecosystem",
-                                   "Medium-Medium meta-ecosystem")
-```
-
-```{r child = here("r_files", "analysis_metaeco_symmetry.Rmd")}
-```
-
-##### Small-Large connected vs isolated
-
-```{r}
-metaecosystem_type_input_model = c("Small-Large meta-ecosystem",
-                                   "Small-Large isolated")
-```
-
-```{r}
-optimizer_input = 'Nelder_Mead'
-method_input = ''
-```
-
-```{r child = here("r_files", "analysis_metaeco_connection.Rmd")}
-```
-
-##### Medium-Medium connected vs isolated
-
-```{r}
-metaecosystem_type_input_model = c("Medium-Medium meta-ecosystem",
-                                   "Medium-Medium isolated")
-```
-
-```{r}
-optimizer_input = 'Nelder_Mead'
-method_input = ''
-```
-
-```{r child = here("r_files", "analysis_metaeco_connection.Rmd")}
-```

@@ -83,6 +83,10 @@ culture_info = read.csv(here("data", "PatchSizePilot_culture_info.csv"), header 
 
 ### Patch effect sizes (`ds_patches_effect_size`)
 
+```{r}
+save.image(file = here("environments", "before_ds_patches_effect_size.RData"))
+```
+
 ```{r child = here("r_files", "ds_patches_effect_size.Rmd"), eval = recompute_first_part}
 ```
 
@@ -194,9 +198,14 @@ metaecosystem_type_input = c(
 ```{r child = here("r_files", "MM_all_vs_SL_all_biomass.Rmd"), eval = show_results}
 ```
 
-#### Shannon {.tabset .tabset-pills}
+#### Mean Species Richness {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "MM_all_vs_SL_all_mean_richness.Rmd"), eval = show_results}
+```
+
+#### Mean Shannon {.tabset .tabset-pills}
+
+```{r child = here("r_files", "MM_all_vs_SL_all_mean_shannon.Rmd"), eval = show_results}
 ```
 
 #### Beta diversity {.tabset .tabset-pills}
@@ -226,6 +235,10 @@ patch_type_input = c(
 #### BEF
 
 ```{r child = here("r_files", "all_patches_BEF.Rmd"), eval = FALSE}
+```
+
+```{r}
+save.image(file = here("environments", "before_isolated_patches.RData"))
 ```
 
 ### Isolated {.tabset .tabset-pills}
@@ -464,6 +477,10 @@ patch_type_input = c("Small connected to large",
                      "Small connected to small",
                      "Large connected to small",
                      "Large connected to large")
+```
+
+```{r}
+save.image(file = here("environments", "before_analysis_ES.RData"))
 ```
 
 #### Biomass {.tabset .tabset-pills}

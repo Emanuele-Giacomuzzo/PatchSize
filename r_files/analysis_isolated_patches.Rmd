@@ -14,7 +14,8 @@ filtered_data = ds_patches %>%
   filter(
     metaecosystem == "no",
     time_point >= first_time_point_model,
-    time_point <= last_time_point_model
+    time_point <= last_time_point_model,
+    !is.na(!!sym(response_variable))
   )
 ```
 

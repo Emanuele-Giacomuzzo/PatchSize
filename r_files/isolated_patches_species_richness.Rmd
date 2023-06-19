@@ -12,7 +12,8 @@ response_variable = "species_richness"
 ```
 
 ```{r}
-p_isolated_richness = plot.patches.points(ds_patches, patch_type_input,
+p_isolated_richness = plot.patches.points(ds_patches, 
+                                          patch_type_input,
                        response_variable) %>%
   print()
 ```
@@ -24,6 +25,3 @@ plot.patches.boxplots(patch_type_input,
                        response_variable)
 ```
 </details> 
-
-```{r child = here("r_files", "analysis_isolated_patches.Rmd")}
-```

@@ -26,6 +26,9 @@ plot.patches.boxplots(patch_type_input,
 ```
 </details> 
 
+```{r}
+save_results_in_table = TRUE
+```
 
 ```{r child = here("r_files", "analysis_isolated_patches.Rmd")}
 ```

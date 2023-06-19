@@ -74,16 +74,16 @@ results_table$Levels <- factor(results_table$Levels, levels = c("Metaecos (Small
 response_names = data.frame(
   old = NA,
   new = NA) %>%
-  add_row(old = "mean_richness", 
+  add_row(old = "mean_shannon", 
           new = "Alpha Diversity") %>%
   add_row(old = "bioarea_mm2_per_ml_d", 
           new = "Bioarea Density ES") %>%
-  add_row(old = "species_richness_d", 
-          new = "Species Richness ES") %>%
+  add_row(old = "shannon_d", 
+          new = "Shannon Index ES") %>%
   add_row(old = "bioarea_mm2_per_ml", 
           new = "Bioarea Density") %>%
-  add_row(old = "species_richness", 
-          new = "Species Richness") %>%
+  add_row(old = "shannon", 
+          new = "Shannon Index") %>%
   add_row(old = "total_metaecosystem_bioarea_mm2", 
           new = "Tot Bioarea") %>%
   add_row(old = "bray_curtis", 
@@ -105,15 +105,15 @@ for(name_input in 1:nrow(response_names)) {
 ```{r}
 #Reorder response names
 results_table$Response <- factor(results_table$Response, levels = c("Bioarea Density",
-                                                                    "Species Richness",
+                                                                    "Shannon Index",
                                                                     "Tot Bioarea",
                                                                     "Alpha Diversity",
                                                                     "Beta Diversity",
                                                                     "Gamma Diversity",
                                                                     "Bioarea Density ES",
                                                                     "Log Bioarea Density ES",
-                                                                    "Species Richness ES",
-                                                                    "Log Species Richness ES",
+                                                                    "Shannon ES",
+                                                                    "Log Shannon ES",
                                                                     ""))
 ```
 

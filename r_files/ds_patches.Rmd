@@ -328,7 +328,7 @@ expect_equal(nrow(ds_patches),
 
 ```{r}
 #Calculate in each culture when was the time we saw of the protis species
-protist_last_saw_columns = paste0(protist_species, "_last_saw")
+protist_last_saw_columns = paste0(protist_species, "_last_saw_day")
 
 for(culture_ID_input in 1:n_cultures){
   for(protist_input in protist_species){
