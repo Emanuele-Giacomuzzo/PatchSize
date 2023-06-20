@@ -112,7 +112,7 @@ results_table$Response <- factor(results_table$Response, levels = c("Bioarea Den
                                                                     "Gamma Diversity",
                                                                     "Bioarea Density ES",
                                                                     "Log Bioarea Density ES",
-                                                                    "Shannon ES",
+                                                                    "Shannon Index ES",
                                                                     "Log Shannon ES",
                                                                     ""))
 ```

@@ -17,6 +17,10 @@ p_connected_biomass_effect_size = plot.patches.points.ES(ds_patches_effect_size,
   print()
 ```
 
+```{r}
+eval_cook_distances = TRUE
+```
+
 ##### Small
 
 ```{r}

@@ -18,6 +18,10 @@ p_connected_species_richness_effect_size = plot.patches.points.ES(ds_patches_eff
   print()
 ```
 
+```{r}
+eval_cook_distances = TRUE
+```
+
 ##### Small
 
 ```{r}

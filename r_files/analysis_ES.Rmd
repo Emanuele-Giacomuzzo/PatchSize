@@ -54,7 +54,7 @@ print(summary(full_model), digits = 1)
 ```
 </details> 
 
-```{r}
+```{r eval = eval_cook_distances}
 # Create the cook's distance plot
 cook_distances <- influence.measures(full_model)[["infmat"]] %>% 
   as.data.frame() %>%
@@ -123,7 +123,7 @@ par(mfrow = c(2, 3))
 plot(full_model, which = 1:5)
 ```
 
-```{r, echo=FALSE, eval=TRUE}
+```{r, echo=FALSE, eval = eval_cook_distances}
 cook_distances_plot
 ```
 
@@ -180,7 +180,7 @@ print(summary(fixed_model), digits = 1)
 ```
 </details> 
 
-```{r}
+```{r eval = eval_cook_distances}
 # Create the cook's distance plot
 cook_distances <- influence.measures(fixed_model)[["infmat"]] %>% 
   as.data.frame() %>%
@@ -249,7 +249,7 @@ par(mfrow = c(2, 3))
 plot(fixed_model, which = 1:5)
 ```
 
-```{r, echo=FALSE, eval=TRUE}
+```{r, echo=FALSE, eval = eval_cook_distances}
 cook_distances_plot
 ```
 

@@ -17,6 +17,11 @@ p_connected_shannon_effect_size = plot.patches.points.ES(ds_patches_effect_size,
   print()
 ```
 
+```{r}
+#Don't show cook distances because they are not defined for the last time point 
+eval_cook_distances = FALSE
+```
+
 ##### Small
 
 ```{r}

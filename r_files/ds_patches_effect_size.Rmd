@@ -13,9 +13,9 @@ vars_to_group_by = columns_patches[columns_patches != "culture_ID" & columns_pat
 
 ```{r}
 #Calculate effect sizes
-ds_patches_effect_size = calculate.effect.sizes(ds_patches,
-                                                vars_to_group_by,
-                                                variables_patches) %>%
+ds_patches_effect_size = calculate.effect.sizes(ds = ds_patches,
+                                                vars_to_group_by = vars_to_group_by,
+                                                vars_for_ES = variables_patches) %>%
   filter(time_point >= 1)
 
 expect_equal(nrow(ds_patches_effect_size), 
