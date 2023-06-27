@@ -76,4 +76,6 @@ where the t-score is computed from the student t distribution using the r functi
 
 -   CONCLUSION In conclusion, what we found has a direction implication for the study of meta-ecosystem biodiversity and productivity. It does as well for subsidies research, as it highlights how the size of the connected patch can be driving the effects of subsidies. As all ecosystems in nature differ in their size, we see a great application potential of our research. It also helps us integrating a feature of natural ecosystems and moving a step closer to integrating realistic features in meta-ecosystem theory. We believe that our work is really important in bringing us a step closer to be able to use meta-ecosystem theory for the management of real world systems. Therefore, to understand the biodiversity of a landscape requires us to know the variance in the size of it constituting patches.
 
-    ###   
+-   To be able to study such effects of resources, \@Loreau2003 introduced a new framework called the meta-ecosystem framework. Therefore, a meta-ecosystem represents a number of ecosystems interconnected through the flow of resources. The meta-ecosystem framework has helped us understand both the productivity and biodiversity within a landscape.
+
+    ### 
