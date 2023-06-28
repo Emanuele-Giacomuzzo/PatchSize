@@ -41,7 +41,6 @@ recompute_first_part = TRUE
 save_environment = recompute_first_part
 ```
 
-#  {.tabset}
 
 ```{r child = here("r_files", "packages.Rmd"), echo = FALSE}
 ```
@@ -54,6 +53,8 @@ lapply(functions_paths, source)
 
 ```{r child = here("r_files", "parameters.Rmd"), echo = FALSE}
 ```
+
+#  {.tabset}
 
 ## Overview {.tabset .tabset-pills}
 
@@ -595,11 +596,6 @@ sed -i '' 's/old/new/g' *.R
 ```
 
 The only type of patch where all cultures crashed was small connected to small at high disturbance.
-
-## Paper outline
-
-```{r child = here("r_files", "paper_outline.Rmd"), eval = show_results}
-```
 
 ## Paper
 
