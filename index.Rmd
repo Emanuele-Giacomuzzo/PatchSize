@@ -595,6 +595,15 @@ cd /Users/ema/Documents/GitHub/Functions
 sed -i '' 's/old/new/g' *.R
 ```
 
+If you want to save some files:
+
+```{r}
+write.csv(morph_mvt,
+          here(""),
+          row.names = F)
+```
+
+
 The only type of patch where all cultures crashed was small connected to small at high disturbance.
 
 ## Paper

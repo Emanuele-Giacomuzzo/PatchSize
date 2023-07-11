@@ -263,7 +263,7 @@ parameters_treatments = data.frame(treatment = NA,
   add_row(treatment = "Small-Large isolated", colour = "#762a83", linetype = "dashed") %>%
   slice(-1)
 
-#Mena lines
+#Mean lines
 treatment_lines_linewidth = 1
 treatment_points_size = 2.5
 
