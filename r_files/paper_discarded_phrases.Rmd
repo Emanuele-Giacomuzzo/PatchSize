@@ -92,4 +92,16 @@ where the t-score is computed from the student t distribution using the r functi
 
 -   Ecosystem productivity and biodiversity are fundamental to the health and persistence of ecosystems, as they enable the continuous delivery of ecosystem services essential for the functioning of human societies. In recent decades, ecologists have made significant strides in comprehending how productivity and biodiversity are impact of resource exchange between ecosystems. Notably, redirecting resource flows to the most efficient ecosystem has the potential to enhance productivity \@Harvey2021. Moreover, resource flow can increase productivity by redistributing multiple nutrients that would otherwise be divided among different ecosystems, thereby alleviating co-limitations \@Gulzow2019.
 
+-   Organism emigrate more from smaller ecosystems @Poethke2002, @Massol2011a, @Hill1996. Immigration can maintain species diversity in small ecosystems but not in large @Schuler2017.
+
+-   The evidence that a model was superior to another was calculated as an evidence ratio (@Burnham2011) expressed as $e^{-\frac{1}{2} \Delta AIC}$.
+
+-   Statistical analysis: size distribution
+
+    To study the body size distribution of the community, we constructed 12 body size classes, as in @Jacquet2020, covering the whole breadth of body sizes recorded in the experiment.
+
+-   **We have also demonstrated that the relative strength of each force can vary depending on whether we consider biodiversity or productivity.** Regarding biodiversity, patch size asymmetry emerges as a more influential force. The asymmetry in patch sizes within a meta-ecosystem leads to greater dissimilarity among patches (higher β diversity) but also results in lower average biodiversity per patch (lower mean α diversity). However, the impact of resource flow mitigates these effects by homogenizing the patches (lower β diversity) and promoting higher average biodiversity (higher mean α diversity). Nonetheless, the influence of resource flow is not potent enough to fully negate the effects induced by patch size asymmetry. Hence, we can still observe the impact of patch size asymmetry on meta-ecosystem biodiversity. Concerning productivity, the two forces counterbalance each other, as patch size asymmetry has no discernible effect on meta-ecosystem productivity. Patch size asymmetry, in fact, leads to an increase in total production, but resource flow counteracts this by reducing overall production levels.
+
+-   Firstly, patch size asymmetry acts as a differentiating force, pulling the biodiversity and productivity of patches apart. Specifically, larger patches are more productive and biodiverse. Secondly, resource flows act as a homogenising force, bringing the biodiversity and productivity of patches together. Resource flows homogenise productivity as follows. The exchange of resources between unproductive small patches and productive large patches results in the abundant allocation of resources to small patches, making them more productive than if they were isolated. Conversely, due to the scarcity of resources allocated to large patches, their productivity is decreased compared to the scenario when they would be isolated. The relative strength of these two forces determines the observed patterns in biodiversity and productivity within meta-ecosystems.
+
     ### 
