@@ -20,7 +20,7 @@ Short running title (abbreviated form of title) of less than 45 characters inclu
 
 ...
 
-Authors:
+Authors:\\\\
 
 -   Emanuele Giacomuzzo (Emanuele.Giacomuzzo\@eawag.ch) 1,2
 
@@ -70,7 +70,7 @@ Keywords (max 10):
 
 ### Abstract page (max 150 words)
 
-Patch size is acknowledged as a crucial factor when examining and preserving the biodiversity of multiple ecosystems, given its influence on species dispersal. However, the way patch size affects the biodiversity of multiple ecosystems via its impact on resource exchange remains unclear. Overlooking the significance of size in altering resource exchanges may hinder our comprehension of how changes in patch sizes affect biodiversity in two-patch systems. Here, we ran a protist microcosm experiment to investigate the effects of patch size ratios on two ecosystems involved in resource exchange forming meta-ecosystems. Meta-ecosystems with varied patch sizes exhibited higher β diversity, but lower α and γ diversity. The results our experiment underscore the importance of patch size in influencing the biodiversity of ecosystems through the effects of resource exchange.
+Patch size is acknowledged as a crucial factor when examining and preserving the biodiversity of multiple ecosystems, given its influence on species dispersal. However, the way patch size affects the biodiversity of multiple ecosystems via its impact on resource exchange (e.g., litter, nutrients, and carcasses) remains unclear. Overlooking the significance of size in altering resource exchanges may hinder our comprehension of how changes in patch sizes affect biodiversity in multi-patch systems. Here, we ran a protist microcosm experiment to investigate the effects of patch size ratios on two ecosystems involved in resource exchange forming meta-ecosystems. Meta-ecosystems with varied patch sizes exhibited higher β diversity, but lower α and γ diversity. The results our experiment underscore the importance of patch size in influencing the biodiversity of ecosystems through the effects of resource exchange.
 
 ### Introduction (build well what's at stake, around 5 paragraphs, around 7 lines per paragraph)
 
@@ -79,7 +79,7 @@ Patch size is acknowledged as a crucial factor when examining and preserving the
 **Numerous studies have emphasized the significance of patch size for biodiversity.** First of all, by looking at a single ecosystem. There, patch size was studied as how many species can be found in a single ecosystem @Tjorve2021. Then, patch size was studied in relation to multiple patches. There, patch size was studied looking at how the size of ecosystems allows or impedes the dispersal of metapopulations, allowing them or not to persist in a landscape @Hanski1999. Size variability effect on metapopulations?
 
 **However, it remains uncertain whether patch size impacts biodiversity by altering resource flows.**\
-We are now starting to understand how biodiversity is linked to resource flows. For example, algal wrack increases the biodiversity of dune plants in Sardinia \@DalVecchio2017 and decreases the biodiversity of plants in small islands in British Columbia \@Obrist2022a. Also, salmon carcasses decrease plant diversity in the Great Bear Rain-forest of British Columbia \@Hocking2011. We predict that variations in patch size will indeed have an impact. Ecosystems of different sizes exhibit unique ecological traits. In particular, larger ecosystems often accommodate a wider variety of species @MacArthur1963, which can boost their productivity and enhance their resistance to disturbances @Greg2022. These ecological differences between small and large patches can potentially modify the composition of resources produced by the donor ecosystem and the ensuing effects of these resources on the receiving ecosystem.
+What we mean by resource here is non-living material (e.g., leaf litter, carcasses, inorganic nutrients). We clarify it here because in some instances resources have been thought as preys in a consumer-resource interaction. We are now starting to understand how biodiversity is linked to resource flows. For example, algal wrack increases the biodiversity of dune plants in Sardinia \@DalVecchio2017 and decreases the biodiversity of plants in small islands in British Columbia \@Obrist2022a. Also, salmon carcasses decrease plant diversity in the Great Bear Rain-forest of British Columbia \@Hocking2011. We predict that variations in patch size will indeed have an impact. Ecosystems of different sizes exhibit unique ecological traits. In particular, larger ecosystems often accommodate a wider variety of species @MacArthur1963, which can boost their productivity and enhance their resistance to disturbances @Greg2022. These ecological differences between small and large patches can potentially modify the composition of resources produced by the donor ecosystem and the ensuing effects of these resources on the receiving ecosystem.
 
 **This gap in understanding poses a significant challenge as it hinders our ability to understand biodiversity and therfore devise appropriate conservation measures to determine the necessary size of ecosystems.** Moreover, resources could be more vital than dispersal since they are continually occurring, linking various ecosystems which is not considered in the current time, and interconnecting diverse ecosystem types @Gounand2018b. This has the potential to be more influential than dispersal. Also, understanding the effects of resource flow will allow us to study the effects of patch size not only on a single habitat type.
 
@@ -156,9 +156,11 @@ Although we detected resource flows changing the biodiversity of the meta-ecosys
 
 **In natural systems, how variations in patch size shape biodiversity by changing resource flows will depend on the size-diversity and size-productivity relationships.** The shape of the species-area relationship in natural systems is a sigmoid @Tjorve2021. This sigmoidal shape implies that the effects of differences in patch size on biodiversity are opposite for small and large patches. Specifically, when examining small patches, we find ourselves in the convex portion of the sigmoidal curve. In this region, disparities in patch size positively influence α diversity, leading to an increase in biodiversity. On the other hand, when dealing with large patches, we encounter the concave part of the curve. Here, discrepancies in patch size have the reverse effect, diminishing α diversity and resulting in a decrease in biodiversity. Furthermore, the precise form of the sigmoidal relationship is influenced by many additional factors. These factors encompass stochastic processes, evolution, species interactions, productivity, soil composition, climate conditions, and many other @Tjorve2021. Consequently, any attempt to characterize the impact of patch size discrepancies on biodiversity must account for this sigmoidal shape and consider the interplay of these influencing factors.
 
-How strongly patch size asymmetry affects biodiversity will also depend on the size-diversity relationship. If productivity does not change with size, there will not be an effect. If it does, the greater variance, the more effect. Also, it will depend on the effects that resource flow have on biodiversity. It could be both due to the resources themselves (e.g., they change the outcome of competition) and on the fact that resource flows change the productivity of ecosystems, in turn affecting biodiversity. This might also depend on the magnitude of the resource flow. Which we actually show.uii
+How strongly patch size asymmetry affects biodiversity will also depend on the size-diversity relationship. If productivity does not change with size, there will not be an effect. If it does, the greater variance, the more effect. Also, it will depend on the effects that resource flow have on biodiversity. It could be both due to the resources themselves (e.g., they change the outcome of competition) and on the fact that resource flows change the productivity of ecosystems, in turn affecting biodiversity. This might also depend on the magnitude of the resource flow. Which we actually show.
 
 The question of how large should ecosystems be to maintain the highest biodiversity has been so far studied in the contest of habitat fragmentation. This is a single type of ecosystem approach, mainly applied to forests. However, how large ecosystems should be should be also applied to many different types of ecosystems. This is because different types of ecosystems exchange materials.
+
+The results of our experiment are at a phenomenological level. We cannot say with certainty why patch size mattered. This could be because of many reasons. This would be also in the field where many reasons could drive effects of patch size on biodiversity through resource flows. We think that this is exciting because there might the potential to start a whole new field on how patch size actually influences biodiversity through its effects on patch size and resource flows. Many questions arise. For example, the bigger the ecosystem the better its resources?
 
 [Local level]{.underline}
 
@@ -245,17 +247,17 @@ results_table %>%
 
 ```{r fig-connected-systems, fig.cap = figure_caption_3, fig.height = 9, eval = show_results}
 ggarrange(
-  p_MM_SL_metaecos_biomass +
-    rremove("xlab") +
-    theme(axis.text.x = element_blank(),
-          axis.ticks.x = element_blank(),
-          plot.margin = unit(c(ggarrange_margin_top,
-                               ggarrange_margin_right,
-                               ggarrange_margin_bottom,
-                               ggarrange_margin_left), 
-                             "cm")) +
-    font("legend.text", size = size_legend) +
-    font("ylab", size = size_y_axis),
+  #p_MM_SL_metaecos_biomass +
+  #  rremove("xlab") +
+  #  theme(axis.text.x = element_blank(),
+  #        axis.ticks.x = element_blank(),
+  #        plot.margin = unit(c(ggarrange_margin_top,
+  #                             ggarrange_margin_right,
+  #                             ggarrange_margin_bottom,
+  #                             ggarrange_margin_left), 
+  #                           "cm")) +
+  #  font("legend.text", size = size_legend) +
+  #  font("ylab", size = size_y_axis),
   p_MM_SL_metaecos_alpha +
     rremove("xlab") +
     theme(axis.text.x = element_blank(),
@@ -287,11 +289,11 @@ ggarrange(
     font("xlab", size = size_x_axis) +
     font("ylab", size = size_y_axis) +
     scale_x_continuous(breaks = unique(ds_patches$day)),
-  heights = c(0.8,0.8,0.8,1),
-  nrow = 4,
+  heights = c(0.8,0.8,1),
+  nrow = 3,
   common.legend = TRUE,
   align = "v",
-  labels = c("(a)", "(b)", "(c)", "(d)"),
+  labels = c("(a)", "(b)", "(c)"),
   label.x = 0.1,
   label.y = 0.8
 )
@@ -427,7 +429,7 @@ results_table %>%
 
 #### Experimental design: volume balance
 
-During the experiment, we had to adapt to keep the volume of cultures constant. The first way we adapted was by changing after the third disturbance the way we boiled cultures. For the first three disturbances, we boiled 15 tubes in a rack at 800 W for three minutes, which we noticed made evaporate cultures on mean 2.43 ml (SD = 0.87) per boiling event. To reduce evaporation loss, the last three disturbances were carried out boiling four tubes for one minute, reducing evaporation to a mean of 1.25 ml (SD = 0.37).
+During the experiment, we had to adapt to keep the volume of cultures constant. The first way we adapted was by changing after the third disturbance the way we boiled cultures. For the first three disturbances, we boiled 15 tubes in a rack at 800 W for three minutes, which we noticed made evaporate cultures on mean 2.43 ml (SD = 0.87) per boiling event. To reduce evaporation loss, the last three disturbances were carried out boiling four tubes for one minute, reducing evaporation to a mean of 1.25 (SD = 0.37) ml per tube per time point.
 
 The second way we counteracted volume loss was by replenishing with medium the volume that was sampled. Three days before each sampling day we added medium with the same volume we would have sampled (0.2 ml). We did not do it for the last sampling.
 
@@ -479,7 +481,7 @@ where $d$ is Hedge's d, $n1$ is the sample size of group 1, $n2$ is the sample s
 
 **Patch size in isolated patches.** Also at low levels of disturbance, size impacted the biomass and biodiversity of isolated patches. Larger patches were more productive - as they had higher bioarea density (as shown in Figure ?) - and were more biodiversity - as they had a higher Shannon index (as shown in Figure ?), as revealed by mixed effects models. The effect of patch size on bioarea density was independent of time, whereas the effect of patch size on Shannon index was influenced by time. These findings were strongly supported with p-values less than 0.001.
 
-**Patch size in meta-ecosystems.** At low levels of resource flow, contrary to high levels of resource flow, \
+**Patch size in meta-ecosystems.** At low levels of resource flow, contrary to high levels of resource flow,\
 did not impact α or γ diversity. Small-Large and Medium-Medium meta-ecosystems did not differ in their α diversity (stats) or γ diversity (stats). As also in high resource flow conditions, patch size ratio seemed to have impacted β diversity and productivity. Small-Large meta-ecosystems seemed to have higher β diversity (but with only a weak evidence this time, stats), and had the same productivity (stats).
 
 **Resource flow in meta-ecosystems.** Unlike at high resource flow levels, resources did not change total productivity. Small-Large meta-ecosystems had the same productivity as Small-Large isolated two-patch systems (stats). As at high resource flow levels, resources flowing between small and large patches had a significant impact on their α and β diversity, but not on their γ diversity. This was supported by comparing Small-Large meta-ecosystems and Small-Large isolated systems. Small-Large meta-ecosystems had lower β diversity (stats), higher mean α diversity (stats), and lower productivity (stats). However, there was no evidence that the movement of resources changed γ diversity (stats). As at high levels of resource flow, there was no effect of resource flow between two medium patches.
@@ -487,5 +489,11 @@ did not impact α or γ diversity. Small-Large and Medium-Medium meta-ecosystems
 **Donor patch size - productivity.** The effects of size of the donor patch on the productivity of the receiving patches was consistent across resource flow levels. Being connected to larger patches increased their productivity. Small patches that were connected to large patches were more productive than the ones connected to other small patches (moderate evidence, p = ..., R2 = ...). Similarly, large patches that were connected to small patches were less productive than large patches connected to other large patches (weak evidence, p = ...).
 
 **Donor patch size - biodiversity.** The effects of size of the donor patch on the biodiversity of the receiving patches was not consistent across resource flow levels. At the lower level of resource flow, we have evidence (weak, p = ...) that resource flow coming from a larger patch increased small patches more than if it were to come from another small patch. However, no effect was detected for larger patches.
+
+Else
+
+```{r}
+p_MM_SL_metaecos_biomass
+```
 
 ### Bibliography

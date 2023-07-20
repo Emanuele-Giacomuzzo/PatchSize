@@ -19,7 +19,7 @@ editor_options:
 ---
 
 ```{r echo=FALSE, results = FALSE}
-disturbance_global_input = "low"
+disturbance_global_input = "high"
 ```
 
 ```{r echo = FALSE}
@@ -47,7 +47,7 @@ save_environment = recompute_first_part
 
 ```{r echo=FALSE, message=FALSE, results=FALSE}
 #Import functions
-functions_paths = list.files(here("..", "Functions"), pattern = ".R$", full.names = TRUE)
+functions_paths = list.files(here("r_files", "functions"), pattern = ".R$", full.names = TRUE)
 lapply(functions_paths, source)
 ```
 
@@ -597,12 +597,11 @@ sed -i '' 's/old/new/g' *.R
 
 If you want to save some files:
 
-```{r}
+```{r eval = FALSE}
 write.csv(morph_mvt,
           here(""),
           row.names = F)
 ```
-
 
 The only type of patch where all cultures crashed was small connected to small at high disturbance.
 

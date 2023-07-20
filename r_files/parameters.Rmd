@@ -169,7 +169,7 @@ legend_position = "top"
 #Axes names
 axis_names = data.frame(variable = NA,
                         axis_name= NA) %>%
-  add_row(variable = "day", axis_name = "Day") %>%
+  add_row(variable = "day", axis_name = "Time (day)") %>%
   add_row(variable = "patch_size_ml", axis_name = "Patch size (ml)") %>%
   add_row(variable = "log_size_class", axis_name = "Log size (μm2)") %>%
   add_row(variable = "class_indiv_per_µl", axis_name = "Density (ind/ml)") %>%
@@ -179,12 +179,12 @@ axis_names = data.frame(variable = NA,
   add_row(variable = "total_metaecosystem_bioarea_mm2", axis_name = "Tot Bioarea (mm²)") %>%
   add_row(variable = "species_richness", axis_name = "Species Richness") %>%
   add_row(variable = "species_richness_d", axis_name = "Species Richness ES") %>%
-  add_row(variable = "mean_richness", axis_name = "α Diversity") %>%
-  add_row(variable = "mean_shannon", axis_name = "α Diversity") %>%
+  add_row(variable = "mean_richness", axis_name = "α Diversity (Shannon)") %>%
+  add_row(variable = "mean_shannon", axis_name = "α Diversity (Shannon)") %>%
   add_row(variable = "shannon", axis_name = "Shannon Index") %>%
   add_row(variable = "shannon_d", axis_name = "Shannon Index ES") %>%
-  add_row(variable = "bray_curtis", axis_name = "β Diversity") %>%
-  add_row(variable = "metaecosystem_richness", axis_name = "γ Diversity") %>%
+  add_row(variable = "bray_curtis", axis_name = "β Diversity (Bray-Curtis)") %>%
+  add_row(variable = "metaecosystem_richness", axis_name = "γ Diversity (Species Richness)") %>%
   add_row(variable = "indiv_per_ml", axis_name = "Abundance (ind/ml)") %>%
   add_row(variable = "indiv_per_ml_d", axis_name = "Abundance ES") %>%
   add_row(variable = "median_body_area_µm2", axis_name = "Median body size (µm²)") %>%
