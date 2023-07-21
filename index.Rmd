@@ -605,9 +605,9 @@ write.csv(morph_mvt,
 
 The only type of patch where all cultures crashed was small connected to small at high disturbance.
 
-## Paper
+## Paper figures
 
-```{r child = here("r_files", "paper.Rmd"), eval = show_results}
+```{r child = here("r_files", "paper_figures.Rmd"), eval = show_results}
 ```
 
 ```{r echo=FALSE, message=FALSE}

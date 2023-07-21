@@ -64,7 +64,11 @@ library("gtools") #Another permutation package
 library("magrittr") #for %<>%
 library("plotly")
 library("robustbase") #For robust regression
-
+library("magick")
+library("webshot")
+library("htmlwidgets")
+library("magrittr")
+library("htmltools")
 
 
 conflict_prefer("load", "base")
