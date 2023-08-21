@@ -10,16 +10,17 @@ editor_options:
 response_variable = "metaecosystem_richness"
 ```
 
-##### Means
-
 ```{r}
-plot.metaecos.points(ds_metaecosystems, metaecosystem_type_input,
+plot.metaecos.points(ds_metaecosystems, 
+                     metaecosystem_type_input,
                      response_variable)
 ```
 
-##### Boxplots
-
+<details>
+  <summary>Click for boxplots instead of means</summary>
 ```{r}
-plot.metaecos.boxplots(ds_metaecosystems, metaecosystem_type_input,
+plot.metaecos.boxplots(ds_metaecosystems,
+                       metaecosystem_type_input,
                        response_variable)
 ```
+</details>

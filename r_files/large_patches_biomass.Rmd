@@ -11,101 +11,33 @@ editor_options:
 response_variable = "bioarea_mm2_per_ml"
 ```
 
-##### Means
-
 ```{r}
-plot.patches.points(ds_patches, 
+plot.patches.points(ds_patches,
                     patch_type_input,
                     response_variable)
 ```
 
-*Analysis*
-
--   Filter data
-
-```{r}
-
-patch_type_input_model = c("Large connected to large",
-                                 "Large connected to small")
-
-filtered_data = ds_patches_effect_size %>%
-                         filter(time_point >= first_time_point_model,
-                                time_point <= last_time_point_model,
-                                patch_type %in% patch_type_input_model)
-```
-
--   Full model
-
-```{r eval = FALSE}
-full_model = lm(bioarea_µm2_per_ml_d ~                  
-                  patch_type +
-                  patch_type : day,
-                  data = filtered_data)
-
-summary(full_model)
-par(mfrow = c(2,3))
-plot(full_model, which = 1:5)
-```
-
--   Effects of `patch_type`
-
-```{r eval = FALSE}
-null_model = lm(bioarea_µm2_per_ml_d ~                  
-                  patch_type : day,
-                  data = filtered_data)
-
-summary(null_model)
-par(mfrow = c(2,3))
-plot(full_model, which = 1:5)
-stats = compute.model.stats(full_model,
-                    null_model,
-                    "linear_model")
-
-print(paste0("P value = ", stats$p_value, ", ΔAIC = ", stats$deltaAIC, ", R2 = ", stats$R2))
-```
-
--   Effects of `patch_type : day`
-
-```{r eval = FALSE}
-null_model = lm(bioarea_µm2_per_ml_d ~                  
-                  patch_type,
-                  data = filtered_data)
-
-summary(null_model)
-par(mfrow = c(2,3))
-plot(full_model, which = 1:5)
-stats = compute.model.stats(full_model,
-                    null_model,
-                    "linear_model")
-
-results_large_patches_biomass_patch_type_day = paste0(
-  "Interaction between size of the connected patch and day on the biomass effect size in large patches: ",
-  "P value = ", 
-  stats$p_value, 
-  ", ΔAIC = ", 
-  stats$deltaAIC, 
-  ", R2 = ", 
-  stats$R2)
-results_large_patches_biomass_patch_type_day
-```
-
-##### Boxplots
-
+<details>
+  <summary>Click for boxplots</summary>
 ```{r}
 plot.patches.boxplots(patch_type_input,
-                       response_variable)
+                      response_variable)
 ```
+</details>
 
-##### Replicates
-
+<details>
+  <summary>Click for replicates</summary>
 ```{r}
 plot.patches.replicates(patch_type_input,
                         response_variable)
 ```
+</details>
 
-##### ES
-
+<details>
+  <summary>Click for effect sizes</summary>
 ```{r}
-plot.patches.points.ES(ds_patches_effect_size, patch_type_input,
+plot.patches.points.ES(ds_patches_effect_size, 
+                       patch_type_input,
                        paste0(response_variable, "_d"))
 ```
+</details>

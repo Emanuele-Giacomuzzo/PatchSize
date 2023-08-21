@@ -7,9 +7,7 @@ editor_options:
   chunk_output_type: console
 ---
 
-### Evaporation tests
-
-#### Evaporation when microwaving 15 falcon tubes at the time
+### Evaporation when microwaving 15 falcon tubes at the time
 
 ```{r, class.source = 'fold-hide'}
 evaporation.test = read.csv(here("data", "evaporation_test","evaporation_test_right.csv"), header = TRUE)
@@ -25,7 +23,7 @@ evaporation.test %>%
        fill = "Rack replicate")
 ```
 
-#### Evaporation when microwaving 5 tubes with 10 filled or empty tubes
+### Evaporation when microwaving 5 tubes with 10 filled or empty tubes
 
 ```{r, class.source = 'fold-hide'}
 evaporation.test = read.csv(here("data", "evaporation_test", "evaporation_test_fill_nofill.csv"), header = TRUE)

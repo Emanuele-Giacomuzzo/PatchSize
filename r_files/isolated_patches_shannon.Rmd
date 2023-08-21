@@ -21,7 +21,7 @@ p_isolated_shannon = plot.patches.points(ds_patches,
 
 <details>
     <summary>Click for boxplots instead of means</summary>
-    ```{r}
+```{r}
 plot.patches.boxplots(patch_type_input,
                       response_variable)
 ```

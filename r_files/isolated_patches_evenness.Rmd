@@ -6,32 +6,21 @@ editor_options:
   chunk_output_type: console
 ---
 
-##### Time - Evenness {.tabset .tabset-dropdown}
-
 ```{r}
 response_variable = "evenness_pielou"
 ```
 
-###### Means
-
 ```{r}
-plot.patches.points(ds_patches, patch_type_input,
-                    response_variable)
+plot.patches.points(ds_patches,
+                    patch_type_input,
+                    response_variable) %>%
+  print()
 ```
 
-###### Boxplots
-
+<details>
+  <summary>Click for boxplots instead of means</summary>
 ```{r}
 plot.patches.boxplots(patch_type_input,
                        response_variable)
-
 ```
-
-##### Patch size - Evenness {.tabset .tabset-dropdown}
-
-```{r}
-plot.patches.size.response.boxplots(metaecosystem_input = "no",
-                                  trophic_type_input = "NA",
-                                  flow_input = "NA",
-                                  response_variable = response_variable)
-```
+</details> 

@@ -10,31 +10,33 @@ editor_options:
 response_variable = "bioarea_mm2_per_ml"
 ```
 
-##### Means
-
 ```{r}
-plot.patches.points(ds_patches, 
+plot.patches.points(ds_patches,
                     patch_type_input,
                     response_variable)
 ```
 
-##### Boxplots
-
+<details>
+  <summary>Click for boxplots</summary>
 ```{r}
 plot.patches.boxplots(patch_type_input,
-                       response_variable)
+                      response_variable)
 ```
+</details>
 
-##### Replicates
-
+<details>
+  <summary>Click for replicates</summary>
 ```{r}
 plot.patches.replicates(patch_type_input,
                         response_variable)
 ```
+</details>
 
-##### ES
-
+<details>
+  <summary>Click for effect sizes</summary>
 ```{r}
-plot.patches.points.ES(ds_patches_effect_size, patch_type_input,
+plot.patches.points.ES(ds_patches_effect_size, 
+                       patch_type_input,
                        paste0(response_variable, "_d"))
 ```
+</details>

@@ -1,49 +1,87 @@
 ---
-title: "All patches"
+title: "Untitled"
 output: html_document
-date: "2023-03-04"
+date: "2023-08-18"
 editor_options: 
   chunk_output_type: console
 ---
 
-##### Richness - Productivity
+##### Richness
 
 ```{r}
-for (time_point_input in 1:7) {
-  p = ds_patches %>%
-    filter(patch_type %in% patch_type_input,
-           time_point == time_point_input) %>%
-    ggplot(
-      aes(
-        x = species_richness,
-        y = bioarea_µm2_per_ml,
-        #group = interaction(species_richness, patch_type),
-        color = patch_type
-      )
-    ) +
-    geom_point() +
-    labs(title = time_point_input)
+ds_patches %>%
+  filter(species_richness > 0,
+         patch_type == patch_type_input) %>%
+  ggplot(aes(x = species_richness,
+             y = bioarea_mm2_per_ml)) +
+  geom_point()
+```
+
+```{r}
+for (patch_type in patch_type_input) {
+  plot.relationship.BEF(patch_type,
+                        "species_richness") %>%
+    print()
+}
+```
+
+##### Shannon
+
+```{r}
+ds_patches %>%
+  filter(species_richness > 0,
+         patch_type == patch_type_input) %>%
+  ggplot(aes(x = shannon,
+             y = bioarea_mm2_per_ml)) +
+  geom_point()
+```
+
+```{r}
+for (patch_type in patch_type_input) {
+  plot.relationship.BEF(patch_type,
+                        "shannon") %>%
+    print()
+}
+```
+
+##### Evenness
+
+```{r}
+ds_patches %>%
+  filter(species_richness > 0,
+         patch_type == patch_type_input) %>%
+  ggplot(aes(x = evenness_pielou,
+             y = bioarea_mm2_per_ml)) +
+  geom_point()
+```
+
+```{r}
+for (patch_type in patch_type_input) {
+  plot.relationship.BEF(patch_type,
+                        "evenness_pielou") %>%
+    print()
+}
+```
+
+##### Pop dominance
+
+```{r}
+for(species_input in protist_species_dominance){
   
-  print(time_point_input)
-  
-  print(p)
+  print(ds_patches %>%
+  ggplot(aes(x = get(paste0(species_input)),
+             y = bioarea_mm2_per_ml)) +
+  geom_point() +
+    labs(x = paste0(species_input, "_dominance")))
   
 }
 ```
 
-##### Shannon - Productivity
-
 ```{r}
-ds_patches %>%
-    filter(patch_type %in% patch_type_input,
-           species_richness < 11) %>%
-    ggplot(
-      aes(
-        x = shannon,
-        y = bioarea_µm2_per_ml,
-        #group = interaction(species_richness, patch_type),
-        color = patch_type
-      )
-    ) +
-    geom_point()
+for (patch_type in patch_type_input) {
+  plot.relationship.dominance.productivity(patch_type,
+                                         protist_species,
+                                         protist_species_dominance) %>%
+    print()
+}
 ```
