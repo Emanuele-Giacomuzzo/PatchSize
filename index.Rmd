@@ -528,6 +528,10 @@ save.image(file = here("environments", "before_analysis_ES.RData"))
 ```{r child = here("r_files", "results.Rmd"), eval = show_results}
 ```
 
+```{r child = here("r_files", "presentation_two_patch_plots.Rmd"), eval = show_results}
+```
+
+
 ## Tests
 
 ```{r child = here("r_files", "model_evaporation.Rmd"), eval = FALSE}

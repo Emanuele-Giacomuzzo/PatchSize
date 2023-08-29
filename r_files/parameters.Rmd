@@ -283,11 +283,22 @@ zero_line_ES_line_type = "dotted"
 zero_line_ES_colour = "grey"
 zero_line_ES_line_width = 1
 
-#Presentation
+#Paper
 size_legend = 12
 size_x_axis = 16
 size_y_axis = 11
 legend_width_cm = 2
+
+#Presentation
+presentation_legend_size = 20
+presentation_x_axis_size = 20
+presentation_y_axis_size = presentation_x_axis_size
+presentation_legend_width_cm = 3
+presentation_figure_width = 30
+presentation_figure_height = 22
+presentation_figure_units = "cm"
+presentation_figure_size = 15
+presentation_figure_res = 600
 
 #Publication 
 publication_width = 12

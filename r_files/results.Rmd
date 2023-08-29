@@ -56,7 +56,7 @@ ggarrange(
 
 ```{r results = FALSE}
 dev.copy(png, 
-         here("isolated_patches.png"),
+         here("results", "figures", disturbance_global_input, "isolated_patches.png"),
          width = 17.3, 
          height = 17.3, 
          units = "cm", 
@@ -96,7 +96,7 @@ p_MM_SL_metaecos_biomass +
 
 ```{r results = FALSE}
 dev.copy(png, 
-         here("tot_bioarea.png"),
+         here("results", "figures", disturbance_global_input, "tot_bioarea.png"),
          width = 17.3, 
          height = 17.3, 
          units = "cm", 
@@ -147,16 +147,6 @@ ggarrange(
   label.y = 0.8
 ) %>%
   print()
-```
-
-```{r results = FALSE}
-dev.copy(png, 
-         here("two_patch_systems.png"),
-         width = 17.3, 
-         height = 25.95, 
-         units = "cm", 
-         res = 600)
-dev.off()
 ```
 
 ```{r}
@@ -265,7 +255,7 @@ ggarrange(
 
 ```{r results = FALSE}
 dev.copy(png, 
-         here("connected_patches.png"),
+         here("results", "figures", disturbance_global_input, "connected_patches.png"),
          width = 17.3, 
          height = 17.3, 
          units = "cm", 
