@@ -11,9 +11,14 @@ response_variable = "metaecosystem_richness"
 ```
 
 ```{r}
-p_MM_SL_metaecos_gamma = plot.metaecos.points(ds_metaecosystems, metaecosystem_type_input,
-                     response_variable) %>%
+p_MM_SL_metaecos_gamma = plot.metaecos.points(ds_metaecosystems, 
+                                              metaecosystem_type_input,
+                                              response_variable) %>%
   print()
+
+p_MM_SL_metaecos_gamma_presentations = plot.metaecos.points(ds_metaecosystems, 
+                                                            metaecosystem_type_input,
+                                                            response_variable)
 ```
 
 <details>

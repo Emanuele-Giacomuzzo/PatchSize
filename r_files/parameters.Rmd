@@ -286,8 +286,12 @@ zero_line_ES_line_width = 1
 #Paper
 size_legend = 12
 size_x_axis = 16
-size_y_axis = 11
+size_y_axis = 14
 legend_width_cm = 2
+publication_width = 17.3
+publication_height = 17.3
+publication_units = "cm"
+publication_res = 600
 
 #Presentation
 presentation_legend_size = 20
@@ -299,12 +303,10 @@ presentation_figure_height = 22
 presentation_figure_units = "cm"
 presentation_figure_size = 15
 presentation_figure_res = 600
-
-#Publication 
-publication_width = 12
-publication_height = 12
-publication_unit = "cm"
 presentation_size = 15
+presentations_treatment_points_size = 5
+presentations_treatment_linewidth = 2
+
 
 ggarrange_margin_top = 0
 ggarrange_margin_bottom = 0

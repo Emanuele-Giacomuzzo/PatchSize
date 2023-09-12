@@ -17,6 +17,10 @@ p_isolated_shannon = plot.patches.points(ds_patches,
                                        patch_type_input,
                                        response_variable) %>%
     print()
+
+p_isolated_shannon_presentations = plot.patches.points.presentations(ds_patches, 
+                                                                     patch_type_input,
+                                                                     response_variable)
 ```
 
 <details>

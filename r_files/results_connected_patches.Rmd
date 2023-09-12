@@ -1,0 +1,83 @@
+---
+title: "Paper CHAPTER 1"
+output:
+  html_document: default
+  pdf_document: default
+date: "2022-12-16"
+editor_options:
+  chunk_output_type: console
+---
+
+```{r}
+ggarrange(
+  p_connected_biomass_effect_size +
+    rremove("xlab") +
+    theme(axis.text.x = element_blank(),
+          axis.ticks.x = element_blank(),
+          plot.margin = unit(c(ggarrange_margin_top,
+                               ggarrange_margin_right,
+                               ggarrange_margin_bottom,
+                               ggarrange_margin_left), 
+                             "cm")) +
+    font("legend.text", size = size_legend) +
+    font("ylab", size = size_y_axis), 
+  p_connected_shannon_effect_size +
+    theme(plot.margin = unit(c(ggarrange_margin_left,
+                               ggarrange_margin_right,
+                               ggarrange_margin_bottom,
+                               ggarrange_margin_left), 
+                             "cm")) + 
+    font("xlab", size = size_y_axis) + 
+    font("ylab", size = size_y_axis) +
+    scale_x_continuous(breaks = unique(ds_patches$day)),
+  nrow = 2,
+  heights = c(0.9,1),
+  common.legend = TRUE,
+  align = "v",
+  labels = c("(a)", "(b)"),
+  label.x = 0.1,
+  label.y = 0.8
+)
+```
+
+```{r results = FALSE}
+dev.copy(png, 
+         here("results", "figures", disturbance_global_input, "connected_patches.png"),
+         width = 17.3, 
+         height = 17.3, 
+         units = "cm", 
+         res = 600)
+dev.off()
+```
+
+```{r fig-connected-patches, eval = show_results}
+results_table %>%
+  filter(Response %in% c("Bioarea Density ES", 
+                         "Shannon Index ES"),
+         Levels == "Small (connected to small or large)") %>%
+  arrange(Response, 
+          Levels) %>%
+  select(-Levels) %>%
+  kbl(caption = paste(
+    "Table 5. 
+    Small patches results. 
+    The full model included the size of the donor patch and its interaction with time. 
+    The fixed model did not include such interaction.", 
+    compar_ex)) %>%
+  kable_styling()
+
+results_table %>%
+  filter(Response %in% c("Bioarea Density ES", 
+                         "Shannon Index ES"),
+         Levels == "Large (connected to small or large)") %>%
+  arrange(Response, 
+          Levels) %>%
+  select(-Levels) %>%
+  kbl(caption = paste(
+    "Table 6. 
+    Large patches results. 
+    The full model included the size of the donor patch and its interaction with time. 
+    The fixed model did not include such interaction.",
+    compar_ex)) %>%
+  kable_styling()
+```
