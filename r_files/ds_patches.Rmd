@@ -126,10 +126,7 @@ ds_patches$metaecosystem_type <- recode(
 
 ```{r}
 #Reorder patches
-ds_patches = ds_patches %>%
-  mutate(patch_type = factor(
-    patch_type,
-    levels = c(
+patch_types_ordered = c(
       "Small isolated",
       "Small connected to small",
       "Small connected to large",
@@ -139,6 +136,11 @@ ds_patches = ds_patches %>%
       "Large connected to large",
       "Large connected to small"
     )
+
+ds_patches = ds_patches %>%
+  mutate(patch_type = factor(
+    patch_type,
+    levels = patch_types_ordered
   ))
 ```
 
@@ -257,7 +259,6 @@ expect_equal(unique(ds_patches$Ble_indiv_per_ml_dominance[ds_patches$indiv_per_m
 #Keep the number of rows before calculations
 n_rows_ds_patches_before_calculations = nrow(ds_patches)
 ```
-
 ```{r}
 #Calculate alpha diversity (Shannon, Simpson, Inverse Simpson, Evenness)
 ds_patches = calculate.alpha.diversity()

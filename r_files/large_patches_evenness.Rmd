@@ -40,3 +40,23 @@ plot.patches.points.ES(ds_patches_effect_size,
                        paste0(response_variable, "_d"))
 ```
 </details>
+
+##### Large isolated vs Large connected to large
+
+```{r}
+patch_type_input_model = c("Large isolated",
+                           "Large connected to large")
+```
+
+```{r child = here("r_files", "analysis_small_n_large_patches.Rmd")}
+```
+
+##### Large connected to small vs Large connected to large
+
+```{r}
+patch_type_input_model = c("Large connected to small",
+                           "Large connected to large")
+```
+
+```{r child = here("r_files", "analysis_small_n_large_patches.Rmd")}
+```

@@ -1,5 +1,9 @@
 plot.patches.classes.points = function(patch_type_input,
                                        size_class_input) {
+  
+  patch_type_input <- factor(patch_type_input, 
+                             levels = patch_types_ordered)
+  
   ds_classes %>%
     filter(patch_type %in% patch_type_input,
            !is.na(class_indiv_per_µl)) %>%

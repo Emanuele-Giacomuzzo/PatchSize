@@ -1,6 +1,10 @@
 plot.metaecos.points = function(ds_metaecosystems,
                                 metaecosystem_type_input,
                                 response_variable) {
+  
+  metaecosystem_type_input <- factor(metaecosystem_type_input, 
+                                     levels = metaecosystem_types_ordered)
+  
   ds_metaecosystems %>%
     filter(metaecosystem_type %in% metaecosystem_type_input,
            !is.na(!!sym(response_variable))) %>%
@@ -24,7 +28,7 @@ plot.metaecos.points = function(ds_metaecosystems,
       fun = "mean",
       aes(group = metaecosystem_type),
       position = position_dodge(dodging),
-      linewidth = presentations_treatment_linewidth
+      linewidth = presentation_treatment_linewidth
     ) +
     geom_errorbar(aes(
       ymax = get(response_variable) + ci,

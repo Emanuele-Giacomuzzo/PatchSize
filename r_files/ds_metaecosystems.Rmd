@@ -47,18 +47,17 @@ ds_metaecosystems$patch_size_symmetry <-
 
 ```{r}
 #Reorder the meta-ecosystems
-ds_metaecosystems = ds_metaecosystems %>%
-  mutate(metaecosystem_type = factor(
-    metaecosystem_type,
-    levels = c(
+metaecosystem_types_ordered = c(
       "Small-Small meta-ecosystem",
       "Medium-Medium meta-ecosystem",
       "Medium-Medium isolated",
       "Large-Large meta-ecosystem",
       "Small-Large meta-ecosystem",
-      "Small-Large isolated"
-    )
-  ))
+      "Small-Large isolated")
+
+ds_metaecosystems = ds_metaecosystems %>%
+  mutate(metaecosystem_type = factor(metaecosystem_type,
+                                     levels = metaecosystem_types_ordered))
 ```
 
 ```{r}

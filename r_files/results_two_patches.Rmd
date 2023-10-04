@@ -15,7 +15,7 @@ p_MM_SL_metaecos_biomass +
 )
 ```
 
-```{r results = FALSE}
+```{r results=FALSE}
 dev.copy(png, 
          here("results", "figures", disturbance_global_input, "tot_bioarea.png"),
          width = 17.3, 
@@ -25,7 +25,7 @@ dev.copy(png,
 dev.off()
 ```
 
-```{r fig-connected-systems, fig.height = 9, eval = show_results}
+```{r fig-connected-systems, fig.height = 9}
 ### --- Two patch systems - PAPER --- ###
 ggarrange(
   p_MM_SL_metaecos_alpha +
@@ -200,13 +200,13 @@ p_MM_SL_metaecos_alpha_0 = ds_metaecosystems %>%
     geom_point(stat = "summary",
                fun = "mean",
                position = position_dodge(dodging),
-               size = presentations_treatment_points_size) +
+               size = presentation_treatment_points_size) +
     geom_line(
       stat = "summary",
       fun = "mean",
       aes(group = metaecosystem_type),
       position = position_dodge(dodging),
-      linewidth = presentations_treatment_linewidth
+      linewidth = presentation_treatment_linewidth
     ) +
     labs(x = axis_names$axis_name[axis_names$variable == "day"],
          y = axis_names$axis_name[axis_names$variable == response_variable],
@@ -291,13 +291,13 @@ p_MM_SL_metaecos_beta_0 = ds_metaecosystems %>%
     geom_point(stat = "summary",
                fun = "mean",
                position = position_dodge(dodging),
-               size = presentations_treatment_points_size) +
+               size = presentation_treatment_points_size) +
     geom_line(
       stat = "summary",
       fun = "mean",
       aes(group = metaecosystem_type),
       position = position_dodge(dodging),
-      linewidth = presentations_treatment_linewidth
+      linewidth = presentation_treatment_linewidth
     ) +
     labs(x = axis_names$axis_name[axis_names$variable == "day"],
          y = axis_names$axis_name[axis_names$variable == response_variable],
@@ -395,7 +395,7 @@ ggarrange(
   print()
 ```
 
-```{r results = FALSE}
+```{r results=FALSE}
 dev.copy(png, 
          here("results", "figures", disturbance_global_input, "presentation_two_patch_systems_1.png"),
          width = presentation_figure_width, 
@@ -443,7 +443,7 @@ ggarrange(
   print()
 ```
 
-```{r results = FALSE}
+```{r results=FALSE}
 dev.copy(png, 
          here("results", "figures", disturbance_global_input, "presentation_two_patch_systems_2.png"),
          width = presentation_figure_width, 
@@ -491,7 +491,7 @@ ggarrange(
   print()
 ```
 
-```{r results = FALSE}
+```{r results=FALSE}
 dev.copy(png, 
          here("results", "figures", disturbance_global_input, "presentation_two_patch_systems_3.png"),
          width = presentation_figure_width, 
@@ -539,7 +539,7 @@ ggarrange(
   print()
 ```
 
-```{r results = FALSE}
+```{r results=FALSE}
 dev.copy(png, 
          here("results", "figures", disturbance_global_input, "presentation_two_patch_systems_4.png"),
          width = presentation_figure_width, 
@@ -587,7 +587,7 @@ ggarrange(
   print()
 ```
 
-```{r results = FALSE}
+```{r results=FALSE}
 dev.copy(png, 
          here("results", "figures", disturbance_global_input, "presentation_two_patch_systems_5.png"),
          width = presentation_figure_width, 
@@ -635,7 +635,7 @@ ggarrange(
   print()
 ```
 
-```{r results = FALSE}
+```{r results=FALSE}
 dev.copy(png, 
          here("results", "figures", disturbance_global_input, "presentation_two_patch_systems_6.png"),
          width = presentation_figure_width, 
@@ -683,7 +683,7 @@ ggarrange(
   print()
 ```
 
-```{r results = FALSE}
+```{r results=FALSE}
 dev.copy(png, 
          here("results", "figures", disturbance_global_input, "presentation_two_patch_systems_7.png"),
          width = presentation_figure_width, 

@@ -2,6 +2,9 @@ plot.patches.points.presentations = function(ds_patches,
                                patch_type_input,
                                response_variable) {
   
+  patch_type_input <- factor(patch_type_input, 
+                             levels = patch_types_ordered)
+  
   ds_patches %>%
     filter(
       patch_type %in% patch_type_input,
@@ -24,7 +27,7 @@ plot.patches.points.presentations = function(ds_patches,
       fun = "mean",
       aes(group = patch_type),
       position = position_dodge(dodging),
-      linewidth = presentations_treatment_linewidth
+      linewidth = presentation_treatment_linewidth
     ) +
     geom_errorbar(aes(
       ymax = get(response_variable) + ci,

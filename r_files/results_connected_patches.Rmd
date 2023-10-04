@@ -50,7 +50,7 @@ dev.copy(png,
 dev.off()
 ```
 
-```{r fig-connected-patches, eval = show_results}
+```{r fig-connected-patches}
 results_table %>%
   filter(Response %in% c("Bioarea Density ES", 
                          "Shannon Index ES"),

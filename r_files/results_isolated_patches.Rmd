@@ -107,7 +107,7 @@ ggarrange(
 
 ```{r results = FALSE}
 dev.copy(png, 
-         here("results", "figures", disturbance_global_input, "presentations_isolated_patches.png"),
+         here("results", "figures", disturbance_global_input, "presentation_isolated_patches.png"),
          width = presentation_figure_width, 
          height = presentation_figure_height, 
          units = presentation_figure_units, 

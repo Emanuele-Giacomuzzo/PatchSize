@@ -63,6 +63,8 @@ system_nr_metaecosystems = culture_info %>%
 
 n_metaecosystems = length(system_nr_metaecosystems)
 
+metaecosystem_type_ordered = 
+
 metaecosystems_to_take_off = culture_info %>%
   filter(culture_ID %in% patches_to_take_off) %>%
   pull(system_nr) %>%
@@ -304,8 +306,8 @@ presentation_figure_units = "cm"
 presentation_figure_size = 15
 presentation_figure_res = 600
 presentation_size = 15
-presentations_treatment_points_size = 5
-presentations_treatment_linewidth = 2
+presentation_treatment_points_size = 5
+presentation_treatment_linewidth = 2
 
 
 ggarrange_margin_top = 0

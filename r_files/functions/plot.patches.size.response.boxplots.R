@@ -3,6 +3,10 @@ plot.patches.size.response.boxplots = function(metaecosystem_input,
                                              flow_input,
                                              response_variable) {
   
+  
+  metaecosystem_input <- factor(metaecosystem_input, 
+                             levels = metaecosystem_types_ordered)
+  
   if (trophic_type_input == "autotrophic") {
     colour_lowest = colour_lowest_autotrophic
     colour_highest = colour_highest_autotrophic

@@ -30,7 +30,7 @@ sed -i '' 's/old_string/new_string/g' *.Rmd
 
 #R script
 cd /Users/ema/Documents/GitHub/PatchSize/r_files/functions
-sed -i '' 's/old/new/g' *.R
+sed -i '' 's/old_string/new_string/g' *.R
 ```
 
 ### Crashed cultures

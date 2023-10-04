@@ -1,0 +1,215 @@
+---
+title: "Untitled"
+output:
+  html_document:
+    code_folding: hide
+    profiling: yes
+date: "2023-04-14"
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+filtered_data = ds_patches %>%
+  filter(time_point >= first_time_point_model,
+         time_point <= last_time_point_model,
+         patch_type %in% patch_type_input_model,
+         !is.na(!!sym(response_variable)))
+```
+
+```{r}
+plot.patches.points(filtered_data,
+                    patch_type_input_model,
+                    response_variable)
+```
+
+<center>[**Null model**]{.underline}</center>
+
+```{r}
+null_model = lmer(
+  get(response_variable) ~
+    day + 
+    (day | culture_ID), 
+  data = filtered_data,
+  REML = FALSE,
+  control = lmerControl(optimizer = "Nelder_Mead")
+)
+```
+
+<center>[**Full model**]{.underline} [**(with**]{.underline} `patch_type` [**and**]{.underline} `patch_type : day`[**)**]{.underline}</center>
+
+```{r}
+full_model = lmer(
+  get(response_variable) ~
+    day + 
+    patch_type +
+    patch_type : day + 
+    (day | culture_ID), 
+  data = filtered_data,
+  REML = FALSE,
+  control = lmerControl(optimizer = "Nelder_Mead")
+)
+```
+
+<details>
+  <summary>Click for model output</summary>
+```{r}
+print(summary(full_model), digits = 1)
+```
+</details>
+
+```{r}
+#Create resid vs fitted (if your number of fitted values is lower than the number of rows in the filtered dataset, it's probably because you have NAs)
+res_vs_fit = filtered_data %>%
+    mutate(predicted = fitted(full_model),
+           residuals = resid(full_model)) %>%
+    plot_ly(x = ~predicted,
+            y = ~residuals,
+            type = "scatter",
+            mode = "markers",
+            marker = list(size = 5, color = "#4C78A8"),
+            text = paste(" System nr: ", filtered_data$culture_ID, "<br>",
+                         "Day: ", filtered_data$day, "<br>",
+                         "Meta-ecosystem: ", filtered_data$patch_type, "<br>",
+                         "Tot Biomass: ", round(filtered_data$bioarea_mm2_per_ml, digits = 0), "<br>"),
+            hoverinfo = "text") %>%
+    plotly::layout(
+        xaxis = list(title = "Fitted Values"),
+        yaxis = list(title = "Residuals")
+    )
+```
+
+<details>
+  <summary>Click for residual plots</summary>
+```{r}
+res_vs_fit
+qqnorm(resid(full_model))
+```
+</details>
+
+
+```{r}
+model_stats_full = compute.model.stats(full_model,
+                                       null_model,
+                                       "mixed_model")
+
+model_stats_full %>%
+  mutate(deltaAIC = round(deltaAIC, digits = 1),
+         p_value = round(p_value, digits = 3),
+         R2 = NULL,
+         evidence = "",
+         evidence = ifelse(p_value > 0.1, 
+                           "none",
+                           evidence),
+         evidence = ifelse(p_value < 0.1, 
+                           "* weak",
+                           evidence),
+         evidence = ifelse(p_value < 0.05, 
+                           "** moderate",
+                           evidence),
+         evidence = ifelse(p_value < 0.01, 
+                           "*** strong",
+                           evidence),
+         evidence = ifelse(p_value < 0.001, 
+                           "**** very strong",
+                           evidence),
+         p_value = ifelse(p_value < 0.001,
+                           "< 0.001",
+                           p_value)) %>%
+  print()
+```
+
+&nbsp;<br>
+&nbsp;<br>
+&nbsp;<br>
+
+<center>[**Fixed model**]{.underline} [**(with**]{.underline} `patch_type`[**)**]{.underline}</center>
+
+```{r}
+fixed_model = lmer(
+  get(response_variable) ~
+    day + 
+    patch_type + 
+    (day | culture_ID), 
+  data = filtered_data,
+  REML = FALSE,
+  control = lmerControl(optimizer = "Nelder_Mead")
+)
+```
+
+<details>
+  <summary>Click for model output</summary>
+```{r}
+print(summary(fixed_model), digits = 1)
+```
+</details>
+
+```{r}
+#Create resid vs fitted
+res_vs_fit = filtered_data %>%
+    mutate(predicted = fitted(fixed_model),
+           residuals = resid(fixed_model)) %>%
+    plot_ly(x = ~predicted,
+            y = ~residuals,
+            type = "scatter",
+            mode = "markers",
+            marker = list(size = 5, color = "#4C78A8"),
+            text = paste(" System nr: ", filtered_data$culture_ID, "<br>",
+                         "Day: ", filtered_data$day, "<br>",
+                         "Meta-ecosystem: ", filtered_data$patch_type, "<br>",
+                         "Tot Biomass: ", round(filtered_data$bioarea_mm2_per_ml, digits = 0), "<br>"),
+            hoverinfo = "text") %>%
+    plotly::layout(
+        xaxis = list(title = "Fitted Values"),
+        yaxis = list(title = "Residuals")
+    )
+```
+
+<details>
+  <summary>Click for residual plots</summary>
+```{r}
+res_vs_fit
+qqnorm(resid(fixed_model))
+```
+</details>
+
+```{r}
+model_stats_fixed = compute.model.stats(fixed_model,
+                                       null_model,
+                                       "mixed_model")
+
+model_stats_fixed %>%
+  mutate(deltaAIC = round(deltaAIC, digits = 1),
+         p_value = round(p_value, digits = 3),
+         R2 = NULL,
+         evidence = "",
+         evidence = ifelse(p_value > 0.1, 
+                           "none",
+                           evidence),
+         evidence = ifelse(p_value < 0.1, 
+                           "* weak",
+                           evidence),
+         evidence = ifelse(p_value < 0.05, 
+                           "** moderate",
+                           evidence),
+         evidence = ifelse(p_value < 0.01, 
+                           "*** strong",
+                           evidence),
+         evidence = ifelse(p_value < 0.001, 
+                           "**** very strong",
+                           evidence),
+         p_value = ifelse(p_value < 0.001,
+                           "< 0.001",
+                           p_value)) %>%
+  print()
+```
+
+```{r}
+results_table = fill.results.table(
+  results_table,
+  response_variable,
+  patch_type_input_model,
+  model_stats_full,
+  model_stats_fixed
+)
+```

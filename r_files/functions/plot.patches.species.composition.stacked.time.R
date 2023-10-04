@@ -1,4 +1,9 @@
 plot.patches.species.composition.stacked.time = function(patch_type_input) {
+  
+  
+  patch_type_input <- factor(patch_type_input, 
+                             levels = patch_types_ordered)
+  
   species_composition = ds_patches %>%
     ungroup() %>%
     filter(indiv_per_ml != 0) %>%

@@ -1,6 +1,11 @@
 plot.metaecos.boxplots = function(ds_metaecosystems,
                                   metaecosystem_type_input,
                                   response_variable) {
+  
+  metaecosystem_type_input <- factor(metaecosystem_type_input, 
+                                     levels = metaecosystem_types_ordered)
+  
+  metaecosystem_type_input = sort(metaecosystem_type_input)
 
   ds_metaecosystems %>%
     filter(

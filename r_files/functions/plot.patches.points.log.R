@@ -2,6 +2,8 @@ plot.patches.points.log = function(ds_patches,
                                patch_type_input,
                                response_variable) {
   
+  patch_type_input <- factor(patch_type_input, 
+                             levels = patch_types_ordered)
   
   ds_patches %>%
     filter(
