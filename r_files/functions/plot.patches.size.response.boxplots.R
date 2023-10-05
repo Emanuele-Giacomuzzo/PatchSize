@@ -3,7 +3,6 @@ plot.patches.size.response.boxplots = function(metaecosystem_input,
                                              flow_input,
                                              response_variable) {
   
-  
   metaecosystem_input <- factor(metaecosystem_input, 
                              levels = metaecosystem_types_ordered)
   

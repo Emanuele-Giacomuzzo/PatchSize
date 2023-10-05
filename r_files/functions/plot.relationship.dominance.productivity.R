@@ -2,8 +2,8 @@ plot.relationship.dominance.productivity = function(patch_type_input,
                                                     protist_species,
                                                     protist_species_dominance) {
   
-  patch_type_input <- factor(patch_type_input, 
-                             levels = patch_types_ordered)
+  patch_type_input <- patch_type_input_model[order(match(patch_type_input, 
+                                                         patch_types_ordered))]
   
   for (species_input in protist_species) {
     print(

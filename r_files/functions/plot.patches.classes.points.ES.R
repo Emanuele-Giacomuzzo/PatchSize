@@ -1,8 +1,8 @@
 plot.patches.classes.points.ES = function(patch_type_input,
                                           size_class_input) {
   
-  patch_type_input <- factor(patch_type_input, 
-                             levels = patch_types_ordered)
+  patch_type_input <- patch_type_input[order(match(patch_type_input, 
+                                                   patch_types_ordered))]
   
   ds_classes_effect_size %>%
     filter(

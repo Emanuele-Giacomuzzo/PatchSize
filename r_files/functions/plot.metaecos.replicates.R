@@ -1,8 +1,8 @@
 plot.metaecos.replicates = function(metaecosystem_type_input,
                                     response_variable) {
   
-  metaecosystem_type_input <- factor(metaecosystem_type_input, 
-                                     levels = metaecosystem_types_ordered)
+  metaecosystem_type_input <- metaecosystem_type_input[order(match(metaecosystem_type_input, 
+                                                                   metaecosystem_types_ordered))]
   
   ds_metaecosystems %>%
     filter(metaecosystem_type %in% metaecosystem_type_input) %>%

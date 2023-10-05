@@ -2,8 +2,8 @@ plot.patches.points.ES = function(ds_patches_effect_size,
                                   patch_type_input,
                                   response_variable) {
   
-  patch_type_input <- factor(patch_type_input, 
-                             levels = patch_types_ordered)
+  patch_type_input <- patch_type_input[order(match(patch_type_input, 
+                                                   patch_types_ordered))]
   
   ds_patches_effect_size_filtered = ds_patches_effect_size %>%
     filter(!time_point == 0,

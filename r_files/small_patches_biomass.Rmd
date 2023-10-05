@@ -45,8 +45,8 @@ plot.patches.points.ES(ds_patches_effect_size,
 ##### Small isolated vs Small connected to small
 
 ```{r}
-patch_type_input_model = c("Small connected to small",
-                           "Small isolated")
+patch_type_input_model = c("Small isolated",
+                           "Small connected to small")
 ```
 
 ```{r child = here("r_files", "analysis_small_n_large_patches.Rmd")}

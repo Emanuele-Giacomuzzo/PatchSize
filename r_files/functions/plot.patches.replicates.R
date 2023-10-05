@@ -1,8 +1,8 @@
 plot.patches.replicates = function(patch_type_input,
                                     response_variable) {
   
-  patch_type_input <- factor(patch_type_input, 
-                             levels = patch_types_ordered)
+  patch_type_input <- patch_type_input[order(match(patch_type_input, 
+                                                   patch_types_ordered))]
 
     ds_patches %>%
     filter(patch_type %in% patch_type_input) %>%
