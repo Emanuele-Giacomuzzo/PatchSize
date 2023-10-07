@@ -13,7 +13,7 @@
 "metaecosystem_richness","Medium-Medium meta-ecosystem , Medium-Medium isolated",2.78966124787941,0.576462183510287,NA,1.50976334779938,0.620049008706071,NA
 "bioarea_mm2_per_ml","Small isolated , Medium isolated , Large isolated",-36.7756992562426,1.39852234144705e-09,NA,-32.5203373812303,4.21820895102822e-09,NA
 "shannon","Small isolated , Medium isolated , Large isolated",-18.4880116477851,1.30854998315486e-05,NA,-13.0779025337853,0.000103163897178535,NA
-"bioarea_mm2_per_ml","Small connected to small , Small isolated",0.0922664184371058,0.141724989794429,NA,-1.25499516445579,0.0712061472334734,NA
+"bioarea_mm2_per_ml","Small isolated , Small connected to small",0.0922664184371058,0.141724989794429,NA,-1.25499516445579,0.0712061472334734,NA
 "bioarea_mm2_per_ml","Small connected to large , Small connected to small",-1.62277964438485,0.0601213762770777,NA,-0.644185022190129,0.103929442742459,NA
 "shannon","Small isolated , Small connected to small",-2.44984032457233,0.0397589557136404,NA,-4.37517527386409,0.0115727611994054,NA
 "shannon","Small connected to large , Small connected to small",-2.21568543265512,0.0446972761112632,NA,-4.14898377531648,0.0131487633881187,NA
@@ -59,6 +59,7 @@
 "Spi_te_indiv_per_ml_dominance","Small connected to large , Small connected to small",1.96122514709839,0.360815898765187,NA,1.99703011033375,0.956539442415192,NA
 "median_body_area_µm2","Small isolated , Small connected to small",1.89905915133363,0.349773168593249,NA,1.93984768495557,0.806255362173585,NA
 "median_body_area_µm2","Small connected to large , Small connected to small",-1.3752652669707,0.0680418288015965,NA,0.654769708288313,0.246113697617485,NA
+"beta_diversity_from_isolated","Small connected to large , Small connected to small",1.57750461857759,0.297825453464374,NA,0.707196851146946,0.255532008000803,NA
 "bioarea_mm2_per_ml","Large isolated , Large connected to large",2.14713811936798,0.395964412054221,NA,0.240447974079302,0.184680401716701,NA
 "bioarea_mm2_per_ml","Large connected to small , Large connected to large",-0.923347604633648,0.0852920693595957,NA,-2.37363032081078,0.0364991530206809,NA
 "shannon","Large isolated , Large connected to large",3.76085320745304,0.887298880997721,NA,1.83176312039947,0.681683525608202,NA
@@ -67,8 +68,45 @@
 "species_richness","Large connected to small , Large connected to large",-1.09445028689959,0.0782986323094815,NA,-1.96906731147567,0.0463434351933392,NA
 "evenness_pielou","Large isolated , Large connected to large",1.26314160210103,0.2545064246898,NA,1.10872253030777,0.345131360410073,NA
 "evenness_pielou","Large connected to small , Large connected to large",3.56328281683767,0.803837140747208,NA,1.56919279107328,0.511593128746862,NA
+"Ble_indiv_per_ml","Large isolated , Large connected to large",3.36194604011314,0.726855938509687,NA,1.37485658050821,0.429142355955467,NA
+"Ble_indiv_per_ml","Large connected to small , Large connected to large",0.596046388767377,0.182322750943019,NA,0.668683840525205,0.248571206583332,NA
+"Cep_indiv_per_ml","Large isolated , Large connected to large",0.643709375249273,0.186719962295359,NA,-0.588931154689817,0.107612933703055,NA
+"Cep_indiv_per_ml","Large connected to small , Large connected to large",2.31767980109225,0.43120998667896,NA,0.417139679891761,0.208349168111367,NA
+"Col_indiv_per_ml","Large isolated , Large connected to large",2.55963024419702,0.486662274542389,NA,1.8995711748679,0.751315632782901,NA
+"Col_indiv_per_ml","Large connected to small , Large connected to large",2.24990205138715,0.41684160465013,NA,1.53631487925099,0.495906744364343,NA
+"Eup_indiv_per_ml","Large isolated , Large connected to large",-1.91899152069766,0.0518450529142299,NA,-3.77542974558173,0.016251745804527,NA
+"Eup_indiv_per_ml","Large connected to small , Large connected to large",3.58489545239161,0.812570764497843,NA,1.90842066351513,0.762178876456217,NA
+"Lox_indiv_per_ml","Large isolated , Large connected to large",1.11693471861702,0.236564911686284,NA,1.96797910659507,0.857981808771093,NA
+"Lox_indiv_per_ml","Large connected to small , Large connected to large",2.6044720231514,0.497696916605421,NA,1.15817445062885,0.358875184251708,NA
+"Pau_indiv_per_ml","Large isolated , Large connected to large",0.035102923573163,0.137731583055609,NA,-1.06244252090653,0.0801211475771228,NA
+"Pau_indiv_per_ml","Large connected to small , Large connected to large",0.4729415509197,0.171438749054315,NA,0.387045062179254,0.204076925882644,NA
+"Pca_indiv_per_ml","Large isolated , Large connected to large",0.400334600679344,0.165326545095171,NA,0.131360353035006,0.171630963771186,NA
+"Pca_indiv_per_ml","Large connected to small , Large connected to large",-2.69585134518547,0.0351572060714197,NA,-4.42541148647956,0.0112498844394562,NA
+"Spi_indiv_per_ml","Large isolated , Large connected to large",3.52392442954476,0.788172909238339,NA,1.58086838747317,0.51737067104183,NA
+"Spi_indiv_per_ml","Large connected to small , Large connected to large",1.53319151383107,0.29129923444488,NA,1.72796634992244,0.601970833692084,NA
+"Spi_te_indiv_per_ml","Large isolated , Large connected to large",1.66665122243808,0.311400819232595,NA,1.99936250886662,0.979856682662574,NA
+"Spi_te_indiv_per_ml","Large connected to small , Large connected to large",3.81409175075078,0.911235302598859,NA,1.86528403055718,0.713591612110907,NA
+"Ble_indiv_per_ml_dominance","Large isolated , Large connected to large",-4.36904669594651,0.015229463366725,NA,-5.58868816709401,0.00587356743120652,NA
+"Ble_indiv_per_ml_dominance","Large connected to small , Large connected to large",-2.75893629139318,0.0340655678362586,NA,1.57503350274419,0.514469204474493,NA
+"Cep_indiv_per_ml_dominance","Large isolated , Large connected to large",3.62248374305659,0.827986748897678,NA,1.67418306914021,0.56813267482702,NA
+"Cep_indiv_per_ml_dominance","Large connected to small , Large connected to large",3.86066261364408,0.932702779516699,NA,1.99642075060876,0.952293557904025,NA
+"Col_indiv_per_ml_dominance","Large isolated , Large connected to large",2.57938114794763,0.491492093484326,NA,1.66113005921591,0.560482240888275,NA
+"Col_indiv_per_ml_dominance","Large connected to small , Large connected to large",3.52397584019525,0.788193169739718,NA,1.98490522323038,0.902217325544779,NA
+"Eup_indiv_per_ml_dominance","Large isolated , Large connected to large",1.95330647469393,0.359390131722966,NA,-0.0118721722412829,0.156072615493017,NA
+"Eup_indiv_per_ml_dominance","Large connected to small , Large connected to large",0.591174769733357,0.181879187887971,NA,-1.20344316215937,0.0734834131151161,NA
+"Lox_indiv_per_ml_dominance","Large isolated , Large connected to large",1.45199269630405,0.279709517493196,NA,1.97602331396615,0.876944247295821,NA
+"Lox_indiv_per_ml_dominance","Large connected to small , Large connected to large",1.52974586865992,0.290797809601664,NA,1.23046709381128,0.380361590323023,NA
+"Pau_indiv_per_ml_dominance","Large isolated , Large connected to large",1.41282027845216,0.274284370903871,NA,-0.221329228879995,0.136115824668615,NA
+"Pau_indiv_per_ml_dominance","Large connected to small , Large connected to large",1.91238269955318,0.352111057028266,NA,1.67201850411379,0.566850080694395,NA
+"Pca_indiv_per_ml_dominance","Large isolated , Large connected to large",-1.73104082015004,0.0569534842514235,NA,-3.7079979409632,0.0168877886386586,NA
+"Pca_indiv_per_ml_dominance","Large connected to small , Large connected to large",1.88705558096137,0.347680192251345,NA,0.221876433574948,0.182379910579996,NA
+"Spi_indiv_per_ml_dominance","Large isolated , Large connected to large",3.69895682125275,0.860259157350566,NA,1.82909130083829,0.679305477544547,NA
+"Spi_indiv_per_ml_dominance","Large connected to small , Large connected to large",2.01625512228861,0.370881587360546,NA,1.39064895105656,0.43503225634476,NA
+"Spi_te_indiv_per_ml_dominance","Large isolated , Large connected to large",1.90398068258901,0.350634938255732,NA,1.87356152473046,0.722153713573722,NA
+"Spi_te_indiv_per_ml_dominance","Large connected to small , Large connected to large",3.84043447657268,0.923316904383467,NA,1.96824769087482,0.858572367966706,NA
 "median_body_area_µm2","Large isolated , Large connected to large",-13.8570155977657,0.000132555676753773,NA,-9.95585805830456,0.000544758343668083,NA
 "median_body_area_µm2","Large connected to small , Large connected to large",-7.45795788239138,0.00325039438362265,NA,-0.923259999087804,0.0873113044215096,NA
+"beta_diversity_from_isolated","Large connected to small , Large connected to large",-0.135533151006342,0.126467923074492,NA,-1.2277280261645,0.0724010692344374,NA
 "bioarea_mm2_per_ml_d","Small connected to small , Small connected to large",-2.56851780677503,0.110113231761646,0.51,-4.2057122933098,0.0263843773862326,0.4
 "bioarea_mm2_per_ml_d","Large connected to small , Large connected to large",1.20006582606102,0.336180583552387,0.33,-2.55066540387897,0.0573119440684874,0.32
 "shannon_d","Small connected to small , Small connected to large",3.4269200602774,0.64551537196224,0.23,-0.334572935969032,0.184995127450485,0.21

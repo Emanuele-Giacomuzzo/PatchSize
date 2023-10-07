@@ -12,7 +12,14 @@ compar_ex = "The full and fixed models are compared to the null model."
 
 ```{r}
 ### --- Isolated patches - PAPER --- ###
-ggarrange(
+
+png(file = here("results", "figures", disturbance_global_input, "paper_isolated_patches.png"),
+    width = publication_width,
+    height = publication_height,
+    units = publication_units,
+    res = publication_res)
+
+p=ggarrange(
   p_isolated_biomass +
     rremove("xlab") +
     theme(axis.text.x = element_blank(),
@@ -40,17 +47,12 @@ ggarrange(
   labels = c("(a)", "(b)"),
   label.x = 0.1,
   label.y = 0.8
-)
-```
+) %>%
+  print()
 
-```{r results = FALSE}
-dev.copy(png, 
-         here("results", "figures", disturbance_global_input, "paper_isolated_patches.png"),
-         width = publication_width, 
-         height = publication_height, 
-         units = publication_units, 
-         res = publication_res)
 dev.off()
+
+p
 ```
 
 ```{r}
@@ -74,7 +76,14 @@ results_table %>%
 
 ```{r}
 ### --- Isolated patches - PRESENTATIONS --- ###
-ggarrange(
+
+png(file = here("results", "figures", disturbance_global_input, "presentation_isolated_patches.png"),
+    width = presentation_figure_width, 
+         height = presentation_figure_height, 
+         units = presentation_figure_units, 
+         res = presentation_figure_res)
+
+p=ggarrange(
   p_isolated_biomass_presentations +
     rremove("xlab") +
     theme(axis.text.x = element_blank(),
@@ -102,15 +111,10 @@ ggarrange(
   labels = c("(a)", "(b)"),
   label.x = 0.1,
   label.y = 0.8
-)
-```
+) %>%
+  print()
 
-```{r results = FALSE}
-dev.copy(png, 
-         here("results", "figures", disturbance_global_input, "presentation_isolated_patches.png"),
-         width = presentation_figure_width, 
-         height = presentation_figure_height, 
-         units = presentation_figure_units, 
-         res = presentation_figure_res)
 dev.off()
+
+p
 ```

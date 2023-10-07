@@ -16,7 +16,8 @@ plot.patches.points.presentations = function(ds_patches,
       x = day,
       y = get(response_variable),
       group = interaction(day, patch_type),
-      color = patch_type
+      color = patch_type,
+      linetype = patch_type
     )) +
     geom_point(stat = "summary",
                fun = "mean",
@@ -48,6 +49,18 @@ plot.patches.points.presentations = function(ds_patches,
         parameters_treatments$colour[parameters_treatments$treatment == patch_type_input[6]][1],
         parameters_treatments$colour[parameters_treatments$treatment == patch_type_input[7]][1],
         parameters_treatments$colour[parameters_treatments$treatment == patch_type_input[8]][1]
+      )
+    ) +
+    scale_linetype_manual(
+      values = c(
+        parameters_treatments$linetype[parameters_treatments$treatment == patch_type_input[1]][1],
+        parameters_treatments$linetype[parameters_treatments$treatment == patch_type_input[2]][1],
+        parameters_treatments$linetype[parameters_treatments$treatment == patch_type_input[3]][1],
+        parameters_treatments$linetype[parameters_treatments$treatment == patch_type_input[4]][1],
+        parameters_treatments$linetype[parameters_treatments$treatment == patch_type_input[5]][1],
+        parameters_treatments$linetype[parameters_treatments$treatment == patch_type_input[6]][1],
+        parameters_treatments$linetype[parameters_treatments$treatment == patch_type_input[7]][1],
+        parameters_treatments$linetype[parameters_treatments$treatment == patch_type_input[8]][1]
       )
     ) +
     geom_vline(

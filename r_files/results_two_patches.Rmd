@@ -8,25 +8,30 @@ editor_options:
 
 ```{r}
 ### --- Meta-ecosystem productivity --- ###
+
+png(file = here("results", "figures", disturbance_global_input, "paper_two_patches_productivity.png"),
+    width = publication_width,
+    height = publication_height,
+    units = publication_units,
+    res = publication_res)
+
 p_MM_SL_metaecos_biomass +
   theme(
   axis.title.y = element_text(size = size_y_axis),
   legend.text = element_text(size = size_legend)
 )
-```
 
-```{r results=FALSE}
-dev.copy(png, 
-         here("results", "figures", disturbance_global_input, "tot_bioarea.png"),
-         width = 17.3, 
-         height = 17.3, 
-         units = "cm", 
-         res = 600)
 dev.off()
 ```
 
 ```{r fig-connected-systems, fig.height = 9}
 ### --- Two patch systems - PAPER --- ###
+png(file = here("results", "figures", disturbance_global_input, "paper_two_patches_biodiversity.png"),
+    width = publication_width,
+    height = publication_height,
+    units = publication_units,
+    res = publication_res)
+
 ggarrange(
   p_MM_SL_metaecos_alpha +
     rremove("xlab") +
@@ -68,6 +73,8 @@ ggarrange(
   label.y = 0.8
 ) %>%
   print()
+
+dev.off()
 ```
 
 ```{r}

@@ -51,7 +51,7 @@ patch_type_input_model = c("Large isolated",
 ```{r child = here("r_files", "analysis_small_n_large_patches.Rmd")}
 ```
 
-##### Large connected to small vs Large connected to large
+##### Large connected large vs Large connected to small
 
 ```{r}
 patch_type_input_model = c("Large connected to small",

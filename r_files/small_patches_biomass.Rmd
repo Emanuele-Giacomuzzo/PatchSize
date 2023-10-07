@@ -12,9 +12,14 @@ response_variable = "bioarea_mm2_per_ml"
 ```
 
 ```{r}
-plot.patches.points(ds_patches,
-                    patch_type_input,
-                    response_variable)
+small_patches_biomass = plot.patches.points(ds_patches,
+                                            patch_type_input,
+                                            response_variable) %>%
+  print()
+
+p_small_biomass_presentations = plot.patches.points.presentations(ds_patches,
+                                                                  patch_type_input,
+                                                                  response_variable)
 ```
 
 <details>

@@ -241,6 +241,10 @@ patch_type_input = c("Small isolated",
 
 #### BEF {.tabset .tabset-pills}
 
+```{r}
+save.image(file = here("environments", "before_all_patches_BEF.RData"))
+```
+
 ```{r child = here("r_files", "all_patches_BEF.Rmd")}
 ```
 
@@ -313,11 +317,6 @@ patch_type_input = c("Small isolated",
 #### Biomass {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "small_patches_biomass.Rmd")}
-```
-
-```{r echo=FALSE, message=FALSE}
-#Save environment
-save.image(file = here("environments", "environment_before_small_patches_shannon.RData"))
 ```
 
 #### Shannon {.tabset .tabset-pills}
@@ -516,22 +515,116 @@ patch_type_input = c("Large connected to large",
 
 #### Pop Density {.tabset .tabset-pills}
 
-```{r child = here("r_files", "large_patches_pop_density.Rmd")}
+##### Ble {.tabset .tabset-pills}
+
+```{r child = here("r_files", "large_patches_density_Ble.Rmd")}
+```
+
+##### Cep {.tabset .tabset-pills}
+
+```{r child = here("r_files", "large_patches_density_Cep.Rmd")}
+```
+
+##### Col {.tabset .tabset-pills}
+
+```{r child = here("r_files", "large_patches_density_Col.Rmd")}
+```
+
+##### Eug {.tabset .tabset-pills}
+
+```{r child = here("r_files", "large_patches_density_Eug.Rmd"), eval = FALSE}
+```
+
+##### Eup {.tabset .tabset-pills}
+
+```{r child = here("r_files", "large_patches_density_Eup.Rmd")}
+```
+
+##### Lox {.tabset .tabset-pills}
+
+```{r child = here("r_files", "large_patches_density_Lox.Rmd")}
+```
+
+##### Pau {.tabset .tabset-pills}
+
+```{r child = here("r_files", "large_patches_density_Pau.Rmd")}
+```
+
+##### Pca {.tabset .tabset-pills}
+
+```{r child = here("r_files", "large_patches_density_Pca.Rmd")}
+```
+
+##### Spi {.tabset .tabset-pills}
+
+```{r child = here("r_files", "large_patches_density_Spi.Rmd")}
+```
+
+##### Spi te {.tabset .tabset-pills}
+
+```{r child = here("r_files", "large_patches_density_Spi_te.Rmd")}
+```
+
+##### Tet {.tabset .tabset-pills}
+
+```{r child = here("r_files", "large_patches_density_Tet.Rmd"), eval = FALSE}
 ```
 
 #### Pop Dominance {.tabset .tabset-pills}
 
-```{r child = here("r_files", "large_patches_pop_dominance.Rmd")}
+##### Ble {.tabset .tabset-pills}
+
+```{r child = here("r_files", "large_patches_dominance_Ble.Rmd")}
 ```
 
-#### Pop Last Seen {.tabset .tabset-pills}
+##### Cep {.tabset .tabset-pills}
 
-```{r child = here("r_files", "large_patches_pop_last_saw.Rmd")}
+```{r child = here("r_files", "large_patches_dominance_Cep.Rmd")}
 ```
 
-#### Size Distribution {.tabset .tabset-pills}
+##### Col {.tabset .tabset-pills}
 
-```{r child = here("r_files", "large_patches_size_distribution.Rmd"), eval=FALSE}
+```{r child = here("r_files", "large_patches_dominance_Col.Rmd")}
+```
+
+##### Eug {.tabset .tabset-pills}
+
+```{r child = here("r_files", "large_patches_dominance_Eug.Rmd"), eval = FALSE}
+```
+
+##### Eup {.tabset .tabset-pills}
+
+```{r child = here("r_files", "large_patches_dominance_Eup.Rmd")}
+```
+
+##### Lox {.tabset .tabset-pills}
+
+```{r child = here("r_files", "large_patches_dominance_Lox.Rmd")}
+```
+
+##### Pau {.tabset .tabset-pills}
+
+```{r child = here("r_files", "large_patches_dominance_Pau.Rmd")}
+```
+
+##### Pca {.tabset .tabset-pills}
+
+```{r child = here("r_files", "large_patches_dominance_Pca.Rmd")}
+```
+
+##### Spi {.tabset .tabset-pills}
+
+```{r child = here("r_files", "large_patches_dominance_Spi.Rmd")}
+```
+
+##### Spi te {.tabset .tabset-pills}
+
+```{r child = here("r_files", "large_patches_dominance_Spi_te.Rmd")}
+```
+
+##### Tet {.tabset .tabset-pills}
+
+```{r child = here("r_files", "large_patches_dominance_Tet.Rmd"), eval = FALSE}
 ```
 
 #### Class Density {.tabset .tabset-pills}
@@ -542,6 +635,11 @@ patch_type_input = c("Large connected to large",
 #### Median Size {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "large_patches_median_size.Rmd")}
+```
+
+#### Community change {.tabset .tabset-pills}
+
+```{r child = here("r_files", "large_patches_divergence_from_isolated.Rmd")}
 ```
 
 ### Patches in Small-Large Meta-ecosystem {.tabset .tabset-pills}
@@ -622,6 +720,21 @@ save.image(file = here("environments", "before_analysis_ES.RData"))
 ### Connected patches
 
 ```{r child = here("r_files", "results_connected_patches.Rmd")}
+```
+
+### Small patches
+
+```{r child = here("r_files", "results_small_patches.Rmd")}
+```
+
+### Large patches
+
+```{r echo=FALSE, message=FALSE}
+#Save environment
+save.image(file = here("environments", "environment_before_results_large.RData"))
+```
+
+```{r child = here("r_files", "results_large_patches.Rmd")}
 ```
 
 ## Tests

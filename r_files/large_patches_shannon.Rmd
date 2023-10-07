@@ -12,9 +12,14 @@ response_variable = "shannon"
 ```
 
 ```{r}
-plot.patches.points(ds_patches,
-                    patch_type_input,
-                    response_variable)
+large_patches_shannon = plot.patches.points(ds_patches,
+                                            patch_type_input,
+                                            response_variable) %>%
+  print()
+
+p_large_shannon_presentations = plot.patches.points.presentations(ds_patches,
+                                                                  patch_type_input,
+                                                                  response_variable)
 ```
 
 <details>
@@ -52,7 +57,7 @@ patch_type_input_model = c("Large isolated",
 ```{r child = here("r_files", "analysis_small_n_large_patches.Rmd")}
 ```
 
-##### Large connected to small vs Large connected to large
+##### Large connected large vs Large connected to small
 
 ```{r}
 patch_type_input_model = c("Large connected to small",

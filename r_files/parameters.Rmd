@@ -255,12 +255,12 @@ parameters_treatments = data.frame(treatment = NA,
   add_row(treatment = "Medium isolated", colour = "#737373", linetype = "solid") %>%
   add_row(treatment = "Medium connected to medium", colour = "#feb24c", linetype = "solid") %>%
   add_row(treatment = "Large isolated", colour = "#000000", linetype = "solid") %>%
-  add_row(treatment = "Large connected to large", colour = "#67000d", linetype = "twodash") %>%
-  add_row(treatment = "Large connected to small", colour = "#67000d", linetype = "solid") %>%
-  add_row(treatment = "Small-Small meta-ecosystem", colour = "#deebf7", linetype = "solid") %>%
+  add_row(treatment = "Large connected to large", colour = "#3182bd", linetype = "twodash") %>%
+  add_row(treatment = "Large connected to small", colour = "#3182bd", linetype = "solid") %>%
+  add_row(treatment = "Small-Small meta-ecosystem", colour = "#fc9272", linetype = "solid") %>%
   add_row(treatment = "Medium-Medium meta-ecosystem", colour = "#1b7837", linetype = "solid") %>%
   add_row(treatment = "Medium-Medium isolated", colour = "#1b7837", linetype = "dashed") %>%
-  add_row(treatment = "Large-Large meta-ecosystem", colour = "#3182bd", linetype = "solid") %>%
+  add_row(treatment = "Large-Large meta-ecosystem", colour = "#67000d", linetype = "solid") %>%
   add_row(treatment = "Small-Large meta-ecosystem", colour = "#762a83", linetype = "solid") %>%
   add_row(treatment = "Small-Large isolated", colour = "#762a83", linetype = "dashed") %>%
   slice(-1)

@@ -7,24 +7,7 @@ editor_options:
 ---
 
 ```{r}
-for(culture_ID_input in 1:n_cultures){
-  for(protist_input in protist_species){
-    
-    protist_density_column = paste0(protist_input, "_indiv_per_ml")
-    protist_last_saw_column = paste0(protist_input, "_last_saw_day")
-    
-    day_last_saw = ds_patches %>%
-      filter(culture_ID == culture_ID_input) %>%
-      select(day,
-             all_of(protist_density_column)) %>%
-      slice(which.max(.data[[protist_density_column]])) %>%
-      pull(day)
-    
-    ds_patches[[protist_last_saw_column]][ds_patches$culture_ID == culture_ID_input] = day_last_saw
-  }
-}
-
-patch_size_input = "Large"
+patch_size_input = "Small"
 for (protist_input in protist_species) {
   x_axis = paste0(protist_input, "_last_saw_day")
   
@@ -37,8 +20,8 @@ for (protist_input in protist_species) {
       group = patch_type,
       colour = patch_type
     )) +
-    geom_jitter(width = 0.2, height = 0.2) +
-    scale_x_continuous(limits = c(0, 30)) +
+    geom_jitter(width = 0.5, height = 0.3) +
+    scale_x_continuous(limits = c(-2, 30)) +
     labs(title = ,
          x = paste("Last saw", protist_input),
          y = "") +

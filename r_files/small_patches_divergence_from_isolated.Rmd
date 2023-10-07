@@ -12,14 +12,16 @@ response_variable = "beta_diversity_from_isolated"
 
 ```{r}
 plot.patches.points(ds_patches,
-                    patch_type_input,
+                    patch_type_input = c("Small connected to small",
+                                         "Small connected to large"),
                     response_variable)
 ```
 
 <details>
   <summary>Click for boxplots</summary>
 ```{r}
-plot.patches.boxplots(patch_type_input,
+plot.patches.boxplots(patch_type_input = c("Small connected to small",
+                                         "Small connected to large"),
                       response_variable)
 ```
 </details>
@@ -27,16 +29,16 @@ plot.patches.boxplots(patch_type_input,
 <details>
   <summary>Click for replicates</summary>
 ```{r}
-plot.patches.replicates(patch_type_input,
+plot.patches.replicates(patch_type_input = c("Small connected to small",
+                                             "Small connected to large"),
                         response_variable)
 ```
 </details>
 
-<details>
-  <summary>Click for effect sizes</summary>
 ```{r}
-plot.patches.points.ES(ds_patches_effect_size, 
-                       patch_type_input,
-                       paste0(response_variable, "_d"))
+patch_type_input_model = c("Small connected to large",
+                           "Small connected to small")
 ```
-</details>
+
+```{r child = here("r_files", "analysis_small_n_large_patches.Rmd")}
+```
