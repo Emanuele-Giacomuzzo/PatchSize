@@ -37,6 +37,12 @@ sed -i '' 's/old_string/new_string/g' *.R
 
 The only type of patch where all cultures crashed was small connected to small at high disturbance.
 
+### Residuals
+
+-   
+
+-   
+
 ### References
 
 ```{r echo=FALSE, message=FALSE}

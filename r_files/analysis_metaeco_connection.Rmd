@@ -101,7 +101,7 @@ for (set_input in 1:n_sets) {
                                          null_model,
                                          "mixed_model")
   
-  fixed_model = lmer(
+  reduced_model = lmer(
     get(response_variable) ~
       day +
       connection +
@@ -112,7 +112,7 @@ for (set_input in 1:n_sets) {
                           optCtrl = list(method = method_input))
   )
   
-  model_stats_fixed = compute.model.stats(fixed_model,
+  model_stats_fixed = compute.model.stats(reduced_model,
                                           null_model,
                                           "mixed_model")
   
@@ -191,7 +191,7 @@ iterated_results_table %>%
 &nbsp;<br>
 &nbsp;<br>
 
-<center>[**Fixed model**]{.underline} [**(with `connection`)**]{.underline}</center>
+<center>[**Reduced model**]{.underline} [**(with `connection`)**]{.underline}</center>
 
 <details>
   <summary>Click for ΔAIC and p-value dsitributions</summary>

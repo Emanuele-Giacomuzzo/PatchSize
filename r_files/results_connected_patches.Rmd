@@ -16,7 +16,7 @@ png(file = here("results", "figures", disturbance_global_input, "paper_connected
     res = paper_res)
 
 p=ggarrange(
-  p_SL_biomass +
+   p_SL_shannon +
     rremove("xlab") +
     theme(axis.text.x = element_blank(),
           axis.ticks.x = element_blank(),
@@ -27,7 +27,7 @@ p=ggarrange(
                              "cm")) +
     font("legend.text", size = size_legend) +
     font("ylab", size = size_y_axis), 
-  p_SL_shannon +
+  p_SL_biomass +
     theme(plot.margin = unit(c(ggarrange_margin_left,
                                ggarrange_margin_right,
                                ggarrange_margin_bottom,
@@ -85,4 +85,47 @@ results_table %>%
     The fixed model did not include such interaction.",
     compar_ex)) %>%
   kable_styling()
+```
+
+```{r results=FALSE}
+### --- Isolated patches - PRESENTATIONS --- ###
+
+png(file = here("results", "figures", disturbance_global_input, "presentation_connected_patches.png"),
+    width = presentation_figure_width, 
+         height = presentation_figure_height, 
+         units = presentation_figure_units, 
+         res = presentation_figure_res)
+
+p=ggarrange(
+   p_SL_shannon_presentations +
+    rremove("xlab") +
+    theme(axis.text.x = element_blank(),
+          axis.ticks.x = element_blank(),
+          plot.margin = unit(c(ggarrange_margin_top,
+                               ggarrange_margin_right,
+                               ggarrange_margin_bottom,
+                               ggarrange_margin_left), 
+                             "cm")) +
+    font("legend.text", size = presentation_legend_size) +
+    font("ylab", size = presentation_y_axis_size), 
+  p_SL_biomass_presentations +
+    theme(plot.margin = unit(c(ggarrange_margin_left,
+                               ggarrange_margin_right,
+                               ggarrange_margin_bottom,
+                               ggarrange_margin_left), 
+                             "cm")) + 
+    font("xlab", size = presentation_x_axis_size) + 
+    font("ylab", size = presentation_y_axis_size) +
+  scale_x_continuous(breaks = unique(ds_patches$day)),
+  nrow = 2,
+  heights = c(0.9,1),
+  common.legend = TRUE,
+  align = "v",
+  labels = c("(a)", "(b)"),
+  label.x = 0.1,
+  label.y = 0.8
+) %>%
+  print()
+
+dev.off()
 ```

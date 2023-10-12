@@ -20,7 +20,7 @@ png(file = here("results", "figures", disturbance_global_input, "paper_isolated_
     res = paper_res)
 
 p=ggarrange(
-  p_isolated_biomass +
+   p_isolated_shannon +
     rremove("xlab") +
     theme(axis.text.x = element_blank(),
           axis.ticks.x = element_blank(),
@@ -31,7 +31,7 @@ p=ggarrange(
                              "cm")) +
     font("legend.text", size = size_legend) +
     font("ylab", size = size_y_axis), 
-  p_isolated_shannon +
+  p_isolated_biomass +
     theme(plot.margin = unit(c(ggarrange_margin_left,
                                ggarrange_margin_right,
                                ggarrange_margin_bottom,
@@ -88,7 +88,7 @@ png(file = here("results", "figures", disturbance_global_input, "presentation_is
          res = presentation_figure_res)
 
 p=ggarrange(
-  p_isolated_biomass_presentations +
+   p_isolated_shannon_presentations +
     rremove("xlab") +
     theme(axis.text.x = element_blank(),
           axis.ticks.x = element_blank(),
@@ -99,7 +99,7 @@ p=ggarrange(
                              "cm")) +
     font("legend.text", size = presentation_legend_size) +
     font("ylab", size = presentation_y_axis_size), 
-  p_isolated_shannon_presentations +
+  p_isolated_biomass_presentations +
     theme(plot.margin = unit(c(ggarrange_margin_left,
                                ggarrange_margin_right,
                                ggarrange_margin_bottom,

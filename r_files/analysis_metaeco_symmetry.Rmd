@@ -123,10 +123,10 @@ model_stats_full %>%
 &nbsp;<br>
 &nbsp;<br>
 
-<center>[**Fixed model**]{.underline} [**(with**]{.underline} `patch_size_symmetry`[**)**]{.underline}</center>
+<center>[**Reduced model**]{.underline} [**(with**]{.underline} `patch_size_symmetry`[**)**]{.underline}</center>
 
 ```{r}
-fixed_model = lmer(
+reduced_model = lmer(
   get(response_variable) ~
     day + 
     patch_size_symmetry + 
@@ -140,15 +140,15 @@ fixed_model = lmer(
 <details>
   <summary>Click for model output</summary>
 ```{r}
-print(summary(fixed_model), digits = 1)
+print(summary(reduced_model), digits = 1)
 ```
 </details>
 
 ```{r}
 #Create resid vs fitted
 res_vs_fit = filtered_data %>%
-    mutate(predicted = fitted(fixed_model),
-           residuals = resid(fixed_model)) %>%
+    mutate(predicted = fitted(reduced_model),
+           residuals = resid(reduced_model)) %>%
     plot_ly(x = ~predicted,
             y = ~residuals,
             type = "scatter",
@@ -169,12 +169,12 @@ res_vs_fit = filtered_data %>%
   <summary>Click for residual plots</summary>
 ```{r}
 res_vs_fit
-qqnorm(resid(fixed_model))
+qqnorm(resid(reduced_model))
 ```
 </details>
 
 ```{r}
-model_stats_fixed = compute.model.stats(fixed_model,
+model_stats_fixed = compute.model.stats(reduced_model,
                                        null_model,
                                        "mixed_model")
 

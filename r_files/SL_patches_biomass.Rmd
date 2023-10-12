@@ -10,7 +10,7 @@ editor_options:
 response_variable = "bioarea_mm2_per_ml"
 ```
 
-```{r fig.height = 9}
+```{r}
 p_SL_biomass = plot.patches.points(ds_patches, 
                                    patch_type_input,
                                    response_variable) %>%

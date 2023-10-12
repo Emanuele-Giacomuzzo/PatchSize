@@ -165,10 +165,10 @@ model_stats_full %>%
 &nbsp;<br>
 &nbsp;<br>
 
-<center>[**Fixed model**]{.underline} [**(with `size_connected_patch`)**]{.underline}</center>
+<center>[**Reduced model**]{.underline} [**(with `size_connected_patch`)**]{.underline}</center>
 
 ```{r}
-fixed_model = lm(get(response_variable) ~
+reduced_model = lm(get(response_variable) ~
                   size_connected_patch,
                 data = filtered_data)
 ```
@@ -176,13 +176,13 @@ fixed_model = lm(get(response_variable) ~
 <details>
   <summary>Click for model output</summary>
 ```{r}
-print(summary(fixed_model), digits = 1)
+print(summary(reduced_model), digits = 1)
 ```
 </details> 
 
 ```{r eval = eval_cook_distances}
 # Create the cook's distance plot
-cook_distances <- influence.measures(fixed_model)[["infmat"]] %>% 
+cook_distances <- influence.measures(reduced_model)[["infmat"]] %>% 
   as.data.frame() %>%
   select(cook.d) %>%
   pull() %>%
@@ -207,8 +207,8 @@ cook_distances_plot = filtered_data_to_plot %>%
     )
 
 #Create the residuals vs leverages plot
-my_residuals <- resid(fixed_model)
-my_leverages <- hatvalues(fixed_model)
+my_residuals <- resid(reduced_model)
+my_leverages <- hatvalues(reduced_model)
 filtered_data_to_plot$residuals = my_residuals
 filtered_data_to_plot$leverages = my_leverages
 leverage_plot = filtered_data_to_plot %>%
@@ -228,25 +228,25 @@ leverage_plot = filtered_data_to_plot %>%
     )
 
 #Calculate leverage points threshold (taken from rule of the statistical modelling course)
-treshold_leverage_points = 2 * length(coef(fixed_model)) / nrow(filtered_data) 
+treshold_leverage_points = 2 * length(coef(reduced_model)) / nrow(filtered_data) 
 treshold_leverage_points = round(treshold_leverage_points, digits = 2)
 
 #Robust regression
-#fixed_model_robust = lmrob(get(response_variable) ~ 
+#reduced_model_robust = lmrob(get(response_variable) ~ 
 #                            size_connected_patch +
 #                            size_connected_patch:day,
 #                          data = filtered_data, 
 #                          method = "MM")
-#print(summary(fixed_model_robust), digits = 1)
+#print(summary(reduced_model_robust), digits = 1)
 #par(mfrow = c(2, 3))
-#plot(fixed_model_robust, which = 1:5)
+#plot(reduced_model_robust, which = 1:5)
 ```
 
 <details>
   <summary>Click for residual plots</summary>
 ```{r}
 par(mfrow = c(2, 3))
-plot(fixed_model, which = 1:5)
+plot(reduced_model, which = 1:5)
 ```
 
 ```{r, echo=FALSE, eval = eval_cook_distances}
@@ -260,7 +260,7 @@ print(paste("Leverage points over", treshold_leverage_points, "could change the 
 </details> 
 
 ```{r}
-model_stats_fixed = compute.model.stats(fixed_model,
+model_stats_fixed = compute.model.stats(reduced_model,
                                        null_model,
                                        "linear_model")
 
