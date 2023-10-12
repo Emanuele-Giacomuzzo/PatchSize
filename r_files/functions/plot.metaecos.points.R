@@ -22,13 +22,13 @@ plot.metaecos.points = function(ds_metaecosystems,
     geom_point(stat = "summary",
                fun = "mean",
                position = position_dodge(dodging),
-               size = presentation_treatment_points_size) +
+               size = treatment_points_size) +
     geom_line(
       stat = "summary",
       fun = "mean",
       aes(group = metaecosystem_type),
       position = position_dodge(dodging),
-      linewidth = presentation_treatment_linewidth
+      linewidth = treatment_lines_linewidth
     ) +
     geom_errorbar(aes(
       ymax = get(response_variable) + ci,

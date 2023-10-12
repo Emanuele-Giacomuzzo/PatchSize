@@ -107,9 +107,5 @@
 "median_body_area_µm2","Large isolated , Large connected to large",-13.8570155977657,0.000132555676753773,NA,-9.95585805830456,0.000544758343668083,NA
 "median_body_area_µm2","Large connected to small , Large connected to large",-7.45795788239138,0.00325039438362265,NA,-0.923259999087804,0.0873113044215096,NA
 "beta_diversity_from_isolated","Large connected to small , Large connected to large",-0.135533151006342,0.126467923074492,NA,-1.2277280261645,0.0724010692344374,NA
-"bioarea_mm2_per_ml_d","Small connected to small , Small connected to large",-2.56851780677503,0.110113231761646,0.51,-4.2057122933098,0.0263843773862326,0.4
-"bioarea_mm2_per_ml_d","Large connected to small , Large connected to large",1.20006582606102,0.336180583552387,0.33,-2.55066540387897,0.0573119440684874,0.32
-"shannon_d","Small connected to small , Small connected to large",3.4269200602774,0.64551537196224,0.23,-0.334572935969032,0.184995127450485,0.21
-"shannon_d","Large connected to small , Large connected to large",2.4380141547756,0.473095984700921,0.26,0.618529920895931,0.295207633180288,0.11
 "species_richness_d","Small connected to small , Small connected to large",2.55003475244311,0.487470737438218,0.25,-0.620755159037351,0.149279754288204,0.2
 "species_richness_d","Large connected to small , Large connected to large",-0.509528384831064,0.204787271655644,0.42,-2.07624910622495,0.0720255931078882,0.29

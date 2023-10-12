@@ -9,8 +9,14 @@ editor_options:
 ---
 
 ```{r}
-ggarrange(
-  p_connected_biomass_effect_size +
+png(file = here("results", "figures", disturbance_global_input, "paper_connected_patches.png"),
+    width = paper_width,
+    height = paper_height,
+    units = paper_units,
+    res = paper_res)
+
+p=ggarrange(
+  p_SL_biomass +
     rremove("xlab") +
     theme(axis.text.x = element_blank(),
           axis.ticks.x = element_blank(),
@@ -21,7 +27,7 @@ ggarrange(
                              "cm")) +
     font("legend.text", size = size_legend) +
     font("ylab", size = size_y_axis), 
-  p_connected_shannon_effect_size +
+  p_SL_shannon +
     theme(plot.margin = unit(c(ggarrange_margin_left,
                                ggarrange_margin_right,
                                ggarrange_margin_bottom,
@@ -37,23 +43,22 @@ ggarrange(
   labels = c("(a)", "(b)"),
   label.x = 0.1,
   label.y = 0.8
-)
+) %>%
+  print()
 ```
 
-```{r results = FALSE}
-dev.copy(png, 
-         here("results", "figures", disturbance_global_input, "connected_patches.png"),
-         width = 17.3, 
-         height = 17.3, 
-         units = "cm", 
-         res = 600)
+```{r results=FALSE}
 dev.off()
+```
+
+```{r fig.height = 7}
+p
 ```
 
 ```{r fig-connected-patches}
 results_table %>%
-  filter(Response %in% c("Bioarea Density ES", 
-                         "Shannon Index ES"),
+  filter(Response %in% c("Bioarea Density", 
+                         "Shannon Index"),
          Levels == "Small (connected to small or large)") %>%
   arrange(Response, 
           Levels) %>%
@@ -67,8 +72,8 @@ results_table %>%
   kable_styling()
 
 results_table %>%
-  filter(Response %in% c("Bioarea Density ES", 
-                         "Shannon Index ES"),
+  filter(Response %in% c("Bioarea Density", 
+                         "Shannon Index"),
          Levels == "Large (connected to small or large)") %>%
   arrange(Response, 
           Levels) %>%

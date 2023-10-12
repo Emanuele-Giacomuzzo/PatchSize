@@ -18,7 +18,8 @@ small_patches_biomass = plot.patches.points(ds_patches,
   print()
 
 p_small_biomass_presentations = plot.patches.points.presentations(ds_patches,
-                                                                  patch_type_input,
+                                                                  patch_type_input = c("Small connected to small", 
+                                                                                       "Small connected to large"),
                                                                   response_variable)
 ```
 

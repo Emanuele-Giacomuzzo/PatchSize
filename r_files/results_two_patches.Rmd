@@ -7,32 +7,38 @@ editor_options:
 ---
 
 ```{r}
-### --- Meta-ecosystem productivity --- ###
+### --- Productivity PAPER --- ###
 
 png(file = here("results", "figures", disturbance_global_input, "paper_two_patches_productivity.png"),
-    width = publication_width,
-    height = publication_height,
-    units = publication_units,
-    res = publication_res)
+    width = paper_width,
+    height = paper_height,
+    units = paper_units,
+    res = paper_res)
 
 p_MM_SL_metaecos_biomass +
   theme(
   axis.title.y = element_text(size = size_y_axis),
   legend.text = element_text(size = size_legend)
 )
+```
 
+```{r results=FALSE}
 dev.off()
 ```
 
-```{r fig-connected-systems, fig.height = 9}
-### --- Two patch systems - PAPER --- ###
-png(file = here("results", "figures", disturbance_global_input, "paper_two_patches_biodiversity.png"),
-    width = publication_width,
-    height = publication_height,
-    units = publication_units,
-    res = publication_res)
+```{r fig.height = 5}
+p_MM_SL_metaecos_biomass
+```
 
-ggarrange(
+```{r fig-connected-systems}
+### --- Biodiversity PAPER --- ###
+png(file = here("results", "figures", disturbance_global_input, "paper_two_patches_biodiversity.png"),
+    width = paper_width,
+    height = 23,
+    units = paper_units,
+    res = paper_res)
+
+p = ggarrange(
   p_MM_SL_metaecos_alpha +
     rremove("xlab") +
     theme(axis.text.x = element_blank(),
@@ -73,8 +79,14 @@ ggarrange(
   label.y = 0.8
 ) %>%
   print()
+```
 
+```{r results=FALSE}
 dev.off()
+```
+
+```{r fig.height = 9}
+p
 ```
 
 ```{r}
@@ -147,9 +159,10 @@ results_table %>%
   kable_styling()
 ```
 
-PRESENTATIONS
-
 ```{r}
+
+#Define the range of values of Shannon and Bray Curtis
+
 presentation_y_min_metaecos_alpha = ds_metaecosystems %>%
   filter(metaecosystem_type %in% c("Medium-Medium meta-ecosystem",
                                    "Small-Large meta-ecosystem",
@@ -234,8 +247,7 @@ p_MM_SL_metaecos_alpha_0 = ds_metaecosystems %>%
     guides(color = guide_legend(title = NULL,
                                 nrow = 2),
            linetype = guide_legend(title = NULL,
-                                   nrow = 2)) %>%
-  print()
+                                   nrow = 2))
 ```
 
 ```{r}
@@ -245,8 +257,7 @@ metaecosystem_type_input = "Medium-Medium meta-ecosystem"
 ```{r}
 p_MM_SL_metaecos_alpha_1 = plot.metaecos.points.presentations(ds_metaecosystems, 
                                                               metaecosystem_type_input,
-                                                              response_variable) %>%
-  print()
+                                                              response_variable)
 ```
 
 ```{r}
@@ -257,8 +268,7 @@ metaecosystem_type_input = c("Medium-Medium meta-ecosystem",
 ```{r}
 p_MM_SL_metaecos_alpha_2 = plot.metaecos.points.presentations(ds_metaecosystems, 
                                                               metaecosystem_type_input,
-                                                              response_variable) %>%
-  print()
+                                                              response_variable)
 ```
 
 ```{r}
@@ -270,8 +280,7 @@ metaecosystem_type_input = c("Medium-Medium meta-ecosystem",
 ```{r}
 p_MM_SL_metaecos_alpha_3 = plot.metaecos.points.presentations(ds_metaecosystems, 
                                               metaecosystem_type_input,
-                                              response_variable) %>%
-  print()
+                                              response_variable)
 ```
 
 ```{r}
@@ -325,8 +334,7 @@ p_MM_SL_metaecos_beta_0 = ds_metaecosystems %>%
     guides(color = guide_legend(title = NULL,
                                 nrow = 2),
            linetype = guide_legend(title = NULL,
-                                   nrow = 2)) %>%
-  print()
+                                   nrow = 2))
 ```
 
 ```{r}
@@ -336,8 +344,7 @@ metaecosystem_type_input = c("Medium-Medium meta-ecosystem")
 ```{r}
 p_MM_SL_metaecos_beta_1 = plot.metaecos.points.presentations(ds_metaecosystems, 
                                              metaecosystem_type_input,
-                                             response_variable) %>%
-  print()
+                                             response_variable)
 ```
 
 ```{r}
@@ -348,8 +355,7 @@ metaecosystem_type_input = c("Medium-Medium meta-ecosystem",
 ```{r}
 p_MM_SL_metaecos_beta_2 = plot.metaecos.points.presentations(ds_metaecosystems, 
                                              metaecosystem_type_input,
-                                             response_variable) %>%
-  print()
+                                             response_variable)
 ```
 
 ```{r}
@@ -361,12 +367,18 @@ metaecosystem_type_input = c("Medium-Medium meta-ecosystem",
 ```{r}
 p_MM_SL_metaecos_beta_3 = plot.metaecos.points.presentations(ds_metaecosystems, 
                                              metaecosystem_type_input,
-                                             response_variable) %>%
-  print()
+                                             response_variable)
 ```
 
 ```{r}
-### --- Two patch systems for presentation --- ###
+#Alpha0, Beta0
+
+png(file = here("results", "figures", disturbance_global_input, "presentation_two_patch_systems_1.png"),
+    width = presentation_figure_width,
+    height = presentation_figure_height,
+    units = presentation_figure_units,
+    res = presentation_figure_res)
+
 ggarrange(
   p_MM_SL_metaecos_alpha_0 +
     rremove("xlab") +
@@ -398,23 +410,22 @@ ggarrange(
   nrow = 2,
   #common.legend = TRUE,
   align = "v"
-) %>%
-  print()
+)
 ```
 
 ```{r results=FALSE}
-dev.copy(png, 
-         here("results", "figures", disturbance_global_input, "presentation_two_patch_systems_1.png"),
-         width = presentation_figure_width, 
-         height = presentation_figure_height, 
-         units = presentation_figure_units,
-         res = presentation_figure_res)
-dev.off()
 dev.off()
 ```
 
 ```{r}
-### --- Two patch systems for presentation --- ###
+#Alpha1, Beta0
+
+png(file = here("results", "figures", disturbance_global_input, "presentation_two_patch_systems_2.png"),
+    width = presentation_figure_width,
+    height = presentation_figure_height,
+    units = presentation_figure_units,
+    res = presentation_figure_res)
+
 ggarrange(
   p_MM_SL_metaecos_alpha_1 +
     rremove("xlab") +
@@ -446,23 +457,22 @@ ggarrange(
   nrow = 2,
   #common.legend = TRUE,
   align = "v"
-) %>%
-  print()
+)
 ```
 
 ```{r results=FALSE}
-dev.copy(png, 
-         here("results", "figures", disturbance_global_input, "presentation_two_patch_systems_2.png"),
-         width = presentation_figure_width, 
-         height = presentation_figure_height, 
-         units = presentation_figure_units,
-         res = presentation_figure_res)
-dev.off()
 dev.off()
 ```
 
 ```{r}
-### --- Two patch systems for presentation --- ###
+#Alpha2, Beta0
+
+png(file = here("results", "figures", disturbance_global_input, "presentation_two_patch_systems_3.png"),
+    width = presentation_figure_width,
+    height = presentation_figure_height,
+    units = presentation_figure_units,
+    res = presentation_figure_res)
+
 ggarrange(
   p_MM_SL_metaecos_alpha_2 +
     rremove("xlab") +
@@ -494,23 +504,22 @@ ggarrange(
   nrow = 2,
   #common.legend = TRUE,
   align = "v"
-) %>%
-  print()
+)
 ```
 
 ```{r results=FALSE}
-dev.copy(png, 
-         here("results", "figures", disturbance_global_input, "presentation_two_patch_systems_3.png"),
-         width = presentation_figure_width, 
-         height = presentation_figure_height, 
-         units = presentation_figure_units,
-         res = presentation_figure_res)
-dev.off()
 dev.off()
 ```
 
 ```{r}
-### --- Two patch systems for presentation --- ###
+#Alpha3, Beta0
+
+png(file = here("results", "figures", disturbance_global_input, "presentation_two_patch_systems_4.png"),
+    width = presentation_figure_width,
+    height = presentation_figure_height,
+    units = presentation_figure_units,
+    res = presentation_figure_res)
+
 ggarrange(
   p_MM_SL_metaecos_alpha_3 +
     rremove("xlab") +
@@ -542,23 +551,22 @@ ggarrange(
   nrow = 2,
   #common.legend = TRUE,
   align = "v"
-) %>%
-  print()
+)
 ```
 
 ```{r results=FALSE}
-dev.copy(png, 
-         here("results", "figures", disturbance_global_input, "presentation_two_patch_systems_4.png"),
-         width = presentation_figure_width, 
-         height = presentation_figure_height, 
-         units = presentation_figure_units,
-         res = presentation_figure_res)
-dev.off()
 dev.off()
 ```
 
 ```{r}
-### --- Two patch systems for presentation --- ###
+#Alpha3, Beta1
+
+png(file = here("results", "figures", disturbance_global_input, "presentation_two_patch_systems_5.png"),
+    width = presentation_figure_width,
+    height = presentation_figure_height,
+    units = presentation_figure_units,
+    res = presentation_figure_res)
+
 ggarrange(
   p_MM_SL_metaecos_alpha_3 +
     rremove("xlab") +
@@ -590,23 +598,22 @@ ggarrange(
   nrow = 2,
   #common.legend = TRUE,
   align = "v"
-) %>%
-  print()
+)
 ```
 
 ```{r results=FALSE}
-dev.copy(png, 
-         here("results", "figures", disturbance_global_input, "presentation_two_patch_systems_5.png"),
-         width = presentation_figure_width, 
-         height = presentation_figure_height, 
-         units = presentation_figure_units,
-         res = presentation_figure_res)
-dev.off()
 dev.off()
 ```
 
 ```{r}
-### --- Two patch systems for presentation --- ###
+#Alpha3, Beta2
+
+png(file = here("results", "figures", disturbance_global_input, "presentation_two_patch_systems_6.png"),
+    width = presentation_figure_width,
+    height = presentation_figure_height,
+    units = presentation_figure_units,
+    res = presentation_figure_res)
+
 ggarrange(
   p_MM_SL_metaecos_alpha_3 +
     rremove("xlab") +
@@ -638,23 +645,22 @@ ggarrange(
   nrow = 2,
   #common.legend = TRUE,
   align = "v"
-) %>%
-  print()
+)
 ```
 
 ```{r results=FALSE}
-dev.copy(png, 
-         here("results", "figures", disturbance_global_input, "presentation_two_patch_systems_6.png"),
-         width = presentation_figure_width, 
-         height = presentation_figure_height, 
-         units = presentation_figure_units,
-         res = presentation_figure_res)
-dev.off()
 dev.off()
 ```
 
 ```{r}
-### --- Two patch systems for presentation --- ###
+#Alpha3, Beta3
+
+png(file = here("results", "figures", disturbance_global_input, "presentation_two_patch_systems_7.png"),
+    width = presentation_figure_width,
+    height = presentation_figure_height,
+    units = presentation_figure_units,
+    res = presentation_figure_res)
+
 ggarrange(
   p_MM_SL_metaecos_alpha_3 +
     rremove("xlab") +
@@ -686,17 +692,9 @@ ggarrange(
   nrow = 2,
   #common.legend = TRUE,
   align = "v"
-) %>%
-  print()
+)
 ```
 
 ```{r results=FALSE}
-dev.copy(png, 
-         here("results", "figures", disturbance_global_input, "presentation_two_patch_systems_7.png"),
-         width = presentation_figure_width, 
-         height = presentation_figure_height, 
-         units = presentation_figure_units,
-         res = presentation_figure_res)
-dev.off()
 dev.off()
 ```

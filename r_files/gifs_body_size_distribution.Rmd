@@ -83,9 +83,9 @@ for (patch_size_input in c("Small isolated", "Large isolated")) {
       p[[n]],
       duration = 20,
       fps = 25,
-      width = publication_width,
-      height = publication_height,
-      units = publication_unit,
+      width = paper_width,
+      height = paper_height,
+      units = paper_unit,
       res = 150,
       renderer = gifski_renderer()
     )

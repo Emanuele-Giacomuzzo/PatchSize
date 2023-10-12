@@ -651,10 +651,6 @@ patch_type_input = c("Small connected to large",
                      "Large connected to large")
 ```
 
-```{r}
-save.image(file = here("environments", "before_analysis_ES.RData"))
-```
-
 #### Biomass {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "SL_patches_biomass.Rmd")}
@@ -722,19 +718,9 @@ save.image(file = here("environments", "before_analysis_ES.RData"))
 ```{r child = here("r_files", "results_connected_patches.Rmd")}
 ```
 
-### Small patches
+### Other
 
-```{r child = here("r_files", "results_small_patches.Rmd")}
-```
-
-### Large patches
-
-```{r echo=FALSE, message=FALSE}
-#Save environment
-save.image(file = here("environments", "environment_before_results_large.RData"))
-```
-
-```{r child = here("r_files", "results_large_patches.Rmd")}
+```{r child = here("r_files", "results_extra.Rmd")}
 ```
 
 ## Tests

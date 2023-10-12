@@ -290,10 +290,10 @@ size_legend = 12
 size_x_axis = 16
 size_y_axis = 14
 legend_width_cm = 2
-publication_width = 17.3
-publication_height = 17.3
-publication_units = "cm"
-publication_res = 600
+paper_width = 17.3
+paper_height = 20
+paper_units = "cm"
+paper_res = 600
 
 #Presentation
 presentation_legend_size = 20

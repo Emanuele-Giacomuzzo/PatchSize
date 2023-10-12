@@ -39,7 +39,11 @@ level_names = data.frame(
           new = "Isolated patches") %>%
   add_row(old = "Small connected to small , Small connected to large", 
           new = "Small (connected to small or large)") %>%
+  add_row(old = "Small connected to large , Small connected to small", 
+          new = "Small (connected to small or large)") %>%
   add_row(old = "Large connected to small , Large connected to large", 
+          new = "Large (connected to small or large)") %>%
+  add_row(old = "Large connected to large , Large connected to small", 
           new = "Large (connected to small or large)") %>%
   add_row(old = "Large connected to small , Large connected to large , without t4", 
           new = "Large (connected to small or large) without t4") %>%
@@ -168,4 +172,11 @@ results_table %<>%
                    "< 0.001",
                    p_fix)
   )
+```
+
+```{r}
+#Take off the NAs
+results_table = results_table %>%
+  select(-ΔR2_fix) %>%
+  select(-ΔR2_full)
 ```

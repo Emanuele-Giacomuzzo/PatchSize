@@ -7,36 +7,16 @@ editor_options:
 ---
 
 ```{r}
-response_variable = "bioarea_mm2_per_ml_d"
+response_variable = "bioarea_mm2_per_ml"
 ```
 
-```{r}
-p_connected_biomass_effect_size = plot.patches.points.ES(ds_patches_effect_size, 
-                                                         patch_type_input,
-                                                         response_variable) %>%
+```{r fig.height = 9}
+p_SL_biomass = plot.patches.points(ds_patches, 
+                                   patch_type_input,
+                                   response_variable) %>%
   print()
-```
 
-```{r}
-eval_cook_distances = TRUE
-```
-
-##### Small
-
-```{r}
-patch_type_input_model = c("Small connected to small",
-                           "Small connected to large")
-```
-
-```{r child = here("r_files", "analysis_ES.Rmd")}
-```
-
-##### Large
-
-```{r}
-patch_type_input_model = c("Large connected to small",
-                           "Large connected to large")
-```
-
-```{r child = here("r_files", "analysis_ES.Rmd")}
+p_SL_biomass_presentations = plot.patches.points.presentations(ds_patches,
+                                                               patch_type_input,
+                                                               response_variable)
 ```

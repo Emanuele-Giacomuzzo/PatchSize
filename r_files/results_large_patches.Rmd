@@ -14,10 +14,10 @@ compar_ex = "The full and fixed models are compared to the null model."
 ### --- Isolated patches - PAPER --- ###
 
 png(file = here("results", "figures", disturbance_global_input, "paper_large_patches.png"),
-    width = publication_width,
-    height = publication_height,
-    units = publication_units,
-    res = publication_res)
+    width = paper_width,
+    height = paper_height,
+    units = paper_units,
+    res = paper_res)
 
 p=ggarrange(
   large_patches_biomass +

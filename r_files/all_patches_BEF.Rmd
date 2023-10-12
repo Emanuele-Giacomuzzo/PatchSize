@@ -37,6 +37,15 @@ ds_patches %>%
 ```
 
 ```{r}
+ds_patches %>%
+  filter(species_richness > 0,
+         patch_type == patch_type_input) %>%
+  ggplot(aes(x = bioarea_mm2_per_ml,
+             y = shannon)) +
+  geom_point()
+```
+
+```{r}
 for (patch_type in patch_type_input) {
   plot.relationship.BEF(patch_type,
                         "shannon") %>%

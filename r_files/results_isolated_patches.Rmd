@@ -14,10 +14,10 @@ compar_ex = "The full and fixed models are compared to the null model."
 ### --- Isolated patches - PAPER --- ###
 
 png(file = here("results", "figures", disturbance_global_input, "paper_isolated_patches.png"),
-    width = publication_width,
-    height = publication_height,
-    units = publication_units,
-    res = publication_res)
+    width = paper_width,
+    height = paper_height,
+    units = paper_units,
+    res = paper_res)
 
 p=ggarrange(
   p_isolated_biomass +
@@ -49,9 +49,13 @@ p=ggarrange(
   label.y = 0.8
 ) %>%
   print()
+```
 
+```{r results=FALSE}
 dev.off()
+```
 
+```{r fig.height = 7}
 p
 ```
 
@@ -74,7 +78,7 @@ results_table %>%
   kable_styling()
 ```
 
-```{r}
+```{r results=FALSE}
 ### --- Isolated patches - PRESENTATIONS --- ###
 
 png(file = here("results", "figures", disturbance_global_input, "presentation_isolated_patches.png"),
@@ -115,6 +119,4 @@ p=ggarrange(
   print()
 
 dev.off()
-
-p
 ```

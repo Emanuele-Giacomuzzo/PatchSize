@@ -18,7 +18,8 @@ large_patches_shannon = plot.patches.points(ds_patches,
   print()
 
 p_large_shannon_presentations = plot.patches.points.presentations(ds_patches,
-                                                                  patch_type_input,
+                                                                  patch_type_input = c("Large connected to large", 
+                                                                                       "Large connected to small"),
                                                                   response_variable)
 ```
 

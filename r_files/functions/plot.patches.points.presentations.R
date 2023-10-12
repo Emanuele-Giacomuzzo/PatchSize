@@ -81,6 +81,8 @@ plot.patches.points.presentations = function(ds_patches,
       panel.grid.minor = element_blank(),
       legend.position = legend_position
     ) +
-    guides(color = guide_legend(nrow = 1,
-                                title.position = "top"))
+    guides(color = guide_legend(title = NULL,
+                                nrow = 2),
+           linetype = guide_legend(title = NULL,
+                                   nrow = 2))
 }
