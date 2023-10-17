@@ -35,12 +35,23 @@ level_names = data.frame(
           new = "Metaecos (Small-Large vs Medium-Medium)") %>%
   add_row(old = "Small-Large isolated , Medium-Medium isolated", 
           new = "Isolated (Small-Large vs Medium-Medium)") %>%
+  
   add_row(old = "Small isolated , Medium isolated , Large isolated", 
           new = "Isolated patches") %>%
+  
+  add_row(old = "Small connected to large , Small isolated", 
+          new = "Small (isolated or connected to large)") %>%
+  add_row(old = "Small isolated , Small connected to large", 
+          new = "Small (isolated or connected to large)") %>%
   add_row(old = "Small connected to small , Small connected to large", 
           new = "Small (connected to small or large)") %>%
   add_row(old = "Small connected to large , Small connected to small", 
           new = "Small (connected to small or large)") %>%
+  
+  add_row(old = "Large connected to small , Large isolated", 
+          new = "Large (isolated or connected to small)") %>%
+  add_row(old = "Large isolated , Large connected to small", 
+          new = "Large (isolated or connected to small)") %>%
   add_row(old = "Large connected to small , Large connected to large", 
           new = "Large (connected to small or large)") %>%
   add_row(old = "Large connected to large , Large connected to small", 
@@ -69,6 +80,8 @@ results_table$Levels <- factor(results_table$Levels, levels = c("Metaecos (Small
                                                                 "Isolated patches",
                                                                 "Small (connected to small or large)",
                                                                 "Large (connected to small or large)",
+                                                                "Small (isolated or connected to large)",
+                                                                "Large (isolated or connected to small)",
                                                                 "Small (connected to small or large) without t4",
                                                                 "Large (connected to small or large) without t4"))
 ```

@@ -718,6 +718,11 @@ patch_type_input = c("Small connected to large",
 ```{r child = here("r_files", "results_connected_patches.Rmd")}
 ```
 
+### Connected patches 2
+
+```{r child = here("r_files", "results_connected_patches_2.Rmd")}
+```
+
 ### Other
 
 ```{r child = here("r_files", "results_extra.Rmd")}

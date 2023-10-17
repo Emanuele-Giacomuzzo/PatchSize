@@ -250,12 +250,12 @@ parameters_treatments = data.frame(treatment = NA,
                                 colour = NA,
                                 linetype = NA) %>%
   add_row(treatment = "Small isolated", colour = "#bdbdbd", linetype = "solid") %>% 
-  add_row(treatment = "Small connected to small", colour = "#feb24c", linetype = "twodash") %>%
+  add_row(treatment = "Small connected to small", colour = "#feb24c", linetype = "dashed") %>%
   add_row(treatment = "Small connected to large", colour = "#feb24c", linetype = "solid") %>%
   add_row(treatment = "Medium isolated", colour = "#737373", linetype = "solid") %>%
   add_row(treatment = "Medium connected to medium", colour = "#feb24c", linetype = "solid") %>%
   add_row(treatment = "Large isolated", colour = "#000000", linetype = "solid") %>%
-  add_row(treatment = "Large connected to large", colour = "#3182bd", linetype = "twodash") %>%
+  add_row(treatment = "Large connected to large", colour = "#3182bd", linetype = "dashed") %>%
   add_row(treatment = "Large connected to small", colour = "#3182bd", linetype = "solid") %>%
   add_row(treatment = "Small-Small meta-ecosystem", colour = "#fc9272", linetype = "solid") %>%
   add_row(treatment = "Medium-Medium meta-ecosystem", colour = "#1b7837", linetype = "solid") %>%

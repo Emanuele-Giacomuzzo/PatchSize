@@ -15,8 +15,10 @@
 "shannon","Small isolated , Medium isolated , Large isolated",-18.4880116477851,1.30854998315486e-05,NA,-13.0779025337853,0.000103163897178535,NA
 "bioarea_mm2_per_ml","Small isolated , Small connected to small",0.0922664184371058,0.141724989794429,NA,-1.25499516445579,0.0712061472334734,NA
 "bioarea_mm2_per_ml","Small connected to large , Small connected to small",-1.62277964438485,0.0601213762770777,NA,-0.644185022190129,0.103929442742459,NA
+"bioarea_mm2_per_ml","Small connected to large , Small isolated",-3.90757778797898,0.0191818857847059,NA,-2.60034542766203,0.0319655149996871,NA
 "shannon","Small isolated , Small connected to small",-2.44984032457233,0.0397589557136404,NA,-4.37517527386409,0.0115727611994054,NA
 "shannon","Small connected to large , Small connected to small",-2.21568543265512,0.0446972761112632,NA,-4.14898377531648,0.0131487633881187,NA
+"shannon","Small connected to large , Small isolated",-5.37306892056395,0.00921857821167,NA,-7.22279827178386,0.00239019951976885,NA
 "species_richness","Small isolated , Small connected to small",-1.35643698600995,0.0686854087593858,NA,-2.87416867651206,0.0272615692012256,NA
 "species_richness","Small connected to large , Small connected to small",-7.59371211006436,0.00303708818934124,NA,-7.31236058803051,0.00227613034320141,NA
 "evenness_pielou","Small isolated , Small connected to small",-7.96314914974143,0.00252484759909425,NA,-7.79534280729587,0.00174954392748609,NA
@@ -62,8 +64,10 @@
 "beta_diversity_from_isolated","Small connected to large , Small connected to small",1.57750461857759,0.297825453464374,NA,0.707196851146946,0.255532008000803,NA
 "bioarea_mm2_per_ml","Large isolated , Large connected to large",2.14713811936798,0.395964412054221,NA,0.240447974079302,0.184680401716701,NA
 "bioarea_mm2_per_ml","Large connected to small , Large connected to large",-0.923347604633648,0.0852920693595957,NA,-2.37363032081078,0.0364991530206809,NA
+"bioarea_mm2_per_ml","Large connected to small , Large isolated",-7.54097107847332,0.00311824311716234,NA,-9.45342366714146,0.000713623987785047,NA
 "shannon","Large isolated , Large connected to large",3.76085320745304,0.887298880997721,NA,1.83176312039947,0.681683525608202,NA
 "shannon","Large connected to small , Large connected to large",1.38814339184469,0.27092092128068,NA,-0.249621394741993,0.133647097702775,NA
+"shannon","Large connected to small , Large isolated",0.968980953824165,0.21969621603044,NA,-0.571543307680507,0.10880153912181,NA
 "species_richness","Large isolated , Large connected to large",-0.64507694462867,0.0980244371900398,NA,-1.36168442363135,0.0667297812068062,NA
 "species_richness","Large connected to small , Large connected to large",-1.09445028689959,0.0782986323094815,NA,-1.96906731147567,0.0463434351933392,NA
 "evenness_pielou","Large isolated , Large connected to large",1.26314160210103,0.2545064246898,NA,1.10872253030777,0.345131360410073,NA

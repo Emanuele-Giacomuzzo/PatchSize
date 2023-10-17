@@ -16,6 +16,14 @@ p_SL_biomass = plot.patches.points(ds_patches,
                                    response_variable) %>%
   print()
 
+p_SL_biomass_2 = plot.patches.points(ds_patches, 
+                                   patch_type_input = c("Small connected to large",
+                                                        "Small isolated",
+                                                        "Large connected to small",
+                                                        "Large isolated"),
+                                   response_variable) %>%
+  print()
+
 p_SL_biomass_presentations = plot.patches.points.presentations(ds_patches,
                                                                patch_type_input,
                                                                response_variable)
