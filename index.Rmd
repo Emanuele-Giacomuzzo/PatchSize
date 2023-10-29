@@ -19,7 +19,7 @@ editor_options:
 ---
 
 ```{r echo=FALSE, results=FALSE}
-disturbance_global_input = "high"
+disturbance_global_input = "low"
 ```
 
 ```{r echo=FALSE}
@@ -480,6 +480,11 @@ patch_type_input = c("Medium isolated",
 ```{r child = here("r_files", "medium_patches_biomass.Rmd")}
 ```
 
+#### Shannon {.tabset .tabset-pills}
+
+```{r child = here("r_files", "medium_patches_shannon.Rmd")}
+```
+
 ### Large patches {.tabset .tabset-pills}
 
 ```{r}
@@ -721,6 +726,16 @@ patch_type_input = c("Small connected to large",
 ### Connected patches 2
 
 ```{r child = here("r_files", "results_connected_patches_2.Rmd")}
+```
+
+### Connected patches 3
+
+```{r child = here("r_files", "results_connected_patches_3.Rmd")}
+```
+
+### Medium patches
+
+```{r child = here("r_files", "results_medium_patches.Rmd")}
 ```
 
 ### Other

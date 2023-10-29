@@ -1,6 +1,7 @@
 plot.patches.points = function(ds_patches,
                                patch_type_input,
-                               response_variable) {
+                               response_variable,
+                               legend_row_n_input = 2) {
   
   patch_type_input <- patch_type_input[order(match(patch_type_input, 
                                                    patch_types_ordered))]
@@ -82,7 +83,7 @@ plot.patches.points = function(ds_patches,
       legend.key.width = unit(legend_width_cm, "cm")
     ) +
     guides(color = guide_legend(title = NULL,
-                                nrow = 2),
+                                nrow = legend_row_n_input),
            linetype = guide_legend(title = NULL,
-                                   nrow = 2))
+                                   nrow = legend_row_n_input))
 }

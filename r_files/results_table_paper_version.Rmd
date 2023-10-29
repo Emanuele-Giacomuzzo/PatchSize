@@ -121,8 +121,8 @@ for(name_input in 1:nrow(response_names)) {
 
 ```{r}
 #Reorder response names
-results_table$Response <- factor(results_table$Response, levels = c("Bioarea Density",
-                                                                    "Shannon Index",
+results_table$Response <- factor(results_table$Response, levels = c("Shannon Index",
+                                                                    "Bioarea Density",
                                                                     "Tot Bioarea",
                                                                     "Alpha Diversity",
                                                                     "Beta Diversity",

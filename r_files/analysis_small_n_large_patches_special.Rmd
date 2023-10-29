@@ -133,7 +133,8 @@ reduced_model = lmer(
     (day | culture_ID), 
   data = filtered_data,
   REML = FALSE,
-  control = lmerControl(optimizer = "Nelder_Mead")
+  control = lmerControl(optimizer = 'optimx', 
+                      optCtrl = list(method = 'nlminb'))
 )
 ```
 

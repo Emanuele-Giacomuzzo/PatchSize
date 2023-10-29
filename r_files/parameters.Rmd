@@ -253,7 +253,7 @@ parameters_treatments = data.frame(treatment = NA,
   add_row(treatment = "Small connected to small", colour = "#feb24c", linetype = "dashed") %>%
   add_row(treatment = "Small connected to large", colour = "#feb24c", linetype = "solid") %>%
   add_row(treatment = "Medium isolated", colour = "#737373", linetype = "solid") %>%
-  add_row(treatment = "Medium connected to medium", colour = "#feb24c", linetype = "solid") %>%
+  add_row(treatment = "Medium connected to medium", colour = "#de2d26", linetype = "solid") %>%
   add_row(treatment = "Large isolated", colour = "#000000", linetype = "solid") %>%
   add_row(treatment = "Large connected to large", colour = "#3182bd", linetype = "dashed") %>%
   add_row(treatment = "Large connected to small", colour = "#3182bd", linetype = "solid") %>%
