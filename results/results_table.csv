@@ -8,6 +8,9 @@
 "bray_curtis","Small-Large meta-ecosystem , Medium-Medium meta-ecosystem",-0.634000348529113,0.0985688318578175,NA,-1.06971333533053,0.0797635359420194,NA
 "bray_curtis","Small-Large meta-ecosystem , Small-Large isolated",-12.3633873700412,0.00735741986878687,NA,-3.58730725469803,0.0752022629582467,NA
 "bray_curtis","Medium-Medium meta-ecosystem , Medium-Medium isolated",0.755205649609321,0.3084304668472,NA,-0.509236613170912,0.235977043426018,NA
+"beta_nestedness","Small-Large meta-ecosystem , Medium-Medium meta-ecosystem",2.07118467413554,0.381208937060431,NA,1.85766514061139,0.705970791369599,NA
+"beta_nestedness","Small-Large meta-ecosystem , Small-Large isolated",-7.5038337790319,0.00775152693471745,NA,-7.15141919775225,0.00708474358819118,NA
+"beta_nestedness","Medium-Medium meta-ecosystem , Medium-Medium isolated",3.10055103236979,0.682778451620995,NA,1.69875225982127,0.655787350553624,NA
 "metaecosystem_richness","Small-Large meta-ecosystem , Medium-Medium meta-ecosystem",3.42918931632798,0.751709493251209,NA,1.49889122860691,0.479013342403308,NA
 "metaecosystem_richness","Small-Large meta-ecosystem , Small-Large isolated",2.2239931332001,0.431967009386009,NA,1.80444598418178,0.736528778094312,NA
 "metaecosystem_richness","Medium-Medium meta-ecosystem , Medium-Medium isolated",1.31279135013351,0.281689103674094,NA,0.43824822974553,0.242428144339765,NA

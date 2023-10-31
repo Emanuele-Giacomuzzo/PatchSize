@@ -6,70 +6,19 @@ editor_options:
   chunk_output_type: console
 ---
 
-```{r experiment}
+```{r resource_flow_parameters}
+#Resource flow parameters
+resource_flow_days = c(5, 9, 13, 17, 21, 25)
+first_resource_flow = resource_flow_days[1]
+```
+
+```{r disturbance_parameters}
 #Disturbance parameters
 disturbance_levels = c("low", "high")
 n_disturbance_levels = length(disturbance_levels)
+```
 
-#Protist parameters
-protist_species = c("Ble", "Cep", "Col", "Eug", "Eup", "Lox", "Pau", "Pca", "Spi", "Spi_te", "Tet")
-protist_species_indiv_per_ml = paste0(protist_species, "_indiv_per_ml")
-protist_species_dominance = paste0(protist_species_indiv_per_ml, "_dominance")
-protist_species_total = paste0(protist_species, "_tot_indiv")
-n_protist_species = length(protist_species)
-first_protist = protist_species[1]
-last_protist = protist_species[n_protist_species]
-protists_low_threshold_analysis = c("Col", "Eug", "Eup", "Lox", "Pau", "Pca", "Spi_te", "Tet")
-protists_high_threshold_analysis = c("Ble", "Cep", "Spi")
-
-#Patches parameters 
-culture_info = read.csv(here("data", "PatchSizePilot_culture_info.csv"), header = TRUE)
-n_cultures = max(culture_info$culture_ID)
-patch_types = c("Small isolated",
-                "Small connected to small",
-                "Small connected to large",
-                "Medium isolated",
-                "Medium connected to medium",
-                "Large isolated",
-                "Large connected to large",
-                "Large connected to small")
-patches_to_take_off = 60 #Culture ID = 60 because it was spilled (small isolated @ high disturbance, system nr = 40)
-
-#Define treatments and controls
-treatments_and_controls = data.frame(
-  treatment = c(
-    "Small connected to small",
-    "Small connected to large",
-    "Medium connected to medium",
-    "Large connected to large",
-    "Large connected to small"
-  ),
-  control = c(
-    "Small isolated",
-    "Small isolated",
-    "Medium isolated",
-    "Large isolated",
-    "Large isolated"
-  )
-)
-n_treatments = length(unique(treatments_and_controls$treatment))
-n_controls = length(unique(treatments_and_controls$control))
-
-#Meta-ecosystems parameters
-system_nr_metaecosystems = culture_info %>%
-  filter(metaecosystem == "yes") %>%
-  pull(system_nr) %>%
-  unique
-
-n_metaecosystems = length(system_nr_metaecosystems)
-
-metaecosystem_type_ordered = 
-
-metaecosystems_to_take_off = culture_info %>%
-  filter(culture_ID %in% patches_to_take_off) %>%
-  pull(system_nr) %>%
-  unique
- 
+```{r sampling_parameters}
 #Sampling parameters
 total_frames = 125
 volume_recorded_μl = 34.4
@@ -97,10 +46,53 @@ videos_to_take_off = data.frame(culture_ID = NA,
   add_row(culture_ID = 137-110, time_point = 7, file = 137) %>%
   slice(-1)
 total_number_of_video_rows = (12*110) + (110*5) + (220*2)
+```
 
-#Resource flow parameters
-resource_flow_days = c(5, 9, 13, 17, 21, 25)
-first_resource_flow = resource_flow_days[1]
+```{r protists_parameters}
+#Protist parameters
+protist_species = c("Ble", "Cep", "Col", "Eug", "Eup", "Lox", "Pau", "Pca", "Spi", "Spi_te", "Tet")
+protist_species_indiv_per_ml = paste0(protist_species, "_indiv_per_ml")
+protist_species_dominance = paste0(protist_species_indiv_per_ml, "_dominance")
+protist_species_total = paste0(protist_species, "_tot_indiv")
+n_protist_species = length(protist_species)
+first_protist = protist_species[1]
+last_protist = protist_species[n_protist_species]
+protists_low_threshold_analysis = c("Col", "Eug", "Eup", "Lox", "Pau", "Pca", "Spi_te", "Tet")
+protists_high_threshold_analysis = c("Ble", "Cep", "Spi")
+```
+
+```{r patches_parameters}
+#Patches parameters 
+culture_info = read.csv(here("data", "PatchSizePilot_culture_info.csv"), header = TRUE)
+n_cultures = max(culture_info$culture_ID)
+patch_types = c("Small isolated",
+                "Small connected to small",
+                "Small connected to large",
+                "Medium isolated",
+                "Medium connected to medium",
+                "Large isolated",
+                "Large connected to large",
+                "Large connected to small")
+patches_to_take_off = 60 #Culture ID = 60 because it was spilled (small isolated @ high disturbance, system nr = 40)
+
+treatments_and_controls = data.frame(
+  treatment = c(
+    "Small connected to small",
+    "Small connected to large",
+    "Medium connected to medium",
+    "Large connected to large",
+    "Large connected to small"
+  ),
+  control = c(
+    "Small isolated",
+    "Small isolated",
+    "Medium isolated",
+    "Large isolated",
+    "Large isolated"
+  )
+)
+n_treatments = length(unique(treatments_and_controls$treatment))
+n_controls = length(unique(treatments_and_controls$control))
 
 #Columns without baseline
 columns_patches = c(
@@ -116,12 +108,7 @@ columns_patches = c(
   "metaecosystem",
   "metaecosystem_type"
 )
-
 columns_treatments = columns_patches[!columns_patches %in% c("system_nr", "culture_ID")]
-
-columns_classes = c(columns_patches,
-                    "size_class_n",
-                    "mean_class_area_µm2")
 
 #Variables whose effect size I want to calculate
 variables_patches = c(
@@ -143,24 +130,42 @@ variables_patches = c(
 )
 
 baseline_columns = paste0("baseline_", variables_patches)
+```
 
-#Variables I want to calculate for meta-ecosystems
+```{r size_classes_parameters}
+#Size classes parameters
+n_size_classes = 12
+columns_classes = c(columns_patches,
+                    "size_class_n",
+                    "mean_class_area_µm2")
+```
+
+```{r metaecosystems_parameters}
+#Meta-ecosystems parameters
+metaecosystems_to_take_off = culture_info %>%
+  filter(culture_ID %in% patches_to_take_off) %>%
+  pull(system_nr) %>%
+  unique
+
 variables_metaecos = c(
   "total_metaecosystem_bioarea_mm2",
   "jaccard_index",
   "bray_curtis",
+  "beta_spatial_turnover",
+  "beta_nestedness",
+  "beta_total",
   "metaecosystem_richness"
 )
 
-#Modeling parameters. We chose the first time point as 2 because it's after the first disturbance. 
-first_time_point_model = 2
-last_time_point_model = last_time_point
+system_nr_metaecosystems = culture_info %>%
+  filter(metaecosystem == "yes") %>%
+  pull(system_nr) %>%
+  unique
 
-#Size classes
-n_size_classes = 12
+n_metaecosystems = length(system_nr_metaecosystems)
 ```
 
-```{r}
+```{r plotting_parameters}
 #Parameters for general plotting 
 dodging = 0.5 
 dodging_error_bar = 0.5
@@ -186,6 +191,9 @@ axis_names = data.frame(variable = NA,
   add_row(variable = "shannon", axis_name = "Biodiversity (Shannon)") %>%
   add_row(variable = "shannon_d", axis_name = "Biodiversity ES (Shannon ES)") %>%
   add_row(variable = "bray_curtis", axis_name = "β Diversity (Bray-Curtis)") %>%
+  add_row(variable = "beta_spatial_turnover", axis_name = "Turn over (Simpson pair-wise dissimilarity)") %>%
+  add_row(variable = "beta_nestedness", axis_name = "Nestedness (nestedness-fraction of Sorensen)") %>%
+  add_row(variable = "beta_total", axis_name = "Tot β Diversity (Sorensen)") %>%
   add_row(variable = "metaecosystem_richness", axis_name = "γ Diversity (Species Richness)") %>%
   add_row(variable = "indiv_per_ml", axis_name = "Abundance (ind/ml)") %>%
   add_row(variable = "indiv_per_ml_d", axis_name = "Abundance ES") %>%
@@ -309,14 +317,19 @@ presentation_size = 15
 presentation_treatment_points_size = 5
 presentation_treatment_linewidth = 2
 
-
 ggarrange_margin_top = 0
 ggarrange_margin_bottom = 0
 ggarrange_margin_left = 0
 ggarrange_margin_right = 0
 ```
 
-```{r}
+```{r modeling_parameters}
+#Modeling parameters
+first_time_point_model = 2 #Time point 2 is the first after disturbance
+last_time_point_model = last_time_point
+```
+
+```{r results_table_initialisation}
 results_table = data.frame(
   Response = as.character(NA),
   Levels = as.character(NA),

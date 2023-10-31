@@ -28,6 +28,8 @@ create.meatecosystem.ds = function(){
         ungroup() %>%
         select(all_of(protist_species_indiv_per_ml))
       
+      absence_presence_two_patches <- ifelse(species_vector_two_patches > 0, 1, 0)
+      
       #Alpha diversity: Shannon (mean between the two patches)
       shannon_patch_1 = diversity(species_vector_two_patches[1,], index = "shannon")
       shannon_patch_2 = diversity(species_vector_two_patches[2,], index = "shannon")
@@ -47,6 +49,12 @@ create.meatecosystem.ds = function(){
       bray_curtis_value = vegdist(species_vector_two_patches, 
                             method = "bray") %>%
         as.numeric()
+      
+      #Beta diversity: partitioning of beta diversity from Sorensen index into turnover (Simpson pair-wise dissimilarity) and nestedness (nestedness-fraction of Sorensen)
+      betapart_core_object = betapart.core(absence_presence_two_patches)
+      beta_spatial_turnover_value = beta.pair(betapart_core_object)$beta.sim %>% as.double()
+      beta_nestedness_value = beta.pair(betapart_core_object)$beta.sne %>% as.double()
+      beta_total_value = beta.pair(betapart_core_object)$beta.sor %>% as.double()
       
       #Gamma diversity: Meta-ecosystem richness
       metaecosystem_richness_value = colSums(species_vector_two_patches) %>%
@@ -76,6 +84,9 @@ create.meatecosystem.ds = function(){
                day = current_day,
                jaccard_index = jaccard_index_value,
                bray_curtis = bray_curtis_value,
+               beta_spatial_turnover = beta_spatial_turnover_value,
+               beta_nestedness = beta_nestedness_value,
+               beta_total = beta_total_value,
                metaecosystem_richness = metaecosystem_richness_value,
                mean_shannon = shannon_value,
                mean_richness = mean_richness_value) %>%
@@ -97,6 +108,9 @@ create.meatecosystem.ds = function(){
            mean_richness,
            jaccard_index,
            bray_curtis,
+           beta_spatial_turnover,
+           beta_nestedness,
+           beta_total,
            metaecosystem_richness,
            total_metaecosystem_bioarea_mm2,
            paste0("total_metaecosystem_",protist_species,"_indiv"))

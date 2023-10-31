@@ -100,6 +100,10 @@ save.image(file = here("environments", "before_ds_patches_effect_size.RData"))
 ```{r child = here("r_files", "combination_sets_patches.Rmd")}
 ```
 
+```{r}
+save.image(file = here("environments", "before_ds_metaecosystems.RData"))
+```
+
 ```{r child = here("r_files", "ds_metaecosystems.Rmd")}
 ```
 
@@ -218,6 +222,11 @@ metaecosystem_type_input = c(
 #### Beta Diversity {.tabset .tabset-pills}
 
 ```{r child = here("r_files", "MM_vs_SL_beta_diversity.Rmd")}
+```
+
+#### Nestedness {.tabset .tabset-pills}
+
+```{r child = here("r_files", "MM_vs_SL_nestedness.Rmd")}
 ```
 
 #### Gamma Diversity {.tabset .tabset-pills}
