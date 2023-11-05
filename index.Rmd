@@ -257,6 +257,9 @@ save.image(file = here("environments", "before_all_patches_BEF.RData"))
 ```{r child = here("r_files", "all_patches_BEF.Rmd")}
 ```
 
+```{r child = here("r_files", "all_patches_species_correlations.Rmd")}
+```
+
 ### Isolated patches {.tabset .tabset-pills}
 
 ```{r}

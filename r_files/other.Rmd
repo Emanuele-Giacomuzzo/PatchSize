@@ -33,6 +33,12 @@ cd /Users/ema/Documents/GitHub/PatchSize/r_files/functions
 sed -i '' 's/old_string/new_string/g' *.R
 ```
 
+### Code to give you back an object
+
+```{r eval = FALSE}
+dput()
+```
+
 ### Crashed cultures
 
 The only type of patch where all cultures crashed was small connected to small at high disturbance.

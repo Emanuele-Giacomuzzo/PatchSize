@@ -173,19 +173,19 @@ ds_patches$size_connected_patch[ds_patches$patch_type == "Large connected to sma
 ```{r}
 #Change all the measures to ml
 ds_patches = ds_patches %>%
-  mutate(bioarea_µm2_per_ml = bioarea_µm2_per_μL * (10^3),
-         bioarea_mm2_per_ml = bioarea_µm2_per_ml / (10^6),
-         Ble_indiv_per_ml = Ble_indiv_per_μL * (10^3),
-         Cep_indiv_per_ml = Cep_indiv_per_μL * (10^3),
-         Col_indiv_per_ml = Col_indiv_per_μL * (10^3),
-         Eug_indiv_per_ml = Eug_indiv_per_μL * (10^3),
-         Eup_indiv_per_ml = Eup_indiv_per_μL * (10^3),
-         Lox_indiv_per_ml = Lox_indiv_per_μL * (10^3),
-         Pau_indiv_per_ml = Pau_indiv_per_μL * (10^3),
-         Pca_indiv_per_ml = Pca_indiv_per_μL * (10^3),
-         Spi_indiv_per_ml = Spi_indiv_per_μL * (10^3),
-         Spi_te_indiv_per_ml = Spi_te_indiv_per_μL * (10^3),
-         Tet_indiv_per_ml = Tet_indiv_per_μL * (10^3))
+  mutate(bioarea_µm2_per_ml = bioarea_µm2_per_μL * 10^3,
+         bioarea_mm2_per_ml = bioarea_µm2_per_ml * 10^(-6),
+         Ble_indiv_per_ml = Ble_indiv_per_μL * 10^3,
+         Cep_indiv_per_ml = Cep_indiv_per_μL * 10^3,
+         Col_indiv_per_ml = Col_indiv_per_μL * 10^3,
+         Eug_indiv_per_ml = Eug_indiv_per_μL * 10^3,
+         Eup_indiv_per_ml = Eup_indiv_per_μL * 10^3,
+         Lox_indiv_per_ml = Lox_indiv_per_μL * 10^3,
+         Pau_indiv_per_ml = Pau_indiv_per_μL * 10^3,
+         Pca_indiv_per_ml = Pca_indiv_per_μL * 10^3,
+         Spi_indiv_per_ml = Spi_indiv_per_μL * 10^3,
+         Spi_te_indiv_per_ml = Spi_te_indiv_per_μL * 10^3,
+         Tet_indiv_per_ml = Tet_indiv_per_μL * 10^3)
 ```
 
 ```{r}
