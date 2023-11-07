@@ -9,7 +9,9 @@ editor_options:
 Let's create a data frame with all the experimental meta-ecosystems and all the possible meta-ecosystems from isolated. 
 
 ```{r isolated-IDs-find}
-#Find the culture ID for different isolated patches for either low or high disturbance.
+
+#Find combinations of patches in isolated two-patch systems.
+
 ID_isolated_S_low = ds_patches %>%
   filter(patch_type == "Small isolated",
          disturbance == "low") %>%
@@ -45,10 +47,7 @@ ID_isolated_M_high = ds_patches %>%
          disturbance == "high") %>%
   pull(culture_ID) %>%
   unique()
-```
 
-```{r isolated-systems-create}
-#Find all the combinations of (i) small and large isolated patches and (ii) medium isolated patches.
 combinations_S_and_L_low = crossing(ID_isolated_S_low,
                                     ID_isolated_L_low) %>%
                             mutate(disturbance = "low",
@@ -60,6 +59,9 @@ combinations_S_and_L_low = crossing(ID_isolated_S_low,
                                    ID_first_patch,
                                    ID_second_patch)
 
+expect_equal(nrow(combinations_S_and_L_low),
+             length(ID_isolated_S_low) * length(ID_isolated_L_low))
+
 combinations_S_and_L_high = crossing(ID_isolated_S_high,
                                      ID_isolated_L_high) %>%
                             mutate(disturbance = "high",
@@ -70,6 +72,9 @@ combinations_S_and_L_high = crossing(ID_isolated_S_high,
                                    metaecosystem_type,
                                    ID_first_patch,
                                    ID_second_patch)
+
+expect_equal(nrow(combinations_S_and_L_high),
+             length(ID_isolated_S_high) * length(ID_isolated_L_high))
 
 combinations_M_and_M_low = combinat::combn(ID_isolated_M_low,
                                    m = 2) %>%
@@ -84,6 +89,9 @@ combinations_M_and_M_low = combinat::combn(ID_isolated_M_low,
                                    ID_first_patch,
                                    ID_second_patch)
 
+expect_equal(nrow(combinations_M_and_M_low),
+             sum(seq(length(ID_isolated_M_low) - 1)))
+
 combinations_M_and_M_high = combinat::combn(ID_isolated_M_high,
                                    m = 2) %>%
                             t() %>%
@@ -97,30 +105,14 @@ combinations_M_and_M_high = combinat::combn(ID_isolated_M_high,
                                    ID_first_patch,
                                    ID_second_patch)
 
-expect_equal(nrow(combinations_S_and_L_low),
-             length(ID_isolated_S_low) * length(ID_isolated_L_low))
-
-expect_equal(nrow(combinations_S_and_L_high),
-             length(ID_isolated_S_high) * length(ID_isolated_L_high))
-
-expect_equal(nrow(combinations_M_and_M_low),
-             sum(seq(length(ID_isolated_M_low) - 1)))
-
 expect_equal(nrow(combinations_M_and_M_high),
              sum(seq(length(ID_isolated_M_high) - 1)))
-```
 
-```{r isolated-systems-join}
-#Add combinations together, add column system number, reorder
-combinations_isolated_systems = rbind(
-  combinations_S_and_L_low,
-  combinations_S_and_L_high,
-  combinations_M_and_M_low,
-  combinations_M_and_M_high
-)
-
-combinations_isolated_systems %<>%
-  mutate(system_nr = 1001:(1000 + nrow(combinations_isolated_systems))) %>%
+combinations_isolated_systems = rbind(combinations_S_and_L_low,
+                                      combinations_S_and_L_high,
+                                      combinations_M_and_M_low,
+                                      combinations_M_and_M_high) %>%
+  mutate(system_nr = 1001:(1000 + nrow(.))) %>%
   select(system_nr,
          disturbance,
          metaecosystem_type,
@@ -129,7 +121,9 @@ combinations_isolated_systems %<>%
 ```
 
 ```{r meta-ecosystems-create}
-#Find the combinations of patches in meta-ecosystems
+
+#Find combinations of patches in meta-ecosystems.
+
 combinations_metaecos = ds_patches %>%
   filter(time_point == 0,
          metaecosystem == "yes") %>%
@@ -146,29 +140,19 @@ combinations_metaecos = ds_patches %>%
 ```
 
 ```{r isolated-and-metaeco-system-join}
-#Bind isolated systems and meta-ecosystems
-combinations_isolated_n_metaecos = rbind(combinations_isolated_systems,
-                                         combinations_metaecos)
-```
 
-```{r isolated-and-metaeco-system-column-connection}
-#Add column connection
-combinations_isolated_n_metaecos$connection <-
-  ifelse(
-    combinations_isolated_n_metaecos$metaecosystem_type %in% c("Medium-Medium isolated",
-                                                               "Small-Large isolated"),
-    yes = "isolated",
-    no = "connected"
-  )
+#Bind isolated systems and meta-ecosystems
+
+combinations_isolated_n_metaecos = rbind(combinations_isolated_systems,
+                                         combinations_metaecos) %>%
+  mutate(connection = ifelse(metaecosystem_type %in% c("Medium-Medium isolated",
+                                                       "Small-Large isolated"),
+                             yes = "isolated",
+                             no = "connected"),
+         patches_combined = paste0(ID_first_patch, "|", ID_second_patch))
 
 n_patches_combinations = nrow(combinations_isolated_n_metaecos)
 
 expect_equal(nrow(combinations_isolated_n_metaecos), 
              nrow(combinations_isolated_systems) + nrow(combinations_metaecos))
-```
-
-```{r isolated-and-metaeco-system-column-patches-combined}
-#Add column with combined patches 
-combinations_isolated_n_metaecos %<>%
-  mutate(patches_combined = paste0(ID_first_patch, "|", ID_second_patch))
 ```

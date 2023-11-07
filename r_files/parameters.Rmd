@@ -174,7 +174,7 @@ metaecosystem_types_ordered = c(
 ```
 
 ```{r plotting_parameters}
-#Parameters for general plotting 
+#Plotting parameters
 dodging = 0.5 
 dodging_error_bar = 0.5
 width_errorbar = 0.2
