@@ -1,3 +1,4 @@
+#From PatchSize
 calculate.effect.sizes = function(ds,
                                   vars_to_group_by,
                                   vars_for_ES) {
