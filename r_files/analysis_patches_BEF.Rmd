@@ -1,0 +1,87 @@
+---
+title: "Untitled"
+output: html_document
+date: "2023-11-30"
+---
+
+*Richness*
+
+```{r}
+ds_patches %>%
+  filter(species_richness > 0,
+         patch_type == patch_type_i) %>%
+  ggplot(aes(x = species_richness,
+             y = bioarea_mm2_per_ml)) +
+  geom_point() +
+  xlim(0, length(protist_species))
+```
+
+```{r eval = FALSE}
+for (patch_type in patch_type_i) {
+  plot.relationship.BEF(patch_type,
+                        "species_richness") %>%
+    print()
+}
+```
+
+*Shannon*
+
+```{r}
+ds_patches %>%
+  filter(species_richness > 0,
+         patch_type == patch_type_i) %>%
+  ggplot(aes(x = shannon,
+             y = bioarea_mm2_per_ml)) +
+  geom_point()
+```
+
+```{r eval = FALSE}
+for (patch_type in patch_type_i) {
+  plot.relationship.BEF(patch_type,
+                        "shannon") %>%
+    print()
+}
+```
+
+*Evenness*
+
+```{r}
+ds_patches %>%
+  filter(species_richness > 0,
+         patch_type == patch_type_i) %>%
+  ggplot(aes(x = evenness_pielou,
+             y = bioarea_mm2_per_ml)) +
+  geom_point() +
+  xlim(0, 1)
+```
+
+```{r eval = FALSE}
+for (patch_type in patch_type_i) {
+  plot.relationship.BEF(patch_type,
+                        "evenness_pielou") %>%
+    print()
+}
+```
+
+*Pop dominance*
+
+```{r}
+for(species_input in protist_species_dominance){
+  
+  print(ds_patches %>%
+  ggplot(aes(x = get(paste0(species_input)),
+             y = bioarea_mm2_per_ml)) +
+  geom_point() +
+    labs(x = paste0(species_input, "_dominance")))
+  
+}
+```
+
+```{r eval = FALSE}
+for (patch_type in patch_type_i) {
+  plot.relationship.dominance.productivity(patch_type,
+                                         protist_species,
+                                         protist_species_dominance) %>%
+    print()
+}
+```

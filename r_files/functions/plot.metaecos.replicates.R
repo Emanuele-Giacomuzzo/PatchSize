@@ -1,11 +1,12 @@
-plot.metaecos.replicates = function(metaecosystem_type_input,
+plot.metaecos.replicates = function(data,
+                                    metaecosystem_type_i,
                                     response_variable) {
   
-  metaecosystem_type_input <- metaecosystem_type_input[order(match(metaecosystem_type_input, 
-                                                                   metaecosystem_types_ordered))]
+  metaecosystem_type_i <- metaecosystem_type_i[order(match(metaecosystem_type_i, 
+                                                           metaecosystem_types_ordered))]
   
-  ds_metaecosystems %>%
-    filter(metaecosystem_type %in% metaecosystem_type_input) %>%
+  data %>%
+    filter(metaecosystem_type %in% metaecosystem_type_i) %>%
     ggplot(
       aes(
         x = day,
@@ -28,12 +29,24 @@ plot.metaecos.replicates = function(metaecosystem_type_input,
       y = axis_names$axis_name[axis_names$variable == response_variable],
       linetype = ""
     ) +
-    scale_x_continuous(breaks = unique(ds_patches$day)) +
+    scale_linetype_manual(
+      values = c(
+        parameters_treatments$linetype[parameters_treatments$treatment == metaecosystem_type_i[1]][1],
+        parameters_treatments$linetype[parameters_treatments$treatment == metaecosystem_type_i[2]][1],
+        parameters_treatments$linetype[parameters_treatments$treatment == metaecosystem_type_i[3]][1],
+        parameters_treatments$linetype[parameters_treatments$treatment == metaecosystem_type_i[4]][1],
+        parameters_treatments$linetype[parameters_treatments$treatment == metaecosystem_type_i[5]][1],
+        parameters_treatments$linetype[parameters_treatments$treatment == metaecosystem_type_i[6]][1],
+        parameters_treatments$linetype[parameters_treatments$treatment == metaecosystem_type_i[7]][1],
+        parameters_treatments$linetype[parameters_treatments$treatment == metaecosystem_type_i[8]][1]
+      )
+    ) +
+    scale_x_continuous(breaks = unique(data$day)) +
     theme_bw() +
     theme(
       panel.grid.major = element_blank(),
       panel.grid.minor = element_blank(),
       legend.position = legend_position
     )
-
+  
 }

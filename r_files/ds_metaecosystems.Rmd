@@ -72,8 +72,3 @@ expect_equal(nrow(ds_metaecosystems),
 full_join(ds_metaecosystems,
           isolated_combinations_sets)
 ```
-
-```{r}
-#Save dataset
-save(ds_metaecosystems, file = here("results", "ds", "ds_metaecosystems.RData"))
-```

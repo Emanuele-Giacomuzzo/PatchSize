@@ -23,7 +23,7 @@ print(paste0("Disturbance = ", disturbance_global_input))
 
 If you want to change a certain part of the code:
 
-```{batch eval = FALSE}
+```{r eval = FALSE}
 #Rmd script
 cd /Users/ema/Documents/GitHub/PatchSize/r_files
 sed -i '' 's/old_string/new_string/g' *.Rmd
@@ -52,7 +52,7 @@ The only type of patch where all cultures crashed was small connected to small a
 ### References
 
 ```{r echo=FALSE, message=FALSE}
-save.image(file = here("environments", "environment_at_the_end_of_knitting.RData"))
+save.image(file = here("environments", "end.RData"))
 ```
 
 ```{r echo = FALSE, eval = FALSE}

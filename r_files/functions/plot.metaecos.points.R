@@ -1,6 +1,7 @@
 plot.metaecos.points = function(ds_metaecosystems,
                                 metaecosystem_type_input,
-                                response_variable) {
+                                response_variable,
+                                legend_rows) {
   
   metaecosystem_type_input <- metaecosystem_type_input[order(match(metaecosystem_type_input, 
                                                                    metaecosystem_types_ordered))]

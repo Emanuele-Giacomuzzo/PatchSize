@@ -6,45 +6,104 @@ editor_options:
   chunk_output_type: console
 ---
 
+### Patch effect sizes (`ds_patches_effect_size`)
+
+In this dataset (`ds_patches_effect_size`) each row represents a treatment at a time point. It contains the effect size of the connection of a patch (connected vs isolated).
+
 ```{r}
-#Define the variables to which to group by 
-vars_to_group_by = columns_patches[columns_patches != "culture_ID" & columns_patches != "system_nr"]
+
+# Calculate the mean & sd of response variables for each treatment/control at each time point
+
+ds_patches_effect_size = NULL
+variable_nr = 0
+
+for (variable_i in variables_patches) {
+  
+  variable_nr = variable_nr + 1
+  
+  ds_patches_effect_size[[variable_nr]] = ds_patches %>%
+    filter(time_point >= 1,
+           !is.na(!!sym(variable_i))) %>%
+    group_by(across(all_of(columns_patches[columns_patches != "culture_ID" & 
+                                           columns_patches != "system_nr"]))) %>%
+    summarise(across(all_of(variable_i),
+                     list(mean = mean,
+                          sd = sd)),
+              sample_size = n()) %>%
+    rename_with( ~ paste0(variable_i, "_sample_size"),
+                 matches("sample_size"))
+  
+}
+
+ds_patches_effect_size <- reduce(ds_patches_effect_size,
+                                 full_join,
+                                 by = columns_patches[columns_patches != "culture_ID" &
+                                                        columns_patches != "system_nr"])
+
+expect_equal(nrow(ds_patches_effect_size),
+             n_patch_types * (n_time_points-1) * n_disturbance_levels)
 ```
 
 ```{r}
-#Calculate effect sizes
-ds_patches_effect_size = calculate.effect.sizes(ds = ds_patches,
-                                                vars_to_group_by = vars_to_group_by,
-                                                vars_for_ES = variables_patches) %>%
-  filter(time_point >= 1)
 
-expect_equal(nrow(ds_patches_effect_size), 
-             (n_treatments + n_controls) * (n_time_points - 1) * n_disturbance_levels)
-```
+# Calculate the effect size (Hedge's d) for each treatment at each time point
+  
+  for (variable_i in variables_patches) {
+    ds_patches_effect_size <- ds_patches_effect_size %>%
+      mutate(
+        !!paste0(variable_i, "_d") := NA,
+        !!paste0(variable_i, "_d_upper") := NA,
+        !!paste0(variable_i, "_d_lower") := NA
+      )
+  }
+  
+  row_n = 0
+  for (treatment_input in treatments_and_controls$treatment) {
+    for (time_point_input in time_points) {
+      row_n = row_n + 1
+      
+      control_input = treatments_and_controls$control[
+        treatments_and_controls$treatment == treatment_input
+        ]
+      
+      treatment_row = ds_patches_effect_size %>%
+        filter(patch_type == treatment_input,
+               time_point == time_point_input)
+      
+      control_row = ds_patches_effect_size %>%
+        filter(patch_type == control_input,
+               time_point == time_point_input)
+      
+      for (response_variable in variables_patches) {
+        
+        hedges_d = calculate.hedges_d(
+          treatment_row[[paste0(response_variable, "_mean")]],
+          treatment_row[[paste0(response_variable, "_sd")]],
+          treatment_row[[paste0(response_variable, "_sample_size")]],
+          control_row[[paste0(response_variable, "_mean")]],
+          control_row[[paste0(response_variable, "_sd")]],
+          control_row[[paste0(response_variable, "_sample_size")]]
+        )
+        
+        ds_patches_effect_size[[paste0(response_variable, "_d")]][
+          ds_patches_effect_size$patch_type == treatment_input &
+          ds_patches_effect_size$time_point == time_point_input] =
+          hedges_d$d
+        
+        ds_patches_effect_size[[paste0(response_variable, "_d_upper")]][
+          ds_patches_effect_size$patch_type == treatment_input &
+          ds_patches_effect_size$time_point == time_point_input] =
+          hedges_d$upper_CI
+        
+        ds_patches_effect_size[[paste0(response_variable, "_d_lower")]][
+          ds_patches_effect_size$patch_type == treatment_input &
+          ds_patches_effect_size$time_point == time_point_input] =
+          hedges_d$lower_CI
+        
+      }
+    }
+  }
 
-```{r}
-#Add baselines. See explanation in ds_patches.
-baselines <- ds_patches_effect_size %>%
-  filter(time_point == 1) %>%
-  group_by(patch_type, disturbance) %>%
-  summarise(across(paste0(variables_patches, "_d"), 
-                   .names = "baseline_{.col}")) %>%
-  select(patch_type,
-         disturbance,
-         paste0("baseline_", variables_patches, "_d"))
-
-expect_equal(nrow(baselines), 
-             (n_treatments + n_controls) * n_disturbance_levels)
-
-n_rows_ds_patches_ES_before_joining_baselines = nrow(ds_patches_effect_size)
-
-ds_patches_effect_size = full_join(ds_patches_effect_size, baselines)
-
-expect_equal(n_rows_ds_patches_ES_before_joining_baselines, 
-               nrow(ds_patches_effect_size))
-```
-
-```{r}
-#Save dataset
-save(ds_patches_effect_size, file = here("results", "ds", "ds_patches_effect_size.RData"))
+expect_equal(nrow(ds_patches_effect_size),
+             n_patch_types * (n_time_points-1) * n_disturbance_levels)
 ```

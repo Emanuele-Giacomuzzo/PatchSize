@@ -13,12 +13,12 @@ editor_options:
 filtered_data = ds_metaecosystems %>%
                          filter(time_point >= first_time_point_model,
                                 time_point <= last_time_point_model,
-                                metaecosystem_type %in% metaecosystem_type_input_model)
+                                metaecosystem_type %in% metaecosystem_type_i)
 ```
 
 ```{r}
 plot.metaecos.points(filtered_data,
-                     metaecosystem_type_input_model,
+                     metaecosystem_type_i,
                      response_variable)
 ```
 
@@ -208,7 +208,7 @@ model_stats_fixed %>%
 results_table = fill.results.table(
   results_table,
   response_variable,
-  metaecosystem_type_input_model,
+  metaecosystem_type_i,
   model_stats_full,
   model_stats_fixed
 )

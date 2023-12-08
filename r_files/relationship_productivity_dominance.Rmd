@@ -1,8 +1,0 @@
----
-title: "What drives productivity?"
-output: html_document
-date: "2023-01-31"
-editor_options: 
-  chunk_output_type: console
----
-

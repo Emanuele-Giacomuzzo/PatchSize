@@ -1,12 +1,13 @@
-plot.metaecos.points.presentations = function(ds_metaecosystems,
-                                              metaecosystem_type_input,
-                                              response_variable) {
+plot.metaecos.points.presentations = function(data,
+                                              metaecosystem_type_i,
+                                              response_variable,
+                                              n_legend_rows) {
   
-  metaecosystem_type_input <- metaecosystem_type_input[order(match(metaecosystem_type_input, 
-                                                                   metaecosystem_types_ordered))]
+  metaecosystem_type_i <- metaecosystem_type_i[order(match(metaecosystem_type_i, 
+                                                           metaecosystem_types_ordered))]
   
-  ds_metaecosystems %>%
-    filter(metaecosystem_type %in% metaecosystem_type_input,
+  data %>%
+    filter(metaecosystem_type %in% metaecosystem_type_i,
            !is.na(!!sym(response_variable))) %>%
     summarySE(measurevar = response_variable,
               groupvars = c("day", "metaecosystem_type")) %>%
@@ -36,31 +37,33 @@ plot.metaecos.points.presentations = function(ds_metaecosystems,
     ),
     width = width_errorbar,
     position = position_dodge(dodging)) +
+    xlim(x_min, x_max) +
+    ylim(y_min, y_max) +
     labs(x = axis_names$axis_name[axis_names$variable == "day"],
          y = axis_names$axis_name[axis_names$variable == response_variable],
          color = "") +
     scale_linetype_manual(
       values = c(
-        parameters_treatments$linetype[parameters_treatments$treatment == metaecosystem_type_input[1]][1],
-        parameters_treatments$linetype[parameters_treatments$treatment == metaecosystem_type_input[2]][1],
-        parameters_treatments$linetype[parameters_treatments$treatment == metaecosystem_type_input[3]][1],
-        parameters_treatments$linetype[parameters_treatments$treatment == metaecosystem_type_input[4]][1],
-        parameters_treatments$linetype[parameters_treatments$treatment == metaecosystem_type_input[5]][1],
-        parameters_treatments$linetype[parameters_treatments$treatment == metaecosystem_type_input[6]][1],
-        parameters_treatments$linetype[parameters_treatments$treatment == metaecosystem_type_input[7]][1],
-        parameters_treatments$linetype[parameters_treatments$treatment == metaecosystem_type_input[8]][1]
+        parameters_treatments$linetype[parameters_treatments$treatment == metaecosystem_type_i[1]][1],
+        parameters_treatments$linetype[parameters_treatments$treatment == metaecosystem_type_i[2]][1],
+        parameters_treatments$linetype[parameters_treatments$treatment == metaecosystem_type_i[3]][1],
+        parameters_treatments$linetype[parameters_treatments$treatment == metaecosystem_type_i[4]][1],
+        parameters_treatments$linetype[parameters_treatments$treatment == metaecosystem_type_i[5]][1],
+        parameters_treatments$linetype[parameters_treatments$treatment == metaecosystem_type_i[6]][1],
+        parameters_treatments$linetype[parameters_treatments$treatment == metaecosystem_type_i[7]][1],
+        parameters_treatments$linetype[parameters_treatments$treatment == metaecosystem_type_i[8]][1]
       )
     ) +
     scale_color_manual(
       values = c(
-        parameters_treatments$colour[parameters_treatments$treatment == metaecosystem_type_input[1]][1],
-        parameters_treatments$colour[parameters_treatments$treatment == metaecosystem_type_input[2]][1],
-        parameters_treatments$colour[parameters_treatments$treatment == metaecosystem_type_input[3]][1],
-        parameters_treatments$colour[parameters_treatments$treatment == metaecosystem_type_input[4]][1],
-        parameters_treatments$colour[parameters_treatments$treatment == metaecosystem_type_input[5]][1],
-        parameters_treatments$colour[parameters_treatments$treatment == metaecosystem_type_input[6]][1],
-        parameters_treatments$colour[parameters_treatments$treatment == metaecosystem_type_input[7]][1],
-        parameters_treatments$colour[parameters_treatments$treatment == metaecosystem_type_input[8]][1]
+        parameters_treatments$colour[parameters_treatments$treatment == metaecosystem_type_i[1]][1],
+        parameters_treatments$colour[parameters_treatments$treatment == metaecosystem_type_i[2]][1],
+        parameters_treatments$colour[parameters_treatments$treatment == metaecosystem_type_i[3]][1],
+        parameters_treatments$colour[parameters_treatments$treatment == metaecosystem_type_i[4]][1],
+        parameters_treatments$colour[parameters_treatments$treatment == metaecosystem_type_i[5]][1],
+        parameters_treatments$colour[parameters_treatments$treatment == metaecosystem_type_i[6]][1],
+        parameters_treatments$colour[parameters_treatments$treatment == metaecosystem_type_i[7]][1],
+        parameters_treatments$colour[parameters_treatments$treatment == metaecosystem_type_i[8]][1]
       )
     ) +
     geom_vline(
@@ -83,8 +86,8 @@ plot.metaecos.points.presentations = function(ds_metaecosystems,
       legend.key.width = unit(legend_width_cm, "cm")
     ) +
     guides(color = guide_legend(title = NULL,
-                                nrow = 2),
+                                nrow = n_legend_rows),
            linetype = guide_legend(title = NULL,
-                                   nrow = 2))
+                                   nrow = n_legend_rows))
   
 }

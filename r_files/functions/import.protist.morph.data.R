@@ -35,14 +35,14 @@ import.protist.morph.data = function(culture_info,
     
     #Add the video replicate which I forgot to put into the description file 
     if (time_point_input == 0) {
-      time_points_ds[[time_point_input + 1]] %<>%
+      time_points_ds[[time_point_input + 1]] = time_points_ds[[time_point_input + 1]] %>%
         mutate(video_replicate = file,
                video_replicate = as.double(video_replicate))
       
     }
     
     if(time_point_input %in% 1:7){
-      time_points_ds[[time_point_input + 1]] %<>%
+      time_points_ds[[time_point_input + 1]] = time_points_ds[[time_point_input + 1]] %>%
         mutate(video_replicate = ifelse(file %in% 1:110, 
                                         yes = 1, 
                                         no = 2),

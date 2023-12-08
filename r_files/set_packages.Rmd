@@ -1,0 +1,41 @@
+---
+title: "Untitled"
+output: html_document
+date: "2023-11-30"
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r set-up-environment, echo = FALSE, results = FALSE, message = FALSE, cache = FALSE}
+
+#General computing
+library("here")
+library("testthat")
+library("renv")
+
+#Data manipulation
+library("plyr")
+library("tidyverse")
+
+#Data visualisation
+library("ggpubr") #ggarrange
+library("plotly")
+
+#Data analysis
+library("lme4")
+library("vegan")
+library("betapart")
+library("Rmisc") #For summarySE
+library("combinat")
+
+#Conflicts
+library("conflicted")
+conflict_prefer("load", "base")
+conflict_prefer("filter", "dplyr")
+conflict_prefer("mutate", "dplyr")
+conflict_prefer("summarise", "dplyr")
+conflict_prefer("rename", "dplyr")
+conflict_prefer("arrange", "dplyr")
+conflict_prefer("here", "here")
+conflict_prefer("combn", "combinat")
+```

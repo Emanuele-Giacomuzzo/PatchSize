@@ -13,12 +13,12 @@ editor_options:
 filtered_data = ds_metaecosystems %>%
                          filter(time_point >= first_time_point_model,
                                 time_point <= last_time_point_model,
-                                metaecosystem_type %in% metaecosystem_type_input_model)
+                                metaecosystem_type %in% metaecosystem_type_i)
 ```
 
 ```{r}
 plot.metaecos.points(filtered_data,
-                     metaecosystem_type_input_model,
+                     metaecosystem_type_i,
                      response_variable)
 ```
 
@@ -37,7 +37,7 @@ If you see "*Warning in (function (iprint = 0L, maxfun = 10000L, FtolAbs = 1e-05
 
 isolated_combinations_sets_filtered =  isolated_combinations_sets %>%
   filter(disturbance == disturbance_global_input,
-         metaecosystem_type %in% metaecosystem_type_input_model)
+         metaecosystem_type %in% metaecosystem_type_i)
 
 n_sets = isolated_combinations_sets_filtered %>%
   pull(set) %>%
@@ -61,7 +61,7 @@ for (set_input in 1:n_sets) {
   
   system_nr_isolated_systems_input = isolated_combinations_sets_filtered %>%
     filter(
-      metaecosystem_type %in% metaecosystem_type_input_model,
+      metaecosystem_type %in% metaecosystem_type_i,
       connection == "isolated",
       set == set_input
     ) %>%
@@ -71,7 +71,7 @@ for (set_input in 1:n_sets) {
     filter(
       time_point >= first_time_point_model,
       time_point <= last_time_point_model,
-      metaecosystem_type %in% metaecosystem_type_input_model,
+      metaecosystem_type %in% metaecosystem_type_i,
       connection == "connected" |
         (connection == "isolated" &
            system_nr %in% system_nr_isolated_systems_input)
@@ -121,7 +121,7 @@ for (set_input in 1:n_sets) {
   iterated_results_table = fill.results.table(
     iterated_results_table,
     response_variable,
-    metaecosystem_type_input_model,
+    metaecosystem_type_i,
     model_stats_full,
     model_stats_fixed
   )
@@ -240,7 +240,7 @@ model_stats_fixed %>%
 results_table = fill.results.table(
     results_table,
     response_variable,
-    metaecosystem_type_input_model,
+    metaecosystem_type_i,
     model_stats_full,
     model_stats_fixed
   )

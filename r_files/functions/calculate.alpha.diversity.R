@@ -30,7 +30,7 @@ calculate.alpha.diversity = function() {
     
   }
   
-  ds_patches %<>%
+  ds_patches = ds_patches %>%
     mutate(shannon = ifelse(species_richness == 0,
                             yes = NA,
                             no = shannon))

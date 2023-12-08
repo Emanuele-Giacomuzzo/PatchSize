@@ -7,19 +7,158 @@ editor_options:
   chunk_output_type: console
 ---
 
+### Individuals (ds_individuals)
+
+In this dataset (`ds_individuals`) each row represents an individual at a time point.
+
 ```{r}
-#Import protist individuals data
-ds_individuals = import.protist.morph.data(culture_info,
-                                           time_points)
+
+# Import the individual data of t0. We considered cultures to be all the same at the beginning (t0). Because of this reason, we filmed only the bottles from which cultures were assembled. Because we want to plot also t0 for the different treatments, we want to assign the video of bottles to all cultures at t0.
+
+ds_individuals_t0_not_elongated = read.csv(here("data", "individuals", "t0.csv")) %>%
+  mutate(time_point =  as.numeric(str_extract(time_point, "\\d+")),
+         day = 0,
+         file =  as.numeric(str_extract(file, "\\d+")),
+         video_replicate = file) %>%
+  select(time_point,
+         day,
+         video_replicate,
+         file,
+         id,
+         N_frames,
+         mean_area)
+
+ds_individuals_t0_elongated = ds_individuals_t0_not_elongated %>%
+  map_dfr(.x = 1 : nrow(culture_info),
+          .f = ~ ds_individuals_t0_not_elongated) %>% 
+  arrange(id) %>% #Id refers to an individual
+  mutate(culture_ID = rep(1 : nrow(culture_info),
+                          times = nrow(ds_individuals_t0_not_elongated))) %>%
+  select(time_point,
+         day,
+         video_replicate,
+         file,
+         culture_ID,
+         id,
+         N_frames,
+         mean_area)
+
+expect_equal(nrow(ds_individuals_t0_not_elongated) * nrow(culture_info),
+             nrow(ds_individuals_t0_elongated))
 ```
 
 ```{r}
-#Take off problematic videos
+
+#Import t1-t4
+
+ds_individuals_t1_to_t4 = NULL
+  
+for (time_point_i in time_points_without_t0) {
+  
+  ds_individuals_t1_to_t4[[time_point_i]] = read.csv(here("data", 
+                                                              "individuals", 
+                                                              paste0("t", 
+                                                                     time_point_i, 
+                                                                     ".csv"))) %>%
+    mutate(time_point =  as.numeric(str_extract(time_point, "\\d+")),
+           day = time_point_day$day[time_point_day$time_point == time_point_i],
+           file =  as.numeric(str_extract(file, "\\d+")),
+           video_replicate = ceiling(file/n_cultures)) #Until 110 video replicate = 1, then 2
+  }
+
+ds_individuals_t1_to_t4 = ds_individuals_t1_to_t4 %>%
+  bind_rows() %>%
+  select(time_point,
+         day,
+         video_replicate,
+         file,
+         culture_ID,
+         id,
+         N_frames,
+         mean_area)
+```
+
+```{r}
+
+# Bind t0 with t1-t4
+
+ds_individuals = rbind(ds_individuals_t0_elongated,
+                       ds_individuals_t1_to_t4) %>%
+  left_join(culture_info,
+            by = "culture_ID") 
+```
+
+```{r}
+
+# Rename and select columns
+
+ds_individuals = ds_individuals %>% 
+  select(
+    disturbance,
+    disturbance_volume,
+    time_point,
+    day,
+    video_replicate,
+    culture_ID,
+    system_nr,
+    file,
+    eco_metaeco_type,
+    patch_size,
+    patch_size_volume,
+    metaecosystem,
+    metaecosystem_type,
+    mean_area,
+    N_frames
+  ) %>%
+  rename(patch_size_ml = patch_size_volume,
+         patch_type = eco_metaeco_type,
+         body_area_µm2 = mean_area)
+```
+
+```{r}
+
+# Rename and reorder levels
+
+ds_individuals <- ds_individuals %>%
+  mutate(patch_type = case_when(patch_type == "S" ~ "Small isolated",
+                                patch_type == "M" ~ "Medium isolated",
+                                patch_type == "L" ~ "Large isolated",
+                                patch_type == "S (S_S)" ~ "Small connected to small",
+                                patch_type == "S (S_L)" ~ "Small connected to large",
+                                patch_type == "M (M_M)" ~ "Medium connected to medium",
+                                patch_type == "L (S_L)" ~ "Large connected to small",
+                                patch_type == "L (L_L)" ~ "Large connected to large",
+                                TRUE ~ patch_type),
+         patch_type = factor(patch_type,
+                             levels = patch_types_ordered))
+
+ds_individuals <- ds_individuals %>%
+  mutate(patch_size = case_when(patch_size == "S" ~ "Small",
+                                patch_size == "M" ~ "Medium",
+                                patch_size == "L" ~ "Large",
+                                TRUE ~ patch_type),
+         patch_size = factor(patch_size,
+                             levels = "Small", 
+                                      "Medium", 
+                                      "Large"))
+
+ds_individuals <- ds_individuals %>%
+  mutate(size_connected_patch = case_when(patch_type == "Small connected to small" ~ "Small",
+                                          patch_type == "Small connected to large" ~ "Large",
+                                          patch_type == "Medium connected to medium" ~ "Medium",
+                                          patch_type == "Large connected to large" ~ "Large",
+                                          patch_type == "Large connected to small" ~ "Small",
+                                          TRUE ~ NA_character_))
+```
+
+```{r}
+
+# Take off problematic videos
+
 ds_individuals_before_taking_off_videos = ds_individuals
 
-ds_individuals %<>%
-  filter(!(time_point %in% videos_to_take_off$time_point & 
-           file %in% videos_to_take_off$file))
+ds_individuals = ds_individuals %>%
+  filter(!(time_point %in% videos_to_take_off$time_point & file %in% videos_to_take_off$file))
 
 diff = setdiff(ds_individuals_before_taking_off_videos, ds_individuals)
 
@@ -28,86 +167,17 @@ expect_equal(nrow(videos_to_take_off),
 ```
 
 ```{r}
-#Take off problematic cultures 
+
+# Take off problematic cultures 
+
 ds_individuals_before_taking_off_cultures = ds_individuals
 
 ds_individuals = ds_individuals %>%
-  filter(! culture_ID %in% patches_to_take_off)
+  filter(!culture_ID %in% patches_to_take_off)
 
-expect_equal(setdiff(ds_individuals_before_taking_off_cultures, ds_individuals) %>% pull(culture_ID) %>% unique(),
+expect_equal(setdiff(ds_individuals_before_taking_off_cultures, 
+                     ds_individuals) %>% 
+               pull(culture_ID) %>% 
+               unique(),
              patches_to_take_off)
-```
-
-```{r}
-#Rename columns
-ds_individuals = ds_individuals %>% 
-  rename(patch_type = eco_metaeco_type,
-         patch_size_ml = patch_size_volume,
-         body_area_µm2 = mean_area)
-```
-
-```{r}
-#Rename patches
-ds_individuals$patch_type[ds_individuals$patch_type == "S"] = "Small isolated"
-ds_individuals$patch_type[ds_individuals$patch_type == "S (S_S)"] = "Small connected to small"
-ds_individuals$patch_type[ds_individuals$patch_type == "S (S_L)"] = "Small connected to large"
-ds_individuals$patch_type[ds_individuals$patch_type == "M"] = "Medium isolated"
-ds_individuals$patch_type[ds_individuals$patch_type == "M (M_M)"] = "Medium connected to medium"
-ds_individuals$patch_type[ds_individuals$patch_type == "L"] = "Large isolated"
-ds_individuals$patch_type[ds_individuals$patch_type == "L (L_L)"] = "Large connected to large"
-ds_individuals$patch_type[ds_individuals$patch_type == "L (S_L)"] = "Large connected to small"
-```
-
-```{r}
-#Reorder patches
-ds_individuals = ds_individuals %>%
-  mutate(patch_type = factor(
-    patch_type,
-    levels = c(
-      "Small isolated",
-      "Small connected to small",
-      "Small connected to large",
-      "Medium isolated",
-      "Medium connected to medium",
-      "Large isolated",
-      "Large connected to large",
-      "Large connected to small"
-    )
-  ))
-```
-
-```{r}
-#Add column with the size of the connected patch
-ds_individuals$size_connected_patch = NA
-ds_individuals$size_connected_patch[ds_individuals$patch_type == "Small connected to small"] = "Small"
-ds_individuals$size_connected_patch[ds_individuals$patch_type == "Small connected to large"] = "Large"
-ds_individuals$size_connected_patch[ds_individuals$patch_type == "Medium connected to medium"] = "Medium"
-ds_individuals$size_connected_patch[ds_individuals$patch_type == "Large connected to large"] = "Large"
-ds_individuals$size_connected_patch[ds_individuals$patch_type == "Large connected to small"] = "Small"
-```
-
-```{r}
-#Reorder columns
-ds_individuals = ds_individuals %>%
-    select(time_point,
-           day, 
-           file, 
-           video_replicate,
-           disturbance, 
-           culture_ID, 
-           system_nr, 
-           patch_type,
-           patch_size, 
-           patch_size_ml,
-           size_connected_patch,
-           metaecosystem, 
-           metaecosystem_type, 
-           body_area_µm2,
-           N_frames
-           )
-```
-
-```{r}
-#Save dataset
-save(ds_individuals, file = here("results", "ds", "ds_individuals.RData"))
 ```

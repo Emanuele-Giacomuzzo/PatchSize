@@ -1,0 +1,93 @@
+---
+title: "Untitled"
+output: html_document
+date: "2023-11-30"
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+
+# Construct plots
+
+response_variable_list = NULL
+n_of_plots = 3
+response_variable_list[[1]] = "mean_shannon"
+response_variable_list[[2]] = "bray_curtis"
+response_variable_list[[3]] = "metaecosystem_richness"
+metaecosystem_type_i = c("Medium-Medium meta-ecosystem",
+                         "Medium-Medium isolated",
+                         "Small-Large meta-ecosystem",
+                         "Small-Large isolated")
+legend_row_n_input = 2
+p = NULL
+  
+for (i in 1: n_of_plots) {
+  
+  p[[i]] = plot.metaecos.points(ds_metaecosystems,
+                               metaecosystem_type_i,
+                               response_variable_list[[i]],
+                               legend_row_n_input) +
+    theme(plot.margin = unit(c(ggarrange_margin_left,
+                               ggarrange_margin_right,
+                               ggarrange_margin_bottom,
+                               ggarrange_margin_left),
+                             "cm"))
+}
+```
+
+```{r}
+
+# Combine plots
+
+p_combined = ggarrange(
+  p[[1]] +
+    rremove("xlab") +
+    theme(axis.text.x = element_blank(),
+          axis.ticks.x = element_blank()) +
+    font("legend.text", size = size_legend) +
+    font("ylab", size = size_y_axis),
+  p[[2]] +
+    rremove("xlab") +
+    theme(axis.text.x = element_blank(),
+          axis.ticks.x = element_blank()) +
+    font("legend.text", size = size_legend) +
+    font("ylab", size = size_y_axis),
+  p[[3]] +
+    font("legend.text", size = size_legend) +
+    font("xlab", size = size_y_axis) +
+    font("ylab", size = size_y_axis) +
+    scale_x_continuous(breaks = unique(ds_metaecosystems$day)),
+  heights = c(0.8,0.8,1),
+  nrow = 3,
+  common.legend = TRUE,
+  align = "v",
+  labels = c("(a)", "(b)", "(c)"),
+  label.x = 0.1,
+  label.y = 0.8
+)
+```
+
+```{r fig.height = figures_height_rmd_output}
+
+# Show combined plots
+
+p_combined
+```
+
+```{r results=FALSE}
+
+# Save combined plots
+
+png(
+  file = here("results", "figures", disturbance_global_input, "paper", "metaecosystems_diversity.png"),
+  width = paper_width,
+  height = paper_height,
+  units = paper_units,
+  res = paper_res
+)
+
+p_combined
+
+dev.off()
+```
