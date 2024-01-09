@@ -1,0 +1,267 @@
+---
+title: "Find combination sets for isolated SL / MM systems"
+output: html_document
+date: "2023-05-19"
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r isolated-SL-systems-combination-sets-create}
+
+#Create combination sets for SL isolated.
+
+# Create combinations sets for SL isolated where each sets contains each patch only one time. To find all combinations where all the patches are included, but only one at the time, I keep the small patches on the same order, but then I perform a permutation of the order in which large patches are arranged and coupled to the small patches.
+
+disturbance_nr = 0
+SL_isolated_sys_sets <- vector("list",
+                               length(disturbance_levels))
+
+for (disturbance_input in disturbance_levels) {
+  
+  concat_permutations_large = NULL
+  disturbance_nr = disturbance_nr + 1
+  
+  ID_small_patches = ds_patches %>%
+    filter(disturbance == disturbance_input,
+           patch_type == "Small isolated") %>%
+    pull(culture_ID) %>%
+    unique()
+  
+  ID_large_patches = ds_patches %>%
+    filter(disturbance == disturbance_input,
+           patch_type == "Large isolated") %>%
+    pull(culture_ID) %>%
+    unique()
+  
+  #Force small and large patches vectors to have the same length
+  if (length(ID_large_patches) < length(ID_small_patches)) {
+    
+    ID_large_patches = c(ID_large_patches,
+                         rep("Patch taken off",
+                             times = length(ID_small_patches) - length(ID_large_patches)))
+  }
+  
+  if (length(ID_small_patches) < length(ID_large_patches)) {
+    
+    ID_small_patches = c(ID_small_patches,
+                         rep("Patch taken off",
+                             times = length(ID_large_patches) - length(ID_small_patches)))
+  }
+  
+  # Use chatGTP to shorten the creation of the following code 
+  #From here
+  permutations_large = permn(ID_large_patches)
+  for (permutation_large_i in 1:length(permutations_large)) {
+    
+    vector_large_patches = c(concat_permutations_large,
+                             permutations_large[[permutation_large_i]])
+  }
+  
+  vector_small_patches = rep(ID_small_patches,
+                             times = length(permutations_large))
+  
+  vector_sets = rep(1:length(permutations_large),
+                    each = length(ID_small_patches))
+  
+  SL_isolated_sys_sets[[disturbance_nr]]$ID_small_patches = vector_small_patches
+  SL_isolated_sys_sets[[disturbance_nr]]$ID_large_patches = vector_large_patches
+  SL_isolated_sys_sets[[disturbance_nr]]$set = vector_sets
+  
+  # expect_equal(length(SL_isolated_sys_sets[[disturbance_nr]]$ID_small_patches),
+  #              length(ID_small_patches) * length(permutations_large))
+  # 
+  # expect_equal(length(SL_isolated_sys_sets[[disturbance_nr]]$ID_large_patches),
+  #              length(ID_large_patches) * length(permutations_large))
+  # 
+  # expect_equal(length(SL_isolated_sys_sets[[disturbance_nr]]$set),
+  #              length(ID_small_patches) * length(permutations_large))
+  # 
+  SL_isolated_sys_sets[[disturbance_nr]] = SL_isolated_sys_sets[[disturbance_nr]] %>%
+    as.data.frame() %>%
+    mutate(disturbance = disturbance_input,
+           metaecosystem_type = "Small-Large isolated",
+           connection = "isolated") %>%
+    rename(ID_first_patch = ID_small_patches,
+           ID_second_patch = ID_large_patches) %>%
+    select(disturbance,
+           metaecosystem_type,
+           ID_first_patch,
+           ID_second_patch,
+           connection,
+           set)
+  #Till here
+  
+  expect_equal(nrow(SL_isolated_sys_sets[[disturbance_nr]]),
+               length(ID_small_patches) * length(permutations_large))
+  
+  # Chatgpt = bind these two chunks
+  SL_isolated_sys_sets[[disturbance_nr]] = SL_isolated_sys_sets[[disturbance_nr]] %>%
+    filter(!ID_first_patch == "Patch taken off",
+           !ID_second_patch == "Patch taken off") %>%
+    mutate(ID_first_patch = as.double(ID_first_patch),
+           ID_second_patch = as.double(ID_second_patch))
+  
+  SL_isolated_sys_sets[[disturbance_nr]] = 
+    full_join(SL_isolated_sys_sets[[disturbance_nr]],
+              patch_combinations %>%
+                filter(disturbance == disturbance_input,
+                       metaecosystem_type == "Small-Large isolated"))
+
+  }
+```
+
+```{r}
+
+#Bind high and low disturbances
+
+SL_isolated_sys_sets_bound = SL_isolated_sys_sets %>%
+  bind_rows()
+
+expect_equal(nrow(SL_isolated_sys_sets_bound),
+             nrow(SL_isolated_sys_sets[[1]]) + nrow(SL_isolated_sys_sets[[2]]))
+
+expect_equal(length(SL_isolated_sys_sets_bound %>% 
+                      pull(system_nr) %>% 
+                      unique()),
+             length(patch_combinations %>%
+                      filter(metaecosystem_type == "Small-Large isolated") %>%
+                      pull(system_nr) %>%
+                      unique()))
+
+#Recall in a better way
+SL_isolated_sys_sets = SL_isolated_sys_sets_bound
+```
+
+
+```{r isolated-MM-systems-combination-sets-create}
+
+#Create combination sets for MM isolated where each sets contains each patch only one time. To find all combinations where all the patches are included, but only one at the time, I ... 
+
+disturbance_nr = 0
+MM_isolated_sys_sets <- vector("list",
+                               length(disturbance_levels))
+
+#Find all the combination sets
+for (disturbance_input in disturbance_levels) {
+  disturbance_nr = disturbance_nr + 1
+  
+  #Find culture ID of medium patches
+  ID_medium_patches = ds_patches %>%
+    filter(disturbance == disturbance_input,
+           patch_type == "Medium isolated") %>%
+    pull(culture_ID) %>%
+    unique()
+  
+  #Find pairwise combinations
+  MM_isolated_sys = combn(ID_medium_patches, 
+                             2) %>%
+                       t()
+  
+  n_MM_isolated_sys = nrow(MM_isolated_sys)
+  
+  #Find all the possible sets of combinations
+  MM_isolated_sys_sets[[disturbance_nr]] = matrix(nrow = 10 ^ 4,
+                                                  ncol = 4)
+  matrix_row = 0
+  
+  for (first_system_n in 1:n_MM_isolated_sys) {
+    #Find culture IDs of the first system
+    first_system = MM_isolated_sys[first_system_n, ]
+    
+    for (second_system_n in 1:n_MM_isolated_sys) {
+      #Find culture IDs of the second system
+      second_system = MM_isolated_sys[second_system_n, ]
+      
+      shared_elements_first_n_second_system = intersect(first_system,
+                                                        second_system)
+      
+      if (length(shared_elements_first_n_second_system) == 0) {
+        matrix_row = matrix_row + 1
+        
+        #Make first and second system into a set
+        MM_isolated_sys_sets[[disturbance_nr]][matrix_row,] = c(first_system,
+                                                                second_system)
+        
+      }
+    }
+  }
+  
+  #Tidy the dataset with all the patch combinations
+  MM_isolated_sys_sets[[disturbance_nr]] = MM_isolated_sys_sets[[disturbance_nr]] %>%
+    as.data.frame() %>%
+    drop_na()
+  
+  expect_equal(MM_isolated_sys_sets[[disturbance_nr]] %>% 
+                 filter(V1 == V2 | V1 == V3 | V1 == V4 | V2 == V3 | V2 == V4 | V3 == V4) %>% 
+                 nrow(),
+               0)
+  
+  #Reorder the dataset with all the patch combinations
+  MM_isolated_sys_sets_reordered = data.frame(
+    ID_first_patch = NA,
+    ID_second_patch = NA,
+    set = NA
+  )
+  
+  n_sets = nrow(MM_isolated_sys_sets[[disturbance_nr]])
+  
+  for (set_input in 1:n_sets) {
+    MM_isolated_sys_sets_reordered = MM_isolated_sys_sets_reordered %>%
+      add_row(
+        ID_first_patch = MM_isolated_sys_sets[[disturbance_nr]][set_input, 1],
+        ID_second_patch = MM_isolated_sys_sets[[disturbance_nr]][set_input, 2],
+        set = set_input
+      ) %>%
+      add_row(
+        ID_first_patch = MM_isolated_sys_sets[[disturbance_nr]][set_input, 3],
+        ID_second_patch = MM_isolated_sys_sets[[disturbance_nr]][set_input, 4],
+        set = set_input
+      )
+  }
+  
+  #Add to a list
+  MM_isolated_sys_sets[[disturbance_nr]] = MM_isolated_sys_sets_reordered %>%
+    drop_na() %>%
+    mutate(
+      disturbance = disturbance_input,
+      metaecosystem_type = "Medium-Medium isolated",
+      connection = "isolated"
+    )
+  
+  #Add system nr
+  ID_combinations_MM_isolated = patch_combinations %>%
+    filter(disturbance == disturbance_input,
+           metaecosystem_type == "Medium-Medium isolated")
+  
+  MM_isolated_sys_sets[[disturbance_nr]] = full_join(MM_isolated_sys_sets[[disturbance_nr]],
+                                                     ID_combinations_MM_isolated)
+  
+}
+
+#Bind all sets of MM isolated
+MM_isolated_sys_sets = MM_isolated_sys_sets %>%
+  bind_rows()
+
+expect_equal(length(MM_isolated_sys_sets %>%
+                      pull(system_nr) %>%
+                      unique()),
+             length(patch_combinations %>%
+                      filter(metaecosystem_type == "Medium-Medium isolated") %>%
+                      pull(system_nr) %>%
+                      unique()))
+```
+
+```{r isolated-systems-combination-sets-join}
+
+#Bind SL and MM isolated systems
+
+isolated_combinations_sets = rbind(SL_isolated_sys_sets, 
+                                   MM_isolated_sys_sets) %>%
+  select(disturbance,
+         metaecosystem_type,
+         connection,
+         set,
+         system_nr,
+         ID_first_patch,
+         ID_second_patch)
+```

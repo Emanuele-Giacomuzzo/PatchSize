@@ -10,6 +10,7 @@ This table contains information about the 110 cultures of the experiment.
 
 ```{r experimental-cultures}
 
-# Import
+# Import culture informations
+
 culture_info = read.csv(here("data", "culture_info.csv"), header = TRUE)
 ```

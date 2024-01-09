@@ -16,6 +16,8 @@ for(patch_type_i in patch_type_i){
   group_by(day) %>%
   summarise(
     Ble = mean(Ble_indiv_per_ml_dominance, na.rm = TRUE),
+    # Ble_se = sd(Ble_indiv_per_ml_dominance, na.rm = TRUE) / sqrt(n()),
+    # Ble_ci = qt(c(0.025, 0.975), df = n() - 1) * Ble_se,
     Cep = mean(Cep_indiv_per_ml_dominance, na.rm = TRUE),
     Col = mean(Col_indiv_per_ml_dominance, na.rm = TRUE),
     Eup = mean(Eup_indiv_per_ml_dominance, na.rm = TRUE),

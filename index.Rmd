@@ -57,13 +57,13 @@ print(paste("!!", disturbance_global_input, "!!", "(this document showcases only
 ```{r child = here("r_files", "ds_patches_effect_size.Rmd")}
 ```
 
-```{r child = here("r_files", "ds_metaecos_patch_combinations.Rmd")}
+```{r child = here("r_files", "ds_metaecos_1_patch_combinations.Rmd")}
 ```
 
-```{r child = here("r_files", "ds_metaecos_patch_combination_sets.Rmd")}
+```{r child = here("r_files", "ds_metaecos_2_patch_combination_sets.Rmd")}
 ```
 
-```{r child = here("r_files", "ds_metaecosystems.Rmd")}
+```{r child = here("r_files", "ds_metaecos_3_finish.Rmd")}
 ```
 
 ```{r child = here("r_files", "ds_classes.Rmd"), eval = FALSE}
