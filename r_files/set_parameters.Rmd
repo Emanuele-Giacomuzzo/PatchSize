@@ -337,6 +337,7 @@ presentation_figure_height = 22
 presentation_legend_size = 20
 presentation_x_axis_size = 20
 presentation_y_axis_size = presentation_x_axis_size
+presentation_axes_size = 12
 presentation_treatment_points_size = 5
 presentation_treatment_linewidth = 2
 presentation_figure_units = "cm"

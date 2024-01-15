@@ -1,11 +1,11 @@
-plot.patches.points.presentations = function(ds_patches,
-                               patch_type_input,
-                               response_variable) {
+plot.patches.points.presentations = function(data,
+                                             patch_type_input,
+                                             response_variable) {
   
   patch_type_input <- patch_type_input[order(match(patch_type_input, 
                                                    patch_types_ordered))]
   
-  ds_patches %>%
+  data %>%
     filter(
       patch_type %in% patch_type_input,
       !is.na(!!sym(response_variable))
