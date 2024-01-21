@@ -1,7 +1,7 @@
 plot.empty.plot.presentations = function(y_min,
                                          y_max,
                                          response_variable,
-                                         metaecosystem_type = ""){
+                                         metaecosystem_type_i = ""){
   
   ds_metaecosystems %>%
     filter(metaecosystem_type %in% metaecosystem_type_i,
