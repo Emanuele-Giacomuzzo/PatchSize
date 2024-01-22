@@ -96,10 +96,13 @@ expect_equal(length(SL_isolated_sys_sets %>%
 
 ```{r isolated-MM-systems-combination-sets-create}
 
+#WORK HERE
+
 #Create combination sets for MM isolated where each sets contains each patch only one time. To find all combinations where all the patches are included, but only one at the time, I ... 
 
 disturbance_nr = 0
-MM_isolated_sys_sets <- vector("list", length(disturbance_levels))
+MM_isolated_sys_sets <- vector("list", 
+                               length(disturbance_levels))
 
 for (disturbance_input in disturbance_levels) {
   

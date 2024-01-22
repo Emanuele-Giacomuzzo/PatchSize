@@ -58,7 +58,7 @@ print(paste("!!", disturbance_global_input, "!!", "(this document showcases only
 ```
 
 ```{r echo=FALSE, message=FALSE}
-save.image(file = here("environments", "before_ds_metaecos_1_patch_combinations.RData"))
+save.image(file = here("environments", "before.RData"))
 ```
 
 ```{r child = here("r_files", "ds_metaecos_1_patch_combinations.Rmd")}
@@ -161,10 +161,6 @@ metaecosystem_type_i = c("Medium-Medium meta-ecosystem",
 ```{r}
 metaecosystem_type_i = c("Small-Large meta-ecosystem",
                          "Small-Large isolated")
-```
-
-```{r echo=FALSE, message=FALSE}
-save.image(file = here("environments", "before_analysis_metaeco_connection.RData"))
 ```
 
 ```{r child = here("r_files", "analysis_metaeco_connection.Rmd")}
