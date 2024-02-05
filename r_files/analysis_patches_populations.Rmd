@@ -20,6 +20,7 @@ for(patch_type_i in patch_type_i){
     # Ble_ci = qt(c(0.025, 0.975), df = n() - 1) * Ble_se,
     Cep = mean(Cep_indiv_per_ml_dominance, na.rm = TRUE),
     Col = mean(Col_indiv_per_ml_dominance, na.rm = TRUE),
+    Eug = mean(Eug_indiv_per_ml_dominance, na.rm = TRUE),
     Eup = mean(Eup_indiv_per_ml_dominance, na.rm = TRUE),
     Lox = mean(Lox_indiv_per_ml_dominance, na.rm = TRUE),
     Pau = mean(Pau_indiv_per_ml_dominance, na.rm = TRUE),
