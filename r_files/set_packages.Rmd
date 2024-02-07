@@ -22,7 +22,7 @@ library("ggpubr") #ggarrange
 library("plotly")
 
 #Data analysis
-library("lme4")
+library("lmerTest")
 library("vegan")
 library("betapart")
 library("Rmisc") #For summarySE
@@ -38,4 +38,5 @@ conflict_prefer("rename", "dplyr")
 conflict_prefer("arrange", "dplyr")
 conflict_prefer("here", "here")
 conflict_prefer("combn", "combinat")
+conflict_prefer("lmer", "lmerTest")
 ```

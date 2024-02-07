@@ -58,6 +58,13 @@ print(summary(full_model), digits = 1)
 ```
 </details>
 
+<details>
+  <summary>Click for model ANOVA</summary>
+```{r}
+anova(full_model)
+```
+</details>
+
 ```{r}
 #Create resid vs fitted (if your number of fitted values is lower than the number of rows in the filtered dataset, it's probably because you have NAs)
 res_vs_fit = filtered_data %>%

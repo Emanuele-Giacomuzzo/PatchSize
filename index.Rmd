@@ -571,6 +571,10 @@ response_variable = "median_body_area_µm2"
 ```{r child = here("r_files", "results_metaecos_diversity_paper.Rmd")}
 ```
 
+```{r echo=FALSE, message=FALSE}
+save.image(file = here("environments", "before.RData"))
+```
+
 ```{r child = here("r_files", "results_metaecos_diversity_presentations.Rmd")}
 ```
 

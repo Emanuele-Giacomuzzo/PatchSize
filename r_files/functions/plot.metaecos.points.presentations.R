@@ -37,8 +37,6 @@ plot.metaecos.points.presentations = function(data,
     ),
     width = width_errorbar,
     position = position_dodge(dodging)) +
-    xlim(x_min, x_max) +
-    ylim(y_min, y_max) +
     labs(x = axis_names$axis_name[axis_names$variable == "day"],
          y = axis_names$axis_name[axis_names$variable == response_variable],
          color = "") +
