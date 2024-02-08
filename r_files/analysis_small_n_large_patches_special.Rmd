@@ -13,13 +13,13 @@ editor_options:
 filtered_data = ds_patches %>%
   filter(time_point >= first_time_point_model,
          time_point <= last_time_point_model,
-         patch_type %in% patch_type_input_model,
+         patch_type %in% patch_type_i,
          !is.na(!!sym(response_variable)))
 ```
 
 ```{r}
 plot.patches.points(filtered_data,
-                    patch_type_input_model,
+                    patch_type_i,
                     response_variable) 
 ```
 
@@ -209,7 +209,7 @@ model_stats_fixed %>%
 results_table = fill.results.table(
   results_table,
   response_variable,
-  patch_type_input_model,
+  patch_type_i,
   model_stats_full,
   model_stats_fixed
 )
