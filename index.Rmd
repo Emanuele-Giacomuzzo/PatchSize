@@ -21,7 +21,7 @@ editor_options:
 Somewhere there's analysis small and large patches special
 
 ```{r echo=FALSE}
-disturbance_global_input = "low"
+disturbance_global_input = "high"
 print(paste("!!", disturbance_global_input, "!!", "(this document showcases only the analysis done for the", disturbance_global_input, "disturbance)"))
 ```
 
@@ -414,6 +414,63 @@ response_variable = "median_body_area_µm2"
 ```{r child = here("r_files", "analysis_patches_populations.Rmd")}
 ```
 
+### S_L vs S {.tabset .tabset-pills}
+
+```{r}
+patch_type_i = c("Small connected to large",
+                 "Small isolated")
+```
+
+#### Biomass {.tabset .tabset-pills}
+
+```{r}
+response_variable = "bioarea_mm2_per_ml"
+```
+
+```{r child = here("r_files", "analysis_small_n_large_patches.Rmd")}
+```
+
+#### Shannon {.tabset .tabset-pills}
+
+```{r}
+response_variable = "shannon"
+```
+
+```{r child = here("r_files", "analysis_small_n_large_patches.Rmd")}
+```
+
+#### Richness {.tabset .tabset-pills}
+
+```{r}
+response_variable = "species_richness"
+```
+
+```{r child = here("r_files", "analysis_small_n_large_patches.Rmd")}
+```
+
+#### Evenness {.tabset .tabset-pills}
+
+```{r}
+response_variable = "evenness_pielou"
+```
+
+```{r child = here("r_files", "analysis_small_n_large_patches.Rmd")}
+```
+
+#### Median Size {.tabset .tabset-pills}
+
+```{r}
+response_variable = "median_body_area_µm2"
+```
+
+```{r child = here("r_files", "analysis_small_n_large_patches.Rmd")}
+```
+
+#### Populations
+
+```{r child = here("r_files", "analysis_patches_populations.Rmd")}
+```
+
 ### S_L vs S_S {.tabset .tabset-pills}
 
 ```{r}
@@ -425,10 +482,6 @@ patch_type_i = c("Small connected to large",
 
 ```{r}
 response_variable = "bioarea_mm2_per_ml"
-```
-
-
-```{r child = here("r_files", "analysis_small_n_large_patches.Rmd")}
 ```
 
 ```{r child = here("r_files", "analysis_small_n_large_patches.Rmd")}
@@ -486,10 +539,6 @@ patch_type_i = c("Small connected to small",
 
 ```{r}
 response_variable = "bioarea_mm2_per_ml"
-```
-
-
-```{r child = here("r_files", "analysis_small_n_large_patches.Rmd")}
 ```
 
 ```{r child = here("r_files", "analysis_small_n_large_patches.Rmd")}
@@ -593,6 +642,63 @@ response_variable = "median_body_area_µm2"
 ```{r child = here("r_files", "analysis_patches_populations.Rmd")}
 ```
 
+### L_S vs L {.tabset .tabset-pills}
+
+```{r}
+patch_type_i = c("Large connected to small",
+                 "Large isolated")
+```
+
+#### Biomass {.tabset .tabset-pills}
+
+```{r}
+response_variable = "bioarea_mm2_per_ml"
+```
+
+```{r child = here("r_files", "analysis_small_n_large_patches_special_control.Rmd")}
+```
+
+#### Shannon {.tabset .tabset-pills}
+
+```{r}
+response_variable = "shannon"
+```
+
+```{r child = here("r_files", "analysis_small_n_large_patches.Rmd")}
+```
+
+#### Richness {.tabset .tabset-pills}
+
+```{r}
+response_variable = "species_richness"
+```
+
+```{r child = here("r_files", "analysis_small_n_large_patches.Rmd")}
+```
+
+#### Evenness {.tabset .tabset-pills}
+
+```{r}
+response_variable = "evenness_pielou"
+```
+
+```{r child = here("r_files", "analysis_small_n_large_patches.Rmd")}
+```
+
+#### Median Size {.tabset .tabset-pills}
+
+```{r}
+response_variable = "median_body_area_µm2"
+```
+
+```{r child = here("r_files", "analysis_small_n_large_patches.Rmd")}
+```
+
+#### Populations
+
+```{r child = here("r_files", "analysis_patches_populations.Rmd")}
+```
+
 ### L_S vs L_L {.tabset .tabset-pills}
 
 ```{r}
@@ -606,7 +712,7 @@ patch_type_i = c("Large connected to small",
 response_variable = "bioarea_mm2_per_ml"
 ```
 
-```{r child = here("r_files", "analysis_small_n_large_patches.Rmd")}
+```{r child = here("r_files", "analysis_small_n_large_patches_special_control.Rmd")}
 ```
 
 #### Shannon {.tabset .tabset-pills}
