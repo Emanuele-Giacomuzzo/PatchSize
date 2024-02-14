@@ -146,6 +146,8 @@ model_stats_full %>%
                            "< 0.001",
                            p_value)) %>%
   print()
+
+model_stats_full
 ```
 
 &nbsp;<br>
@@ -233,6 +235,8 @@ model_stats_fixed %>%
                            "< 0.001",
                            p_value)) %>%
   print()
+
+model_stats_fixed
 ```
 
 ```{r}

@@ -432,3 +432,20 @@ ds_patches = full_join(ds_patches, ds_median_body_size)
 expect_equal(nrow(ds_patches), 
              n_rows_ds_patches_before_median_size)
 ```
+
+```{r}
+
+# Calculate auto/heterotrophic ratio
+
+ds_patches = ds_patches %>%
+  mutate(auto_hetero_ratio = (Eug_indiv_per_ml + Eup_indiv_per_ml) / 
+                             (Ble_indiv_per_ml + 
+                              Cep_indiv_per_ml + 
+                              Col_indiv_per_ml + 
+                              Lox_indiv_per_ml + 
+                              Pau_indiv_per_ml + 
+                              Pca_indiv_per_ml +
+                              Spi_indiv_per_ml + 
+                              Spi_te_indiv_per_ml +
+                              Tet_indiv_per_ml))
+```

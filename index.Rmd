@@ -360,8 +360,8 @@ emmeans::emmeans(full_model,
 
 ```{r}
 patch_type_i = c("Small isolated",
-                     "Medium isolated",
-                     "Large isolated")
+                 "Medium isolated",
+                 "Large isolated")
 ```
 
 #### Biomass {.tabset .tabset-pills}
@@ -404,6 +404,15 @@ response_variable = "evenness_pielou"
 
 ```{r}
 response_variable = "median_body_area_µm2"
+```
+
+```{r child = here("r_files", "analysis_isolated_patches_variable.Rmd")}
+```
+
+#### Auto/Hetero {.tabset .tabset-pills}
+
+```{r}
+response_variable = "auto_hetero_ratio"
 ```
 
 ```{r child = here("r_files", "analysis_isolated_patches_variable.Rmd")}
