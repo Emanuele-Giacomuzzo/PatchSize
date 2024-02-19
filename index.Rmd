@@ -832,9 +832,19 @@ response_variable = "median_body_area_µm2"
 ```{r child = here("r_files", "results_metaecos_diversity_presentations.Rmd")}
 ```
 
+### Connected patches
+
+```{r child = here("r_files", "results_connected_patches_paper.Rmd")}
+```
+
 ### Isolated patches
 
 ```{r child = here("r_files", "results_isolated_patches_paper.Rmd")}
+```
+
+### Autotrophic species
+
+```{r child = here("r_files", "results_auto_hetero_ratio_paper.Rmd")}
 ```
 
 ## Evaporation

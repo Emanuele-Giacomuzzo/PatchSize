@@ -146,6 +146,7 @@ expect_equal(nrow(ds_metaecosystems),
 
 ```{r}
 #Add column connection
+
 ds_metaecosystems$connection <-
   ifelse(
     ds_metaecosystems$metaecosystem_type %in% c("Medium-Medium isolated",
@@ -157,6 +158,7 @@ ds_metaecosystems$connection <-
 
 ```{r}
 #Add column patch size symmetry
+
 ds_metaecosystems$patch_size_symmetry <-
   ifelse(
     ds_metaecosystems$metaecosystem_type %in% c("Small-Large isolated",
@@ -179,3 +181,17 @@ ds_metaecosystems = ds_metaecosystems %>%
 full_join(ds_metaecosystems,
           isolated_combinations_sets)
 ```
+
+```{r}
+ds_metaecosystems <- ds_metaecosystems %>%
+  mutate(
+    type = case_when(
+      metaecosystem_type == "Small-Large isolated" ~ "asymmetric",
+      metaecosystem_type == "Small-Large meta-ecosystem" ~ "asymmetric",
+      metaecosystem_type == "Medium-Medium isolated" ~ "symmetric",
+      metaecosystem_type == "Medium-Medium meta-ecosystem" ~ "symmetric",
+      metaecosystem_type == "Small-Small meta-ecosystem" ~ "Small-Small",
+      metaecosystem_type == "Medium-Medium meta-ecosystem" ~ "Medium-Medium"
+    ))
+```
+

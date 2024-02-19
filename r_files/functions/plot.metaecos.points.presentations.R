@@ -86,6 +86,15 @@ plot.metaecos.points.presentations = function(data,
     guides(color = guide_legend(title = NULL,
                                 nrow = n_legend_rows),
            linetype = guide_legend(title = NULL,
-                                   nrow = n_legend_rows))
+                                   nrow = n_legend_rows)) +
+    geom_rect(
+      xmin = grey_background_xmin, 
+      xmax = grey_background_xmax,
+      ymin = grey_background_ymin, 
+      ymax = grey_background_ymax, 
+      fill = grey_background_fill, 
+      alpha = grey_background_alpha,
+      color = grey_background_color
+    )
   
 }

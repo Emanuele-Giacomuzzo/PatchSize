@@ -54,5 +54,14 @@ plot.patches.empty.presentations = function(y_min,
            linetype = guide_legend(title = NULL,
                                    nrow = 3)) +
     guides(color = "none", 
-           linetype = "none")
+           linetype = "none") +
+    geom_rect(
+      xmin = grey_background_xmin, 
+      xmax = grey_background_xmax,
+      ymin = grey_background_ymin, 
+      ymax = grey_background_ymax, 
+      fill = grey_background_fill, 
+      alpha = grey_background_alpha,
+      color = grey_background_color
+    )
 }

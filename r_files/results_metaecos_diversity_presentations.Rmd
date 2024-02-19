@@ -20,8 +20,6 @@ y_max_alpha = 2.1
 y_min_beta = 0
 y_max_beta = 1
 
-size_y_axis = 22
-
 metaecosystem_type_all = c("Medium-Medium isolated",
                            "Medium-Medium meta-ecosystem",
                            "Small-Large isolated",
@@ -106,13 +104,13 @@ for(i in 1:length(alpha_beta_plot_number$alpha)){
           axis.ticks.x = element_blank(),
           axis.text = element_text(size = presentation_axes_size)) +
     font("legend.text", size = size_legend) +
-    font("ylab", size = size_y_axis),
+    font("ylab", size = presentation_y_axis_size),
   NULL,
   beta_plots[[alpha_beta_plot_number$beta[i]]] +
     theme(axis.text = element_text(size = presentation_axes_size)) + 
     font("legend.text", size = size_legend) +
-    font("xlab", size = size_y_axis) +
-    font("ylab", size = size_y_axis),
+    font("xlab", size = presentation_y_axis_size) +
+    font("ylab", size = presentation_y_axis_size),
   heights = c(0.999, 0.001, 0.999),
   nrow = 3,
   align = "v",

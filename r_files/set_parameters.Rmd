@@ -203,10 +203,10 @@ axis_names = data.frame(variable = NA,
   add_row(variable = "patch_size_ml", axis_name = "Patch size (ml)") %>%
   add_row(variable = "log_size_class", axis_name = "Log size (μm2)") %>%
   add_row(variable = "class_indiv_per_µl", axis_name = "Density (ind/ml)") %>%
-  add_row(variable = "bioarea_mm2_per_ml", axis_name = "Bioarea density (mm²/ml)") %>%
-  add_row(variable = "bioarea_mm2_per_ml_d", axis_name = "Bioarea Density ES") %>%
-  add_row(variable = "bioarea_tot", axis_name = "Tot Bioarea (mm²)") %>%
-  add_row(variable = "total_metaecosystem_bioarea_mm2", axis_name = "Tot Bioarea (mm²)") %>%
+  add_row(variable = "bioarea_mm2_per_ml", axis_name = "Biomass") %>%
+  add_row(variable = "bioarea_mm2_per_ml_d", axis_name = "Bioamass ES") %>%
+  add_row(variable = "bioarea_tot", axis_name = "Tot Biomass") %>%
+  add_row(variable = "total_metaecosystem_bioarea_mm2", axis_name = "Tot Biomass") %>%
   add_row(variable = "species_richness", axis_name = "Species Richness") %>%
   add_row(variable = "species_richness_d", axis_name = "Species Richness ES") %>%
   add_row(variable = "mean_richness", axis_name = "mean α Diversity (Shannon)") %>%
@@ -233,7 +233,7 @@ axis_names = data.frame(variable = NA,
   add_row(variable = "Spi_indiv_per_ml", axis_name = "Spi Density (ind/ml)") %>%
   add_row(variable = "Spi_te_indiv_per_ml", axis_name = "Spi te Density (ind/ml)") %>%
   add_row(variable = "Tet_indiv_per_ml", axis_name = "Tet Density (ind/ml)") %>%
-  add_row(variable = "auto_hetero_ratio", axis_name = "Autotrophic/Heterotrophic") %>%
+  add_row(variable = "auto_hetero_ratio", axis_name = "Autotrophic/Heterotrophic individuals ratio") %>%
   add_row(variable = "Ble_indiv_per_ml_d", axis_name = "Ble Density ES") %>%
   add_row(variable = "Cep_indiv_per_ml_d", axis_name = "Cep Density ES") %>%
   add_row(variable = "Col_indiv_per_ml_d", axis_name = "Col Density ES") %>%
@@ -331,18 +331,27 @@ paper_width = 17.3
 paper_height = 20
 paper_units = "cm"
 paper_res = 600
+paper_y_axis_size = 9
 
 presentation_figure_size = 15
 presentation_figure_width = 30
 presentation_figure_height = 22
 presentation_legend_size = 20
-presentation_x_axis_size = 20
+presentation_x_axis_size = 22
 presentation_y_axis_size = presentation_x_axis_size
 presentation_axes_size = 12
 presentation_treatment_points_size = 5
 presentation_treatment_linewidth = 2
 presentation_figure_units = "cm"
 presentation_figure_res = 600
+
+grey_background_xmin = -Inf
+grey_background_xmax = 7.5
+grey_background_ymin = -Inf
+grey_background_ymax = Inf
+grey_background_fill = "#f0f0f0"
+grey_background_alpha = 0.03
+grey_background_color = "transparent"
 ```
 
 ```{r modeling_parameters}

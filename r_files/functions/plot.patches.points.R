@@ -39,6 +39,7 @@ plot.patches.points = function(ds_patches,
     labs(x = axis_names$axis_name[axis_names$variable == "day"],
          y = axis_names$axis_name[axis_names$variable == response_variable],
          color = "") +
+    scale_x_continuous(breaks = unique(ds_patches$day)) +
     scale_linetype_manual(
       values = c(
         parameters_treatments$linetype[parameters_treatments$treatment == patch_type_input[1]][1],
@@ -85,5 +86,14 @@ plot.patches.points = function(ds_patches,
     guides(color = guide_legend(title = NULL,
                                 nrow = legend_row_n_input),
            linetype = guide_legend(title = NULL,
-                                   nrow = legend_row_n_input))
+                                   nrow = legend_row_n_input)) +
+    geom_rect(
+      xmin = grey_background_xmin, 
+      xmax = grey_background_xmax,
+      ymin = grey_background_ymin, 
+      ymax = grey_background_ymax, 
+      fill = grey_background_fill, 
+      alpha = grey_background_alpha,
+      color = grey_background_color
+    )
 }

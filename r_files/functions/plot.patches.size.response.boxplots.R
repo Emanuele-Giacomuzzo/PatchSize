@@ -58,7 +58,16 @@ plot.patches.size.response.boxplots = function(metaecosystem_input,
           linewidth = zero_line_line_width
         ) +
         scale_fill_gradient(low = colour_lowest,
-                            high = colour_highest)
+                            high = colour_highest) +
+        geom_rect(
+          xmin = grey_background_xmin, 
+          xmax = grey_background_xmax,
+          ymin = grey_background_ymin, 
+          ymax = grey_background_ymax, 
+          fill = grey_background_fill, 
+          alpha = grey_background_alpha,
+          color = grey_background_color
+        )
     )
     
   }

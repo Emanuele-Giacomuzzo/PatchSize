@@ -54,6 +54,15 @@ plot.patches.classes.density.points = function(patch_type_input,
       x = axis_names$axis_name[axis_names$variable == "log_size_class"],
       y = axis_names$axis_name[axis_names$variable == "log_abundance"],
       color = ""
+    ) +
+    geom_rect(
+      xmin = grey_background_xmin, 
+      xmax = grey_background_xmax,
+      ymin = grey_background_ymin, 
+      ymax = grey_background_ymax, 
+      fill = grey_background_fill, 
+      alpha = grey_background_alpha,
+      color = grey_background_color
     )
   
 }

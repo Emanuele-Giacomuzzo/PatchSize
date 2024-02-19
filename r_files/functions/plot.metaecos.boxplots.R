@@ -50,6 +50,15 @@ plot.metaecos.boxplots = function(ds_metaecosystems,
       panel.grid.major = element_blank(),
       panel.grid.minor = element_blank(),
       legend.position = legend_position
+    ) +
+    geom_rect(
+      xmin = grey_background_xmin, 
+      xmax = grey_background_xmax,
+      ymin = grey_background_ymin, 
+      ymax = grey_background_ymax, 
+      fill = grey_background_fill, 
+      alpha = grey_background_alpha,
+      color = grey_background_color
     )
   
 }
