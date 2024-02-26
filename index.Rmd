@@ -826,25 +826,25 @@ response_variable = "median_body_area_µm2"
 
 ### Meta-ecosystems
 
-```{r child = here("r_files", "results_metaecos_diversity_paper.Rmd")}
+```{r child = here("r_files", "paper_metaecos.Rmd")}
 ```
 
-```{r child = here("r_files", "results_metaecos_diversity_presentations.Rmd")}
+```{r child = here("r_files", "present_metaecos.Rmd")}
 ```
 
 ### Connected patches
 
-```{r child = here("r_files", "results_connected_patches_paper.Rmd")}
+```{r child = here("r_files", "paper_connected_ecosystems.Rmd")}
 ```
 
 ### Isolated patches
 
-```{r child = here("r_files", "results_isolated_patches_paper.Rmd")}
+```{r child = here("r_files", "paper_isolated_ecosystems.Rmd")}
 ```
 
 ### Autotrophic species
 
-```{r child = here("r_files", "results_auto_hetero_ratio_paper.Rmd")}
+```{r child = here("r_files", "paper_auto_hetero_ratio.Rmd")}
 ```
 
 ## Evaporation
