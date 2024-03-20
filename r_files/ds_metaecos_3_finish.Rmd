@@ -8,7 +8,7 @@ editor_options:
 
 -   Each row is a meta-ecosystem.
 
--   It contains also "fake" meta-ecosystems which I created from isolated patches (`metaecosystem type = Small-Large isolated` & `metaecosystem type = Medium-Medium isolated`).
+-   It contains also "fake" meta-ecosystems which I created from unconnected patches (`metaecosystem type = Small-Large unconnected` & `metaecosystem type = Medium-Medium unconnected`).
 
 - Warning appear after the following code, as:
 (i) alpha diversity is computed for a culture that is totally crashed, so it has not meaning.
@@ -149,9 +149,9 @@ expect_equal(nrow(ds_metaecosystems),
 
 ds_metaecosystems$connection <-
   ifelse(
-    ds_metaecosystems$metaecosystem_type %in% c("Medium-Medium isolated",
-                                                "Small-Large isolated"),
-    yes = "isolated",
+    ds_metaecosystems$metaecosystem_type %in% c("Medium-Medium unconnected",
+                                                "Small-Large unconnected"),
+    yes = "unconnected",
     no = "connected"
   )
 ```
@@ -161,7 +161,7 @@ ds_metaecosystems$connection <-
 
 ds_metaecosystems$patch_size_symmetry <-
   ifelse(
-    ds_metaecosystems$metaecosystem_type %in% c("Small-Large isolated",
+    ds_metaecosystems$metaecosystem_type %in% c("Small-Large unconnected",
                                                 "Small-Large meta-ecosystem"),
     yes = "asymmetric",
     no = "symmetric"
@@ -179,16 +179,16 @@ ds_metaecosystems = ds_metaecosystems %>%
 ```{r}
 #Join ...
 full_join(ds_metaecosystems,
-          isolated_combinations_sets)
+          unconnected_combinations_sets)
 ```
 
 ```{r}
 ds_metaecosystems <- ds_metaecosystems %>%
   mutate(
     type = case_when(
-      metaecosystem_type == "Small-Large isolated" ~ "asymmetric",
+      metaecosystem_type == "Small-Large unconnected" ~ "asymmetric",
       metaecosystem_type == "Small-Large meta-ecosystem" ~ "asymmetric",
-      metaecosystem_type == "Medium-Medium isolated" ~ "symmetric",
+      metaecosystem_type == "Medium-Medium unconnected" ~ "symmetric",
       metaecosystem_type == "Medium-Medium meta-ecosystem" ~ "symmetric",
       metaecosystem_type == "Small-Small meta-ecosystem" ~ "Small-Small",
       metaecosystem_type == "Medium-Medium meta-ecosystem" ~ "Medium-Medium"

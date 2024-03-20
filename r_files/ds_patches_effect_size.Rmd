@@ -8,7 +8,7 @@ editor_options:
 
 ### Patch effect sizes (`ds_patches_effect_size`)
 
-In this dataset (`ds_patches_effect_size`) each row represents a treatment at a time point. It contains the effect size of the connection of a patch (connected vs isolated).
+In this dataset (`ds_patches_effect_size`) each row represents a treatment at a time point. It contains the effect size of the connection of a patch (connected vs unconnected).
 
 ```{r}
 

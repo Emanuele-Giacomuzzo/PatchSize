@@ -20,10 +20,10 @@ y_max = 3
 
 
 patch_type_all = c("Small connected to large",
-                   "Small isolated",
+                   "Small unconnected",
                    "Small connected to small",
                    "Large connected to small",
-                   "Large isolated",
+                   "Large unconnected",
                    "Large connected to large")
 ```
 

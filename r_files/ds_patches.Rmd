@@ -239,9 +239,9 @@ ds_patches = ds_patches %>%
 ds_patches <- ds_patches %>%
   mutate(
     patch_type = case_when(
-      patch_type == "S" ~ "Small isolated",
-      patch_type == "M" ~ "Medium isolated",
-      patch_type == "L" ~ "Large isolated",
+      patch_type == "S" ~ "Small unconnected",
+      patch_type == "M" ~ "Medium unconnected",
+      patch_type == "L" ~ "Large unconnected",
       patch_type == "S (S_S)" ~ "Small connected to small",
       patch_type == "S (S_L)" ~ "Small connected to large",
       patch_type == "M (M_M)" ~ "Medium connected to medium",
@@ -352,11 +352,11 @@ ds_patches = ds_patches %>%
                                                   collapse = " + ")))
 
 ds_patches = ds_patches %>%
-  mutate(connection = ifelse(str_detect(patch_type, "isolated"), 
-                             "isolated", 
+  mutate(connection = ifelse(str_detect(patch_type, "unconnected"), 
+                             "unconnected", 
                              "connected"),
          connection = factor(x = connection,
-                        levels = c("isolated", "connected")))
+                        levels = c("unconnected", "connected")))
 ```
 
 ```{r}

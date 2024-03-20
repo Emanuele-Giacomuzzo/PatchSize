@@ -120,9 +120,9 @@ ds_individuals = ds_individuals %>%
 # Rename and reorder levels
 
 ds_individuals <- ds_individuals %>%
-  mutate(patch_type = case_when(patch_type == "S" ~ "Small isolated",
-                                patch_type == "M" ~ "Medium isolated",
-                                patch_type == "L" ~ "Large isolated",
+  mutate(patch_type = case_when(patch_type == "S" ~ "Small unconnected",
+                                patch_type == "M" ~ "Medium unconnected",
+                                patch_type == "L" ~ "Large unconnected",
                                 patch_type == "S (S_S)" ~ "Small connected to small",
                                 patch_type == "S (S_L)" ~ "Small connected to large",
                                 patch_type == "M (M_M)" ~ "Medium connected to medium",

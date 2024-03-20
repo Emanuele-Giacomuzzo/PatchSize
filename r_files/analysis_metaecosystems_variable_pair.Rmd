@@ -53,7 +53,7 @@ plot.metaecos.replicates(filtered_data,
 
 ###### Analysis
 
-The p-values and ΔAIC of the connection are computed for all possible combinations of the isolated patches, creating a p-value and ΔAIC distributions. We keep as p-value and ΔAIC of the comparison the mean of such distributions.
+The p-values and ΔAIC of the connection are computed for all possible combinations of the unconnected patches, creating a p-value and ΔAIC distributions. We keep as p-value and ΔAIC of the comparison the mean of such distributions.
 
 <details>
 
@@ -67,10 +67,10 @@ If you see "*Warning in (function (iprint = 0L, maxfun = 10000L, FtolAbs = 1e-05
 
 # Compute stats for all patch combinations 
 
-isolated_combinations_sets_filtered =  isolated_combinations_sets %>%
+unconnected_combinations_sets_filtered =  unconnected_combinations_sets %>%
   filter(metaecosystem_type %in% metaecosystem_type_i)
 
-n_sets = isolated_combinations_sets_filtered %>%
+n_sets = unconnected_combinations_sets_filtered %>%
   pull(set) %>%
   max()
 
@@ -89,10 +89,10 @@ iterated_results_table = data.frame(
 
 for (set_i in 1 : n_sets) {
   
-  system_nrs_in_set_i = isolated_combinations_sets_filtered %>%
+  system_nrs_in_set_i = unconnected_combinations_sets_filtered %>%
     filter(
       metaecosystem_type %in% metaecosystem_type_i,
-      connection == "isolated",
+      connection == "unconnected",
       set == set_i
     ) %>%
     pull(system_nr)
@@ -103,7 +103,7 @@ for (set_i in 1 : n_sets) {
       time_point <= last_time_point_model,
       metaecosystem_type %in% metaecosystem_type_i,
       connection == "connected" |
-        (connection == "isolated" & system_nr %in% system_nrs_in_set_i)
+        (connection == "unconnected" & system_nr %in% system_nrs_in_set_i)
     )
   
   null_model = lmer(
@@ -158,7 +158,7 @@ for (set_i in 1 : n_sets) {
   )
   
   iterated_results_table$set[nrow(iterated_results_table)] = set_i
-  iterated_results_table$system_nr_isolated_systems[nrow(iterated_results_table)] = paste(system_nrs_in_set_i, collapse = " ")
+  iterated_results_table$system_nr_unconnected_systems[nrow(iterated_results_table)] = paste(system_nrs_in_set_i, collapse = " ")
 }
 ```
 

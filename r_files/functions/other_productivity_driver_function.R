@@ -16,6 +16,6 @@
 #  }
 #  
 #}
-#plot_time_points("Small isolated")
-#plot_time_points("Medium isolated")
-#plot_time_points("Large isolated")
+#plot_time_points("Small unconnected")
+#plot_time_points("Medium unconnected")
+#plot_time_points("Large unconnected")

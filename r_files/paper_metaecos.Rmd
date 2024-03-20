@@ -11,9 +11,9 @@ editor_options:
 # Construct plots
 
 metaecosystem_type_i = c("Medium-Medium meta-ecosystem",
-                         "Medium-Medium isolated",
+                         "Medium-Medium unconnected",
                          "Small-Large meta-ecosystem",
-                         "Small-Large isolated")
+                         "Small-Large unconnected")
 
 plot.single.plot = function(response_variable){
   

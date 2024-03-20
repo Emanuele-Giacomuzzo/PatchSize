@@ -1,5 +1,5 @@
 calculate.treatment.divergence = function() {
-  ds_patches$beta_diversity_from_isolated = NA
+  ds_patches$beta_diversity_from_unconnected = NA
   for (time_point_input in time_points) {
     
     for (culture_ID_treatment in 1:n_cultures) {
@@ -78,7 +78,7 @@ calculate.treatment.divergence = function() {
         
       }
       
-      ds_patches$beta_diversity_from_isolated[ds_patches$time_point == time_point_input &
+      ds_patches$beta_diversity_from_unconnected[ds_patches$time_point == time_point_input &
                                                 ds_patches$culture_ID ==  culture_ID_treatment] =
         mean(pairwise_bray_curtis)
       

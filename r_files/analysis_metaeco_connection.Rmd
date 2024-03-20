@@ -22,7 +22,7 @@ plot.metaecos.points(filtered_data,
                      response_variable)
 ```
 
-The p-values and ΔAIC of the connection are computed for all possible combinations of the isolated patches, creating a p-value and ΔAIC distributions. We keep as p-value and ΔAIC of the comparison the mean of such distributions.
+The p-values and ΔAIC of the connection are computed for all possible combinations of the unconnected patches, creating a p-value and ΔAIC distributions. We keep as p-value and ΔAIC of the comparison the mean of such distributions.
 
 <details>
   <summary>Click for bootstrapping ΔAIC and p-value</summary>
@@ -35,11 +35,11 @@ If you see "*Warning in (function (iprint = 0L, maxfun = 10000L, FtolAbs = 1e-05
 
 # Compute stats for all patch combinations 
 
-isolated_combinations_sets_filtered =  isolated_combinations_sets %>%
+unconnected_combinations_sets_filtered =  unconnected_combinations_sets %>%
   filter(disturbance == disturbance_global_input,
          metaecosystem_type %in% metaecosystem_type_i)
 
-n_sets = isolated_combinations_sets_filtered %>%
+n_sets = unconnected_combinations_sets_filtered %>%
   pull(set) %>%
   max()
 
@@ -53,16 +53,16 @@ iterated_results_table = data.frame(
   p_fix = NA,
   ΔR2_fix = NA,
   combination_set = NA,
-  system_nr_isolated_systems = as.character(NA)
+  system_nr_unconnected_systems = as.character(NA)
 ) %>%
   slice(-1)
 
 for (set_input in 1:n_sets) {
   
-  system_nr_isolated_systems_input = isolated_combinations_sets_filtered %>%
+  system_nr_unconnected_systems_input = unconnected_combinations_sets_filtered %>%
     filter(
       metaecosystem_type %in% metaecosystem_type_i,
-      connection == "isolated",
+      connection == "unconnected",
       set == set_input
     ) %>%
     pull(system_nr)
@@ -73,8 +73,8 @@ for (set_input in 1:n_sets) {
       time_point <= last_time_point_model,
       metaecosystem_type %in% metaecosystem_type_i,
       connection == "connected" |
-        (connection == "isolated" &
-           system_nr %in% system_nr_isolated_systems_input)
+        (connection == "unconnected" &
+           system_nr %in% system_nr_unconnected_systems_input)
     )
   
   null_model = lmer(
@@ -127,7 +127,7 @@ for (set_input in 1:n_sets) {
   )
   
   iterated_results_table$set[nrow(iterated_results_table)] = set_input
-  iterated_results_table$system_nr_isolated_systems[nrow(iterated_results_table)] = paste(system_nr_isolated_systems_input, collapse = " ")
+  iterated_results_table$system_nr_unconnected_systems[nrow(iterated_results_table)] = paste(system_nr_unconnected_systems_input, collapse = " ")
 }
 ```
 </details> 
@@ -183,7 +183,7 @@ model_stats_full %>%
   <summary>Click for which system nr produced which AIC in the full model</summary>
 ```{r}
 iterated_results_table %>% 
-  select(system_nr_isolated_systems,
+  select(system_nr_unconnected_systems,
          ΔAIC_full) %>%
   arrange(ΔAIC_full)
 ```

@@ -8,97 +8,97 @@ editor_options:
 
 ### Meta-ecosystems (`ds_metaecosystems`)
 
-In this dataset (`ds_metaecosystems`) each row represents a meta-ecosystem or a two-patch isolated system at a time point.
+In this dataset (`ds_metaecosystems`) each row represents a meta-ecosystem or a two-patch unconnected system at a time point.
 
 ```{r}
 
-#Find combinations of patches in isolated two-patch systems.
+#Find combinations of patches in unconnected two-patch systems.
 
-ID_isolated_S_low = ds_patches %>%
-  filter(patch_type == "Small isolated",
+ID_unconnected_S_low = ds_patches %>%
+  filter(patch_type == "Small unconnected",
          disturbance == "low") %>%
   pull(culture_ID) %>%
   unique()
 
-ID_isolated_M_low = ds_patches %>%
-  filter(patch_type == "Medium isolated",
+ID_unconnected_M_low = ds_patches %>%
+  filter(patch_type == "Medium unconnected",
          disturbance == "low") %>%
   pull(culture_ID) %>%
   unique()
 
-ID_isolated_L_low = ds_patches %>%
-  filter(patch_type == "Large isolated",
+ID_unconnected_L_low = ds_patches %>%
+  filter(patch_type == "Large unconnected",
          disturbance == "low") %>%
   pull(culture_ID) %>%
   unique()
 
-ID_isolated_S_high = ds_patches %>%
-  filter(patch_type == "Small isolated",
+ID_unconnected_S_high = ds_patches %>%
+  filter(patch_type == "Small unconnected",
          disturbance == "high") %>%
   pull(culture_ID) %>%
   unique()
 
-ID_isolated_M_high = ds_patches %>%
-  filter(patch_type == "Medium isolated",
+ID_unconnected_M_high = ds_patches %>%
+  filter(patch_type == "Medium unconnected",
          disturbance == "high") %>%
   pull(culture_ID) %>%
   unique()
 
-ID_isolated_L_high = ds_patches %>%
-  filter(patch_type == "Large isolated",
+ID_unconnected_L_high = ds_patches %>%
+  filter(patch_type == "Large unconnected",
          disturbance == "high") %>%
   pull(culture_ID) %>%
   unique()
 ```
 
-```{r isolated-IDs-find}
+```{r unconnected-IDs-find}
 
-# Find combinations of patches to create different two-patch isolated systems
+# Find combinations of patches to create different two-patch unconnected systems
 
-combinations_S_and_L_low = crossing(ID_isolated_S_low,
-                                    ID_isolated_L_low) %>%
+combinations_S_and_L_low = crossing(ID_unconnected_S_low,
+                                    ID_unconnected_L_low) %>%
                             mutate(disturbance = "low",
-                                   metaecosystem_type = "Small-Large isolated") %>%
-                            rename(ID_first_patch = ID_isolated_S_low,
-                                   ID_second_patch = ID_isolated_L_low) %>%
+                                   metaecosystem_type = "Small-Large unconnected") %>%
+                            rename(ID_first_patch = ID_unconnected_S_low,
+                                   ID_second_patch = ID_unconnected_L_low) %>%
                             select(disturbance,
                                    metaecosystem_type,
                                    ID_first_patch,
                                    ID_second_patch)
 
-combinations_S_and_L_high = crossing(ID_isolated_S_high,
-                                     ID_isolated_L_high) %>%
+combinations_S_and_L_high = crossing(ID_unconnected_S_high,
+                                     ID_unconnected_L_high) %>%
                             mutate(disturbance = "high",
-                                   metaecosystem_type = "Small-Large isolated") %>%
-                            rename(ID_first_patch = ID_isolated_S_high,
-                                   ID_second_patch = ID_isolated_L_high) %>%
+                                   metaecosystem_type = "Small-Large unconnected") %>%
+                            rename(ID_first_patch = ID_unconnected_S_high,
+                                   ID_second_patch = ID_unconnected_L_high) %>%
                             select(disturbance,
                                    metaecosystem_type,
                                    ID_first_patch,
                                    ID_second_patch)
 
-combinations_M_and_M_low = combinat::combn(ID_isolated_M_low,
+combinations_M_and_M_low = combinat::combn(ID_unconnected_M_low,
                                    m = 2) %>%
                             t() %>%
                             as.data.frame() %>%
                             rename(ID_first_patch = V1,
                                    ID_second_patch = V2) %>%
                             mutate(disturbance = "low",
-                                   metaecosystem_type = "Medium-Medium isolated") %>%
+                                   metaecosystem_type = "Medium-Medium unconnected") %>%
                             select(disturbance,
                                    metaecosystem_type,
                                    ID_first_patch,
                                    ID_second_patch)
 
 
-combinations_M_and_M_high = combinat::combn(ID_isolated_M_high,
+combinations_M_and_M_high = combinat::combn(ID_unconnected_M_high,
                                    m = 2) %>%
                             t() %>%
                             as.data.frame() %>%
                             rename(ID_first_patch = V1,
                                    ID_second_patch = V2) %>%
                             mutate(disturbance = "high",
-                                   metaecosystem_type = "Medium-Medium isolated") %>%
+                                   metaecosystem_type = "Medium-Medium unconnected") %>%
                             select(disturbance,
                                    metaecosystem_type,
                                    ID_first_patch,
@@ -107,20 +107,20 @@ combinations_M_and_M_high = combinat::combn(ID_isolated_M_high,
 
 ```{r echo = FALSE}
 expect_equal(nrow(combinations_S_and_L_low),
-             length(ID_isolated_S_low) * length(ID_isolated_L_low))
+             length(ID_unconnected_S_low) * length(ID_unconnected_L_low))
 expect_equal(nrow(combinations_S_and_L_high),
-             length(ID_isolated_S_high) * length(ID_isolated_L_high))
+             length(ID_unconnected_S_high) * length(ID_unconnected_L_high))
 expect_equal(nrow(combinations_M_and_M_low),
-             sum(seq(length(ID_isolated_M_low) - 1)))
+             sum(seq(length(ID_unconnected_M_low) - 1)))
 expect_equal(nrow(combinations_M_and_M_high),
-             sum(seq(length(ID_isolated_M_high) - 1)))
+             sum(seq(length(ID_unconnected_M_high) - 1)))
 ```
 
 ```{r}
 
 # Bind combinations
 
-combinations_isolated_systems = rbind(combinations_S_and_L_low,
+combinations_unconnected_systems = rbind(combinations_S_and_L_low,
                                       combinations_S_and_L_high,
                                       combinations_M_and_M_low,
                                       combinations_M_and_M_high) %>%
@@ -151,15 +151,15 @@ combinations_metaecos = ds_patches %>%
   as.data.frame()
 ```
 
-```{r isolated-and-metaeco-system-join}
+```{r unconnected-and-metaeco-system-join}
 
-#Bind isolated two-patch systems and meta-ecosystems
+#Bind unconnected two-patch systems and meta-ecosystems
 
-patch_combinations = rbind(combinations_isolated_systems,
+patch_combinations = rbind(combinations_unconnected_systems,
                            combinations_metaecos) %>%
-  mutate(connection = ifelse(metaecosystem_type %in% c("Medium-Medium isolated",
-                                                       "Small-Large isolated"),
-                             yes = "isolated",
+  mutate(connection = ifelse(metaecosystem_type %in% c("Medium-Medium unconnected",
+                                                       "Small-Large unconnected"),
+                             yes = "unconnected",
                              no = "connected"),
          patches_combined = paste0(ID_first_patch, "|", ID_second_patch))
 
@@ -168,5 +168,5 @@ n_patches_combinations = nrow(patch_combinations)
 
 ```{r echo = FALSE}
 expect_equal(nrow(patch_combinations), 
-             nrow(combinations_isolated_systems) + nrow(combinations_metaecos))
+             nrow(combinations_unconnected_systems) + nrow(combinations_metaecos))
 ```

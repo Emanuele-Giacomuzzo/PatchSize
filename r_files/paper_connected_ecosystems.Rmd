@@ -12,8 +12,8 @@ editor_options:
 
 # ds_patches_modified = ds_patches %>%
 #   mutate(patch_type = case_when(
-#     patch_type == "Small isolated" ~ "Small disconnected",
-#     patch_type == "Large isolated" ~ "Large disconnected",
+#     patch_type == "Small unconnected" ~ "Small unconnected",
+#     patch_type == "Large unconnected" ~ "Large unconnected",
 #     patch_type == "Small connected to large" ~ "Small connected to large",
 #     patch_type == "Small connected to small" ~ "Small connected to small",
 #     patch_type == "Large connected to small" ~ "Large connected to small",
@@ -28,10 +28,10 @@ editor_options:
 
 patch_type_input = c("Small connected to large",
                      "Small connected to small",
-                     "Small isolated",
+                     "Small unconnected",
                      "Large connected to small",
                      "Large connected to large",
-                     "Large isolated")
+                     "Large unconnected")
 
 plot.single.plot = function(response_variable){
   

@@ -12,9 +12,9 @@ editor_options:
 
 ds_patches_modified = ds_patches %>%
   mutate(patch_type = case_when(
-    patch_type == "Small isolated" ~ "S",
-    patch_type == "Medium isolated" ~ "M",
-    patch_type == "Large isolated" ~ "L"
+    patch_type == "Small unconnected" ~ "S",
+    patch_type == "Medium unconnected" ~ "M",
+    patch_type == "Large unconnected" ~ "L"
   ))
 ```
 

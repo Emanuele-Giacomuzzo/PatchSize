@@ -87,7 +87,7 @@ species_IDD_with_40_threshold_indiv_per_volume = paste0(species_IDD_with_40_thre
 
 # Patches
 
-patches_to_take_off = 60 #Culture ID = 60 as it was spilled (small isolated, high disturbance, system nr = 40)
+patches_to_take_off = 60 #Culture ID = 60 as it was spilled (small unconnected, high disturbance, system nr = 40)
 culture_info = read.csv(here("data", "culture_info.csv"), header = TRUE)
 
 columns_patches = c("time_point",
@@ -118,12 +118,12 @@ variables_patches = c("bioarea_mm2_per_ml",
                       paste0(protist_species_indiv_per_ml, "_dominance"))
 baseline_columns = paste0("baseline_", variables_patches)
 
-patch_types_ordered = c("Small isolated",
+patch_types_ordered = c("Small unconnected",
                         "Small connected to small",
                         "Small connected to large",
-                        "Medium isolated",
+                        "Medium unconnected",
                         "Medium connected to medium",
-                        "Large isolated",
+                        "Large unconnected",
                         "Large connected to large",
                         "Large connected to small")
 
@@ -136,11 +136,11 @@ treatments_and_controls = data.frame(
     "Large connected to small"
   ),
   control = c(
-    "Small isolated",
-    "Small isolated",
-    "Medium isolated",
-    "Large isolated",
-    "Large isolated"
+    "Small unconnected",
+    "Small unconnected",
+    "Medium unconnected",
+    "Large unconnected",
+    "Large unconnected"
   )
 )
 n_treatments = length(unique(treatments_and_controls$treatment))
@@ -187,10 +187,10 @@ variables_metaecos = c(
 metaecosystem_types_ordered = c(
       "Small-Small meta-ecosystem",
       "Medium-Medium meta-ecosystem",
-      "Medium-Medium isolated",
+      "Medium-Medium unconnected",
       "Large-Large meta-ecosystem",
       "Small-Large meta-ecosystem",
-      "Small-Large isolated")
+      "Small-Large unconnected")
 ```
 
 ```{r plotting_parameters}
@@ -203,10 +203,10 @@ axis_names = data.frame(variable = NA,
   add_row(variable = "patch_size_ml", axis_name = "Patch size (ml)") %>%
   add_row(variable = "log_size_class", axis_name = "Log size (μm2)") %>%
   add_row(variable = "class_indiv_per_µl", axis_name = "Density (ind/ml)") %>%
-  add_row(variable = "bioarea_mm2_per_ml", axis_name = "Biomass") %>%
+  add_row(variable = "bioarea_mm2_per_ml", axis_name = "Biomass (mm2/ml)") %>%
   add_row(variable = "bioarea_mm2_per_ml_d", axis_name = "Bioamass ES") %>%
-  add_row(variable = "bioarea_tot", axis_name = "Tot Biomass") %>%
-  add_row(variable = "total_metaecosystem_bioarea_mm2", axis_name = "Tot Biomass") %>%
+  add_row(variable = "bioarea_tot", axis_name = "Tot Biomass (mm2)") %>%
+  add_row(variable = "total_metaecosystem_bioarea_mm2", axis_name = "Tot Biomass (mm2)") %>%
   add_row(variable = "species_richness", axis_name = "Species Richness") %>%
   add_row(variable = "species_richness_d", axis_name = "Species Richness ES") %>%
   add_row(variable = "mean_richness", axis_name = "mean α Diversity (Shannon)") %>%
@@ -270,7 +270,7 @@ axis_names = data.frame(variable = NA,
   add_row(variable = "dominance", axis_name = "Dominance (%)") %>%
   add_row(variable = "log_abundance", axis_name = "Log Abundance + 1 (ind/mm²)") %>%
   add_row(variable = "abundance_hedges_d", axis_name = "Density ES") %>%
-  add_row(variable = "beta_diversity_from_isolated", axis_name = "Divergence from isolated") %>%
+  add_row(variable = "beta_diversity_from_unconnected", axis_name = "Divergence from unconnected") %>%
   add_row(variable = "beta_diversity_from_previous_time", axis_name = "Temporal Divergence") %>%
   add_row(variable = "beta_diversity_from_previous_time_d", axis_name = "Temporal Divergence ES") %>%
   add_row(variable = "evenness_pielou", axis_name = "Evenness") %>%
@@ -280,20 +280,20 @@ axis_names = data.frame(variable = NA,
 parameters_treatments = data.frame(treatment = NA,
                                 colour = NA,
                                 linetype = NA) %>%
-  add_row(treatment = "Small isolated", colour = "#bdbdbd", linetype = "solid") %>% 
+  add_row(treatment = "Small unconnected", colour = "#bdbdbd", linetype = "solid") %>% 
   add_row(treatment = "Small connected to small", colour = "#feb24c", linetype = "dashed") %>%
   add_row(treatment = "Small connected to large", colour = "#feb24c", linetype = "solid") %>%
-  add_row(treatment = "Medium isolated", colour = "#737373", linetype = "solid") %>%
+  add_row(treatment = "Medium unconnected", colour = "#737373", linetype = "solid") %>%
   add_row(treatment = "Medium connected to medium", colour = "#de2d26", linetype = "solid") %>%
-  add_row(treatment = "Large isolated", colour = "#000000", linetype = "solid") %>%
+  add_row(treatment = "Large unconnected", colour = "#000000", linetype = "solid") %>%
   add_row(treatment = "Large connected to large", colour = "#3182bd", linetype = "dashed") %>%
   add_row(treatment = "Large connected to small", colour = "#3182bd", linetype = "solid") %>%
   add_row(treatment = "Small-Small meta-ecosystem", colour = "#fc9272", linetype = "solid") %>%
   add_row(treatment = "Medium-Medium meta-ecosystem", colour = "#1b7837", linetype = "solid") %>%
-  add_row(treatment = "Medium-Medium isolated", colour = "#1b7837", linetype = "dashed") %>%
+  add_row(treatment = "Medium-Medium unconnected", colour = "#1b7837", linetype = "dashed") %>%
   add_row(treatment = "Large-Large meta-ecosystem", colour = "#67000d", linetype = "solid") %>%
   add_row(treatment = "Small-Large meta-ecosystem", colour = "#762a83", linetype = "solid") %>%
-  add_row(treatment = "Small-Large isolated", colour = "#762a83", linetype = "dashed") %>%
+  add_row(treatment = "Small-Large unconnected", colour = "#762a83", linetype = "dashed") %>%
   slice(-1)
 
 figures_height_rmd_output = 7
