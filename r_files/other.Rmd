@@ -19,11 +19,11 @@ Check that disturbance_global_input is what you set:
 print(paste0("Disturbance = ", disturbance_global_input))
 ```
 
-### Change code using terminal
+### Useful code
 
-If you want to change a certain part of the code:
+If you want to change a certain part of the code using the following code in Unix:
 
-```{r eval = FALSE}
+```{r eval = FALSE, class.source = 'fold-show'}
 #Rmd script
 cd /Users/ema/Documents/GitHub/PatchSize/r_files
 sed -i '' 's/old_string/new_string/g' *.Rmd
@@ -33,7 +33,7 @@ cd /Users/ema/Documents/GitHub/PatchSize/r_files/functions
 sed -i '' 's/old_string/new_string/g' *.R
 ```
 
-### Code to give you back an object
+you want to share a dataset and get a reproducible object, use the following R code:
 
 ```{r eval = FALSE}
 dput()
@@ -42,19 +42,3 @@ dput()
 ### Crashed cultures
 
 The only type of patch where all cultures crashed was small connected to small at high disturbance.
-
-### Residuals
-
--   
-
--   
-
-### References
-
-```{r echo=FALSE, message=FALSE}
-save.image(file = here("environments", "end.RData"))
-```
-
-```{r echo = FALSE, eval = FALSE}
-beepr::beep("fanfare")
-```

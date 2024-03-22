@@ -21,7 +21,7 @@ editor_options:
 Somewhere there's analysis small and large patches special
 
 ```{r echo=FALSE}
-disturbance_global_input = "high"
+disturbance_global_input = "low"
 print(paste("!!", disturbance_global_input, "!!", "(this document showcases only the analysis done for the", disturbance_global_input, "disturbance)"))
 ```
 
@@ -157,10 +157,6 @@ metaecosystem_type_i = c("Medium-Medium meta-ecosystem",
 ```{r}
 metaecosystem_type_i = c("Small-Large meta-ecosystem",
                          "Small-Large unconnected")
-```
-
-```{r echo=FALSE, message=FALSE}
-save.image(file = here("environments", "before.RData"))
 ```
 
 ```{r child = here("r_files", "analysis_metaeco_connection.Rmd")}
@@ -824,27 +820,25 @@ response_variable = "median_body_area_µm2"
 
 ## Results {.tabset .tabset-pills}
 
-### Meta-ecosystems
+### Meta-ecosystem diversity & function
 
-```{r child = here("r_files", "paper_metaecos.Rmd")}
+```{r child = here("r_files", "paper_metaecosystem_diversity_n_function.Rmd")}
 ```
 
-```{r child = here("r_files", "present_metaecos.Rmd")}
+```{r child = here("r_files", "present_metaecosystem_diversity_n_function.Rmd"), echo = FALSE}
 ```
 
-### Connected patches
+### Ecosystem diversity & function
 
-```{r child = here("r_files", "paper_connected_ecosystems.Rmd")}
+```{r child = here("r_files", "paper_ecosystems_S_n_L_diversity_n_function.Rmd")} 
 ```
 
-### Isolated patches
-
-```{r child = here("r_files", "paper_unconnected_ecosystems.Rmd")}
+```{r child = here("r_files", "paper_ecosystems_M_diversity_n_function.Rmd")} 
 ```
 
-### Autotrophic species
+### Ecosystem autotrophic/heterotrophic ratio
 
-```{r child = here("r_files", "paper_auto_hetero_ratio.Rmd")}
+```{r child = here("r_files", "paper_ecosystem_auto_hetero_ratio.Rmd")}
 ```
 
 ## Evaporation
@@ -870,4 +864,10 @@ response_variable = "median_body_area_µm2"
 ## Other
 
 ```{r child = here("r_files", "other.Rmd")}
+```
+
+## References
+
+```{r echo=FALSE, message=FALSE}
+save.image(file = here("environments", "end.RData"))
 ```

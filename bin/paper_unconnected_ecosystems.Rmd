@@ -1,0 +1,84 @@
+---
+title: "Untitled"
+output: html_document
+date: "2023-08-31"
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+
+# Construct plots
+
+response_variable_list = NULL
+response_variable_list[[1]] = "bioarea_mm2_per_ml"
+response_variable_list[[2]] = "shannon"
+patch_type_i = c("Small unconnected",
+                 "Medium unconnected",
+                 "Large unconnected")
+legend_row_n_input = 2
+p = NULL
+  
+for (i in 1:2) {
+  
+  p[[i]] = plot.patches.points(ds_patches,
+                               patch_type_i,
+                               response_variable_list[[i]],
+                               legend_row_n_input) +
+    theme(plot.margin = unit(c(ggarrange_margin_left,
+                               ggarrange_margin_right,
+                               ggarrange_margin_bottom,
+                               ggarrange_margin_left),
+                             "cm"))
+}
+```
+
+```{r}
+
+# Combine plots
+
+p_combined = ggarrange(
+  p[[1]] +
+    rremove("xlab") +
+    theme(axis.text.x = element_blank(),
+          axis.ticks.x = element_blank()) +
+    font("legend.text", size = size_legend) +
+    font("ylab", size = size_y_axis),
+  p[[2]] +
+    font("legend.text", size = size_legend) +
+    font("xlab", size = size_y_axis) +
+    font("ylab", size = size_y_axis) +
+    scale_x_continuous(breaks = unique(ds_patches$day)),
+  heights = c(0.8, 0.8, 1),
+  nrow = 2,
+  align = "v",
+  labels = c("(a)", "(b)"),
+  label.x = 0.1,
+  label.y = 0.8,
+  common.legend = TRUE
+)
+```
+
+```{r fig.height = figures_height_rmd_output}
+
+# Show combined plots
+
+p_combined
+```
+
+```{r results=FALSE}
+
+# Save combined plots
+
+png(
+  file = here("results", "figures", disturbance_global_input, "paper", "patches_biomass.png"),
+  width = paper_width,
+  height = paper_height,
+  units = paper_units,
+  res = paper_res
+)
+
+p_combined
+
+dev.off()
+```

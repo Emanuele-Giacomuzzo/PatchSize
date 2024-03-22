@@ -6,22 +6,19 @@ editor_options:
   chunk_output_type: console
 ---
 
+Parameters for R markdown and the general running of the code.
+
 ```{r}
-
-# R markdown
-
 start_time = Sys.time()
 knitr::opts_chunk$set(message = FALSE,
                       cache = FALSE,
                       autodep = FALSE)
-recompute_lengthy_analyses = FALSE #Lengthy analyses have been suppressed. Set recompute_analyses = TRUE to redo them. 
+recompute_lengthy_analyses = FALSE 
 ```
 
+Parameters related to resource flows.
 
-```{r resource_flow_parameters}
-
-# Disturbance & resource flows
-
+```{r}
 disturbance_levels = c("low", "high")
 n_disturbance_levels = length(disturbance_levels)
 
@@ -29,10 +26,9 @@ resource_flow_days = c(5, 9, 13, 17, 21, 25)
 first_resource_flow = resource_flow_days[1]
 ```
 
-```{r sampling_parameters}
+Parameters related to sampling.
 
-# Sampling
-
+```{r}
 total_frames = 125
 volume_recorded_μl = 34.4
 time_points = 0:7
@@ -49,26 +45,25 @@ videos_taken = data.frame(time_point = 0 : 7,
 
 n_videos_taken_t0 = nr_videos[1]
 
-time_point_day = data.frame(
-  time_point = first_time_point:last_time_point,
-  day = sampling_days,
-  video_replicates = nr_videos
-)
+time_point_day = data.frame(time_point = first_time_point:last_time_point,
+                            day = sampling_days,
+                            video_replicates = nr_videos)
 
 videos_to_take_off = data.frame(culture_ID = NA,
                                 time_point = NA,
                                 file = NA) %>%
-                     add_row(culture_ID = 137-110, time_point = 7, file = 137) %>%
+                     add_row(culture_ID = 137-110, 
+                             time_point = 7, 
+                             file = 137) %>%
                      slice(-1)
 
 n_cultures = 110
 total_number_of_video_rows = sum(nr_videos * n_cultures)
 ```
 
-```{r protists_parameters}
+Parameters related to protists.
 
-# Protists
-
+```{r}
 protist_species = c("Ble", "Cep", "Col", "Eug", "Eup", "Lox", "Pau", "Pca", "Spi", "Spi_te", "Tet")
 protist_species_indiv_per_volume = paste0(protist_species, "_indiv_per_volume")
 protist_species_indiv_per_ml = paste0(protist_species, "_indiv_per_ml")
@@ -83,10 +78,9 @@ species_IDD_with_40_threshold = c("Ble", "Cep", "Spi")
 species_IDD_with_40_threshold_indiv_per_volume = paste0(species_IDD_with_40_threshold, "_indiv_per_volume")
 ```
 
-```{r patches_parameters}
+Parameters related to patches.
 
-# Patches
-
+```{r}
 patches_to_take_off = 60 #Culture ID = 60 as it was spilled (small unconnected, high disturbance, system nr = 40)
 culture_info = read.csv(here("data", "culture_info.csv"), header = TRUE)
 
@@ -118,51 +112,44 @@ variables_patches = c("bioarea_mm2_per_ml",
                       paste0(protist_species_indiv_per_ml, "_dominance"))
 baseline_columns = paste0("baseline_", variables_patches)
 
-patch_types_ordered = c("Small unconnected",
+patch_types_ordered = c("Small connected to large",
                         "Small connected to small",
-                        "Small connected to large",
-                        "Medium unconnected",
+                        "Small unconnected",
                         "Medium connected to medium",
-                        "Large unconnected",
+                        "Medium unconnected",
+                        "Large connected to small",
                         "Large connected to large",
-                        "Large connected to small")
+                        "Large unconnected")
 
-treatments_and_controls = data.frame(
-  treatment = c(
-    "Small connected to small",
-    "Small connected to large",
-    "Medium connected to medium",
-    "Large connected to large",
-    "Large connected to small"
-  ),
-  control = c(
-    "Small unconnected",
-    "Small unconnected",
-    "Medium unconnected",
-    "Large unconnected",
-    "Large unconnected"
-  )
-)
+treatments_and_controls = data.frame(treatment = c("Small connected to small",
+                                                   "Small connected to large",
+                                                   "Medium connected to medium",
+                                                   "Large connected to large",
+                                                   "Large connected to small"),
+                                     control = c("Small unconnected",
+                                                 "Small unconnected",
+                                                 "Medium unconnected",
+                                                 "Large unconnected",
+                                                 "Large unconnected"))
+
 n_treatments = length(unique(treatments_and_controls$treatment))
 n_controls = length(unique(treatments_and_controls$control))
 n_replicates = 5
 n_patch_types = 8
 ```
 
-```{r size_classes_parameters}
+Parameters related to size classes.
 
-# Size classes
-
+```{r}
 n_size_classes = 12
 columns_classes = c(columns_patches,
                     "size_class_n",
                     "mean_class_area_µm2")
 ```
 
-```{r metaecosystems_parameters}
+Parameters related to meta-ecosystems.
 
-# Meta-ecosystems
-
+```{r}
 metaecosystems_to_take_off = culture_info %>%
   filter(culture_ID %in% patches_to_take_off) %>%
   pull(system_nr) %>%
@@ -193,10 +180,9 @@ metaecosystem_types_ordered = c(
       "Small-Large unconnected")
 ```
 
-```{r plotting_parameters}
+Name of the axes per response variable.
 
-# Plotting
-
+```{r}
 axis_names = data.frame(variable = NA,
                         axis_name= NA) %>%
   add_row(variable = "day", axis_name = "Time (day)") %>%
@@ -276,26 +262,34 @@ axis_names = data.frame(variable = NA,
   add_row(variable = "evenness_pielou", axis_name = "Evenness") %>%
   add_row(variable = "evenness_pielou_d", axis_name = "Evenness ES") %>%
   slice(-1)
+```
 
+Colour and line type per ecosystem/meta-ecosystem type.
+
+```{r}
 parameters_treatments = data.frame(treatment = NA,
                                 colour = NA,
                                 linetype = NA) %>%
-  add_row(treatment = "Small unconnected", colour = "#bdbdbd", linetype = "solid") %>% 
-  add_row(treatment = "Small connected to small", colour = "#feb24c", linetype = "dashed") %>%
   add_row(treatment = "Small connected to large", colour = "#feb24c", linetype = "solid") %>%
-  add_row(treatment = "Medium unconnected", colour = "#737373", linetype = "solid") %>%
-  add_row(treatment = "Medium connected to medium", colour = "#de2d26", linetype = "solid") %>%
-  add_row(treatment = "Large unconnected", colour = "#000000", linetype = "solid") %>%
-  add_row(treatment = "Large connected to large", colour = "#3182bd", linetype = "dashed") %>%
+  add_row(treatment = "Small connected to small", colour = "#feb24c", linetype = "dashed") %>%
+  add_row(treatment = "Small unconnected", colour = "#bdbdbd", linetype = "solid") %>% 
   add_row(treatment = "Large connected to small", colour = "#3182bd", linetype = "solid") %>%
-  add_row(treatment = "Small-Small meta-ecosystem", colour = "#fc9272", linetype = "solid") %>%
+  add_row(treatment = "Large connected to large", colour = "#3182bd", linetype = "dashed") %>%
+  add_row(treatment = "Large unconnected", colour = "#000000", linetype = "solid") %>%
+  add_row(treatment = "Medium connected to medium", colour = "#de2d26", linetype = "solid") %>%
+  add_row(treatment = "Medium unconnected", colour = "#737373", linetype = "solid") %>%
+  add_row(treatment = "Small-Large meta-ecosystem", colour = "#762a83", linetype = "solid") %>%
+  add_row(treatment = "Small-Large unconnected", colour = "#762a83", linetype = "dashed") %>%
   add_row(treatment = "Medium-Medium meta-ecosystem", colour = "#1b7837", linetype = "solid") %>%
   add_row(treatment = "Medium-Medium unconnected", colour = "#1b7837", linetype = "dashed") %>%
   add_row(treatment = "Large-Large meta-ecosystem", colour = "#67000d", linetype = "solid") %>%
-  add_row(treatment = "Small-Large meta-ecosystem", colour = "#762a83", linetype = "solid") %>%
-  add_row(treatment = "Small-Large unconnected", colour = "#762a83", linetype = "dashed") %>%
+  add_row(treatment = "Small-Small meta-ecosystem", colour = "#fc9272", linetype = "solid") %>%
   slice(-1)
+```
 
+Parameters for plotting.
+
+```{r}
 figures_height_rmd_output = 7
 
 legend_position = "top"
@@ -354,10 +348,9 @@ grey_background_alpha = 0.03
 grey_background_color = "transparent"
 ```
 
+Parameters for modelling.
+
 ```{r modeling_parameters}
-
-# Modelling
-
 first_time_point_model = 2 #Time point 2 is the first after disturbance
 last_time_point_model = last_time_point
 

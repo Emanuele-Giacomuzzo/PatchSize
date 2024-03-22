@@ -2,15 +2,14 @@
 title: "Untitled"
 output: html_document
 date: "2023-11-30"
+editor_options: 
+  chunk_output_type: console
 ---
 
-### Experimental cultures (`culture_info`)
+### Patches information (`culture_info`)
 
-This table contains information about the 110 cultures of the experiment.
+We start by importing the information about the 110 patches of the experiment.
 
-```{r experimental-cultures}
-
-# Import culture informations
-
+```{r}
 culture_info = read.csv(here("data", "culture_info.csv"), header = TRUE)
 ```
