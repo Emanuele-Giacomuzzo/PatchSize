@@ -9,6 +9,8 @@ editor_options:
   chunk_output_type: console
 ---
 
+Our first step in the data analysis involves filtering the data to isolate the relevant data. Specifically, we exclude data points where the response variable couldn’t be computed, as well as time points preceding the initial disturbance and resource flow. Then we plot the data to make sure we filtered data the right way.
+
 ```{r}
 filtered_data = ds_metaecosystems %>%
                          filter(time_point >= first_time_point_model,
@@ -22,20 +24,7 @@ plot.metaecos.points(filtered_data,
                      response_variable)
 ```
 
-<center>[**Null model**]{.underline}</center>
-
-```{r}
-null_model = lmer(
-  get(response_variable) ~
-    day + 
-    (day | system_nr), 
-  data = filtered_data,
-  REML = FALSE,
-  control = lmerControl(optimizer = "Nelder_Mead")
-)
-```
-
-<center>[**Full model**]{.underline} [**(with**]{.underline} `patch_size_symmetry` [**and**]{.underline} `patch_size_symmetry : day`[**)**]{.underline}</center>
+Then, given that we have gathered measurements from the same meta-ecosystem on multiple occasions, we can develop mixed effect models to examine how patch size symmetry influenced this meta-ecosystem variable. To study the effects of patch size symmetry we compare two models to a null model using ANOVA: a full model and a reduced model. In all models, we treat system nr as having a random effect on how the slope and intercept of the relationship between response variable and time, with the slope and intercept being correlated [@Bates2015]. The full model contains the interaction of connection with time (`Response variable ~ symmetry * day + (day | system nr)`), the reduced model contains the connection but without the interaction with time (`Response variable ~ symmetry + day + (day | system nr)`), and the null model doesn't contain the connection at all (`Response variable ~ day + (day | system nr)`).
 
 ```{r}
 full_model = lmer(
@@ -46,47 +35,31 @@ full_model = lmer(
     (day | system_nr), 
   data = filtered_data,
   REML = FALSE,
-  control = lmerControl(optimizer = "Nelder_Mead")
-)
+  control = lmerControl(optimizer = "Nelder_Mead"))
+
+reduced_model = lmer(
+  get(response_variable) ~
+    day + 
+    patch_size_symmetry + 
+    (day | system_nr), 
+  data = filtered_data,
+  REML = FALSE,
+  control = lmerControl(optimizer = "Nelder_Mead"))
+
+null_model = lmer(
+  get(response_variable) ~
+    day + 
+    (day | system_nr), 
+  data = filtered_data,
+  REML = FALSE,
+  control = lmerControl(optimizer = "Nelder_Mead"))
 ```
 
-<details>
-  <summary>Click for model output</summary>
-```{r}
-print(summary(full_model), digits = 1)
-```
-</details>
+**Full vs null model**
 
+<details open="open">
 
-```{r}
-#Create resid vs fitted
-res_vs_fit = filtered_data %>%
-    mutate(predicted = fitted(full_model),
-           residuals = resid(full_model)) %>%
-    plot_ly(x = ~predicted,
-            y = ~residuals,
-            type = "scatter",
-            mode = "markers",
-            marker = list(size = 5, color = "#4C78A8"),
-            text = paste(" System nr: ", filtered_data$system_nr, "<br>",
-                         "Day: ", filtered_data$day, "<br>",
-                         "Meta-ecosystem: ", filtered_data$metaecosystem_type, "<br>",
-                         "Tot Biomass: ", round(filtered_data$total_metaecosystem_bioarea_mm2, digits = 0), "<br>"),
-            hoverinfo = "text") %>%
-    plotly::layout(
-        xaxis = list(title = "Fitted Values"),
-        yaxis = list(title = "Residuals")
-    )
-```
-
-<details>
-  <summary>Click for residual plots</summary>
-```{r}
-res_vs_fit
-qqnorm(resid(full_model))
-```
-</details>
-
+<summary>Click to view the results of the ANOVA comparison between full and null model</summary>
 
 ```{r}
 model_stats_full = compute.model.stats(full_model,
@@ -119,36 +92,26 @@ model_stats_full %>%
   print()
 ```
 
-&nbsp;<br>
-&nbsp;<br>
-&nbsp;<br>
-
-<center>[**Reduced model**]{.underline} [**(with**]{.underline} `patch_size_symmetry`[**)**]{.underline}</center>
-
-```{r}
-reduced_model = lmer(
-  get(response_variable) ~
-    day + 
-    patch_size_symmetry + 
-    (day | system_nr), 
-  data = filtered_data,
-  REML = FALSE,
-  control = lmerControl(optimizer = "Nelder_Mead")
-)
-```
-
-<details>
-  <summary>Click for model output</summary>
-```{r}
-print(summary(reduced_model), digits = 1)
-```
 </details>
 
+<details>
+
+<summary>Click to view the full model output</summary>
+
 ```{r}
-#Create resid vs fitted
+print(summary(full_model), digits = 1)
+```
+
+</details>
+
+<details>
+
+<summary>Click to view the full model residual plots</summary>
+
+```{r}
 res_vs_fit = filtered_data %>%
-    mutate(predicted = fitted(reduced_model),
-           residuals = resid(reduced_model)) %>%
+    mutate(predicted = fitted(full_model),
+           residuals = resid(full_model)) %>%
     plot_ly(x = ~predicted,
             y = ~residuals,
             type = "scatter",
@@ -165,13 +128,20 @@ res_vs_fit = filtered_data %>%
     )
 ```
 
-<details>
-  <summary>Click for residual plots</summary>
 ```{r}
 res_vs_fit
-qqnorm(resid(reduced_model))
+qqnorm(resid(full_model))
 ```
+
 </details>
+
+<br>
+
+**Reduced vs null model**
+
+<details open="open">
+
+<summary>Click to view the results of the ANOVA comparison between reduced and null model</summary>
 
 ```{r}
 model_stats_fixed = compute.model.stats(reduced_model,
@@ -204,12 +174,59 @@ model_stats_fixed %>%
   print()
 ```
 
+</details>
+
+<details>
+
+<summary>Click to view the reduced model output</summary>
+
 ```{r}
-results_table = fill.results.table(
-  results_table,
-  response_variable,
-  metaecosystem_type_i,
-  model_stats_full,
-  model_stats_fixed
-)
+print(summary(reduced_model), digits = 1)
+```
+
+</details>
+
+<details>
+
+<summary>Click to view the reduced model residual plots</summary>
+
+```{r}
+res_vs_fit = filtered_data %>%
+    mutate(predicted = fitted(reduced_model),
+           residuals = resid(reduced_model)) %>%
+    plot_ly(x = ~predicted,
+            y = ~residuals,
+            type = "scatter",
+            mode = "markers",
+            marker = list(size = 5, color = "#4C78A8"),
+            text = paste(" System nr: ", 
+                         filtered_data$system_nr, 
+                         "<br>",
+                         "Day: ", 
+                         filtered_data$day, 
+                         "<br>",
+                         "Meta-ecosystem: ", 
+                         filtered_data$metaecosystem_type, 
+                         "<br>",
+                         "Tot Biomass: ", 
+                         round(filtered_data$total_metaecosystem_bioarea_mm2, digits = 0), 
+                         "<br>"),
+            hoverinfo = "text") %>%
+    plotly::layout(xaxis = list(title = "Fitted Values"),
+                   yaxis = list(title = "Residuals"))
+```
+
+```{r}
+res_vs_fit
+qqnorm(resid(reduced_model))
+```
+
+</details>
+
+```{r echo = FALSE}
+results_table = fill.results.table(results_table,
+                                   response_variable,
+                                   metaecosystem_type_i,
+                                   model_stats_full,
+                                   model_stats_fixed)
 ```

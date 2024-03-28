@@ -4,6 +4,8 @@ output: html_document
 date: "2022-11-09"
 ---
 
+To analyse the videos I took of the ecosystems, I used the package BEMOVI. For this, I had to use the powerful computer. Below is the code utilised for video analysis on the powerful computer.
+
 ```{r eval = FALSE}
 rm(list = ls())
 setwd("/media/mendel-himself/ID_061_Ema2/PatchSizePilot/training")

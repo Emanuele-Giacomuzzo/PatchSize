@@ -359,15 +359,13 @@ method_input = ''
 
 compar_ex = "The full and fixed models are compared to the null model."
 
-results_table = data.frame(
-  Response = as.character(NA),
-  Levels = as.character(NA),
-  ΔAIC_full = NA,
-  p_full = NA,
-  ΔR2_full = NA,
-  ΔAIC_fix = NA,
-  p_fix = NA,
-  ΔR2_fix = NA
-) %>%
+results_table = data.frame(Response = as.character(NA),
+                           Levels = as.character(NA),
+                           ΔAIC_full = NA,
+                           p_full = NA,
+                           ΔR2_full = NA,
+                           ΔAIC_fix = NA,
+                           p_fix = NA,
+                           ΔR2_fix = NA) %>%
   slice(-1)
 ```

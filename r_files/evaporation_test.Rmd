@@ -9,6 +9,8 @@ editor_options:
 
 ### Evaporation when microwaving 15 falcon tubes at the time
 
+To quantify the amount of evaporation incurred by the cultures, I conducted weight measurements before and after microwaving for three minutes. Initially, I weighed 15 falcon tubes, then added deionised water to each tube before re-weighing them to determine the initial water weight. Subsequently, the 15 falcon tubes were placed inside a tube rack and microwaved for three minutes. After microwaving, I assessed the remaining water volume in each tube using a beaker. This process was repeated for both 5.25 ml (low disturbance) and 6.75 ml (high disturbance) deionised water volumes, across three sets of 15 tubes for each disturbance level.
+
 ```{r, class.source = 'fold-hide'}
 evaporation.test = read.csv(here("data", "evaporation_test","evaporation_test_right.csv"), header = TRUE)
 
@@ -25,6 +27,8 @@ evaporation.test %>%
 
 ### Evaporation when microwaving 5 tubes with 10 filled or empty tubes
 
+To assess the extent of evaporation in the presence of varying tube conditions, I conducted weight measurements before and after microwaving five falcon tubes under two distinct treatments: one with ten additional filled tubes and another with ten empty tubes. Initially, I weighed 15 falcon tubes for each treatment, then added 6.75 ml of deionized water to either just five of them or to all of them, before re-weighing to ascertain the water weight. Subsequently, each set of 15 falcon tubes was placed inside a tube rack and microwaved for three minutes. Following microwaving, I evaluated the remaining water volume in each tube using a beaker.
+
 ```{r, class.source = 'fold-hide'}
 evaporation.test = read.csv(here("data", "evaporation_test", "evaporation_test_fill_nofill.csv"), header = TRUE)
 
@@ -33,6 +37,5 @@ evaporation.test %>%
               y = weight_water_evaporated)) +
   geom_boxplot(width = boxplot_width) +
   labs(x = "Water in the other 10 tubes" , 
-  y = "Evaporation (g)", 
-  caption = "When all tubes were filled, they were filled with 6.75 ml of deionised water.")
+  y = "Evaporation (g)")
 ```

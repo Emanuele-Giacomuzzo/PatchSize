@@ -18,11 +18,9 @@ editor_options:
   chunk_output_type: console
 ---
 
-Somewhere there's analysis small and large patches special
-
 ```{r echo=FALSE}
 disturbance_global_input = "low"
-print(paste("!!", disturbance_global_input, "!!", "(this document showcases only the analysis done for the", disturbance_global_input, "disturbance)"))
+print(paste("!!", disturbance_global_input, "!!", "The experiment investigate the effects of two disturbance levels: low and high. To make it easier to interpet, we showcase only one of the two disturbance levels. In this document we showcase only the", disturbance_global_input, "disturbance)"))
 ```
 
 ```{r child = here::here("r_files", "set_packages.Rmd"), echo = FALSE, message = FALSE, cache = FALSE, autodep = FALSE}
@@ -88,22 +86,13 @@ metaecosystem_type_i = c("Small-Small meta-ecosystem",
                          "Small-Large unconnected")
 ```
 
-#### Biomass {.tabset .tabset-pills}
-
-```{r}
-response_variable = "total_metaecosystem_bioarea_mm2"
-```
-
-```{r child = here("r_files", "analysis_metaecosystems_variable_all.Rmd")}
-```
-
 #### Alpha (mean Shannon) {.tabset .tabset-pills}
 
 ```{r}
 response_variable = "mean_shannon"
 ```
 
-```{r child = here("r_files", "analysis_metaecosystems_variable_all.Rmd")}
+```{r child = here("r_files", "analysis_metaeco_variable_all.Rmd")}
 ```
 
 #### Beta (Bray-Curtis) {.tabset .tabset-pills}
@@ -112,7 +101,7 @@ response_variable = "mean_shannon"
 response_variable = "bray_curtis"
 ```
 
-```{r child = here("r_files", "analysis_metaecosystems_variable_all.Rmd")}
+```{r child = here("r_files", "analysis_metaeco_variable_all.Rmd")}
 ```
 
 #### Gamma (regional richness) {.tabset .tabset-pills}
@@ -121,10 +110,8 @@ response_variable = "bray_curtis"
 response_variable = "metaecosystem_richness"
 ```
 
-```{r child = here("r_files", "analysis_metaecosystems_variable_all.Rmd")}
+```{r child = here("r_files", "analysis_metaeco_variable_all.Rmd")}
 ```
-
-### MM vs SL {.tabset .tabset-pills}
 
 #### Biomass {.tabset .tabset-pills}
 
@@ -132,45 +119,10 @@ response_variable = "metaecosystem_richness"
 response_variable = "total_metaecosystem_bioarea_mm2"
 ```
 
-```{r}
-metaecosystem_type_i = c("Medium-Medium meta-ecosystem",
-                         "Medium-Medium unconnected",
-                         "Small-Large meta-ecosystem",
-                         "Small-Large unconnected")
+```{r child = here("r_files", "analysis_metaeco_variable_all.Rmd")}
 ```
 
-```{r child = here("r_files", "analysis_metaecosystems_variable_all.Rmd")}
-```
-
-##### MM vs SL meta-ecosystems {.tabset .tabset-pills}
-
-```{r}
-metaecosystem_type_i = c("Medium-Medium meta-ecosystem",
-                         "Small-Large meta-ecosystem")
-```
-
-```{r child = here("r_files", "analysis_metaeco_symmetry.Rmd")}
-```
-
-##### SL (meta-ecosystems vs unconnected) {.tabset .tabset-pills}
-
-```{r}
-metaecosystem_type_i = c("Small-Large meta-ecosystem",
-                         "Small-Large unconnected")
-```
-
-```{r child = here("r_files", "analysis_metaeco_connection.Rmd")}
-```
-
-##### MM (meta-ecosystems vs unconnected) {.tabset .tabset-pills}
-
-```{r}
-metaecosystem_type_i = c("Medium-Medium meta-ecosystem",
-                         "Medium-Medium unconnected")
-```
-
-```{r child = here("r_files", "analysis_metaeco_connection.Rmd")}
-```
+### SL vs MM {.tabset .tabset-pills}
 
 #### Alpha (mean Shannon) {.tabset .tabset-pills}
 
@@ -186,20 +138,14 @@ metaecosystem_type_i = c("Medium-Medium meta-ecosystem",
 ```
 
 
-```{r child = here("r_files", "analysis_metaecosystems_variable_all.Rmd")}
+```{r child = here("r_files", "analysis_metaeco_variable_all.Rmd")}
 ```
 
-##### MM vs SL meta-ecosystems {.tabset .tabset-pills}
+<br>
 
-```{r}
-metaecosystem_type_i = c("Medium-Medium meta-ecosystem",
-                         "Small-Large meta-ecosystem")
-```
+Following the initial inspection, we proceed to analyse differences among meta-ecosystems. To make it easier to interpret differences, we decided to construct a model for each comparisons we are interested in, which are: asymmetric vs symmetric connected, asymmetric connected vs unconnected, and symmetric connected vs unconnected. 
 
-```{r child = here("r_files", "analysis_metaeco_symmetry.Rmd")}
-```
-
-##### SL (meta-ecosystems vs unconnected) {.tabset .tabset-pills}
+##### SL (connected vs unconnected) {.tabset .tabset-pills}
 
 ```{r}
 metaecosystem_type_i = c("Small-Large meta-ecosystem",
@@ -209,7 +155,7 @@ metaecosystem_type_i = c("Small-Large meta-ecosystem",
 ```{r child = here("r_files", "analysis_metaeco_connection.Rmd")}
 ```
 
-##### MM (meta-ecosystems vs unconnected) {.tabset .tabset-pills}
+##### MM (connected vs unconnected) {.tabset .tabset-pills}
 
 ```{r}
 metaecosystem_type_i = c("Medium-Medium meta-ecosystem",
@@ -218,6 +164,10 @@ metaecosystem_type_i = c("Medium-Medium meta-ecosystem",
 
 ```{r child = here("r_files", "analysis_metaeco_connection.Rmd")}
 ```
+
+<br>
+
+Following the initial inspection, we proceed to analyse differences among meta-ecosystems. To make it easier to interpret differences, we decided to construct a model for each comparisons we are interested in, which are: asymmetric vs symmetric connected, asymmetric connected vs unconnected, and symmetric connected vs unconnected. 
 
 #### Beta (Bray-Curtis) {.tabset .tabset-pills}
 
@@ -232,20 +182,10 @@ metaecosystem_type_i = c("Medium-Medium meta-ecosystem",
                          "Small-Large unconnected")
 ```
 
-```{r child = here("r_files", "analysis_metaecosystems_variable_all.Rmd")}
+```{r child = here("r_files", "analysis_metaeco_variable_all.Rmd")}
 ```
 
-##### MM vs SL meta-ecosystems {.tabset .tabset-pills}
-
-```{r}
-metaecosystem_type_i = c("Medium-Medium meta-ecosystem",
-                         "Small-Large meta-ecosystem")
-```
-
-```{r child = here("r_files", "analysis_metaeco_symmetry.Rmd")}
-```
-
-##### SL (meta-ecosystems vs unconnected) {.tabset .tabset-pills}
+##### SL (connected vs unconnected) {.tabset .tabset-pills}
 
 ```{r}
 metaecosystem_type_i = c("Small-Large meta-ecosystem",
@@ -255,7 +195,7 @@ metaecosystem_type_i = c("Small-Large meta-ecosystem",
 ```{r child = here("r_files", "analysis_metaeco_connection.Rmd")}
 ```
 
-##### MM (meta-ecosystems vs unconnected) {.tabset .tabset-pills}
+##### MM (connected vs unconnected) {.tabset .tabset-pills}
 
 ```{r}
 metaecosystem_type_i = c("Medium-Medium meta-ecosystem",
@@ -264,6 +204,10 @@ metaecosystem_type_i = c("Medium-Medium meta-ecosystem",
 
 ```{r child = here("r_files", "analysis_metaeco_connection.Rmd")}
 ```
+
+<br>
+
+Following the initial inspection, we proceed to analyse differences among meta-ecosystems. To make it easier to interpret differences, we decided to construct a model for each comparisons we are interested in, which are: asymmetric vs symmetric connected, asymmetric connected vs unconnected, and symmetric connected vs unconnected. 
 
 #### Gamma (regional richness) {.tabset .tabset-pills}
 
@@ -278,20 +222,10 @@ metaecosystem_type_i = c("Medium-Medium meta-ecosystem",
                          "Small-Large unconnected")
 ```
 
-```{r child = here("r_files", "analysis_metaecosystems_variable_all.Rmd")}
+```{r child = here("r_files", "analysis_metaeco_variable_all.Rmd")}
 ```
 
-##### MM vs SL meta-ecosystems {.tabset .tabset-pills}
-
-```{r}
-metaecosystem_type_i = c("Medium-Medium meta-ecosystem",
-                         "Small-Large meta-ecosystem")
-```
-
-```{r child = here("r_files", "analysis_metaeco_symmetry.Rmd")}
-```
-
-##### SL (meta-ecosystems vs unconnected) {.tabset .tabset-pills}
+##### SL (connected vs unconnected) {.tabset .tabset-pills}
 
 ```{r}
 metaecosystem_type_i = c("Small-Large meta-ecosystem",
@@ -301,7 +235,47 @@ metaecosystem_type_i = c("Small-Large meta-ecosystem",
 ```{r child = here("r_files", "analysis_metaeco_connection.Rmd")}
 ```
 
-##### MM (meta-ecosystems vs unconnected) {.tabset .tabset-pills}
+##### MM (connected vs unconnected) {.tabset .tabset-pills}
+
+```{r}
+metaecosystem_type_i = c("Medium-Medium meta-ecosystem",
+                         "Medium-Medium unconnected")
+```
+
+```{r child = here("r_files", "analysis_metaeco_connection.Rmd")}
+```
+
+#### Biomass {.tabset .tabset-pills}
+
+```{r}
+response_variable = "total_metaecosystem_bioarea_mm2"
+```
+
+```{r}
+metaecosystem_type_i = c("Medium-Medium meta-ecosystem",
+                         "Medium-Medium unconnected",
+                         "Small-Large meta-ecosystem",
+                         "Small-Large unconnected")
+```
+
+```{r child = here("r_files", "analysis_metaeco_variable_all.Rmd")}
+```
+
+<br>
+
+Following the initial inspection, we proceed to analyse differences among meta-ecosystems. To make it easier to interpret differences, we decided to construct a model for each comparisons we are interested in, which are: asymmetric vs symmetric connected, asymmetric connected vs unconnected, and symmetric connected vs unconnected. 
+
+##### SL (connected vs unconnected) {.tabset .tabset-pills}
+
+```{r}
+metaecosystem_type_i = c("Small-Large meta-ecosystem",
+                         "Small-Large unconnected")
+```
+
+```{r child = here("r_files", "analysis_metaeco_connection.Rmd")}
+```
+
+##### MM (connected vs unconnected) {.tabset .tabset-pills}
 
 ```{r}
 metaecosystem_type_i = c("Medium-Medium meta-ecosystem",
@@ -352,7 +326,7 @@ emmeans::emmeans(full_model,
 ```
 
 
-### Isolated patches {.tabset .tabset-pills}
+### $S$ vs $M$ vs $L$ {.tabset .tabset-pills}
 
 ```{r}
 patch_type_i = c("Small unconnected",
@@ -360,19 +334,19 @@ patch_type_i = c("Small unconnected",
                  "Large unconnected")
 ```
 
-#### Biomass {.tabset .tabset-pills}
+#### Shannon {.tabset .tabset-pills}
 
 ```{r}
-response_variable = "bioarea_mm2_per_ml"
+response_variable = "shannon"
 ```
 
 ```{r child = here("r_files", "analysis_unconnected_patches_variable.Rmd")}
 ```
 
-#### Shannon {.tabset .tabset-pills}
+#### Biomass {.tabset .tabset-pills}
 
 ```{r}
-response_variable = "shannon"
+response_variable = "bioarea_mm2_per_ml"
 ```
 
 ```{r child = here("r_files", "analysis_unconnected_patches_variable.Rmd")}
@@ -419,26 +393,26 @@ response_variable = "auto_hetero_ratio"
 ```{r child = here("r_files", "analysis_patches_populations.Rmd")}
 ```
 
-### S_L vs S {.tabset .tabset-pills}
+### $S_{L}$ vs $S$ {.tabset .tabset-pills}
 
 ```{r}
 patch_type_i = c("Small connected to large",
                  "Small unconnected")
 ```
 
-#### Biomass {.tabset .tabset-pills}
+#### Shannon {.tabset .tabset-pills}
 
 ```{r}
-response_variable = "bioarea_mm2_per_ml"
+response_variable = "shannon"
 ```
 
 ```{r child = here("r_files", "analysis_small_n_large_patches.Rmd")}
 ```
 
-#### Shannon {.tabset .tabset-pills}
+#### Biomass {.tabset .tabset-pills}
 
 ```{r}
-response_variable = "shannon"
+response_variable = "bioarea_mm2_per_ml"
 ```
 
 ```{r child = here("r_files", "analysis_small_n_large_patches.Rmd")}
@@ -476,26 +450,26 @@ response_variable = "median_body_area_µm2"
 ```{r child = here("r_files", "analysis_patches_populations.Rmd")}
 ```
 
-### S_L vs S_S {.tabset .tabset-pills}
+### $S_{L}$ vs $S_{S}$ {.tabset .tabset-pills}
 
 ```{r}
 patch_type_i = c("Small connected to large",
                  "Small connected to small")
 ```
 
-#### Biomass {.tabset .tabset-pills}
+#### Shannon {.tabset .tabset-pills}
 
 ```{r}
-response_variable = "bioarea_mm2_per_ml"
+response_variable = "shannon"
 ```
 
 ```{r child = here("r_files", "analysis_small_n_large_patches.Rmd")}
 ```
 
-#### Shannon {.tabset .tabset-pills}
+#### Biomass {.tabset .tabset-pills}
 
 ```{r}
-response_variable = "shannon"
+response_variable = "bioarea_mm2_per_ml"
 ```
 
 ```{r child = here("r_files", "analysis_small_n_large_patches.Rmd")}
@@ -533,26 +507,26 @@ response_variable = "median_body_area_µm2"
 ```{r child = here("r_files", "analysis_patches_populations.Rmd")}
 ```
 
-### S_S vs S {.tabset .tabset-pills}
+### $S_{S}$ vs $S${.tabset .tabset-pills}
 
 ```{r}
 patch_type_i = c("Small connected to small",
                  "Small unconnected")
 ```
 
-#### Biomass {.tabset .tabset-pills}
+#### Shannon {.tabset .tabset-pills}
 
 ```{r}
-response_variable = "bioarea_mm2_per_ml"
+response_variable = "shannon"
 ```
 
 ```{r child = here("r_files", "analysis_small_n_large_patches.Rmd")}
 ```
 
-#### Shannon {.tabset .tabset-pills}
+#### Biomass {.tabset .tabset-pills}
 
 ```{r}
-response_variable = "shannon"
+response_variable = "bioarea_mm2_per_ml"
 ```
 
 ```{r child = here("r_files", "analysis_small_n_large_patches.Rmd")}
@@ -590,68 +564,20 @@ response_variable = "median_body_area_µm2"
 ```{r child = here("r_files", "analysis_patches_populations.Rmd")}
 ```
 
-### Medium patches {.tabset .tabset-pills}
-
-```{r}
-patch_type_i = c("Medium unconnected",
-                     "Medium connected to medium")
-```
-
-#### Biomass {.tabset .tabset-pills}
-
-```{r}
-response_variable = "bioarea_mm2_per_ml"
-```
-
-```{r child = here("r_files", "analysis_small_n_large_patches.Rmd")}
-```
-
-#### Shannon {.tabset .tabset-pills}
-
-```{r}
-response_variable = "shannon"
-```
-
-```{r child = here("r_files", "analysis_small_n_large_patches.Rmd")}
-```
-
-#### Richness {.tabset .tabset-pills}
-
-```{r}
-response_variable = "species_richness"
-```
-
-```{r child = here("r_files", "analysis_small_n_large_patches.Rmd")}
-```
-
-#### Evenness {.tabset .tabset-pills}
-
-```{r}
-response_variable = "evenness_pielou"
-```
-
-```{r child = here("r_files", "analysis_small_n_large_patches.Rmd")}
-```
-
-#### Median Size {.tabset .tabset-pills}
-
-```{r}
-response_variable = "median_body_area_µm2"
-```
-
-```{r child = here("r_files", "analysis_small_n_large_patches.Rmd")}
-```
-
-#### Populations
-
-```{r child = here("r_files", "analysis_patches_populations.Rmd")}
-```
-
-### L_S vs L {.tabset .tabset-pills}
+### $L_{S}$ vs $L$ {.tabset .tabset-pills}
 
 ```{r}
 patch_type_i = c("Large connected to small",
                  "Large unconnected")
+```
+
+#### Shannon {.tabset .tabset-pills}
+
+```{r}
+response_variable = "shannon"
+```
+
+```{r child = here("r_files", "analysis_small_n_large_patches.Rmd")}
 ```
 
 #### Biomass {.tabset .tabset-pills}
@@ -663,15 +589,6 @@ response_variable = "bioarea_mm2_per_ml"
 ```{r child = here("r_files", "analysis_small_n_large_patches_special_control.Rmd")}
 ```
 
-#### Shannon {.tabset .tabset-pills}
-
-```{r}
-response_variable = "shannon"
-```
-
-```{r child = here("r_files", "analysis_small_n_large_patches.Rmd")}
-```
-
 #### Richness {.tabset .tabset-pills}
 
 ```{r}
@@ -704,13 +621,22 @@ response_variable = "median_body_area_µm2"
 ```{r child = here("r_files", "analysis_patches_populations.Rmd")}
 ```
 
-### L_S vs L_L {.tabset .tabset-pills}
+### $L_{S}$ vs $L_{L}$ {.tabset .tabset-pills}
 
 ```{r}
 patch_type_i = c("Large connected to small",
                  "Large connected to large")
 ```
 
+#### Shannon {.tabset .tabset-pills}
+
+```{r}
+response_variable = "shannon"
+```
+
+```{r child = here("r_files", "analysis_small_n_large_patches.Rmd")}
+```
+
 #### Biomass {.tabset .tabset-pills}
 
 ```{r}
@@ -720,10 +646,58 @@ response_variable = "bioarea_mm2_per_ml"
 ```{r child = here("r_files", "analysis_small_n_large_patches_special_control.Rmd")}
 ```
 
+#### Richness {.tabset .tabset-pills}
+
+```{r}
+response_variable = "species_richness"
+```
+
+```{r child = here("r_files", "analysis_small_n_large_patches.Rmd")}
+```
+
+#### Evenness {.tabset .tabset-pills}
+
+```{r}
+response_variable = "evenness_pielou"
+```
+
+```{r child = here("r_files", "analysis_small_n_large_patches.Rmd")}
+```
+
+#### Median Size {.tabset .tabset-pills}
+
+```{r}
+response_variable = "median_body_area_µm2"
+```
+
+```{r child = here("r_files", "analysis_small_n_large_patches.Rmd")}
+```
+
+#### Populations
+
+```{r child = here("r_files", "analysis_patches_populations.Rmd")}
+```
+
+### $L_{L}$ vs $L$ {.tabset .tabset-pills}
+
+```{r}
+patch_type_i = c("Large connected to large",
+                 "Large unconnected")
+```
+
 #### Shannon {.tabset .tabset-pills}
 
 ```{r}
 response_variable = "shannon"
+```
+
+```{r child = here("r_files", "analysis_small_n_large_patches.Rmd")}
+```
+
+#### Biomass {.tabset .tabset-pills}
+
+```{r}
+response_variable = "bioarea_mm2_per_ml"
 ```
 
 ```{r child = here("r_files", "analysis_small_n_large_patches.Rmd")}
@@ -761,26 +735,26 @@ response_variable = "median_body_area_µm2"
 ```{r child = here("r_files", "analysis_patches_populations.Rmd")}
 ```
 
-### L_L vs L {.tabset .tabset-pills}
+### $M_{M}$ vs $M$ {.tabset .tabset-pills}
 
 ```{r}
-patch_type_i = c("Large connected to large",
-                 "Large unconnected")
-```
-
-#### Biomass {.tabset .tabset-pills}
-
-```{r}
-response_variable = "bioarea_mm2_per_ml"
-```
-
-```{r child = here("r_files", "analysis_small_n_large_patches.Rmd")}
+patch_type_i = c("Medium unconnected",
+                     "Medium connected to medium")
 ```
 
 #### Shannon {.tabset .tabset-pills}
 
 ```{r}
 response_variable = "shannon"
+```
+
+```{r child = here("r_files", "analysis_small_n_large_patches.Rmd")}
+```
+
+#### Biomass {.tabset .tabset-pills}
+
+```{r}
+response_variable = "bioarea_mm2_per_ml"
 ```
 
 ```{r child = here("r_files", "analysis_small_n_large_patches.Rmd")}
