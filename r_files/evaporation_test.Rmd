@@ -7,9 +7,7 @@ editor_options:
   chunk_output_type: console
 ---
 
-### Evaporation when microwaving 15 falcon tubes at the time
-
-To quantify the amount of evaporation incurred by the cultures, I conducted weight measurements before and after microwaving for three minutes. Initially, I weighed 15 falcon tubes, then added deionised water to each tube before re-weighing them to determine the initial water weight. Subsequently, the 15 falcon tubes were placed inside a tube rack and microwaved for three minutes. After microwaving, I assessed the remaining water volume in each tube using a beaker. This process was repeated for both 5.25 ml (low disturbance) and 6.75 ml (high disturbance) deionised water volumes, across three sets of 15 tubes for each disturbance level.
+During the experiment we noticed that microwaving ecosystem sub-samples for three minutes to create disturbance caused the evaporation of the ecosystems. However, we don't know exactly how much evaporated and how much we should refill the ecosystems to bring them back to the original volume. Therefore, here I quantify the evaporation of 5.75 and 6.75 ml of deionised water, which represent low and high disturbance, respectively. For each disturbance level, I microwaved 15 tubes of that disturbance level for three minutes and measured their evaporation. To do so, I weighed the water before the microwaving (weigh tubes, add water, reweigh tubes) and after it (weigh Becker, pour water into it, reweigh Becker).
 
 ```{r, class.source = 'fold-hide'}
 evaporation.test = read.csv(here("data", "evaporation_test","evaporation_test_right.csv"), header = TRUE)
@@ -25,9 +23,7 @@ evaporation.test %>%
        fill = "Rack replicate")
 ```
 
-### Evaporation when microwaving 5 tubes with 10 filled or empty tubes
-
-To assess the extent of evaporation in the presence of varying tube conditions, I conducted weight measurements before and after microwaving five falcon tubes under two distinct treatments: one with ten additional filled tubes and another with ten empty tubes. Initially, I weighed 15 falcon tubes for each treatment, then added 6.75 ml of deionized water to either just five of them or to all of them, before re-weighing to ascertain the water weight. Subsequently, each set of 15 falcon tubes was placed inside a tube rack and microwaved for three minutes. Following microwaving, I evaluated the remaining water volume in each tube using a beaker.
+Furthermore, during the experiment we noticed that microwaving five 6.75 ml ecosystems sub-samples with ten empty tubes for three minutes to create disturbance caused the evaporation of the sub-samples more than if they were with other sub-samples. However, we don't know exactly how much evaporated and how much we should refill the ecosystems to bring them back to the original volume. Therefore, here I quantify the evaporation of five 6.75 ml sub-samples with ten empty or filled falcon tubes. The weighting was conducted as above. 
 
 ```{r, class.source = 'fold-hide'}
 evaporation.test = read.csv(here("data", "evaporation_test", "evaporation_test_fill_nofill.csv"), header = TRUE)
@@ -38,4 +34,63 @@ evaporation.test %>%
   geom_boxplot(width = boxplot_width) +
   labs(x = "Water in the other 10 tubes" , 
   y = "Evaporation (g)")
+```
+
+During the experiment we measured the evaporation rates of ecosystems to refill them after each disturbance. However, it might be that there was a systematic bias in the evaporation of different disturbance levels, ecosystem sizes and at different times. There might be for example a difference among the exchanges 2,3 (three minutes microwaving of 15 tubes) and the exchanges 4,5,6 (one minute microwaving of four tubes). To make sure that such a systematic bias did not exist, we plot how much evaporation occured in different treatments.
+
+```{r tidy-evaporation-effects-on-biomass, eval = FALSE}
+#Columns: exchange & evaporation
+ds_for_evaporation = gather(ds_for_evaporation, 
+                            key = exchange, 
+                            value = evaporation, 
+                            water_add_after_t2:water_add_after_t6)
+ds_for_evaporation[ds_for_evaporation == "water_add_after_t2"] = "2"
+ds_for_evaporation[ds_for_evaporation == "water_add_after_t3"] = "3"
+ds_for_evaporation[ds_for_evaporation == "water_add_after_t4"] = "4"
+ds_for_evaporation[ds_for_evaporation == "water_add_after_t5"] = "5"
+ds_for_evaporation[ds_for_evaporation == "water_add_after_t6"] = "6"
+ds_for_evaporation$evaporation[ds_for_evaporation$exchange == 2] = ds_for_evaporation$evaporation[ds_for_evaporation$exchange == 2] / 2 #This is because exchange contained the topping up of two exchanges
+ds_for_evaporation$evaporation[ds_for_evaporation$exchange == 2] = ds_for_evaporation$evaporation[ds_for_evaporation$exchange == 2] + 2 #We need to add 2 ml to the evaporation that happened at the exchange events 1 and 2. This is because we already added 1 ml of water at exchange 1 and 1 ml of water at exchange 2. 
+
+#Column: nr_of_tubes_in_rack
+ds_for_evaporation$nr_of_tubes_in_rack[ds_for_evaporation$exchange == 1] = 15
+ds_for_evaporation$nr_of_tubes_in_rack[ds_for_evaporation$exchange == 2] = 15
+ds_for_evaporation$nr_of_tubes_in_rack[ds_for_evaporation$exchange == 3] = 15
+ds_for_evaporation$nr_of_tubes_in_rack[ds_for_evaporation$exchange == 4] = 4
+ds_for_evaporation$nr_of_tubes_in_rack[ds_for_evaporation$exchange == 5] = 4
+ds_for_evaporation$nr_of_tubes_in_rack[ds_for_evaporation$exchange == 6] = 4
+```
+
+```{r plot, warning = FALSE, eval = FALSE}
+ds_for_evaporation %>%
+  filter(disturbance == disturbance) %>%
+  ggplot(aes(x = as.character(nr_of_tubes_in_rack),
+             y = evaporation)) + 
+  geom_boxplot(width = boxplot_width) + 
+  labs(x = "Number of tubes in rack", 
+       y = "Evaporation (ml)")
+
+ds_for_evaporation %>%
+  filter(disturbance == disturbance) %>%
+  ggplot(aes(x = as.character(patch_size),
+             y = evaporation)) + 
+  geom_boxplot(width = boxplot_width) + 
+  labs(x = "Patch size", 
+       y = "Evaporation (ml)")
+
+ds_for_evaporation %>%
+  filter(disturbance == disturbance) %>%
+  ggplot(aes(x = as.character(day),
+             y = evaporation)) + 
+  geom_boxplot(width = boxplot_width) + 
+  labs(x = "Day", 
+       y = "Evaporation (ml)")
+
+ds_for_evaporation %>%
+  filter(disturbance == disturbance) %>%
+  ggplot(aes(x = disturbance,
+             y = evaporation)) + 
+  geom_boxplot(width = boxplot_width) + 
+  labs(x = "Disturbance", 
+       y = "Evaporation (ml)")
 ```

@@ -303,29 +303,6 @@ patch_type_i = c("Small unconnected",
 ```{r child = here("r_files", "analysis_patches_BEF.Rmd")}
 ```
 
-```{r echo = FALSE, eval = FALSE}
-
-#Try to use a comprehensive model for all patches
-full_model = lmer(
-  bioarea_mm2_per_ml ~
-    patch_size * connection +
-    (1 | day) +
-    (1 | culture_ID),
-  data = ds_patches,
-  REML = FALSE,
-  control = lmerControl(optimizer = "Nelder_Mead"))
-
-summary(full_model)
-
-anova(full_model)
-
-emmeans::emmeans(full_model,
-                 specs = pairwise ~ patch_size:connection,
-                 type = "response",
-                 adjust = "tukey")
-```
-
-
 ### $S$ vs $M$ vs $L$ {.tabset .tabset-pills}
 
 ```{r}
