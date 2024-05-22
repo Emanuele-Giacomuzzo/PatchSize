@@ -88,37 +88,37 @@ p_combined = ggarrange(plot.single.plot("mean_shannon") +
                          rremove("xlab") +
                          theme(axis.text.x = element_blank(),
                                axis.ticks.x = element_blank()) +
-                         font("legend.text", size = size_legend) +
-                         font("ylab", size = paper_y_axis_size),
+                         font("legend.text", size = paper_labels_size) +
+                         font("ylab", size = paper_labels_size),
                        plot.single.plot("bray_curtis") +
                          rremove("xlab") +
                          theme(axis.text.x = element_blank(),
                                axis.ticks.x = element_blank()) +
                          font("legend.text", 
-                              size = size_legend) +
+                              size = paper_labels_size) +
                          font("ylab", 
-                              size = paper_y_axis_size),
+                              size = paper_labels_size),
                        plot.single.plot("metaecosystem_richness") +
                          rremove("xlab") +
                          theme(axis.text.x = element_blank(),
                                axis.ticks.x = element_blank()) +
                          font("legend.text", 
-                              size = size_legend) +
+                              size = paper_labels_size) +
                          font("ylab", 
-                              size = paper_y_axis_size),
+                              size = paper_labels_size),
                        plot.single.plot("total_metaecosystem_bioarea_mm2") +
                          font("legend.text", 
-                              size = size_legend) +
+                              size = paper_labels_size) +
                          font("xlab", 
-                              size = paper_y_axis_size) +
+                              size = paper_labels_size) +
                          font("ylab", 
-                              size = paper_y_axis_size) +
+                              size = paper_labels_size) +
                          scale_x_continuous(breaks = unique(ds_metaecosystems$day)),
                        heights = c(0.8, 0.8, 0.8, 1),
                        nrow = 4,
                        common.legend = TRUE,
                        align = "v",
-                       labels = c("(a)", "(b)", "(c)", "(d"),
+                       labels = c("(a)", "(b)", "(c)", "(d)"),
                        label.x = 0.1,
                        label.y = 0.8) %>%
   print()

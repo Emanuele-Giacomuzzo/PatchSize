@@ -191,22 +191,22 @@ axis_names = data.frame(variable = NA,
   add_row(variable = "class_indiv_per_µl", axis_name = "Density (ind/ml)") %>%
   add_row(variable = "bioarea_mm2_per_ml", axis_name = "Biomass (mm2/ml)") %>%
   add_row(variable = "bioarea_mm2_per_ml_d", axis_name = "Bioamass ES") %>%
-  add_row(variable = "bioarea_tot", axis_name = "Tot Biomass (mm2)") %>%
-  add_row(variable = "total_metaecosystem_bioarea_mm2", axis_name = "Tot Biomass (mm2)") %>%
+  add_row(variable = "bioarea_tot", axis_name = "Total Biomass (mm2)") %>%
+  add_row(variable = "total_metaecosystem_bioarea_mm2", axis_name = "Total Biomass (mm2)") %>%
   add_row(variable = "species_richness", axis_name = "Species Richness") %>%
   add_row(variable = "species_richness_d", axis_name = "Species Richness ES") %>%
-  add_row(variable = "mean_richness", axis_name = "mean α Diversity (Shannon)") %>%
-  add_row(variable = "mean_shannon", axis_name = "mean α Diversity (Shannon)") %>%
+  add_row(variable = "mean_richness", axis_name = "Mean α-Diversity (Shannon)") %>%
+  add_row(variable = "mean_shannon", axis_name = "Mean α-Diversity (Shannon)") %>%
   add_row(variable = "shannon", axis_name = "Biodiversity (Shannon)") %>%
   add_row(variable = "shannon_d", axis_name = "Biodiversity ES (Shannon ES)") %>%
-  add_row(variable = "bray_curtis", axis_name = "β Diversity (Bray-Curtis)") %>%
+  add_row(variable = "bray_curtis", axis_name = "β-Diversity (Bray-Curtis)") %>%
   add_row(variable = "beta_spatial_turnover", axis_name = "Turn over (Simpson pair-wise dissimilarity)") %>%
   add_row(variable = "beta_nestedness", axis_name = "Nestedness (nestedness-fraction of Sorensen)") %>%
-  add_row(variable = "beta_total", axis_name = "Tot β Diversity (Sorensen)") %>%
-  add_row(variable = "metaecosystem_richness", axis_name = "γ Diversity (Species Richness)") %>%
+  add_row(variable = "beta_total", axis_name = "Tot β-Diversity (Sorensen)") %>%
+  add_row(variable = "metaecosystem_richness", axis_name = "γ-Diversity (Species Richness)") %>%
   add_row(variable = "indiv_per_ml", axis_name = "Abundance (ind/ml)") %>%
   add_row(variable = "indiv_per_ml_d", axis_name = "Abundance ES") %>%
-  add_row(variable = "median_body_area_µm2", axis_name = "Median body size (µm²)") %>%
+  add_row(variable = "median_body_area_µm2", axis_name = "Median Body Size (µm²)") %>%
   add_row(variable = "median_body_area_µm2_d", axis_name = "Median Body Size ES") %>%
   add_row(variable = "Ble_indiv_per_ml", axis_name = "Ble Density (ind/ml)") %>% 
   add_row(variable = "Cep_indiv_per_ml", axis_name = "Cep Density (ind/ml)") %>%
@@ -219,7 +219,7 @@ axis_names = data.frame(variable = NA,
   add_row(variable = "Spi_indiv_per_ml", axis_name = "Spi Density (ind/ml)") %>%
   add_row(variable = "Spi_te_indiv_per_ml", axis_name = "Spi te Density (ind/ml)") %>%
   add_row(variable = "Tet_indiv_per_ml", axis_name = "Tet Density (ind/ml)") %>%
-  add_row(variable = "auto_hetero_ratio", axis_name = "Autotrophic/Heterotrophic individuals ratio") %>%
+  add_row(variable = "auto_hetero_ratio", axis_name = "Autotrophic/Heterotrophic Individuals Ratio") %>%
   add_row(variable = "Ble_indiv_per_ml_d", axis_name = "Ble Density ES") %>%
   add_row(variable = "Cep_indiv_per_ml_d", axis_name = "Cep Density ES") %>%
   add_row(variable = "Col_indiv_per_ml_d", axis_name = "Col Density ES") %>%
@@ -326,6 +326,7 @@ paper_height = 20
 paper_units = "cm"
 paper_res = 600
 paper_y_axis_size = 9
+paper_labels_size = 9
 
 presentation_figure_size = 15
 presentation_figure_width = 30

@@ -112,16 +112,16 @@ p_combined = ggarrange(plot.single.plot("shannon") +
                          theme(axis.text.x = element_blank(),
                                axis.ticks.x = element_blank()) +
                          font("legend.text", 
-                              size = size_legend) +
+                              size = paper_labels_size) +
                          font("ylab", 
-                              size = paper_y_axis_size),
+                              size = paper_labels_size),
                        plot.single.plot("bioarea_mm2_per_ml") +
                          font("legend.text", 
-                              size = size_legend) +
+                              size = paper_labels_size) +
                          font("xlab", 
-                              size = paper_y_axis_size) +
+                              size = paper_labels_size) +
                          font("ylab", 
-                              size = paper_y_axis_size) +
+                              size = paper_labels_size) +
                          scale_x_continuous(breaks = unique(ds_patches$day)),
                        heights = c(0.8, 0.8, 1),
                        nrow = 2,
