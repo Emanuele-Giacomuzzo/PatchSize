@@ -219,7 +219,7 @@ axis_names = data.frame(variable = NA,
   add_row(variable = "Spi_indiv_per_ml", axis_name = "Spi Density (ind/ml)") %>%
   add_row(variable = "Spi_te_indiv_per_ml", axis_name = "Spi te Density (ind/ml)") %>%
   add_row(variable = "Tet_indiv_per_ml", axis_name = "Tet Density (ind/ml)") %>%
-  add_row(variable = "auto_hetero_ratio", axis_name = "Autotrophic/Heterotrophic Individuals Ratio") %>%
+  add_row(variable = "auto_hetero_ratio", axis_name = "Mixotrophs-Heterotrophs Ratio") %>%
   add_row(variable = "Ble_indiv_per_ml_d", axis_name = "Ble Density ES") %>%
   add_row(variable = "Cep_indiv_per_ml_d", axis_name = "Cep Density ES") %>%
   add_row(variable = "Col_indiv_per_ml_d", axis_name = "Col Density ES") %>%
