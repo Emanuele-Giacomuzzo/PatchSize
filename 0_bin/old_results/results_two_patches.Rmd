@@ -1,0 +1,700 @@
+---
+title: "Two-patch sequence"
+output: html_document
+date: "2023-08-29"
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+### --- Productivity PAPER --- ###
+
+png(file = here("results", "figures", disturbance_global_input, "paper_two_patches_productivity.png"),
+    width = paper_width,
+    height = paper_height,
+    units = paper_units,
+    res = paper_res)
+
+p_MM_SL_metaecos_biomass +
+  theme(
+  axis.title.y = element_text(size = size_y_axis),
+  legend.text = element_text(size = size_legend)
+)
+```
+
+```{r results=FALSE}
+dev.off()
+```
+
+```{r fig.height = 5}
+p_MM_SL_metaecos_biomass
+```
+
+```{r fig-connected-systems}
+### --- Biodiversity PAPER --- ###
+png(file = here("results", "figures", disturbance_global_input, "paper_two_patches_biodiversity.png"),
+    width = paper_width,
+    height = 23,
+    units = paper_units,
+    res = paper_res)
+
+p = ggarrange(
+  p_MM_SL_metaecos_alpha +
+    rremove("xlab") +
+    theme(axis.text.x = element_blank(),
+          axis.ticks.x = element_blank(),
+          plot.margin = unit(c(ggarrange_margin_top,
+                               ggarrange_margin_right,
+                               ggarrange_margin_bottom,
+                               ggarrange_margin_left), 
+                             "cm")) +
+    font("legend.text", size = size_legend) +
+    font("ylab", size = size_y_axis),
+   p_MM_SL_metaecos_beta +
+    rremove("xlab") +
+    theme(axis.text.x = element_blank(),
+          axis.ticks.x = element_blank(),
+          plot.margin = unit(c(ggarrange_margin_top,
+                               ggarrange_margin_right,
+                               ggarrange_margin_bottom,
+                               ggarrange_margin_left), 
+                             "cm")) +
+    font("legend.text", size = size_legend) +
+    font("ylab", size = size_y_axis),
+  p_MM_SL_metaecos_gamma +
+    theme(plot.margin = unit(c(ggarrange_margin_left,
+                               ggarrange_margin_right,
+                               ggarrange_margin_bottom,
+                               ggarrange_margin_left), 
+                             "cm")) + 
+    font("xlab", size = size_y_axis) +
+    font("ylab", size = size_y_axis) +
+    scale_x_continuous(breaks = unique(ds_patches$day)),
+  heights = c(0.8,0.8,1),
+  nrow = 3,
+  common.legend = TRUE,
+  align = "v",
+  labels = c("(a)", "(b)", "(c)"),
+  label.x = 0.1,
+  label.y = 0.8
+) %>%
+  print()
+```
+
+```{r results=FALSE}
+dev.off()
+```
+
+```{r fig.height = 9}
+p
+```
+
+```{r}
+results_table %>%
+  arrange(Response, 
+          Levels) %>%
+  filter(
+    Levels %in% c("Metaecos (Small-Large vs Medium-Medium)") & 
+      !is.na(Response)
+  ) %>%
+  mutate(ΔR2_full = NULL,
+         ΔR2_int = NULL,
+         ΔR2_fix = NULL) %>%
+  select(-Levels) %>%
+  kbl(
+    caption = paste(
+      "Table 2. 
+      Meta-ecosystems results. 
+      The full model included patch size ratio and its interaction with time. 
+      The fixed model did not include such interaction.",
+      compar_ex
+    )
+  ) %>%
+  kable_styling()
+
+results_table %>%
+  arrange(Response, 
+          Levels) %>%
+  filter(
+    Levels %in% c(
+      "Small-Large (connect vs isolated)"
+    )
+  ) %>%
+  mutate(ΔR2_full = NULL,
+         ΔR2_int = NULL,
+         ΔR2_fix = NULL) %>%
+  select(-Levels) %>%
+  kbl(
+    caption = paste(
+      "Table 3. 
+      Small-Large systems results. 
+      The full model included the connection and its interaction with time. 
+      The fixed model did not include such interaction.",
+      compar_ex
+    )
+  ) %>%
+  kable_styling()
+
+results_table %>%
+  arrange(Response, 
+          Levels) %>%
+  filter(
+    Levels %in% c(
+      "Medium-Medium (connect vs isolated)"
+    )
+  ) %>%
+  mutate(ΔR2_full = NULL,
+         ΔR2_int = NULL,
+         ΔR2_fix = NULL) %>%
+  select(-Levels) %>%
+  kbl(
+    caption = paste(
+      "Table 4. 
+      Medium-Medium systems results. 
+      The full model included the connection and its interaction with time. 
+      The fixed model did not include such interaction.",
+      compar_ex
+    )
+  ) %>%
+  kable_styling()
+```
+
+```{r}
+
+#Define the range of values of Shannon and Bray Curtis
+
+presentation_y_min_metaecos_alpha = ds_metaecosystems %>%
+  filter(metaecosystem_type %in% c("Medium-Medium meta-ecosystem",
+                                   "Small-Large meta-ecosystem",
+                                   "Small-Large isolated")) %>%
+  select(mean_shannon) %>%
+  pull() %>%
+  min()
+  
+presentation_y_max_metaecos_alpha = ds_metaecosystems %>%
+  filter(metaecosystem_type %in% c("Medium-Medium meta-ecosystem",
+                                   "Small-Large meta-ecosystem",
+                                   "Small-Large isolated")) %>%
+  select(mean_shannon) %>%
+  pull() %>%
+  max()
+
+presentation_y_min_metaecos_beta = ds_metaecosystems %>%
+  filter(metaecosystem_type %in% c("Medium-Medium meta-ecosystem",
+                                   "Small-Large meta-ecosystem",
+                                   "Small-Large isolated")) %>%
+  select(bray_curtis) %>%
+  pull() %>%
+  min()
+  
+presentation_y_max_metaecos_beta = ds_metaecosystems %>%
+  filter(metaecosystem_type %in% c("Medium-Medium meta-ecosystem",
+                                   "Small-Large meta-ecosystem",
+                                   "Small-Large isolated")) %>%
+  select(bray_curtis) %>%
+  pull() %>%
+  max()
+```
+
+```{r}
+response_variable = "mean_shannon"
+```
+
+```{r}
+metaecosystem_type_input = ""
+```
+
+```{r}
+p_MM_SL_metaecos_alpha_0 = ds_metaecosystems %>%
+    filter(metaecosystem_type %in% metaecosystem_type_input,
+           !is.na(!!sym(response_variable))) %>%
+    ggplot(
+      aes(
+        x = day,
+        y = get(response_variable),
+        group = interaction(day, metaecosystem_type),
+        color = metaecosystem_type,
+        linetype = metaecosystem_type
+      )
+    ) +
+    geom_point(stat = "summary",
+               fun = "mean",
+               position = position_dodge(dodging),
+               size = presentation_treatment_points_size) +
+    geom_line(
+      stat = "summary",
+      fun = "mean",
+      aes(group = metaecosystem_type),
+      position = position_dodge(dodging),
+      linewidth = presentation_treatment_linewidth
+    ) +
+    labs(x = axis_names$axis_name[axis_names$variable == "day"],
+         y = axis_names$axis_name[axis_names$variable == response_variable],
+         color = "") +
+    geom_vline(
+      xintercept = resource_flow_days,
+      linetype = resource_flow_line_type,
+      color = resource_flow_line_colour,
+      linewidth = resource_flow_line_width
+    ) +
+    theme_bw() +
+    theme(
+      panel.grid.major = element_blank(),
+      panel.grid.minor = element_blank(),
+      legend.position = legend_position,
+      legend.key.width = unit(legend_width_cm, "cm")
+    ) +
+    guides(color = guide_legend(title = NULL,
+                                nrow = 2),
+           linetype = guide_legend(title = NULL,
+                                   nrow = 2))
+```
+
+```{r}
+metaecosystem_type_input = "Medium-Medium meta-ecosystem"
+```
+
+```{r}
+p_MM_SL_metaecos_alpha_1 = plot.metaecos.points.presentations(ds_metaecosystems, 
+                                                              metaecosystem_type_input,
+                                                              response_variable)
+```
+
+```{r}
+metaecosystem_type_input = c("Medium-Medium meta-ecosystem",
+                             "Small-Large meta-ecosystem")
+```
+
+```{r}
+p_MM_SL_metaecos_alpha_2 = plot.metaecos.points.presentations(ds_metaecosystems, 
+                                                              metaecosystem_type_input,
+                                                              response_variable)
+```
+
+```{r}
+metaecosystem_type_input = c("Medium-Medium meta-ecosystem",
+                             "Small-Large meta-ecosystem",
+                             "Small-Large isolated")
+```
+
+```{r}
+p_MM_SL_metaecos_alpha_3 = plot.metaecos.points.presentations(ds_metaecosystems, 
+                                              metaecosystem_type_input,
+                                              response_variable)
+```
+
+```{r}
+response_variable = "bray_curtis"
+```
+
+```{r}
+metaecosystem_type_input = ""
+```
+
+```{r}
+p_MM_SL_metaecos_beta_0 = ds_metaecosystems %>%
+    filter(metaecosystem_type %in% metaecosystem_type_input,
+           !is.na(!!sym(response_variable))) %>%
+    ggplot(
+      aes(
+        x = day,
+        y = get(response_variable),
+        group = interaction(day, metaecosystem_type),
+        color = metaecosystem_type,
+        linetype = metaecosystem_type
+      )
+    ) +
+    geom_point(stat = "summary",
+               fun = "mean",
+               position = position_dodge(dodging),
+               size = presentation_treatment_points_size) +
+    geom_line(
+      stat = "summary",
+      fun = "mean",
+      aes(group = metaecosystem_type),
+      position = position_dodge(dodging),
+      linewidth = presentation_treatment_linewidth
+    ) +
+    labs(x = axis_names$axis_name[axis_names$variable == "day"],
+         y = axis_names$axis_name[axis_names$variable == response_variable],
+         color = "") +
+    geom_vline(
+      xintercept = resource_flow_days,
+      linetype = resource_flow_line_type,
+      color = resource_flow_line_colour,
+      linewidth = resource_flow_line_width
+    ) +
+    theme_bw() +
+    theme(
+      panel.grid.major = element_blank(),
+      panel.grid.minor = element_blank(),
+      legend.position = legend_position,
+      legend.key.width = unit(legend_width_cm, "cm")
+    ) +
+    guides(color = guide_legend(title = NULL,
+                                nrow = 2),
+           linetype = guide_legend(title = NULL,
+                                   nrow = 2))
+```
+
+```{r}
+metaecosystem_type_input = c("Medium-Medium meta-ecosystem")
+```
+
+```{r}
+p_MM_SL_metaecos_beta_1 = plot.metaecos.points.presentations(ds_metaecosystems, 
+                                             metaecosystem_type_input,
+                                             response_variable)
+```
+
+```{r}
+metaecosystem_type_input = c("Medium-Medium meta-ecosystem",
+                             "Small-Large meta-ecosystem")
+```
+
+```{r}
+p_MM_SL_metaecos_beta_2 = plot.metaecos.points.presentations(ds_metaecosystems, 
+                                             metaecosystem_type_input,
+                                             response_variable)
+```
+
+```{r}
+metaecosystem_type_input = c("Medium-Medium meta-ecosystem",
+                             "Small-Large meta-ecosystem",
+                             "Small-Large isolated")
+```
+
+```{r}
+p_MM_SL_metaecos_beta_3 = plot.metaecos.points.presentations(ds_metaecosystems, 
+                                             metaecosystem_type_input,
+                                             response_variable)
+```
+
+```{r}
+#Alpha0, Beta0
+
+png(file = here("results", "figures", disturbance_global_input, "presentation_two_patch_systems_1.png"),
+    width = presentation_figure_width,
+    height = presentation_figure_height,
+    units = presentation_figure_units,
+    res = presentation_figure_res)
+
+ggarrange(
+  p_MM_SL_metaecos_alpha_0 +
+    rremove("xlab") +
+    theme(axis.text.x = element_blank(),
+          axis.ticks.x = element_blank(),
+          plot.margin = unit(c(ggarrange_margin_top,
+                               ggarrange_margin_right,
+                               ggarrange_margin_bottom,
+                               ggarrange_margin_left), 
+                             "cm")) +
+    font("legend.text", size = presentation_legend_size) +
+    font("ylab", size = presentation_y_axis_size) +
+    ylim(presentation_y_min_metaecos_alpha, 
+         presentation_y_max_metaecos_alpha) +
+    theme(legend.position = "none"),
+  p_MM_SL_metaecos_beta_0 +
+    theme(plot.margin = unit(c(ggarrange_margin_left,
+                               ggarrange_margin_right,
+                               ggarrange_margin_bottom,
+                               ggarrange_margin_left), 
+                             "cm")) + 
+    font("xlab", size = presentation_x_axis_size) +
+    font("ylab", size = presentation_y_axis_size) +
+    ylim(presentation_y_min_metaecos_beta, 
+         presentation_y_max_metaecos_beta) +
+    scale_x_continuous(breaks = unique(ds_patches$day)) +
+    theme(legend.position = "none"),
+  heights = c(0.8,0.8,1),
+  nrow = 2,
+  #common.legend = TRUE,
+  align = "v"
+)
+```
+
+```{r results=FALSE}
+dev.off()
+```
+
+```{r}
+#Alpha1, Beta0
+
+png(file = here("results", "figures", disturbance_global_input, "presentation_two_patch_systems_2.png"),
+    width = presentation_figure_width,
+    height = presentation_figure_height,
+    units = presentation_figure_units,
+    res = presentation_figure_res)
+
+ggarrange(
+  p_MM_SL_metaecos_alpha_1 +
+    rremove("xlab") +
+    theme(axis.text.x = element_blank(),
+          axis.ticks.x = element_blank(),
+          plot.margin = unit(c(ggarrange_margin_top,
+                               ggarrange_margin_right,
+                               ggarrange_margin_bottom,
+                               ggarrange_margin_left), 
+                             "cm")) +
+    font("legend.text", size = presentation_legend_size) +
+    font("ylab", size = presentation_y_axis_size) +
+    ylim(presentation_y_min_metaecos_alpha, 
+         presentation_y_max_metaecos_alpha) +
+    theme(legend.position = "none"),
+  p_MM_SL_metaecos_beta_0 +
+    theme(plot.margin = unit(c(ggarrange_margin_left,
+                               ggarrange_margin_right,
+                               ggarrange_margin_bottom,
+                               ggarrange_margin_left), 
+                             "cm")) + 
+    font("xlab", size = presentation_x_axis_size) +
+    font("ylab", size = presentation_y_axis_size) +
+    ylim(presentation_y_min_metaecos_beta, 
+         presentation_y_max_metaecos_beta) +
+    scale_x_continuous(breaks = unique(ds_patches$day)) +
+    theme(legend.position = "none"),
+  heights = c(0.8,0.8,1),
+  nrow = 2,
+  #common.legend = TRUE,
+  align = "v"
+)
+```
+
+```{r results=FALSE}
+dev.off()
+```
+
+```{r}
+#Alpha2, Beta0
+
+png(file = here("results", "figures", disturbance_global_input, "presentation_two_patch_systems_3.png"),
+    width = presentation_figure_width,
+    height = presentation_figure_height,
+    units = presentation_figure_units,
+    res = presentation_figure_res)
+
+ggarrange(
+  p_MM_SL_metaecos_alpha_2 +
+    rremove("xlab") +
+    theme(axis.text.x = element_blank(),
+          axis.ticks.x = element_blank(),
+          plot.margin = unit(c(ggarrange_margin_top,
+                               ggarrange_margin_right,
+                               ggarrange_margin_bottom,
+                               ggarrange_margin_left), 
+                             "cm")) +
+    font("legend.text", size = presentation_legend_size) +
+    font("ylab", size = presentation_y_axis_size) +
+    ylim(presentation_y_min_metaecos_alpha, 
+         presentation_y_max_metaecos_alpha) +
+    theme(legend.position = "none"),
+  p_MM_SL_metaecos_beta_0 +
+    theme(plot.margin = unit(c(ggarrange_margin_left,
+                               ggarrange_margin_right,
+                               ggarrange_margin_bottom,
+                               ggarrange_margin_left), 
+                             "cm")) + 
+    font("xlab", size = presentation_x_axis_size) +
+    font("ylab", size = presentation_y_axis_size) +
+    ylim(presentation_y_min_metaecos_beta, 
+         presentation_y_max_metaecos_beta) +
+    scale_x_continuous(breaks = unique(ds_patches$day)) +
+    theme(legend.position = "none"),
+  heights = c(0.8,0.8,1),
+  nrow = 2,
+  #common.legend = TRUE,
+  align = "v"
+)
+```
+
+```{r results=FALSE}
+dev.off()
+```
+
+```{r}
+#Alpha3, Beta0
+
+png(file = here("results", "figures", disturbance_global_input, "presentation_two_patch_systems_4.png"),
+    width = presentation_figure_width,
+    height = presentation_figure_height,
+    units = presentation_figure_units,
+    res = presentation_figure_res)
+
+ggarrange(
+  p_MM_SL_metaecos_alpha_3 +
+    rremove("xlab") +
+    theme(axis.text.x = element_blank(),
+          axis.ticks.x = element_blank(),
+          plot.margin = unit(c(ggarrange_margin_top,
+                               ggarrange_margin_right,
+                               ggarrange_margin_bottom,
+                               ggarrange_margin_left), 
+                             "cm")) +
+    font("legend.text", size = presentation_legend_size) +
+    font("ylab", size = presentation_y_axis_size) +
+    ylim(presentation_y_min_metaecos_alpha, 
+         presentation_y_max_metaecos_alpha) +
+    theme(legend.position = "none"),
+  p_MM_SL_metaecos_beta_0 +
+    theme(plot.margin = unit(c(ggarrange_margin_left,
+                               ggarrange_margin_right,
+                               ggarrange_margin_bottom,
+                               ggarrange_margin_left), 
+                             "cm")) + 
+    font("xlab", size = presentation_x_axis_size) +
+    font("ylab", size = presentation_y_axis_size) +
+    ylim(presentation_y_min_metaecos_beta, 
+         presentation_y_max_metaecos_beta) +
+    scale_x_continuous(breaks = unique(ds_patches$day)) +
+    theme(legend.position = "none"),
+  heights = c(0.8,0.8,1),
+  nrow = 2,
+  #common.legend = TRUE,
+  align = "v"
+)
+```
+
+```{r results=FALSE}
+dev.off()
+```
+
+```{r}
+#Alpha3, Beta1
+
+png(file = here("results", "figures", disturbance_global_input, "presentation_two_patch_systems_5.png"),
+    width = presentation_figure_width,
+    height = presentation_figure_height,
+    units = presentation_figure_units,
+    res = presentation_figure_res)
+
+ggarrange(
+  p_MM_SL_metaecos_alpha_3 +
+    rremove("xlab") +
+    theme(axis.text.x = element_blank(),
+          axis.ticks.x = element_blank(),
+          plot.margin = unit(c(ggarrange_margin_top,
+                               ggarrange_margin_right,
+                               ggarrange_margin_bottom,
+                               ggarrange_margin_left), 
+                             "cm")) +
+    font("legend.text", size = presentation_legend_size) +
+    font("ylab", size = presentation_y_axis_size) +
+    ylim(presentation_y_min_metaecos_alpha, 
+         presentation_y_max_metaecos_alpha) +
+    theme(legend.position = "none"),
+  p_MM_SL_metaecos_beta_1 +
+    theme(plot.margin = unit(c(ggarrange_margin_left,
+                               ggarrange_margin_right,
+                               ggarrange_margin_bottom,
+                               ggarrange_margin_left), 
+                             "cm")) + 
+    font("xlab", size = presentation_x_axis_size) +
+    font("ylab", size = presentation_y_axis_size) +
+    ylim(presentation_y_min_metaecos_beta, 
+         presentation_y_max_metaecos_beta) +
+    scale_x_continuous(breaks = unique(ds_patches$day)) +
+    theme(legend.position = "none"),
+  heights = c(0.8,0.8,1),
+  nrow = 2,
+  #common.legend = TRUE,
+  align = "v"
+)
+```
+
+```{r results=FALSE}
+dev.off()
+```
+
+```{r}
+#Alpha3, Beta2
+
+png(file = here("results", "figures", disturbance_global_input, "presentation_two_patch_systems_6.png"),
+    width = presentation_figure_width,
+    height = presentation_figure_height,
+    units = presentation_figure_units,
+    res = presentation_figure_res)
+
+ggarrange(
+  p_MM_SL_metaecos_alpha_3 +
+    rremove("xlab") +
+    theme(axis.text.x = element_blank(),
+          axis.ticks.x = element_blank(),
+          plot.margin = unit(c(ggarrange_margin_top,
+                               ggarrange_margin_right,
+                               ggarrange_margin_bottom,
+                               ggarrange_margin_left), 
+                             "cm")) +
+    font("legend.text", size = presentation_legend_size) +
+    font("ylab", size = presentation_y_axis_size) +
+    ylim(presentation_y_min_metaecos_alpha, 
+         presentation_y_max_metaecos_alpha) +
+    theme(legend.position = "none"),
+  p_MM_SL_metaecos_beta_2 +
+    theme(plot.margin = unit(c(ggarrange_margin_left,
+                               ggarrange_margin_right,
+                               ggarrange_margin_bottom,
+                               ggarrange_margin_left), 
+                             "cm")) + 
+    font("xlab", size = presentation_x_axis_size) +
+    font("ylab", size = presentation_y_axis_size) +
+    ylim(presentation_y_min_metaecos_beta, 
+         presentation_y_max_metaecos_beta) +
+    scale_x_continuous(breaks = unique(ds_patches$day)) +
+    theme(legend.position = "none"),
+  heights = c(0.8,0.8,1),
+  nrow = 2,
+  #common.legend = TRUE,
+  align = "v"
+)
+```
+
+```{r results=FALSE}
+dev.off()
+```
+
+```{r}
+#Alpha3, Beta3
+
+png(file = here("results", "figures", disturbance_global_input, "presentation_two_patch_systems_7.png"),
+    width = presentation_figure_width,
+    height = presentation_figure_height,
+    units = presentation_figure_units,
+    res = presentation_figure_res)
+
+ggarrange(
+  p_MM_SL_metaecos_alpha_3 +
+    rremove("xlab") +
+    theme(axis.text.x = element_blank(),
+          axis.ticks.x = element_blank(),
+          plot.margin = unit(c(ggarrange_margin_top,
+                               ggarrange_margin_right,
+                               ggarrange_margin_bottom,
+                               ggarrange_margin_left), 
+                             "cm")) +
+    font("legend.text", size = presentation_legend_size) +
+    font("ylab", size = presentation_y_axis_size) +
+    ylim(presentation_y_min_metaecos_alpha, 
+         presentation_y_max_metaecos_alpha) +
+    theme(legend.position = "none"),
+  p_MM_SL_metaecos_beta_3 +
+    theme(plot.margin = unit(c(ggarrange_margin_left,
+                               ggarrange_margin_right,
+                               ggarrange_margin_bottom,
+                               ggarrange_margin_left), 
+                             "cm")) + 
+    font("xlab", size = presentation_x_axis_size) +
+    font("ylab", size = presentation_y_axis_size) +
+    ylim(presentation_y_min_metaecos_beta, 
+         presentation_y_max_metaecos_beta) +
+    scale_x_continuous(breaks = unique(ds_patches$day)) +
+    theme(legend.position = "none"),
+  heights = c(0.8,0.8,1),
+  nrow = 2,
+  #common.legend = TRUE,
+  align = "v"
+)
+```
+
+```{r results=FALSE}
+dev.off()
+```

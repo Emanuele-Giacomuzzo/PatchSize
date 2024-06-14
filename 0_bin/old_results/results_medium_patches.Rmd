@@ -1,0 +1,52 @@
+---
+title: "Untitled"
+output: html_document
+date: "2023-10-26"
+---
+
+```{r}
+png(file = here("results", "figures", disturbance_global_input, "paper_medium_patches.png"),
+    width = paper_width,
+    height = paper_height,
+    units = paper_units,
+    res = paper_res)
+
+p=ggarrange(
+   p_MM_biomass +
+    rremove("xlab") +
+    theme(axis.text.x = element_blank(),
+          axis.ticks.x = element_blank(),
+          plot.margin = unit(c(ggarrange_margin_top,
+                               ggarrange_margin_right,
+                               ggarrange_margin_bottom,
+                               ggarrange_margin_left), 
+                             "cm")) +
+    font("legend.text", size = size_legend) +
+    font("ylab", size = size_y_axis), 
+  p_MM_shannon +
+    theme(plot.margin = unit(c(ggarrange_margin_left,
+                               ggarrange_margin_right,
+                               ggarrange_margin_bottom,
+                               ggarrange_margin_left), 
+                             "cm")) + 
+    font("xlab", size = size_y_axis) + 
+    font("ylab", size = size_y_axis) +
+    scale_x_continuous(breaks = unique(ds_patches$day)),
+  nrow = 2,
+  heights = c(0.9,1),
+  common.legend = TRUE,
+  align = "v",
+  labels = c("(a)", "(b)"),
+  label.x = 0.1,
+  label.y = 0.8
+) %>%
+  print()
+```
+
+```{r results=FALSE}
+dev.off()
+```
+
+```{r fig.height = 7}
+p
+```

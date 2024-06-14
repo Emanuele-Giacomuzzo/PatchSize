@@ -1,0 +1,47 @@
+---
+title: "large_patches"
+author: "Emanuele Giacomuzzo"
+date: "2022-10-17"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+##### Means
+
+```{r}
+for (species_input in protist_species){
+  
+  response_variable = paste0(species_input, "_indiv_per_ml")
+  
+  print(plot.patches.points(ds_patches, patch_type_input,
+                              response_variable))
+  
+}
+```
+
+##### Boxplots
+
+```{r}
+for (species_input in protist_species) {
+  
+  response_variable = paste0(species_input, "_indiv_per_ml")
+  
+  print(plot.patches.boxplots(patch_type_input,
+                              response_variable))
+  
+}
+```
+
+##### ES
+
+```{r}
+for (species_input in protist_species){
+  
+  response_variable = paste0(species_input, "_indiv_per_ml", "_d")
+  
+  print(plot.patches.points.ES(ds_patches_effect_size, patch_type_input,
+                               response_variable))
+  
+}
+```

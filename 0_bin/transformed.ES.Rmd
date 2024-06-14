@@ -1,0 +1,121 @@
+---
+title: "Untitled"
+output: html_document
+date: "2023-04-14"
+---
+
+###### Transformed {.tabset .tabset-pills}
+
+##### Small
+
+```{r}
+patch_type_input_model = c("Small connected to small",
+                           "Small connected to large")
+```
+
+```{r}
+filtered_data = ds_patches_effect_size %>%
+                         filter(time_point >= first_time_point_model,
+                                time_point <= last_time_point_model,
+                                patch_type %in% patch_type_input_model)
+```
+
+```{r}
+plot.patches.points.ES.log(filtered_data,
+                           patch_type_input_model,
+                           response_variable)
+```
+
+**Construct full model**
+
+```{r}
+full_model = lm(log(get(response_variable) + 2) ~
+                  size_connected_patch +
+                  size_connected_patch : day,
+                data = filtered_data)
+```
+
+```{r}
+summary(full_model)
+par(mfrow = c(2, 3))
+plot(full_model, which = 1:5)
+```
+
+**Test `size_connected_patch` and `size_connected_patch : day`**
+
+```{r}
+null_model = lm(log(get(response_variable) + 2) ~
+                  1,
+                data = filtered_data)
+
+summary(null_model)
+par(mfrow = c(2, 3))
+plot(full_model, which = 1:5)
+model_stats = compute.model.stats(full_model,
+                            null_model,
+                            "linear_model")
+
+model_stats
+
+results_table = fill.results.table(results_table,
+                                   paste("Log", response_variable),
+                                   patch_type_input_model,
+                                   model_stats)
+```
+
+##### Large
+
+```{r}
+patch_type_input_model = c("Large connected to small",
+                           "Large connected to large")
+```
+
+```{r}
+filtered_data = ds_patches_effect_size %>%
+                         filter(time_point >= first_time_point_model,
+                                time_point <= last_time_point_model,
+                                patch_type %in% patch_type_input_model)
+```
+
+```{r}
+plot.patches.points.ES.log(filtered_data,
+                           patch_type_input_model,
+                           response_variable)
+```
+
+**Construct full model**
+
+```{r}
+full_model = lm(log(get(response_variable) + 2) ~
+                  size_connected_patch +
+                  size_connected_patch : day,
+                data = filtered_data)
+```
+
+```{r}
+summary(full_model)
+par(mfrow = c(2, 3))
+plot(full_model, which = 1:5)
+```
+
+**Test `size_connected_patch` and `size_connected_patch : day`**
+
+```{r}
+null_model = lm(log(get(response_variable) + 2) ~
+                  1,
+                data = filtered_data)
+
+summary(null_model)
+par(mfrow = c(2, 3))
+plot(full_model, which = 1:5)
+model_stats = compute.model.stats(full_model,
+                            null_model,
+                            "linear_model")
+
+model_stats
+
+results_table = fill.results.table(results_table,
+                                   paste("Log", response_variable),
+                                   patch_type_input_model,
+                                   model_stats)
+```

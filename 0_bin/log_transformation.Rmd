@@ -1,0 +1,82 @@
+---
+title: "biomass_transformation"
+author: "Emanuele Giacomuzzo"
+date: '2022-07-19'
+output: html_document
+---
+
+
+### Appendix: Log transformation of regional biomass
+
+Let's try to convert the biomass into its logarithm. So, let's plot it first.
+
+```{r plot-logarithm-biomass}
+
+ds_regional %>%
+  filter(time_point > 1) %>%
+  ggplot(aes(x = day,
+             y = log(regional_mean_bioarea),
+             group = day)) + 
+  geom_boxplot()
+```
+
+It seems like the relationship between the logarithm fo regional biomass and time could be linear. If it is, we could just add to our mixed model the intercept and the slope for the logarithm of time.
+
+Let's see if there is actually a linear relationship between the logarithm of regional biomass and time.
+
+```{r logarithmic lm}
+
+plot(y = ds_regional$regional_mean_bioarea, x = ds_regional$day)
+
+model = lm(regional_mean_bioarea ~ day, data = ds_regional)
+abline(model)
+summary = summary(model)
+summary
+anova = anova(model)
+
+par(mfrow=c(2,3))
+plot(model, which = 1:5)
+par(mfrow=c(1,1))
+abline(model)
+
+log_day_intercept = summary$coefficients[1,1]
+log_day_slope = summary$coefficients[2,1]
+```
+
+The r squared is `r summary$r.squared` and the p-value `r anova[1,5]`. The model is as follows:
+
+y = `r log_day_intercept` + `r log_day_slope` log(day).
+
+[**I'm not sure if these residual plots are okay. I better ask Hank.**]{.underline}
+
+if I can use this model and output it into the mixed effect model, I would something similar to what follows.
+
+```{r mixed effect model with log, eval = FALSE}
+
+ds_regional$log_day_intercept = log_day_intercept
+ds_regional$log_day_slope = log_day_slope
+
+ds_regional_M_M_S_L = ds_regional %>%
+  filter(metaecosystem_type == "S_L" | metaecosystem_type == "M_M" )
+
+system_nr_no_interaction_no_slopes_model = lmer(regional_mean_bioarea ~  log_day_intercept + log_day_slope * log(day) + metaecosystem_type + disturbance  + (1 | system_nr), data = ds_regional_M_M_S_L, REML = FALSE)
+```
+
+***The code doesn't work.***
+
+I'm not sure about how to introduce the estimated parameters in the mixed model.
+
+### Sqrt transformation
+
+Let's try to do the same thing but with a square root transformation.
+
+```{r plot-sqrt-biomass}
+
+ds_regional %>%
+  ggplot(aes(x = day,
+             y = sqrt(regional_mean_bioarea),
+             group = day)) + 
+  geom_boxplot()
+```
+
+It doesn't look that good. I'm not even going to try.

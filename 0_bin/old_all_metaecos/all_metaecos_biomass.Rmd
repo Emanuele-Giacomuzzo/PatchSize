@@ -1,0 +1,27 @@
+---
+title: "meta-ecosystems_all"
+author: "Emanuele Giacomuzzo"
+date: "2022-08-29"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+response_variable = "total_metaecosystem_bioarea_mm2"
+```
+
+```{r}
+plot.metaecos.points(ds_metaecosystems, 
+                     metaecosystem_type_input,
+                     response_variable)
+```
+
+<details>
+  <summary>Click for boxplots instead of means</summary>
+```{r}
+plot.metaecos.boxplots(ds_metaecosystems,
+                       metaecosystem_type_input,
+                       response_variable)
+```
+</details>

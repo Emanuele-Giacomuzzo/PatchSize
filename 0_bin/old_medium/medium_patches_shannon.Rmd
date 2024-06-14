@@ -1,0 +1,51 @@
+---
+title: "Medium Patches - Alpha Diversity"
+output: html_document
+date: "2022-12-09"
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+response_variable = "shannon"
+```
+
+```{r}
+p_MM_shannon = plot.patches.points(ds_patches,
+                                   patch_type_input,
+                                   response_variable) %>%
+  print()
+```
+
+<details>
+  <summary>Click for boxplots</summary>
+```{r}
+plot.patches.boxplots(patch_type_input,
+                      response_variable)
+```
+</details>
+
+<details>
+  <summary>Click for replicates</summary>
+```{r}
+plot.patches.replicates(patch_type_input,
+                        response_variable)
+```
+</details>
+
+<details>
+  <summary>Click for effect sizes</summary>
+```{r}
+plot.patches.points.ES(ds_patches_effect_size, 
+                       patch_type_input,
+                       paste0(response_variable, "_d"))
+```
+</details>
+
+```{r}
+patch_type_input_model = c("Medium isolated",
+                           "Medium connected to medium")
+```
+
+```{r child = here("r_files", "analysis_small_n_large_patches.Rmd")}
+```

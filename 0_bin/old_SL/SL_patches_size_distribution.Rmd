@@ -1,0 +1,61 @@
+---
+title: '.'
+output: html_document
+date: "2022-12-13"
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+for(time_point_input in first_time_point:last_time_point) {
+  print(
+    ds_classes_effect_size %>%
+      filter(disturbance == disturbance_input,
+             patch_type %in% c("Small connected to small", "Large connected to small"),
+             day == time_point_input * 4) %>%
+      ggplot(
+        aes(
+          x = log_size_class,
+          y = abundance_hedges_d,
+          color = patch_type
+        )
+      ) +
+      geom_point(position = position_dodge(0.5)) +
+      geom_line(position = position_dodge(0.5)) +
+      geom_errorbar(
+        aes(ymin = abundance_hedges_d_lower,
+            ymax = abundance_hedges_d_upper),
+        width = .2,
+        position = position_dodge(0.5)
+      ) +
+      scale_color_discrete(
+        labels = c(name_S_connected_to_L,
+                   name_L_connected_to_S)
+      ) +
+      theme_bw() +
+      theme(
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        legend.position = "bottom"
+      ) +
+      labs(
+        title = paste0("Day = ", (time_point_input * 4)),
+        x = 'Log size (μm2)',
+        y = y_axis_size_class_effect_size,
+        color = ""
+      ) +
+      geom_hline(
+        yintercept = 0,
+        linetype = "dotted",
+        color = "black",
+        size = 0.7
+      ) +
+      geom_hline(
+        yintercept = 0,
+        linetype = "dotted",
+        color = "black",
+        size = 0.7
+      )
+  )
+}
+```

@@ -1,0 +1,46 @@
+---
+title: "Data Classes Averaged"
+output: html_document
+date: "2022-11-22"
+editor_options: 
+  chunk_output_type: console
+---
+
+### Size classes (`ds_classes`)
+
+-   Each row is the size class of a culture at a certain time point
+-   I create 12 size classes (as @Jacquet2020). The first class lower boundary is the smallest body size, the last size class upper boundary is the largest one. The logarithm of the largest individual in the experiment was `r log(max(ds_individuals$body_area_µm2))` μm² compared to 11.4 in @Jacquet2020.
+
+```{r ds_classes_effect_size-create-ds_classes, eval = recompute_lengthy_analyses }
+#Create dataset
+ds_classes = create.classes.ds(ds_individuals,
+                               n_size_classes)
+
+write.csv(ds_classes, 
+          file = here("results", "ds", "ds_classes.csv"))
+```
+
+```{r}
+#Read dataset 
+ds_classes = read.csv(here("results", "ds", "ds_classes.RData"))
+
+expect_equal(nrow(ds_classes),
+             (n_cultures - length(patches_to_take_off)) * (n_size_classes * sum(nr_videos)))
+```
+
+```{r}
+#Video average
+ds_classes = ds_classes %>%
+  group_by_at(vars(-class_indiv_per_µl,
+                   -replicate_video)) %>%
+  summarise(class_indiv_per_µl = mean(class_indiv_per_µl))
+
+expect_equal(nrow(ds_classes),
+             (nrow(ds_patches) * n_size_classes))
+```
+
+```{r}
+#Save dataset
+write.csv(ds_classes, 
+          file = here("results", "ds", "ds_classes.csv"))
+```

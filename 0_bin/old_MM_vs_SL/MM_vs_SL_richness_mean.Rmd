@@ -1,0 +1,25 @@
+---
+title: "MM all vs SL all - species richness"
+output: html_document
+date: "2023-06-09"
+---
+
+```{r}
+response_variable = "mean_richness"
+```
+
+```{r}
+plot.metaecos.points(ds_metaecosystems, 
+                     metaecosystem_type_input,
+                     response_variable) %>%
+  print()
+```
+
+<details>
+  <summary>Click for boxplots instead of means</summary>
+```{r}
+plot.metaecos.boxplots(ds_metaecosystems,
+                       metaecosystem_type_input,
+                       response_variable)
+```
+</details> 

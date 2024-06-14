@@ -1,0 +1,263 @@
+---
+title: "Untitled"
+output:
+  html_document:
+    code_folding: hide
+    profiling: yes
+date: "2023-04-14"
+editor_options: 
+  chunk_output_type: console
+---
+
+We want to know whether the size of ecosystems influenced this response variable. We only look at unconnected ecosystems so that the effects of connection don't confound the effects of ecosystem size. We first start from plotting how this response variable changed in different sizes throughout the experiment through its mean ± 95 confidence interval:
+
+```{r}
+plot.patches.points(ds_patches,
+                    patch_type_i,
+                    response_variable)
+```
+
+```{r}
+save_results_in_table = TRUE
+```
+
+ <br>
+
+Following the initial inspection, we proceed to analyse differences among ecosystems. Our first step involves filtering the data to isolate the relevant data for analysis. Specifically, we exclude data points where the response variable couldn't be computed, as well as time points preceding the initial disturbance and resource flow. Then we plot the data to make sure that what filtered the data in the right way.
+
+```{r}
+filtered_data = ds_patches %>%
+  filter(metaecosystem == "no",
+         time_point >= first_time_point_model,
+         time_point <= last_time_point_model,
+         !is.na(!!sym(response_variable)))
+```
+
+```{r}
+plot.patches.points(filtered_data,
+                    patch_type_i,
+                    response_variable)
+```
+
+ <br>
+
+Then, given that we have gathered measurements from the same ecosystem on multiple occasions, we can develop mixed effect models to examine how ecosystem size influenced this variable. To study the effects of ecosystem size we compare two models to a null model using ANOVA: a full model and a reduced model. In all models, we treat culture ID as having a random effect on how the slope and intercept of the relationship between response variable and time, with the slope and intercept being correlated [@Bates2015]. The full model contains the interaction of size with time (`Response variable ~ size * day + (day | culture ID)`), the reduced model contains the size but without the interaction with time (`Response variable ~ size + day + (day | culture ID)`), and the null model doesn't contain the size at all (`Response variable ~ day + (day | culture ID)`). If any of the two model comparisons is significant, then ecosystem size had an effect.
+
+```{r}
+full_model = lmer(
+  get(response_variable) ~
+    patch_size * day +
+    (day | culture_ID),
+  data = filtered_data,
+  REML = FALSE,
+  control = lmerControl(optimizer = "Nelder_Mead"))
+
+reduced_model = lmer(
+  get(response_variable) ~
+    patch_size + day +
+    (day | culture_ID),
+  data = filtered_data,
+  REML = FALSE,
+  control = lmerControl(optimizer = "Nelder_Mead"))
+
+null_model = lmer(
+  get(response_variable) ~
+    day +
+    (day | culture_ID),
+  data = filtered_data,
+  REML = FALSE,
+  control = lmerControl(optimizer = "Nelder_Mead"))
+```
+
+<br>
+
+**Full model vs null model**
+
+<details open="open">
+
+<summary>Click to view the results of the ANOVA comparison between full and null model.</summary>
+
+```{r}
+model_stats_full = compute.model.stats(full_model,
+                                       null_model,
+                                       "mixed_model") 
+
+model_stats_full %>%
+  mutate(deltaAIC = round(deltaAIC, digits = 1),
+         p_value = round(p_value, digits = 3),
+         R2 = NULL,
+         evidence = "",
+         evidence = ifelse(p_value > 0.1, 
+                           "none",
+                           evidence),
+         evidence = ifelse(p_value < 0.1, 
+                           "* weak",
+                           evidence),
+         evidence = ifelse(p_value < 0.05, 
+                           "** moderate",
+                           evidence),
+         evidence = ifelse(p_value < 0.01, 
+                           "*** strong",
+                           evidence),
+         evidence = ifelse(p_value < 0.001, 
+                           "**** very strong",
+                           evidence),
+         p_value = ifelse(p_value < 0.001,
+                           "< 0.001",
+                           p_value)) %>%
+  print()
+```
+
+</details>
+
+<details>
+
+<summary>Click to view the full model output</summary>
+
+```{r}
+print(summary(full_model), digits = 1)
+```
+
+</details>
+
+<details>
+
+<summary>Click to view the full model residual plots</summary>
+
+```{r}
+res_vs_fit = filtered_data %>%
+    mutate(predicted = fitted(full_model),
+           residuals = resid(full_model)) %>%
+    plot_ly(x = ~predicted,
+            y = ~residuals,
+            type = "scatter",
+            mode = "markers",
+            marker = list(size = 5, color = "#4C78A8"),
+            text = paste(" ID: ", 
+                         filtered_data$culture_ID, 
+                         "<br>",
+                         "Day: ", 
+                         filtered_data$day, 
+                         "<br>",
+                         "Patch Type: ", 
+                         filtered_data$patch_type, 
+                         "<br>",
+                         "Biomass density: ", 
+                         round(filtered_data$bioarea_mm2_per_ml, digits = 2), 
+                         "<br>",
+                         "Species richness: ", 
+                         filtered_data$species_richness, 
+                         "<br>"),
+            hoverinfo = "text") %>%
+    plotly::layout(title = "Residuals vs. Fitted Values",
+                   xaxis = list(title = "Fitted Values"),
+                   yaxis = list(title = "Residuals"))
+```
+
+```{r}
+res_vs_fit
+qqnorm(resid(full_model))
+```
+
+</details>
+
+<br>
+
+**Reduced vs null model**
+
+<details open="open">
+
+<summary>Click to view the results of the ANOVA comparison between reduced and null model.</summary>
+
+```{r}
+model_stats_reduced = compute.model.stats(reduced_model,
+                                          null_model,
+                                          "mixed_model") 
+
+model_stats_reduced %>%
+  mutate(deltaAIC = round(deltaAIC, digits = 1),
+         p_value = round(p_value, digits = 3),
+         R2 = NULL,
+         evidence = "",
+         evidence = ifelse(p_value > 0.1, 
+                           "none",
+                           evidence),
+         evidence = ifelse(p_value < 0.1, 
+                           "* weak",
+                           evidence),
+         evidence = ifelse(p_value < 0.05, 
+                           "** moderate",
+                           evidence),
+         evidence = ifelse(p_value < 0.01, 
+                           "*** strong",
+                           evidence),
+         evidence = ifelse(p_value < 0.001, 
+                           "**** very strong",
+                           evidence),
+         p_value = ifelse(p_value < 0.001,
+                           "< 0.001",
+                           p_value)) %>%
+  print()
+```
+
+</details>
+
+<details>
+
+<summary>Click to view the reduced model output</summary>
+
+```{r}
+print(summary(reduced_model), digits = 1)
+```
+
+</details>
+
+<details>
+
+<summary>Click to view the reduced model residual plots</summary>
+
+```{r}
+#Create resid vs fitted
+res_vs_fit = filtered_data %>%
+    mutate(predicted = fitted(reduced_model),
+           residuals = resid(reduced_model)) %>%
+    plot_ly(x = ~predicted,
+            y = ~residuals,
+            type = "scatter",
+            mode = "markers",
+            marker = list(size = 5, color = "#4C78A8"),
+            text = paste(" ID: ", 
+                         filtered_data$culture_ID, 
+                         "<br>",
+                         "Day: ", 
+                         filtered_data$day, 
+                         "<br>",
+                         "Patch Type: ", 
+                         filtered_data$patch_type, 
+                         "<br>",
+                         "Biomass density: ", 
+                         round(filtered_data$bioarea_mm2_per_ml, digits = 2), 
+                         "<br>",
+                         "Species richness: ", 
+                         filtered_data$species_richness, 
+                         "<br>"),
+            hoverinfo = "text") %>%
+    plotly::layout(title = "Residuals vs. Fitted Values",
+                   xaxis = list(title = "Fitted Values"),
+                   yaxis = list(title = "Residuals"))
+```
+
+```{r}
+res_vs_fit
+qqnorm(resid(reduced_model))
+```
+
+</details>
+
+```{r echo = FALSE}
+results_table = fill.results.table(results_table,
+                                   response_variable,
+                                   patch_type_i,
+                                   model_stats_full,
+                                   model_stats_reduced)
+```

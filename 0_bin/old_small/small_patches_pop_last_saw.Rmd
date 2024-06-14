@@ -1,0 +1,32 @@
+---
+title: "Untitled"
+output: html_document
+date: "2023-06-09"
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+patch_size_input = "Small"
+for (protist_input in protist_species) {
+  x_axis = paste0(protist_input, "_last_saw_day")
+  
+  p = ds_patches %>%
+    filter(patch_size == patch_size_input,
+           time_point == 0) %>%
+    ggplot(aes(
+      x = get(x_axis),
+      y = patch_type,
+      group = patch_type,
+      colour = patch_type
+    )) +
+    geom_jitter(width = 0.5, height = 0.3) +
+    scale_x_continuous(limits = c(-2, 30)) +
+    labs(title = ,
+         x = paste("Last saw", protist_input),
+         y = "") +
+    theme(legend.position = "none")
+  
+  print(p)
+}
+```

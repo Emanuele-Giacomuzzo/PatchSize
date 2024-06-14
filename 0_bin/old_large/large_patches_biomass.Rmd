@@ -1,0 +1,79 @@
+---
+title: "large_patches"
+author: "Emanuele Giacomuzzo"
+date: "2022-08-03"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+response_variable = "bioarea_mm2_per_ml"
+```
+
+```{r}
+large_patches_biomass = plot.patches.points(ds_patches,
+                                            patch_type_input,
+                                            response_variable) %>%
+  print()
+
+p_large_biomass_presentations = plot.patches.points.presentations(ds_patches,
+                                                                  patch_type_input = c("Large connected to large", 
+                                                                                       "Large connected to small"),
+                                                                  response_variable)
+```
+
+<details>
+  <summary>Click for boxplots</summary>
+```{r}
+plot.patches.boxplots(patch_type_input,
+                      response_variable)
+```
+</details>
+
+<details>
+  <summary>Click for replicates</summary>
+```{r}
+plot.patches.replicates(patch_type_input,
+                        response_variable)
+```
+</details>
+
+<details>
+  <summary>Click for effect sizes</summary>
+```{r}
+plot.patches.points.ES(ds_patches_effect_size, 
+                       patch_type_input,
+                       paste0(response_variable, "_d"))
+```
+</details>
+
+##### Large isolated vs Large connected to large
+
+```{r}
+patch_type_input_model = c("Large isolated",
+                           "Large connected to large")
+```
+
+```{r child = here("r_files", "analysis_small_n_large_patches.Rmd")}
+```
+
+##### Large connected large vs Large connected to small
+
+```{r}
+patch_type_input_model = c("Large connected to small",
+                           "Large connected to large")
+```
+
+```{r child = here("r_files", "analysis_small_n_large_patches_special.Rmd")}
+```
+
+##### Large connected to small vs Large isolated
+
+```{r}
+patch_type_input_model = c("Large connected to small",
+                           "Large isolated")
+```
+
+```{r child = here("r_files", "analysis_small_n_large_patches.Rmd")}
+```

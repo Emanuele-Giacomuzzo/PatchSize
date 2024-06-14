@@ -1,0 +1,68 @@
+---
+title: "small_patches_single_points"
+author: "Emanuele Giacomuzzo"
+date: "2022-08-19"
+output: html_document
+---
+
+###### Model selection
+
+I'll show model selection only on time point number 3 (however, I will do it also for the other time points). Let's start from the full model.
+
+```{r small-time-point-input}
+time_point_input = 4
+
+full = lmer(lnRR_bioarea_per_volume ~
+              eco_metaeco_type +
+              disturbance +
+              disturbance : eco_metaeco_type +
+              (1 | culture_ID),
+            data = ds_biomass_averaged_across_videos %>%
+              filter(time_point == time_point_input) %>%
+              filter(eco_metaeco_type== "S (S_S)" | 
+                     eco_metaeco_type == "S (S_L)"),
+          REML = FALSE)
+```
+
+*Should we keep the random effect?*
+
+```{r small-no-random-effects-single-point, eval = FALSE}
+no_random = lm(lnRR_bioarea_per_volume ~
+              eco_metaeco_type +
+              disturbance +
+              disturbance : eco_metaeco_type,
+            data = ds_biomass_averaged_across_videos %>%
+              filter(time_point == time_point_input) %>%
+              filter(eco_metaeco_type== "S (S_S)" | 
+                     eco_metaeco_type == "S (S_L)"))
+
+anova(full, no_random)
+```
+
+No. But wired. I'll keep it anyway.
+
+*Should we keep D \* M?*
+
+```{r small-no-DM-single-point, eval = FALSE}
+no_MD = lmer(lnRR_bioarea_per_volume ~
+              eco_metaeco_type +
+              disturbance +
+              (1 | culture_ID),
+            data = ds_biomass_averaged_across_videos %>%
+              filter(time_point == time_point_input) %>%
+              filter(eco_metaeco_type== "S (S_S)" | 
+                     eco_metaeco_type == "S (S_L)"),
+          REML = FALSE)
+
+anova(full, no_MD)
+```
+
+No.
+
+**Best model**
+
+Therefore, our best model is
+
+$$
+Regional \: Bioarea = M + D + (1 | ID)
+$$

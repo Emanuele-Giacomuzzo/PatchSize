@@ -1,0 +1,69 @@
+---
+title: "Untitled"
+output: html_document
+date: "2023-10-29"
+---
+
+```{r}
+response_variable = "beta_nestedness"
+```
+
+```{r}
+plot.metaecos.points(ds_metaecosystems, 
+                                                metaecosystem_type_input,
+                                                response_variable) %>%
+  print()
+
+plot.metaecos.points.presentations(ds_metaecosystems, 
+                                                                            metaecosystem_type_input,
+                                                                            response_variable)
+```
+
+<details>
+  <summary>Click for boxplots instead of means</summary>
+```{r}
+plot.metaecos.boxplots(ds_metaecosystems,
+                       metaecosystem_type_input,
+                       response_variable)
+```
+</details>
+
+##### Small-Large vs Medium-Medium meta-ecosystems
+
+```{r}
+metaecosystem_type_input_model = c("Small-Large meta-ecosystem",
+                                   "Medium-Medium meta-ecosystem")
+```
+
+```{r child = here("r_files", "analysis_metaeco_symmetry.Rmd")}
+```
+
+##### Small-Large connected vs isolated
+
+```{r}
+metaecosystem_type_input_model = c("Small-Large meta-ecosystem",
+                                   "Small-Large isolated")
+```
+
+```{r}
+optimizer_input = 'Nelder_Mead'
+method_input = ''
+```
+
+```{r child = here("r_files", "analysis_metaeco_connection.Rmd")}
+```
+
+##### Medium-Medium connected vs isolated
+
+```{r}
+metaecosystem_type_input_model = c("Medium-Medium meta-ecosystem",
+                                   "Medium-Medium isolated")
+```
+
+```{r}
+optimizer_input = 'Nelder_Mead'
+method_input = ''
+```
+
+```{r child = here("r_files", "analysis_metaeco_connection.Rmd")}
+```

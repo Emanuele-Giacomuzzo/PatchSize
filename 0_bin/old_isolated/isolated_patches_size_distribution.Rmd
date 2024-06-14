@@ -1,0 +1,72 @@
+---
+title: "isolated_patches"
+author: "Emanuele Giacomuzzo"
+date: "2022-09-08"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+plot.patches.classes.density.points(patch_type_input,
+                                    time_point_input)
+```
+
+
+#### Body Size Distribution {.tabset .tabset-pills}
+
+```{r}
+
+#Body Size Distribution mean + 95% CI
+
+for(time_point_input in 0:7) {
+  print(
+    ds_classes_effect_size %>%
+      filter(disturbance == disturbance_input,
+             metaecosystem == "no",
+             day == time_point_input*4) %>%
+      ggplot(
+        aes(
+          x = log_size_class,
+          y = log_abundance,
+          group = interaction(log_size_class, patch_type),
+          color = patch_type
+        )
+      ) +
+      geom_point(stat = "summary", fun = "mean") +
+      geom_line(
+        stat = "summary",
+        fun = "mean",
+        aes(group = patch_type)
+      ) +
+      geom_errorbar(
+        aes(ymax = log_abundance_upper_ci,
+            ymin = log_abundance_lower_ci),
+        width = .2,
+        position = position_dodge(0.05)
+      ) +
+      scale_color_manual(
+        values = c(colour_L,
+                   colour_M, 
+                   colour_S),
+        labels = c(name_L_isolated,
+                   name_M_isolated,
+                   name_S_isolated)
+      ) +
+      theme_bw() +
+      theme(
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        legend.position = "bottom"
+      ) +
+      labs(
+        title = paste0("Day = ", (time_point_input*4)),
+        x = x_axis_size_class,
+        y = 'Log abundance + 1 (indiv/μm2)',
+        color = ""
+      )
+      # ) +
+      # scale_x_continuous(breaks = unique(round(ds_classes_effect_size$log_size_class, digits = 1)))
+  )
+}
+```

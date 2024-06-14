@@ -1,0 +1,269 @@
+---
+title: "Untitled"
+output:
+  html_document:
+    code_folding: hide
+    profiling: yes
+date: "2023-04-14"
+editor_options: 
+  chunk_output_type: console
+---
+
+Our first step in the data analysis involves filtering the data to isolate the relevant data. Specifically, we exclude data points where the response variable couldn’t be computed, as well as time points preceding the initial disturbance and resource flow. Then we plot the data to make sure we filtered data the right way.
+
+```{r}
+filtered_data = ds_metaecosystems %>%
+                         filter(time_point >= first_time_point_model,
+                                time_point <= last_time_point_model,
+                                metaecosystem_type %in% metaecosystem_type_i)
+```
+
+```{r}
+plot.metaecos.points(filtered_data,
+                     metaecosystem_type_i,
+                     response_variable)
+```
+
+Then, given that we have gathered measurements from the same meta-ecosystem on multiple occasions, we can develop mixed effect models to examine how the connection influenced this meta-ecosystem variable. To study the effects of connection we compare two models to a null model using ANOVA: a full model and a reduced model. In all models, we treat system nr as having a random effect on how the slope and intercept of the relationship between response variable and time, with the slope and intercept being correlated [@Bates2015]. The full model contains the interaction of connection with time (`Response variable ~ connection * day + (day | system nr)`), the reduced model contains the connection but without the interaction with time (`Response variable ~ connection + day + (day | system nr)`), and the null model doesn't contain the connection at all (`Response variable ~ day + (day | system nr)`).
+
+Unconnected meta-ecosystems are made of paired unconnected ecosystems, which are paired randomly. However, how to pair unconnected ecosystems can be done in multiple ways, as unconnected ecosystems did not interact and therefore any combination between ecosystems would be arbitrary. To make sure that the random combination we selected did not bias our results, we run all the possible combinations of ecosystems constituting unconnected meta-ecosystems. The ecosystem combinations are into the objects `unconnected_combinations_sets` (Data \> Meta-ecosystems). We therefore compute a p-value for each unconnected ecosystems combination, creating a p-value distribution. We keep as p-value of the comparison the mean of such distributions.
+
+<details>
+
+<summary>Click to view the code we used to computed the p-values</summary>
+
+ <br>
+
+If you see "*Warning in (function (iprint = 0L, maxfun = 10000L, FtolAbs = 1e-05, FtolRel = \## 1e-15, : unused control arguments ignored*", Ignore it. It just means that you didn't pass the control argument to the Nelder_Mead optimiser, so it uses the default.
+
+```{r}
+
+unconnected_combinations_sets_filtered =  unconnected_combinations_sets %>%
+  filter(disturbance == disturbance_global_input,
+         metaecosystem_type %in% metaecosystem_type_i)
+
+n_sets = unconnected_combinations_sets_filtered %>%
+  pull(set) %>%
+  max()
+
+iterated_results_table = data.frame(Response = as.character(NA),
+                                    Levels = as.character(NA),
+                                    ΔAIC_full = NA,
+                                    p_full = NA,
+                                    ΔR2_full = NA,
+                                    ΔAIC_fix = NA,
+                                    p_fix = NA,
+                                    ΔR2_fix = NA,
+                                    combination_set = NA,
+                                    system_nr_unconnected_systems = as.character(NA)) %>%
+  slice(-1)
+
+for (set_input in 1:n_sets) {
+  
+  system_nr_unconnected_systems_input = unconnected_combinations_sets_filtered %>%
+    filter(metaecosystem_type %in% metaecosystem_type_i,
+           connection == "unconnected",
+           set == set_input) %>%
+    pull(system_nr)
+  
+  filtered_data = ds_metaecosystems %>%
+    filter(time_point >= first_time_point_model,
+           time_point <= last_time_point_model,
+           metaecosystem_type %in% metaecosystem_type_i,
+           connection == "connected" | 
+           (connection == "unconnected" &
+           system_nr %in% system_nr_unconnected_systems_input))
+  
+  null_model = lmer(
+    get(response_variable) ~
+      day +
+      (day | system_nr),
+    data = filtered_data,
+    REML = FALSE,
+    control = lmerControl(optimizer = optimizer_input,
+                          optCtrl = list(method = method_input)))
+  
+  full_model = lmer(
+    get(response_variable) ~
+      day +
+      connection +
+      connection:day +
+      (day | system_nr),
+    data = filtered_data,
+    REML = FALSE,
+    control = lmerControl(optimizer = optimizer_input,
+                          optCtrl = list(method = method_input)))
+  
+  model_stats_full = compute.model.stats(full_model,
+                                         null_model,
+                                         "mixed_model")
+  
+  reduced_model = lmer(
+    get(response_variable) ~
+      day +
+      connection +
+      (day | system_nr),
+    data = filtered_data,
+    REML = FALSE,
+    control = lmerControl(optimizer = optimizer_input,
+                          optCtrl = list(method = method_input)))
+  
+  model_stats_fixed = compute.model.stats(reduced_model,
+                                          null_model,
+                                          "mixed_model")
+  
+  iterated_results_table = fill.results.table(iterated_results_table,
+                                              response_variable,
+                                              metaecosystem_type_i,
+                                              model_stats_full,
+                                              model_stats_fixed)
+  
+  iterated_results_table$set[nrow(iterated_results_table)] = 
+    set_input
+  
+  iterated_results_table$system_nr_unconnected_systems[nrow(iterated_results_table)] = 
+    paste(system_nr_unconnected_systems_input, collapse = " ")
+}
+```
+
+</details>
+
+ <br>  <br>  <br>
+
+**Full vs null model**
+
+<details open="open">
+
+<summary>Click to view p-value of the comparison between full and null model</summary>
+
+```{r}
+model_stats_full = data.frame(
+  deltaAIC = mean(iterated_results_table$ΔAIC_full),
+  p_value = mean(iterated_results_table$p_full),
+  R2 = NA
+)
+
+model_stats_full %>%
+  mutate(deltaAIC = round(deltaAIC, digits = 1),
+         p_value = round(p_value, digits = 3),
+         R2 = NULL,
+         evidence = "",
+         evidence = ifelse(p_value > 0.1, 
+                           "none",
+                           evidence),
+         evidence = ifelse(p_value < 0.1, 
+                           "* weak",
+                           evidence),
+         evidence = ifelse(p_value < 0.05, 
+                           "** moderate",
+                           evidence),
+         evidence = ifelse(p_value < 0.01, 
+                           "*** strong",
+                           evidence),
+         evidence = ifelse(p_value < 0.001, 
+                           "**** very strong",
+                           evidence),
+         p_value = ifelse(p_value < 0.001,
+                           "< 0.001",
+                           p_value)) %>%
+  print()
+```
+
+</details>
+
+<details>
+
+<summary>Click to view the ΔAIC and p-value distributions of the comparison between full and null models</summary>
+
+```{r}
+hist(iterated_results_table$ΔAIC_full, main = "Distribution of ΔAIC of the full model.") 
+hist(iterated_results_table$p_full, main = "Distribution of p-values of the full model.") 
+```
+
+</details>
+
+<details>
+
+<summary>Click to view which unconnected meta-ecosystem numbers produced which AIC in the comparison between full and null model</summary>
+
+```{r}
+iterated_results_table %>% 
+  select(system_nr_unconnected_systems,
+         ΔAIC_full) %>%
+  arrange(ΔAIC_full)
+```
+
+</details>
+
+ <br>  <br>  <br>
+
+**Reduced vs null model**
+
+<details open="open">
+
+<summary>Click to view the ΔAIC and p-value distributions of the comparison between reduced and null models</summary>
+
+```{r}
+model_stats_fixed = data.frame(deltaAIC = mean(iterated_results_table$ΔAIC_fix),
+                               p_value = mean(iterated_results_table$p_fix),
+                               R2 = NA)
+
+model_stats_fixed %>%
+  mutate(deltaAIC = round(deltaAIC, digits = 1),
+         p_value = round(p_value, digits = 3),
+         R2 = NULL,
+         evidence = "",
+         evidence = ifelse(p_value > 0.1, 
+                           "none",
+                           evidence),
+         evidence = ifelse(p_value < 0.1, 
+                           "* weak",
+                           evidence),
+         evidence = ifelse(p_value < 0.05, 
+                           "** moderate",
+                           evidence),
+         evidence = ifelse(p_value < 0.01, 
+                           "*** strong",
+                           evidence),
+         evidence = ifelse(p_value < 0.001, 
+                           "**** very strong",
+                           evidence),
+         p_value = ifelse(p_value < 0.001,
+                           "< 0.001",
+                           p_value)) %>%
+  print()
+```
+
+</summary>
+
+<details>
+
+<summary>Click to view the ΔAIC and p-value distributions of the comparison between reduced and null models</summary>
+
+```{r}
+hist(iterated_results_table$ΔAIC_fix, main = "Distribution of ΔAIC of the reduced model.") 
+hist(iterated_results_table$p_fix, main = "Distribution of p-values of the reduced model.") 
+```
+
+</details>
+
+<details>
+
+<summary>Click to view which unconnected meta-ecosystem numbers produced which AIC in the comparison between full and null model</summary>
+
+```{r}
+iterated_results_table %>% 
+  select(system_nr_unconnected_systems,
+         ΔAIC_fix) %>%
+  arrange(ΔAIC_fix)
+```
+
+</details>
+
+```{r echo = FALSE}
+results_table = fill.results.table(results_table,
+                                   response_variable,
+                                   metaecosystem_type_i,
+                                   model_stats_full,
+                                   model_stats_fixed)
+```

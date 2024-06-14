@@ -1,0 +1,299 @@
+---
+title: "metaecosystems"
+author: "Emanuele Giacomuzzo"
+date: "2022-10-18"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+#### Beta Diversity
+
+```{r}
+ds_metaecosystems %>%
+  filter (disturbance == disturbance_input,
+          metaecosystem_type %in% c("S_L", "M_M")) %>%
+  
+  ggplot (
+    aes(
+      x = day,
+      y = bray_curtis,
+      group = system_nr,
+      fill = system_nr,
+      color = system_nr,
+      linetype = metaecosystem_type
+    )
+  ) +
+  geom_line () +
+  labs(
+    x = "Day",
+    y = name_y_axis_beta_diversity,
+    fill = "System nr",
+    color = "System nr",
+    linetype = "",
+    caption = caption_resource_flow
+  ) +
+  scale_linetype_discrete(labels = c(name_MM,
+                                     name_SL)) +
+  theme_bw() +
+  theme(
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    legend.position = "bottom"
+  ) +
+  scale_x_continuous(breaks = unique(ds_metaecosystems$day)) +
+  geom_vline(
+    xintercept = resource_flow_days[1],
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_vline(
+    xintercept = resource_flow_days[2],
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_vline(
+    xintercept = resource_flow_days[3],
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_vline(
+    xintercept = resource_flow_days[4],
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_vline(
+    xintercept = resource_flow_days[5],
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_vline(
+    xintercept = resource_flow_days[6],
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  )
+```
+
+```{r}
+p_boxplots = ds_metaecosystems %>%
+  filter(disturbance == disturbance_input,
+         metaecosystem_type %in% c("S_L", "M_M")) %>%
+  ggplot (aes(
+    x = day,
+    y = bray_curtis,
+    group = interaction(day, metaecosystem_type),
+    fill = metaecosystem_type
+  )) +
+  geom_boxplot(width = boxplot_width) +
+  geom_vline(
+    xintercept = resource_flow_days[1],
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_vline(
+    xintercept = resource_flow_days[2],
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_vline(
+    xintercept = resource_flow_days[3],
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_vline(
+    xintercept = resource_flow_days[4],
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_vline(
+    xintercept = resource_flow_days[5],
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_vline(
+    xintercept = resource_flow_days[6],
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) + 
+  labs(
+    x = "Day",
+    y = name_y_axis_beta_diversity,
+    color = '',
+    fill = '',
+    caption = caption_resource_flow
+  ) +
+  scale_fill_manual(
+    values = c(colour_MM, colour_SL),
+    labels = c(name_MM,
+               name_SL)
+  ) +
+  theme_bw() +
+  theme(
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    legend.position = "bottom"
+  )
+
+p_boxplots
+```
+
+```{r}
+p_MM_SL_beta = ds_metaecosystems %>%
+  filter(disturbance == disturbance_input) %>%
+  summarySE(measurevar = "bray_curtis",
+            groupvars = c("day", "metaecosystem_type")) %>%
+  filter(day > 5,
+         metaecosystem_type %in% c("S_L",
+                                   "M_M")) %>%
+  ggplot(
+    aes(
+      x = day,
+      y = bray_curtis,
+      group = interaction(day, metaecosystem_type),
+      color = metaecosystem_type
+    )
+  ) +
+  geom_point(stat = "summary",
+             fun = "mean",
+             position = position_dodge(dodging)) +
+  geom_line(
+    stat = "summary",
+    fun = "mean",
+    aes(group = metaecosystem_type),
+    position = position_dodge(dodging)
+  ) +
+  geom_errorbar(
+    aes(ymax = bray_curtis + ci,
+        ymin = bray_curtis - ci),
+    width = .2,
+    position = position_dodge(dodging)
+  ) +
+  geom_vline(
+    xintercept = resource_flow_days[1],
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_vline(
+    xintercept = resource_flow_days[2],
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_vline(
+    xintercept = resource_flow_days[3],
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_vline(
+    xintercept = resource_flow_days[4],
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_vline(
+    xintercept = resource_flow_days[5],
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  geom_vline(
+    xintercept = resource_flow_days[6],
+    linetype = "dotdash",
+    color = "grey",
+    size = 0.7
+  ) +
+  labs(
+    x = "Day",
+    y = name_y_axis_beta_diversity,
+    color = "",
+    caption = caption_resource_flow
+  ) +
+  scale_color_manual(
+    values = c(
+      colour_MM,
+      colour_SL
+    ),
+    labels = c(
+      name_MM,
+      name_SL
+    )
+  ) +
+  theme_bw() +
+  theme(
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    legend.position = "bottom"
+  )
+
+p_MM_SL_beta
+```
+
+```{r}
+filtered_data = ds_metaecosystems %>%
+    filter(metaecosystem_type %in% c("M_M", "S_L"),
+           disturbance == disturbance_input,
+           time_point >= first_time_point_model,
+           time_point <= last_time_point_model)
+```
+
+```{r}
+full_model = lmer(
+  bray_curtis ~
+    day +
+    metaecosystem_type +
+    metaecosystem_type : day +
+    baseline_bray_curtis + 
+    baseline_bray_curtis : day + 
+    (day | system_nr),
+  data = filtered_data,
+  REML = FALSE,
+  control = lmerControl(optimizer = "Nelder_Mead")
+)
+
+summary(full_model)
+plot(full_model)
+qqnorm(resid(full_model))
+```
+
+```{r}
+null_model = lmer(
+  bray_curtis ~
+    day +
+    baseline_bray_curtis + 
+    baseline_bray_curtis : day + 
+    (day | system_nr),
+  data = filtered_data,
+  REML = FALSE,
+  control = lmerControl(optimizer = "Nelder_Mead")
+)
+
+AIC = AIC(full_model, null_model)
+AIC
+AIC_full = AIC$AIC[1]
+AIC_null = AIC$AIC[2]
+deltaAIC = AIC_full - AIC_null
+deltaAIC_MM_SL_beta = round(deltaAIC, digits = 2)
+
+anova = anova(full_model, null_model)
+anova
+p_value = anova$`Pr(>Chisq)`[2]
+if(p_value == 0){
+  p_value_MM_SL_beta = "< 0.001"
+} else {
+  p_value_MM_SL_beta = round(p_value, digits = 3)
+}
+```
