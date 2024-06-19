@@ -19,7 +19,7 @@ editor_options:
 ---
 
 ```{r echo=FALSE}
-disturbance_global_input = "high"
+disturbance_global_input = "low"
 print(paste("!!", disturbance_global_input, "!!", "The experiment investigate the effects of two disturbance levels: low and high. To make it easier to interpet, we showcase only one of the two disturbance levels. In this document we showcase only the", disturbance_global_input, "disturbance)"))
 ```
 
