@@ -13,7 +13,7 @@ output:
     code_folding: hide
     profiling: yes
 bibliography: library.bib
-title: "PhD Chapter 1 - PatchSize"
+title: "PatchSize"
 editor_options:
   chunk_output_type: console
 ---

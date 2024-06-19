@@ -10,7 +10,7 @@ editor_options:
 During the experiment we noticed that microwaving ecosystem sub-samples for three minutes to create disturbance caused the evaporation of the ecosystems. However, we don't know exactly how much evaporated and how much we should refill the ecosystems to bring them back to the original volume. Therefore, here I quantify the evaporation of 5.75 and 6.75 ml of deionised water, which represent low and high disturbance, respectively. For each disturbance level, I microwaved 15 tubes of that disturbance level for three minutes and measured their evaporation. To do so, I weighed the water before the microwaving (weigh tubes, add water, reweigh tubes) and after it (weigh Becker, pour water into it, reweigh Becker).
 
 ```{r, class.source = 'fold-hide'}
-evaporation.test = read.csv(here("2_data", "evaporation_test","evaporation_test_right.csv"), header = TRUE)
+evaporation.test = read.csv(here("1_experiment", "evaporation_test","evaporation_test_right.csv"), header = TRUE)
 
 evaporation.test %>%
   ggplot(aes (x = as.character(water_pipetted),
@@ -26,7 +26,7 @@ evaporation.test %>%
 Furthermore, during the experiment we noticed that microwaving five 6.75 ml ecosystems sub-samples with ten empty tubes for three minutes to create disturbance caused the evaporation of the sub-samples more than if they were with other sub-samples. However, we don't know exactly how much evaporated and how much we should refill the ecosystems to bring them back to the original volume. Therefore, here I quantify the evaporation of five 6.75 ml sub-samples with ten empty or filled falcon tubes. The weighting was conducted as above. 
 
 ```{r, class.source = 'fold-hide'}
-evaporation.test = read.csv(here("2_data", "evaporation_test", "evaporation_test_fill_nofill.csv"), header = TRUE)
+evaporation.test = read.csv(here("1_experiment", "evaporation_test", "evaporation_test_fill_nofill.csv"), header = TRUE)
 
 evaporation.test %>%
   ggplot(aes (x = all_tubes_water,
