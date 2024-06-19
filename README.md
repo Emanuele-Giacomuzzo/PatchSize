@@ -6,19 +6,16 @@ This is the repository with data and code for the publication _Giacomuzzo et al.
 
 ## Content of the repository
 
-This repository is structured with the following folders:
+This repository is structured with the following folders and files:
 
-- 0_bin: deleted files
-- 1_experiment: files related to planning and executing the microcosm experiment
-- 2_data: data files obtained from analysing the culture videos with the R package BEMOVI
-- 3_r_files: r files to analyse the data
-- 4_environments: RStudio environments with the objects created during the analysis
-- 5_images: images
-- 6_results: results saved during the analysis
-- 7_paper: files to publish the paper
-
-Furthermore, it contains the following files:
-
+- 0_bin: folder deleted files
+- 1_experiment: folder with files related to planning and executing the microcosm experiment
+- 2_data: folder with data files obtained from analysing the culture videos with the R package BEMOVI
+- 3_r_files: folder with r files to analyse the data
+- 4_environments: folder with RStudio environments with the objects created during the analysis
+- 5_images: folder with images
+- 6_results: folder with results saved during the analysis
+- 7_paper: folder with files to publish the paper
 - library.bib: bibliography database file
 - master.Rmd: master file to produce the R markdown with the analysis of the data
 - PatchSize.Rproj: PatchSize project on RStudio
