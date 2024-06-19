@@ -1,22 +1,22 @@
 Files with the individuals that were filmed during the experiment.
 
-- file
-- mean_grey
-- sd_grey
-- mean_area
-- sd_area
-- mean_perimeter
-- sd_perimeter
-- mean_major
-- sd_major
-- mean_minor
-- sd_minor
-- mean_ar
-- sd_ar
-- mean_turning
-- sd_turning
-- duration
-- N_frames
+- file: name of the video file which was analysed 
+- mean_grey: mean brightness of the individual (across frames)
+- sd_grey: standard deviation of the brightness of the individual (across frames)
+- mean_area: mean area of the individual (across frames)
+- sd_area: standard deviation of the area of the individual (across frames)
+- mean_perimeter: mean perimeter length of the individual (across frames)
+- sd_perimeter: standard deviation of the perimeter length of the individual (across frames)
+- mean_major: mean length of the major body axis of the individual (across frames)
+- sd_major: standard deviation of the length of the major body axis of the individual (across frames)
+- mean_minor: mean length of the minor body axis of the individual (across frames)
+- sd_minor: standard deviation of the length of the minor body axis of the individual (across frames)
+- mean_ar: mean aspect ratio of the individual (across frames) [aspect ratio = ratio of the major to minor axis]
+- sd_ar: standard deviation of the aspect ratio of the individual (across frames) [aspect ratio = ratio of the major to minor axis]
+- mean_turning: mean turning angle of the individual (across frames)
+- sd_turning: standard deviation of the turning angel of the individual (across frames)
+- duration: time in seconds in which the individual was filmed
+- N_frames: number of frames in which the individual was filmed
 - max_net
 - net_disp
 - net_speed
@@ -24,11 +24,11 @@ Files with the individuals that were filmed during the experiment.
 - gross_speed
 - max_step
 - min_step
-- sd_step
-- sd_gross_speed
+- sd_step: ... of the individual (across frames)
+- sd_gross_speed: ... of the individual (across frames)
 - max_gross_speed
 - min_gross_speed
-- id
-- date
-- time_point
-- comment
+- id: identification number for the individual
+- date: date at which the video was taken
+- time_point: time point filmed
+- comment: comment on the culture filmed
