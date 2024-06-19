@@ -126,7 +126,7 @@ for(i in 1:length(alpha_beta_plot_number$alpha)){
 
 for(i in 1:length(alpha_beta_plot_number$alpha)){
   
-  png(file = here("results", "figures", disturbance_global_input, "presentations", paste0(i, "_metaecos_diversity.png")),
+  png(file = here("6_results", "figures", disturbance_global_input, "presentations", paste0(i, "_metaecos_diversity.png")),
       width = presentation_figure_width,
       height = presentation_figure_height,
       units = presentation_figure_units,

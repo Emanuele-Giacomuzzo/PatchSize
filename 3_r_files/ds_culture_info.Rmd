@@ -11,5 +11,5 @@ editor_options:
 We start by importing the information about the 110 patches of the experiment.
 
 ```{r}
-culture_info = read.csv(here("data", "culture_info.csv"), header = TRUE)
+culture_info = read.csv(here("2_data", "culture_info.csv"), header = TRUE)
 ```

@@ -109,7 +109,7 @@ p
 
 # Save plot
 
-png(file = here("results", "figures", disturbance_global_input, "paper", "ecosystem_auto_heterotrophic_ratio.png"),
+png(file = here("6_results", "figures", disturbance_global_input, "paper", "ecosystem_auto_heterotrophic_ratio.png"),
     width = paper_width,
     height = paper_height,
     units = paper_units,

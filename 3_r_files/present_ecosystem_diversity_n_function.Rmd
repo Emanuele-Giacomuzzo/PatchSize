@@ -85,7 +85,7 @@ for(i in 1:length(patch_type_all)+1){
 
 for(i in 1:length(patch_type_all)+1){
   
-  png(file = here("results", 
+  png(file = here("6_results", 
                   "figures", 
                   disturbance_global_input, 
                   "presentations", 

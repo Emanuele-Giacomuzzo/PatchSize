@@ -117,7 +117,7 @@ p_combined = ggarrange(plot.single.plot("shannon") +
 
 # Save combined plots
 
-png(file = here("results", "figures", disturbance_global_input, "paper", "ecosystems_M_diversity_n_function.png"),
+png(file = here("6_results", "figures", disturbance_global_input, "paper", "ecosystems_M_diversity_n_function.png"),
     width = paper_width,
     height = paper_height,
     units = paper_units,

@@ -15,7 +15,7 @@ In this dataset (`ds_individuals`) each row represents an individual at a time p
 
 # Import the individual data of t0. We considered cultures to be all the same at the beginning (t0). Because of this reason, we filmed only the bottles from which cultures were assembled. Because we want to plot also t0 for the different treatments, we want to assign the video of bottles to all cultures at t0.
 
-ds_individuals_t0_not_elongated = read.csv(here("data", "individuals", "t0.csv")) %>%
+ds_individuals_t0_not_elongated = read.csv(here("2_data", "individuals", "t0.csv")) %>%
   mutate(time_point =  as.numeric(str_extract(time_point, "\\d+")),
          day = 0,
          file =  as.numeric(str_extract(file, "\\d+")),
@@ -55,7 +55,7 @@ ds_individuals_t1_to_t4 = NULL
   
 for (time_point_i in time_points_without_t0) {
   
-  ds_individuals_t1_to_t4[[time_point_i]] = read.csv(here("data", 
+  ds_individuals_t1_to_t4[[time_point_i]] = read.csv(here("2_data", 
                                                               "individuals", 
                                                               paste0("t", 
                                                                      time_point_i, 

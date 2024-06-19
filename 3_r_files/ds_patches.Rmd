@@ -15,7 +15,7 @@ In this dataset (`ds_patches`) each row represents a patch at a time point. I us
 
 # Import & bind t0 datasets.
 
-ds_patches_t0 = read.csv(here("data", "populations", "t0.csv")) %>%
+ds_patches_t0 = read.csv(here("2_data", "populations", "t0.csv")) %>%
   mutate(time_point =  as.numeric(str_extract(time_point, "\\d+")),
          day = 0,
          video_replicate = file) %>%
@@ -26,7 +26,7 @@ ds_patches_t0 = read.csv(here("data", "populations", "t0.csv")) %>%
          bioarea_per_volume,
          indiv_per_volume)
 
-species_ID_13_threshold_t0 = read.csv(here("data", "species_ID_13_threshold", paste0("t0.csv"))) %>%
+species_ID_13_threshold_t0 = read.csv(here("2_data", "species_ID_13_threshold", paste0("t0.csv"))) %>%
   rename(Ble_indiv_per_volume = Ble,
          Cep_indiv_per_volume = Cep,
          Col_indiv_per_volume = Col,
@@ -41,7 +41,7 @@ species_ID_13_threshold_t0 = read.csv(here("data", "species_ID_13_threshold", pa
   select(file,
          all_of(species_IDD_with_13_threshold_indiv_per_volume))
 
-species_ID_40_threshold_t0 = read.csv(here("data", "species_ID_40_threshold", paste0("t0.csv"))) %>%
+species_ID_40_threshold_t0 = read.csv(here("2_data", "species_ID_40_threshold", paste0("t0.csv"))) %>%
   rename(Ble_indiv_per_volume = Ble,
          Cep_indiv_per_volume = Cep,
          Col_indiv_per_volume = Col,
@@ -126,7 +126,7 @@ ds_patches_t1_to_t4 = NULL
 
 for (time_point_i in time_points_without_t0) {
   
-  species_ID_13_threshold = read.csv(here("data", 
+  species_ID_13_threshold = read.csv(here("2_data", 
                                           "species_ID_13_threshold", 
                                           paste0("t", time_point_i, ".csv"))) %>%
     rename(Ble_indiv_per_volume = Ble,
@@ -144,7 +144,7 @@ for (time_point_i in time_points_without_t0) {
            all_of(species_IDD_with_13_threshold_indiv_per_volume))
   
   
-  species_ID_40_threshold = read.csv(here("data", 
+  species_ID_40_threshold = read.csv(here("2_data", 
                                           "species_ID_40_threshold", 
                                           paste0("t", time_point_i, ".csv"))) %>%
     rename(Ble_indiv_per_volume = Ble,
@@ -162,7 +162,7 @@ for (time_point_i in time_points_without_t0) {
            all_of(species_IDD_with_40_threshold_indiv_per_volume))
   
   
-  ds_patches_t1_to_t4[[time_point_i]] = read.csv(here("data", 
+  ds_patches_t1_to_t4[[time_point_i]] = read.csv(here("2_data", 
                                                       "populations", 
                                                       paste0("t", time_point_i, ".csv"))) %>%
     arrange(file) %>%
