@@ -1,0 +1,34 @@
+Files with the individuals that were filmed during the experiment.
+
+- file
+- mean_grey
+- sd_grey
+- mean_area
+- sd_area
+- mean_perimeter
+- sd_perimeter
+- mean_major
+- sd_major
+- mean_minor
+- sd_minor
+- mean_ar
+- sd_ar
+- mean_turning
+- sd_turning
+- duration
+- N_frames
+- max_net
+- net_disp
+- net_speed
+- gross_disp
+- gross_speed
+- max_step
+- min_step
+- sd_step
+- sd_gross_speed
+- max_gross_speed
+- min_gross_speed
+- id
+- date
+- time_point
+- comment
