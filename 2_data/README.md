@@ -6,3 +6,7 @@ This folder contains the data obtained from the microcosm experiment. Really coo
 - species_ID_40_threshold: Contains data for each individual detected in the videos at each time point, with species identified. Videos were analysed with a lowest threshold in ImageJ of 40.
 - culture_info.csv: Provides information about each ecosystem.
 - water_addition: Details the amount of water added to ecosystems to compensate for evaporation.
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
