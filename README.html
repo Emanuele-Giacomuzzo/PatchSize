@@ -355,17 +355,25 @@ display: none;
 <div id="patchsize" class="section level1">
 <h1>PatchSize</h1>
 <blockquote>
-<p><em><em>Giacomuzzo et al. (2024) Ecosystem size mediates the effects
-of resource flows on biodiversity and ecosystem function at different
-scales</em></em></p>
+<p><em><em>Giacomuzzo E., Peller T., Gounand I., Altermatt F. (2024).
+Ecosystem size mediates the effects of resource flows on biodiversity
+and ecosystem function at different scales.</em></em></p>
 </blockquote>
-<p>This is the repository with data and code for the publication
-<em>Giacomuzzo et al. (2024) Ecosystem size mediates the effects of
-resource flows on biodiversity and ecosystem function at different
-scales.</em></p>
+<p>This repository contains data and code from a microcosm experiment
+designed to investigate whether ecosystem size can mediate the effects
+of resource flow on biodiversity and ecosystem function. To gather this
+data, cultures were filmed for 28 days. The videos were analyzed using
+the R package BEMOVI, which is based on ImageJ, by tracking particles
+and excluding those that couldn’t have been protists. The repository
+includes data files obtained from the video analysis and code used for
+data analysis. This data will be used for the upcoming publication:
+<em>Giacomuzzo E., Peller T., Gounand I., Altermatt F. (2024). Ecosystem
+size mediates the effects of resource flows on biodiversity and
+ecosystem function at different scales.</em></p>
 <div id="content-of-the-repository" class="section level2">
 <h2>Content of the repository</h2>
-<p>This repository is structured with the following folders:</p>
+<p>This repository is structured with the following folders and
+files:</p>
 <ul>
 <li>0_bin: deleted files</li>
 <li>1_experiment: files related to planning and executing the microcosm
@@ -378,9 +386,6 @@ the analysis</li>
 <li>5_images: images</li>
 <li>6_results: results saved during the analysis</li>
 <li>7_paper: files to publish the paper</li>
-</ul>
-<p>Furthermore, it contains the following files:</p>
-<ul>
 <li>library.bib: bibliography database file</li>
 <li>master.Rmd: master file to produce the R markdown with the analysis
 of the data</li>
@@ -391,19 +396,21 @@ disturbance treatment</li>
 disturbance treatment</li>
 </ul>
 </div>
-<div id="code-execution" class="section level2">
-<h2>Code execution</h2>
-<p>To execute the code in this repository:</p>
+<div id="installation-and-code-execution" class="section level2">
+<h2>Installation and Code Execution</h2>
 <ol style="list-style-type: decimal">
+<li>Clone the repository: git clone <a href="https://github.com/Emanuele-Giacomuzzo/PatchSize.git" class="uri">https://github.com/Emanuele-Giacomuzzo/PatchSize.git</a></li>
 <li>Open the PatchSize project by opening the PatchSize.Rproj file using
-RStudio</li>
+RStudio.</li>
+<li>Ensure you have the necessary R packages installed, particularly
+knitr. You will find the packages needed for analysis in 3_r_files &gt;
+set_packages.Rmd.</li>
 <li>Open the master r markdown file master.Rmd</li>
 <li>Define which disturbance level you want to analyse by assigning
 disturbance_global_input = “low” or disturbance_global_input =
 “high”</li>
-<li>Press the knit button to create the html file with the data
-analysed. This require you to have the r package knitr installed on your
-machine.</li>
+<li>Press the knit button to create the html file with the analysed
+data. This requires the knitr package installed on your machine.</li>
 </ol>
 </div>
 </div>

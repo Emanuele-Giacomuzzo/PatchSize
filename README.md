@@ -1,8 +1,8 @@
 
 # PatchSize
-> *_Giacomuzzo et al. (2024) Ecosystem size mediates the effects of resource flows on biodiversity and ecosystem function at different scales_*
+> *_Giacomuzzo E., Peller T., Gounand I., Altermatt F. (2024). Ecosystem size mediates the effects of resource flows on biodiversity and ecosystem function at different scales._*
 
-This is the repository with data and code for the publication _Giacomuzzo et al. (2024) Ecosystem size mediates the effects of resource flows on biodiversity and ecosystem function at different scales._
+This repository contains data and code from a microcosm experiment designed to investigate whether ecosystem size can mediate the effects of resource flow on biodiversity and ecosystem function. To gather this data, cultures were filmed for 28 days. The videos were analyzed using the R package BEMOVI, which is based on ImageJ, by tracking particles and excluding those that couldn't have been protists. The repository includes data files obtained from the video analysis and code used for data analysis. This data will be used for the upcoming publication: _Giacomuzzo E., Peller T., Gounand I., Altermatt F. (2024). Ecosystem size mediates the effects of resource flows on biodiversity and ecosystem function at different scales._
 
 ## Content of the repository
 
@@ -22,11 +22,11 @@ This repository is structured with the following folders and files:
 - results_high_disturbance.html: results of the analysis for the high disturbance treatment
 - results_low_disturbance.html: results of the analysis for the low disturbance treatment
 
-## Code execution
+## Installation and Code Execution 
 
-To execute the code in this repository:
-
-1. Open the PatchSize project by opening the PatchSize.Rproj file using RStudio
-2. Open the master r markdown file master.Rmd
-3. Define which disturbance level you want to analyse by assigning disturbance_global_input = "low" or disturbance_global_input = "high"
-4. Press the knit button to create the html file with the data analysed. This require you to have the r package knitr installed on your machine.
+1. Clone the repository: git clone https://github.com/Emanuele-Giacomuzzo/PatchSize.git
+2. Open the PatchSize project by opening the PatchSize.Rproj file using RStudio.
+3. Ensure you have the necessary R packages installed, particularly knitr. You will find the packages needed for analysis in 3_r_files > set_packages.Rmd.
+4. Open the master r markdown file master.Rmd
+5. Define which disturbance level you want to analyse by assigning disturbance_global_input = "low" or disturbance_global_input = "high"
+6. Press the knit button to create the html file with the analysed data. This requires the knitr package installed on your machine.
