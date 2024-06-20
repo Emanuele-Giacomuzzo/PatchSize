@@ -1,4 +1,4 @@
-Files with the individuals that were filmed during the experiment. All the columns have been created during movement analysis using BEMOVI, which is based on ImageJ movement analysis. These columns can be found in the output of imageJ. Each row refers to an individual filmed at a certain time point. All metrics (e.g., mean, standard deviation) refer to an individual across frames.   
+Files with the individuals that were filmed during the experiment. All the columns have been created during movement analysis using BEMOVI, which is based on ImageJ movement analysis. These columns can be found in the output of imageJ. Each row refers to an individual filmed at a certain time point. Each data file represents a time point (t0 = time point 0, t1 = time point 1, t2 = time point 2, etc.). All metrics (e.g., mean, standard deviation) refer to an individual across frames.   
 
 - file: name of the video file 
 - mean_grey: mean brightness of the individual
@@ -29,6 +29,6 @@ Files with the individuals that were filmed during the experiment. All the colum
 - sd_step: standard deviation of the step lengths (distances traveled between consecutive time points or frames) of an object throughout its trajectory (µm)
 - sd_gross_speed: standard deviation of the gross speed of an object over a series of time intervals or frames during its movement analysis (µm/s)
 - id: identification number for the individual
-- date: date at which the video was taken
+- date: date on which the video was taken
 - time_point: time point filmed
 - comment: comment on the culture filmed
