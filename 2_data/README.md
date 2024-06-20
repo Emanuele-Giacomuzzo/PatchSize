@@ -1,4 +1,4 @@
-This folder contains the data obtained from the microcosm experiment. It is organised into the following folders and files:
+This folder contains the data obtained from the microcosm experiment. Really cool. It is organised into the following folders and files:
 
 - individuals: Contains data for each individual detected in the videos at each time point, as well as monoculture data used to train a species identification model (training). Videos were analysed with a lowest threshold in ImageJ of 13.
 - populations: Contains ecosystem data for each time point and monoculture data used to train a species identification model (training). Videos were analyzed with a lowest threshold in ImageJ of 13.
