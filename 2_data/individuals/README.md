@@ -1,33 +1,33 @@
-Files with the individuals that were filmed during the experiment. All the columns have been created during movement analysis using BEMOVI, which is based on ImageJ movement analysis. These columns can be found in the output of imageJ. 
+Files with the individuals that were filmed during the experiment. All the columns have been created during movement analysis using BEMOVI, which is based on ImageJ movement analysis. These columns can be found in the output of imageJ. Each row refers to an individual filmed at a certain time point. All metrics (e.g., mean, standard deviation) refer to an individual across frames.   
 
-- file: name of the video file which was analysed 
-- mean_grey: mean brightness of the individual (across frames)
-- sd_grey: standard deviation of the brightness of the individual (across frames)
-- mean_area: mean area of the individual (across frames)
-- sd_area: standard deviation of the area of the individual (across frames)
-- mean_perimeter: mean perimeter length of the individual (across frames)
-- sd_perimeter: standard deviation of the perimeter length of the individual (across frames)
-- mean_major: mean length of the major body axis of the individual (across frames)
-- sd_major: standard deviation of the length of the major body axis of the individual (across frames)
-- mean_minor: mean length of the minor body axis of the individual (across frames)
-- sd_minor: standard deviation of the length of the minor body axis of the individual (across frames)
-- mean_ar: mean aspect ratio of the individual (across frames) [aspect ratio = ratio of the major to minor axis]
-- sd_ar: standard deviation of the aspect ratio of the individual (across frames) [aspect ratio = ratio of the major to minor axis]
-- mean_turning: mean turning angle of the individual (across frames)
-- sd_turning: standard deviation of the turning angel of the individual (across frames)
-- duration: time in which the individual was filmed (s)
+- file: name of the video file 
+- mean_grey: mean brightness of the individual
+- sd_grey: standard deviation of the brightness of the individual
+- mean_area: mean area of the individual (µm²)
+- sd_area: standard deviation of the area of the individual (µm²)
+- mean_perimeter: mean perimeter length of the individual (µm)
+- sd_perimeter: standard deviation of the perimeter length of the individual (µm)
+- mean_major: mean length of the major body axis of the individual (µm)
+- sd_major: standard deviation of the length of the major body axis of the individual (µm)
+- mean_minor: mean length of the minor body axis of the individual (µm)
+- sd_minor: standard deviation of the length of the minor body axis of the individual (µm)
+- mean_ar: mean aspect ratio of the individual, which is the ratio of the major to minor axis 
+- sd_ar: standard deviation of the aspect ratio of the individual
+- mean_turning: mean turning angle of the individual
+- sd_turning: standard deviation of the turning angle of the individual
+- duration: time for which the individual was filmed (s)
 - N_frames: number of frames in which the individual was filmed
 - max_net: maximum net displacement, which is the furthest distance achieved from the starting point (µm)
 - net_disp: net displacement, which is the distance between the initial and final positions (µm)
 - net_speed: net speed, which is how quickly an object moves from its starting point to its ending point (µm/s)
 - gross_disp: gross displacement, which is the total distance traveled by an object along its actual path (µm)
-- gross_speed: gross speed, which is the speed of an object calculated based on the total distance traveled along its actual path 
-- max_gross_speed: maximum gross speed across frames
-- min_gross_speed: minimum gross speed across frames
-- max_step: largest single movement an object between two frames
-- min_step: smallest single movement an object between two frames
-- sd_step: standard deviation of the step lengths (distances traveled between consecutive time points or frames) of an object throughout its trajectory (across frames)
-- sd_gross_speed: standard deviation of the gross speed of an object over a series of time intervals or frames during its movement analysis (across frames)
+- gross_speed: gross speed, which is the speed of an object calculated based on the total distance traveled along its actual path (µm/s)
+- max_gross_speed: maximum gross speed (µm/s)
+- min_gross_speed: minimum gross speed (µm/s)
+- max_step: largest single movement an object between two frames (µm)
+- min_step: smallest single movement an object between two frames (µm)
+- sd_step: standard deviation of the step lengths (distances traveled between consecutive time points or frames) of an object throughout its trajectory (µm)
+- sd_gross_speed: standard deviation of the gross speed of an object over a series of time intervals or frames during its movement analysis (µm/s)
 - id: identification number for the individual
 - date: date at which the video was taken
 - time_point: time point filmed
