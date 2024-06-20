@@ -352,25 +352,65 @@ display: none;
 </div>
 
 
-<p>This folder contains the data used for analysis. It contains the
-following folders and files:</p>
+<p>This folder contains the data obtained from the microcosm experiment.
+Two lowest threshold levels of pixel intensities were used to
+differentiate between individuals and the background because different
+protist species were better identified at different thresholds.
+Specifically, <em>Blepharisma sp.</em>, <em>Cephalodella sp.</em>, and
+<em>Spirostomum sp.</em> were identified with a lower threshold of 40,
+while all other species were identified with a lower threshold of 13.
+The data collection from video files involved the following steps:</p>
+<ol style="list-style-type: decimal">
+<li><strong>Video Analysis at Threshold 13</strong>: Use the script in
+3_r_files &gt; BEMOVI_script_video_analysis to analyze videos at all
+time points and training data with thresholds set to c(13, 255). Save
+the results in 2_data &gt; individuals and 2_data &gt; populations. This
+analysis captures all protist individuals for a comprehensive final
+analysis of individuals and biomass.</li>
+<li><strong>Video Analysis at Threshold 40</strong>: Use the same
+script, adjusting the threshold to c(40, 255), to analyze videos at all
+time points and training data. This data is only saved locally on the
+hard disk and is used to get a better understanding of <em>Blepharisma
+sp.</em>, <em>Cephalodella sp.</em>, and <em>Spirostomum sp.</em></li>
+<li><strong>Species Identification at Threshold 13</strong>: Use the
+script in 3_r_files &gt; BEMOVI_script_species_id to identify species
+for all time points analyzed with the threshold of 13, using training
+data also analyzed at threshold 13. This step helps determine the
+density of species like <em>Colpidium sp.</em>, <em>Euglena
+gracilis</em>, <em>Euplotes aediculatus</em>, <em>Loxocephalus sp.</em>,
+<em>Paramecium aurelia</em>, <em>Paramecium caudatum</em>,
+<em>Spirostomum teres</em>, and <em>Tetrahymena cf. pyriformis</em> in
+each ecosystem at each time point.</li>
+<li><strong>Species Identification at Threshold 40</strong>: Use the
+same species identification script for all time points analyzed with the
+threshold of 40, using training data from threshold 13. This step helps
+determine the density of <em>Blepharisma sp.</em>, <em>Cephalodella
+sp</em>., and <em>Spirostomum sp.</em> in each ecosystem at each time
+point.</li>
+</ol>
+<p>During data analysis we bound this data into two datasets: - a
+dataset which binds the data in the folder “populations”” with the
+species densities of <em>Blepharisma sp.</em>, <em>Cephalodella
+sp.</em>, and <em>Spirostomum sp.</em> in</p>
+<p>It is organised into the following folders and files:</p>
 <ul>
-<li>individuals: data of each individual that was detected in videos for
-each time point and monoculture data used to train a species
-identification model (training). Videos were analysed with a lowest
-threshold in ImageJ of 13.</li>
-<li>populations: data of ecosystems for each time point and monoculture
-data used to train a species identification model (training). Videos
-were analysed with a lowest threshold in ImageJ of 13.</li>
-<li>species_ID_13_threshold: data of each individual that was detected
-in videos for each time point, with species identified. Videos were
+<li>individuals: Contains data for each individual detected in the
+videos at each time point, as well as monoculture data used to train a
+species identification model (training). Videos were analysed with a
+lowest threshold in ImageJ of 13.</li>
+<li>populations: Contains ecosystem data for each time point and
+monoculture data used to train a species identification model
+(training). Videos were analyzed with a lowest threshold in ImageJ of
+13.</li>
+<li>species_ID_13_threshold: Contains data for each individual detected
+in the videos at each time point, with species identified. Videos were
 analysed with a lowest threshold in ImageJ of 13.</li>
-<li>species_ID_40_threshold: data of each individual that was detected
-in videos for each time point, with species identified. Videos were
+<li>species_ID_40_threshold: Contains data for each individual detected
+in the videos at each time point, with species identified. Videos were
 analysed with a lowest threshold in ImageJ of 40.</li>
-<li>culture_info.csv: information about each ecosystem.</li>
-<li>water_addition: water that was added to ecosystems following
-evaporation.</li>
+<li>culture_info.csv: Provides information about each ecosystem.</li>
+<li>water_addition: Details the amount of water added to ecosystems to
+compensate for evaporation.</li>
 </ul>
 
 

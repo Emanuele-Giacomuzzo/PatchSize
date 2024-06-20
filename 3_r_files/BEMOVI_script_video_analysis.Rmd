@@ -58,7 +58,7 @@ measured_volume <- 34.4    # Measured volume (microliters) for Leica M205 C with
 pixel_to_scale <- 4.05     # Size of a pixel (micrometers) for Leica M205 C with 1.6 fold magnification, sample height 0.5 mm and Hamamatsu Orca Flash 4
 video.format <- "cxd"      # Video file format (avi, cxd, mov, tiff)
 difference.lag <- 10       # Difference lag
-thresholds <- c(13, 255)   # Threshold values for particle detection
+thresholds <- c(13, 255)   # Threshold values of pixel intensity (considered a measure of pixel "whiteness") for determining if a pixel belongs to an individual rather than the background
 
 ######################################################################
 # FILTERING PARAMETERS
