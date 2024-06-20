@@ -1,4 +1,4 @@
-Files with the individuals that were filmed during the experiment.
+Files with the individuals that were filmed during the experiment. All the columns have been created during movement analysis using BEMOVI, which is based on ImageJ movement analysis. These columns can be found in the output of imageJ. 
 
 - file: name of the video file which was analysed 
 - mean_grey: mean brightness of the individual (across frames)
@@ -15,19 +15,19 @@ Files with the individuals that were filmed during the experiment.
 - sd_ar: standard deviation of the aspect ratio of the individual (across frames) [aspect ratio = ratio of the major to minor axis]
 - mean_turning: mean turning angle of the individual (across frames)
 - sd_turning: standard deviation of the turning angel of the individual (across frames)
-- duration: time in seconds in which the individual was filmed
+- duration: time in which the individual was filmed (s)
 - N_frames: number of frames in which the individual was filmed
-- max_net
-- net_disp
-- net_speed
-- gross_disp
-- gross_speed
-- max_step
-- min_step
-- sd_step: ... of the individual (across frames)
-- sd_gross_speed: ... of the individual (across frames)
-- max_gross_speed
-- min_gross_speed
+- max_net: maximum net displacement, which is the furthest distance achieved from the starting point (µm)
+- net_disp: net displacement, which is the distance between the initial and final positions (µm)
+- net_speed: net speed, which is how quickly an object moves from its starting point to its ending point (µm/s)
+- gross_disp: gross displacement, which is the total distance traveled by an object along its actual path (µm)
+- gross_speed: gross speed, which is the speed of an object calculated based on the total distance traveled along its actual path 
+- max_gross_speed: maximum gross speed across frames
+- min_gross_speed: minimum gross speed across frames
+- max_step: largest single movement an object between two frames
+- min_step: smallest single movement an object between two frames
+- sd_step: standard deviation of the step lengths (distances traveled between consecutive time points or frames) of an object throughout its trajectory (across frames)
+- sd_gross_speed: standard deviation of the gross speed of an object over a series of time intervals or frames during its movement analysis (across frames)
 - id: identification number for the individual
 - date: date at which the video was taken
 - time_point: time point filmed
