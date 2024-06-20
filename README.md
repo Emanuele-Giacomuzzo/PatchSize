@@ -8,19 +8,19 @@ This repository contains data and code from a microcosm experiment designed to i
 
 This repository is structured with the following folders and files:
 
-- 0_bin: deleted files
-- 1_experiment: files related to planning and executing the microcosm experiment
-- 2_data: data files obtained from analysing the culture videos with the R package BEMOVI
-- 3_r_files: r files to analyse the data
+- 0_bin: Deleted files
+- 1_experiment: Files related to planning and executing the microcosm experiment
+- 2_data: Data files obtained from analysing the culture videos with the R package BEMOVI
+- 3_r_files: R files to analyse the data
 - 4_environments: RStudio environments with the objects created during the analysis
-- 5_images: images
-- 6_results: results saved during the analysis
-- 7_paper: files to publish the paper
-- library.bib: bibliography database file
-- master.Rmd: master file to produce the R markdown with the analysis of the data
+- 5_images: Images
+- 6_results: Results saved during the analysis
+- 7_paper: Files to publish the paper
+- library.bib: Bibliography database file
+- master.Rmd: Master file to produce the R markdown with the analysis of the data
 - PatchSize.Rproj: PatchSize project on RStudio
-- results_high_disturbance.html: results of the analysis for the high disturbance treatment
-- results_low_disturbance.html: results of the analysis for the low disturbance treatment
+- results_high_disturbance.html: Results of the analysis for the high disturbance treatment
+- results_low_disturbance.html: Results of the analysis for the low disturbance treatment
 
 ## Installation and Code Execution 
 
