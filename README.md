@@ -30,3 +30,7 @@ This repository is structured with the following folders and files:
 4. Open the master r markdown file master.Rmd
 5. Define which disturbance level you want to analyse by assigning disturbance_global_input = "low" or disturbance_global_input = "high"
 6. Press the knit button to create the html file with the analysed data. This requires the knitr package installed on your machine.
+
+## Contact Information
+
+For questions or support, please contact me at EmanueleGiacomuzzo@gmail.com
