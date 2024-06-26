@@ -42,3 +42,11 @@ dput()
 ### Crashed cultures
 
 The only type of patch where all cultures crashed was small connected to small at high disturbance.
+
+### R package versions
+
+The R packages we used with their version are as follows:
+
+```{r}
+sessionInfo()
+```
