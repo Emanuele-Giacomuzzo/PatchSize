@@ -6,7 +6,17 @@ editor_options:
   chunk_output_type: console
 ---
 
-```{r set-up-environment, echo = FALSE, results = FALSE, message = FALSE, cache = FALSE}
+
+
+```{r set-up-environment, echo = FALSE, results = FALSE, message = FALSE, cache = FALSE, warnings = FALSE}
+
+# Install the package "renv" if it's not installed yet. Renv allows you to reinstall the specific package versions that were used when writing code for this project. 
+if (!requireNamespace("renv", quietly = TRUE)) {
+  install.packages("renv")
+}
+
+#Reinstall the specific package versions that were used when writing code for this project. 
+renv::restore()
 
 #General computing
 library("here")
@@ -39,4 +49,12 @@ conflict_prefer("arrange", "dplyr")
 conflict_prefer("here", "here")
 conflict_prefer("combn", "combinat")
 conflict_prefer("lmer", "lmerTest")
+```
+
+```{r eval = FALSE, echo = FALSE}
+
+#Renv - possible commands
+
+#renv::snapshot() Save the current versions of the packages you have on your machine. This is useful when you have changed the version of a package, installed, or uninstalled some packages. 
+#renv::update() Update all packages on your machine to their newest version. Watch out: if you update all packages things might not work anymore. Only do so if you are okay with changing the code to adapt to new package versions.
 ```

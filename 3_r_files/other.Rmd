@@ -48,5 +48,5 @@ The only type of patch where all cultures crashed was small connected to small a
 The R packages we used with their version are as follows:
 
 ```{r}
-a = sessionInfo()
+sessionInfo()
 ```
