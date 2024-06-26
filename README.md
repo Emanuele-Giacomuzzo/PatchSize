@@ -1,36 +1,36 @@
-
 # PatchSize
-*_Ecosystem size mediates the effects of resource flows on biodiversity and ecosystem function at different scales._*
+
+*Ecosystem size mediates the effects of resource flows on biodiversity and ecosystem function at different scales.*
 
 ## Abstract
 
-Ecosystem size and resource flows are key factors driving biodiversity and ecosystem function. However, the question of whether and how these drivers interact has been largely overlooked. Here, we investigated how ecosystem size asymmetry affects biodiversity and function of two-patch meta-ecosystems connected through flows of non-living resources. We conducted a microcosm experiment, mimicking spatial resource flows between ecosystems of different sizes yet otherwise identical properties or between ecosystems of the same size. Meta-ecosystems with asymmetric ecosystem sizes displayed higher α- diversity but lower β-diversity and ecosystem function (total biomass) than their unconnected counterparts. At the same time, such an effect was not found for meta-ecosystems of identical patch sizes. Our work demonstrates how the size of ecosystems, interconnected via resource flows, can modulate cross-ecosystem dynamics, having implications for biodiversity and function across scales.  
+Ecosystem size and resource flows are key factors driving biodiversity and ecosystem function. However, the question of whether and how these drivers interact has been largely overlooked. Here, we investigated how ecosystem size asymmetry affects biodiversity and function of two-patch meta-ecosystems connected through flows of non-living resources. We conducted a microcosm experiment, mimicking spatial resource flows between ecosystems of different sizes yet otherwise identical properties or between ecosystems of the same size. Meta-ecosystems with asymmetric ecosystem sizes displayed higher α- diversity but lower β-diversity and ecosystem function (total biomass) than their unconnected counterparts. At the same time, such an effect was not found for meta-ecosystems of identical patch sizes. Our work demonstrates how the size of ecosystems, interconnected via resource flows, can modulate cross-ecosystem dynamics, having implications for biodiversity and function across scales.
 
 ## Content of the repository
 
-This repository contains data and code from a microcosm experiment designed to investigate whether ecosystem size can mediate the effects of resource flow on biodiversity and ecosystem function. To gather this data, cultures were filmed for 28 days. The videos were analyzed using the R package BEMOVI, which is based on ImageJ, by tracking particles and excluding those that couldn't have been protists. The repository includes data files obtained from the video analysis and code used for data analysis. The flow for data analysis can be found in the master r markdown file and its associated code chunks (referred to as "children" in r markdown). This data will be used for the upcoming publication: *_Ecosystem size mediates the effects of resource flows on biodiversity and ecosystem function at different scales._* This repository is structured with the following folders and files:
+This repository contains data and code from a microcosm experiment designed to investigate whether ecosystem size can mediate the effects of resource flow on biodiversity and ecosystem function. To gather this data, cultures were filmed for 28 days. The videos were analyzed using the R package BEMOVI, which is based on ImageJ, by tracking particles and excluding those that couldn't have been protists. The repository includes data files obtained from the video analysis and code used for data analysis. The flow for data analysis can be found in the master r markdown file and its associated code chunks (referred to as "children" in r markdown). This data will be used for the upcoming publication: *Ecosystem size mediates the effects of resource flows on biodiversity and ecosystem function at different scales.* This repository is structured with the following folders and files:
 
-- 0_bin: Deleted files
-- 1_experiment: Files related to planning and executing the microcosm experiment
-- 2_data: Data files obtained from analysing the culture videos with the R package BEMOVI
-- 3_r_files: R files to analyse the data
-- 4_environments: RStudio environments with the objects created during the analysis
-- 5_images: Images
-- 6_results: Results saved during the analysis
-- 7_paper: Files to publish the paper
-- library.bib: Bibliography database file
-- master.Rmd: Master file to produce the R markdown with the analysis of the data
-- PatchSize.Rproj: PatchSize project on RStudio
-- results_high_disturbance.html: Results of the analysis for the high disturbance treatment
-- results_low_disturbance.html: Results of the analysis for the low disturbance treatment
+-   0_bin: Deleted files
+-   1_experiment: Files related to planning and executing the microcosm experiment
+-   2_data: Data files obtained from analysing the culture videos with the R package BEMOVI
+-   3_r_files: R files to analyse the data
+-   4_environments: RStudio environments with the objects created during the analysis
+-   5_images: Images
+-   6_results: Results saved during the analysis
+-   7_paper: Files to publish the paper
+-   library.bib: Bibliography database file
+-   master.Rmd: Master file to produce the R markdown with the analysis of the data
+-   PatchSize.Rproj: PatchSize project on RStudio
+-   results_high_disturbance.html: Results of the analysis for the high disturbance treatment
+-   results_low_disturbance.html: Results of the analysis for the low disturbance treatment
 
-## Installation and Code Execution 
+## Installation and Code Execution
 
-1. Open the PatchSize project by opening the PatchSize.Rproj file using RStudio.
-2. Ensure you have the necessary R packages installed, particularly knitr. You will find the packages needed for analysis in 3_r_files > set_packages.Rmd.
-3. Open the master r markdown file master.Rmd
-4. Define which disturbance level you want to analyse by assigning disturbance_global_input = "low" or disturbance_global_input = "high"
-5. Press the knit button to create the html file with the analysed data. This requires the knitr package installed on your machine.
+1.  Open the PatchSize project by opening the PatchSize.Rproj file using RStudio.
+2.  Install the `knitr` package if you do not have installed installed on your machine. Do not worry about installing other packages (see step 5).
+3.  Open the master r markdown file master.Rmd
+4.  Define which disturbance level you want to analyse by assigning disturbance_global_input = "low" or disturbance_global_input = "high"
+5.  Press the 'knit' button to generate the HTML file containing the analysed data. By knitting the R markdown file, the R package `renv` installs all the necessary packages with the correct versions in the project, so that you don't need to manually manage package versions.
 
 ## R packages
 
@@ -38,4 +38,4 @@ To run the code you need a variety of base and additional packages. The base pac
 
 ## Contact Information
 
-For questions or support, please contact me at EmanueleGiacomuzzo@gmail.com
+For questions or support, please contact me at [EmanueleGiacomuzzo\@gmail.com](mailto:EmanueleGiacomuzzo@gmail.com){.email}
