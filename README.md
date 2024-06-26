@@ -1,6 +1,6 @@
 
 # PatchSize
-> *_Giacomuzzo E., Peller T., Gounand I., Altermatt F. (2024). Ecosystem size mediates the effects of resource flows on biodiversity and ecosystem function at different scales._*
+Ecosystem size mediates the effects of resource flows on biodiversity and ecosystem function at different scales.
 
 ## Abstract
 
@@ -8,7 +8,7 @@ Ecosystem size and resource flows are key factors driving biodiversity and ecosy
 
 ## Content of the repository
 
-This repository contains data and code from a microcosm experiment designed to investigate whether ecosystem size can mediate the effects of resource flow on biodiversity and ecosystem function. To gather this data, cultures were filmed for 28 days. The videos were analyzed using the R package BEMOVI, which is based on ImageJ, by tracking particles and excluding those that couldn't have been protists. The repository includes data files obtained from the video analysis and code used for data analysis. The flow for data analysis can be found in the master r markdown file and its associated code chunks (referred to as "children" in r markdown). This data will be used for the upcoming publication: _Giacomuzzo E., Peller T., Gounand I., Altermatt F. (2024). Ecosystem size mediates the effects of resource flows on biodiversity and ecosystem function at different scales._ This repository is structured with the following folders and files:
+This repository contains data and code from a microcosm experiment designed to investigate whether ecosystem size can mediate the effects of resource flow on biodiversity and ecosystem function. To gather this data, cultures were filmed for 28 days. The videos were analyzed using the R package BEMOVI, which is based on ImageJ, by tracking particles and excluding those that couldn't have been protists. The repository includes data files obtained from the video analysis and code used for data analysis. The flow for data analysis can be found in the master r markdown file and its associated code chunks (referred to as "children" in r markdown). This data will be used for the upcoming publication: Ecosystem size mediates the effects of resource flows on biodiversity and ecosystem function at different scales. This repository is structured with the following folders and files:
 
 - 0_bin: Deleted files
 - 1_experiment: Files related to planning and executing the microcosm experiment
