@@ -26,12 +26,11 @@ This repository contains data and code from a microcosm experiment designed to i
 
 ## Installation and Code Execution 
 
-1. Clone the repository: git clone https://github.com/Emanuele-Giacomuzzo/PatchSize.git
-2. Open the PatchSize project by opening the PatchSize.Rproj file using RStudio.
-3. Ensure you have the necessary R packages installed, particularly knitr. You will find the packages needed for analysis in 3_r_files > set_packages.Rmd.
-4. Open the master r markdown file master.Rmd
-5. Define which disturbance level you want to analyse by assigning disturbance_global_input = "low" or disturbance_global_input = "high"
-6. Press the knit button to create the html file with the analysed data. This requires the knitr package installed on your machine.
+1. Open the PatchSize project by opening the PatchSize.Rproj file using RStudio.
+2. Ensure you have the necessary R packages installed, particularly knitr. You will find the packages needed for analysis in 3_r_files > set_packages.Rmd.
+3. Open the master r markdown file master.Rmd
+4. Define which disturbance level you want to analyse by assigning disturbance_global_input = "low" or disturbance_global_input = "high"
+5. Press the knit button to create the html file with the analysed data. This requires the knitr package installed on your machine.
 
 ## R packages
 
