@@ -33,26 +33,7 @@ This repository is structured with the following folders and files:
 
 ## R packages
 
-attached base packages:
-[1] stats     graphics  grDevices utils     datasets  methods   base     
-
-other attached packages:
- [1] conflicted_1.2.0 combinat_0.0-8   Rmisc_1.5.1      betapart_1.6     vegan_2.6-4      lattice_0.21-9   permute_0.9-7    plotly_4.10.2    ggpubr_0.6.0    
-[10] lubridate_1.9.2  forcats_1.0.0    stringr_1.5.1    dplyr_1.1.4      purrr_1.0.2      readr_2.1.4      tidyr_1.3.1      tibble_3.2.1     ggplot2_3.5.1   
-[19] tidyverse_2.0.0  plyr_1.8.8       renv_1.0.2       testthat_3.2.1.1 here_1.0.1       lmerTest_3.1-3   lme4_1.1-35.3    Matrix_1.6-5    
-
-loaded via a namespace (and not attached):
- [1] gridExtra_2.3       rlang_1.1.3         magrittr_2.0.3      compiler_4.3.2      mgcv_1.9-0          vctrs_0.6.5         pkgconfig_2.0.3    
- [8] fastmap_1.1.1       backports_1.4.1     magic_1.6-1         utf8_1.2.4          rmarkdown_2.24      tzdb_0.4.0          nloptr_2.0.3       
-[15] itertools_0.1-3     xfun_0.40           cachem_1.0.8        jsonlite_1.8.8      broom_1.0.5         parallel_4.3.2      cluster_2.1.4      
-[22] R6_2.5.1            stringi_1.8.3       car_3.1-2           boot_1.3-28.1       brio_1.1.5          rcdd_1.5-2          numDeriv_2016.8-1.1
-[29] Rcpp_1.0.12         iterators_1.0.14    knitr_1.43          snow_0.4-4          picante_1.8.2       splines_4.3.2       timechange_0.2.0   
-[36] tidyselect_1.2.1    rstudioapi_0.15.0   abind_1.4-5         yaml_2.3.7          codetools_0.2-19    minpack.lm_1.2-3    withr_3.0.0        
-[43] evaluate_0.23       pillar_1.9.0        carData_3.0-5       foreach_1.5.2       geometry_0.4.7      generics_0.1.3      rprojroot_2.0.4    
-[50] hms_1.1.3           munsell_0.5.1       scales_1.3.0        minqa_1.2.5         glue_1.7.0          lazyeval_0.2.2      tools_4.3.2        
-[57] data.table_1.15.0   ggsignif_0.6.4      fastmatch_1.1-3     cowplot_1.1.1       grid_4.3.2          ape_5.7-1           colorspace_2.1-0   
-[64] nlme_3.1-163        cli_3.6.2           fansi_1.0.6         viridisLite_0.4.2   doSNOW_1.0.20       gtable_0.3.5        rstatix_0.7.2      
-[71] digest_0.6.35       htmlwidgets_1.6.2   memoise_2.0.1       htmltools_0.5.6     lifecycle_1.0.4     httr_1.4.7          MASS_7.3-60 
+The R session includes a variety of base and additional packages. The base packages are `stats`, `graphics`, `grDevices`, `utils`, `datasets`, `methods`, and `base`. The other attached packages and their respective versions are: `conflicted` 1.2.0, `combinat` 0.0-8, `Rmisc` 1.5.1, `betapart` 1.6, `vegan` 2.6-4, `lattice` 0.21-9, `permute` 0.9-7, `plotly` 4.10.2, `ggpubr` 0.6.0, `lubridate` 1.9.2, `forcats` 1.0.0, `stringr` 1.5.1, `dplyr` 1.1.4, `purrr` 1.0.2, `readr` 2.1.4, `tidyr` 1.3.1, `tibble` 3.2.1, `ggplot2` 3.5.1, `tidyverse` 2.0.0, `plyr` 1.8.8, `renv` 1.0.2, `testthat` 3.2.1.1, `here` 1.0.1, `lmerTest` 3.1-3, `lme4` 1.1-35.3, and `Matrix` 1.6-5. Additionally, the following packages are loaded via a namespace but not attached: `gridExtra` 2.3, `rlang` 1.1.3, `magrittr` 2.0.3, `compiler` 4.3.2, `mgcv` 1.9-0, `vctrs` 0.6.5, `pkgconfig` 2.0.3, `fastmap` 1.1.1, `backports` 1.4.1, `magic` 1.6-1, `utf8` 1.2.4, `rmarkdown` 2.24, `tzdb` 0.4.0, `nloptr` 2.0.3, `itertools` 0.1-3, `xfun` 0.40, `cachem` 1.0.8, `jsonlite` 1.8.8, `broom` 1.0.5, `parallel` 4.3.2, `cluster` 2.1.4, `R6` 2.5.1, `stringi` 1.8.3, `car` 3.1-2, `boot` 1.3-28.1, `brio` 1.1.5, `rcdd` 1.5-2, `numDeriv` 2016.8-1.1, `Rcpp` 1.0.12, `iterators` 1.0.14, `knitr` 1.43, `snow` 0.4-4, `picante` 1.8.2, `splines` 4.3.2, `timechange` 0.2.0, `tidyselect` 1.2.1, `rstudioapi` 0.15.0, `abind` 1.4-5, `yaml` 2.3.7, `codetools` 0.2-19, `minpack.lm` 1.2-3, `withr` 3.0.0, `evaluate` 0.23, `pillar` 1.9.0, `carData` 3.0-5, `foreach` 1.5.2, `geometry` 0.4.7, `generics` 0.1.3, `rprojroot` 2.0.4, `hms` 1.1.3, `munsell` 0.5.1, `scales` 1.3.0, `minqa` 1.2.5, `glue` 1.7.0, `lazyeval` 0.2.2, `tools` 4.3.2, `data.table` 1.15.0, `ggsignif` 0.6.4, `fastmatch` 1.1-3, `cowplot` 1.1.1, `grid` 4.3.2, `ape` 5.7-1, `colorspace` 2.1-0, `nlme` 3.1-163, `cli` 3.6.2, `fansi` 1.0.6, `viridisLite` 0.4.2, `doSNOW` 1.0.20, `gtable` 0.3.5, `rstatix` 0.7.2, `digest` 0.6.35, `htmlwidgets` 1.6.2, `memoise` 2.0.1, `htmltools` 0.5.6, `lifecycle` 1.0.4, `httr` 1.4.7, and `MASS` 7.3-60.
 
 ## Contact Information
 
