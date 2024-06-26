@@ -18,9 +18,11 @@ This repository contains data and code from a microcosm experiment designed to i
 -   5_images: Images
 -   6_results: Results saved during the analysis
 -   7_paper: Files to publish the paper
+-   renv: Files related to the r package `renv`. This package enables you to restore the exact package versions used when working on this project.
 -   library.bib: Bibliography database file
 -   master.Rmd: Master file to produce the R markdown with the analysis of the data
 -   PatchSize.Rproj: PatchSize project on RStudio
+-   [renv.lock](https://github.com/Emanuele-Giacomuzzo/PatchSize/blob/master/renv.lock "renv.lock"): File from the package `renv` which contains information on which packages (and versions) were used when working on this project.
 -   results_high_disturbance.html: Results of the analysis for the high disturbance treatment
 -   results_low_disturbance.html: Results of the analysis for the low disturbance treatment
 
