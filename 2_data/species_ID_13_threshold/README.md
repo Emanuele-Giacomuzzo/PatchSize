@@ -43,4 +43,4 @@ The confusion matrix represents how often each species is misidentified in the s
 - Spi:  _Spirostomum sp._ 
 - Spi_te:  _Spirostomum teres_ 
 - Tet:  _Tetrahymena cf. pyriformis_ 
-- indiv_misclass_percent: percentage of times in which the individual was misclassified
+- indiv_misclass_percent: percentage of times in which an individual of that protist species was misclassified
