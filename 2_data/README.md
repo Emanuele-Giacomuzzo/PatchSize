@@ -24,3 +24,18 @@ This directory is organised into the following folders and files:
 -   species_ID_40_threshold: Contains data for each individual detected in the videos at each time point, with species identified. Videos were analysed with the threshold set to 40.
 -   culture_info.csv: Provides information about each ecosystem.
 -   water_addition: Details the amount of water added to ecosystems to compensate for evaporation.
+
+# Ecosystem info
+
+The columns in the ecosystems_info file represent the following (this file uses two synonyms for ecosystem-patch and culture):
+
+culture_ID: ID of the ecosystem\
+system_nr: ID of the system (a system is either an unconnected ecosystem or a connected meta-ecosystem; in other words, an unconnected ecosystem has its own system number, while two connected ecosystems share the same system number)\
+treatment_replicate: treatment replicate\
+disturbance: level of disturbance\
+disturbance_volume: volume of the ecosystem that was disturbed (ml)\
+patch_size: size of the ecosystem (S = small, M = medium, L = large)\
+patch_size_volume: size of the ecosystem (ml) \
+metaecosystem: indicates whether the ecosystem is part of a connected meta-ecosystem\
+metaecosystem_type: type of connected meta-ecosystem the ecosystem is part of (S_S = small-small, M_M = medium-medium, L_L = large-large, S_L = small-large)\
+eco_metaeco_type: ecosystem type followed by the connected meta-ecosystem it is part of in parentheses
