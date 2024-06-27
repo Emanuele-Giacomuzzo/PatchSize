@@ -19,7 +19,7 @@ editor_options:
 ---
 
 ```{r echo=FALSE}
-disturbance_global_input = "high"
+disturbance_global_input = "low"
 print(paste("!!", disturbance_global_input, "!!", "The experiment investigate the effects of two disturbance levels: low and high. To make it easier to interpet, we showcase only one of the two disturbance levels. In this document we showcase only the", disturbance_global_input, "disturbance)"))
 ```
 
@@ -820,5 +820,4 @@ response_variable = "median_body_area_µm2"
 ## References
 
 ```{r echo=FALSE, message=FALSE}
-save.image(file = here("4_environments", "end.RData"))
-```
+save.image(file = here("4_environments", "environment_at_the_end_of_analysis.RData"))
