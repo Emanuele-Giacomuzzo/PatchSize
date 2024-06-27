@@ -27,11 +27,11 @@ If you want to change a certain part of the code using the following code in Uni
 
 ```{r eval = FALSE, class.source = 'fold-show'}
 #Rmd script
-cd /Users/ema/Documents/GitHub/PatchSize/r_files
+cd /Users/Ema/Documents/Github/PatchSize/3_r_files
 sed -i '' 's/old_string/new_string/g' *.Rmd
 
 #R script
-cd /Users/ema/Documents/GitHub/PatchSize/r_files/functions
+cd /Users/ema/Documents/GitHub/PatchSize/3_r_files/functions
 sed -i '' 's/old_string/new_string/g' *.R
 ```
 
@@ -43,7 +43,7 @@ dput()
 
 ### Crashed cultures
 
-The only type of patch where all cultures crashed was small connected to small at high disturbance.
+The only type of ecosystem where all cultures crashed was small connected to small at high disturbance.
 
 ### R version
 

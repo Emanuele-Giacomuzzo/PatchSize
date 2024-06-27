@@ -1,11 +1,11 @@
-plot.patches.replicates = function(patch_type_input,
+plot.ecosystems.replicates = function(ecosystem_type_input,
                                     response_variable) {
   
-  patch_type_input <- patch_type_input[order(match(patch_type_input, 
-                                                   patch_types_ordered))]
+  ecosystem_type_input <- ecosystem_type_input[order(match(ecosystem_type_input, 
+                                                   ecosystem_types_ordered))]
 
-    ds_patches %>%
-    filter(patch_type %in% patch_type_input) %>%
+    ds_ecosystems %>%
+    filter(ecosystem_type %in% ecosystem_type_input) %>%
     ggplot(
       aes(
         x = day,
@@ -13,7 +13,7 @@ plot.patches.replicates = function(patch_type_input,
         group = culture_ID,
         fill = culture_ID,
         color = culture_ID,
-        linetype = patch_type
+        linetype = ecosystem_type
       )
     ) +
     geom_line(stat = "summary", fun = "mean") +
@@ -28,7 +28,7 @@ plot.patches.replicates = function(patch_type_input,
       y = axis_names$axis_name[axis_names$variable == response_variable],
       linetype = ""
     ) +
-    scale_x_continuous(breaks = unique(ds_patches$day)) +
+    scale_x_continuous(breaks = unique(ds_ecosystems$day)) +
     theme_bw() +
     theme(
       panel.grid.major = element_blank(),

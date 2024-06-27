@@ -1,4 +1,4 @@
-plot.patches.size.response.boxplots = function(metaecosystem_input,
+plot.ecosystems.size.response.boxplots = function(metaecosystem_input,
                                              trophic_type_input,
                                              flow_input,
                                              response_variable) {
@@ -17,7 +17,7 @@ plot.patches.size.response.boxplots = function(metaecosystem_input,
     colour_highest = NA
   }
   
-  filtered_data = ds_patches %>%
+  filtered_data = ds_ecosystems %>%
     filter(metaecosystem == metaecosystem_input)
   
   if (trophic_type_input != "NA" & flow_input != "NA") {
@@ -36,14 +36,14 @@ plot.patches.size.response.boxplots = function(metaecosystem_input,
         filter(time_point == time_point_input) %>%
         ggplot(
           aes(
-            x = patch_size_ml,
+            x = ecosystem_size_ml,
             y = get(response_variable),
-            group = patch_size_ml,
-            fill = patch_size_ml
+            group = ecosystem_size_ml,
+            fill = ecosystem_size_ml
           )
         ) +
         geom_boxplot() +
-        labs(x = axis_names$axis_name[axis_names$variable == "patch_size_ml"],
+        labs(x = axis_names$axis_name[axis_names$variable == "ecosystem_size_ml"],
              y = axis_names$axis_name[axis_names$variable == response_variable]) +
         theme_bw() +
         theme(

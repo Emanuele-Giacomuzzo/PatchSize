@@ -12,7 +12,7 @@ We want here to plot the final paper version of the biodiversity and productivit
 
 # Define ecosystems you want to plot.
 
-patch_type_input = c("Small connected to large",
+ecosystem_type_input = c("Small connected to large",
                      "Small connected to small",
                      "Small unconnected",
                      "Large connected to small",
@@ -26,23 +26,23 @@ patch_type_input = c("Small connected to large",
 
 plot.single.plot = function(response_variable){
   
-  ds_patches %>%
-    filter(patch_type %in% patch_type_input,
+  ds_ecosystems %>%
+    filter(ecosystem_type %in% ecosystem_type_input,
            !is.na(!!sym(response_variable))) %>%
     summarySE(measurevar = response_variable,
-              groupvars = c("day", "time_point", "patch_type", "patch_size", "connection")) %>%
+              groupvars = c("day", "time_point", "ecosystem_type", "ecosystem_size", "connection")) %>%
     ggplot(aes(x = day,
                y = get(response_variable),
-               group = interaction(day, patch_type),
-               color = patch_type,
-               linetype = patch_type)) +
+               group = interaction(day, ecosystem_type),
+               color = ecosystem_type,
+               linetype = ecosystem_type)) +
     geom_point(stat = "summary",
                fun = "mean",
                position = position_dodge(dodging),
                size = treatment_points_size) +
     geom_line(stat = "summary",
               fun = "mean",
-              aes(group = patch_type),
+              aes(group = ecosystem_type),
               position = position_dodge(dodging),
               linewidth = treatment_lines_linewidth) +
     geom_errorbar(aes(ymax = get(response_variable) + ci,
@@ -122,7 +122,7 @@ p_combined = ggarrange(plot.single.plot("shannon") +
                               size = paper_labels_size) +
                          font("ylab", 
                               size = paper_labels_size) +
-                         scale_x_continuous(breaks = unique(ds_patches$day)),
+                         scale_x_continuous(breaks = unique(ds_ecosystems$day)),
                        heights = c(0.8, 0.8, 1),
                        nrow = 2,
                        align = "v",

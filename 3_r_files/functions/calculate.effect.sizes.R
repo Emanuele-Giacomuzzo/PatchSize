@@ -23,7 +23,7 @@ calculate.effect.sizes = function(ds,
                 sample_size = n()) %>%
       rename_with( ~ paste0(variable_input, "_sample_size"), matches("sample_size"))
     
-    #ds_effect_size[[variable_nr]] %>% filter(patch_size == "Small", day == 28, disturbance == "high") %>% View()
+    #ds_effect_size[[variable_nr]] %>% filter(ecosystem_size == "Small", day == 28, disturbance == "high") %>% View()
     
   }
   
@@ -59,7 +59,7 @@ calculate.effect.sizes = function(ds,
         treatment_row = ds_effect_size %>%
           filter(
             disturbance == disturbance_input,
-            patch_type == treatment_input,
+            ecosystem_type == treatment_input,
             time_point == time_point_input
           )
         
@@ -68,7 +68,7 @@ calculate.effect.sizes = function(ds,
         control_row = ds_effect_size %>%
           filter(
             disturbance == disturbance_input,
-            patch_type == control_input,
+            ecosystem_type == control_input,
             time_point == time_point_input
           )
         
@@ -83,17 +83,17 @@ calculate.effect.sizes = function(ds,
             control_row[[paste0(response_variable, "_sample_size")]]
           )
           
-          ds_effect_size[[paste0(response_variable, "_d")]][ds_effect_size$patch_type == treatment_input &
+          ds_effect_size[[paste0(response_variable, "_d")]][ds_effect_size$ecosystem_type == treatment_input &
                                                               ds_effect_size$time_point == time_point_input &
                                                               ds_effect_size$disturbance == disturbance_input] =
             hedges_d$d
           
-          ds_effect_size[[paste0(response_variable, "_d_upper")]][ds_effect_size$patch_type == treatment_input &
+          ds_effect_size[[paste0(response_variable, "_d_upper")]][ds_effect_size$ecosystem_type == treatment_input &
                                                                     ds_effect_size$time_point == time_point_input &
                                                                     ds_effect_size$disturbance == disturbance_input] =
             hedges_d$upper_CI
           
-          ds_effect_size[[paste0(response_variable, "_d_lower")]][ds_effect_size$patch_type == treatment_input &
+          ds_effect_size[[paste0(response_variable, "_d_lower")]][ds_effect_size$ecosystem_type == treatment_input &
                                                                     ds_effect_size$time_point == time_point_input &
                                                                     ds_effect_size$disturbance == disturbance_input] =
             hedges_d$lower_CI

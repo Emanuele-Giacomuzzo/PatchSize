@@ -38,7 +38,7 @@ ds_for_evaporation %>%
 
 ds_for_evaporation %>%
   filter(disturbance == disturbance) %>%
-  ggplot(aes(x = as.character(patch_size),
+  ggplot(aes(x = as.character(ecosystem_size),
              y = evaporation)) + 
   geom_boxplot(width = boxplot_width) + 
   labs(x = "Patch size", 

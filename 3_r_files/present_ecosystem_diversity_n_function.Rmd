@@ -20,7 +20,7 @@ y_min = -0.8
 y_max = 3
 
 
-patch_type_all = c("Small connected to large",
+ecosystem_type_all = c("Small connected to large",
                    "Small unconnected",
                    "Small connected to small",
                    "Large connected to small",
@@ -34,14 +34,14 @@ patch_type_all = c("Small connected to large",
 
 plots = NULL
 
-plots[[1]] = plot.patches.empty.presentations(y_min_alpha,
+plots[[1]] = plot.ecosystems.empty.presentations(y_min_alpha,
                                               y_max_alpha,
                                               "shannon")
 
-for (i in 1:length(patch_type_all)+1) {
+for (i in 1:length(ecosystem_type_all)+1) {
   
-  plots[[i+1]] = plot.patches.points.presentations(data = ds_patches,
-                                                   patch_type_input = patch_type_all[1:i],
+  plots[[i+1]] = plot.ecosystems.points.presentations(data = ds_ecosystems,
+                                                   ecosystem_type_input = ecosystem_type_all[1:i],
                                                    response_variable) +
     theme(plot.margin = unit(c(ggarrange_margin_left,
                                ggarrange_margin_right,
@@ -63,7 +63,7 @@ for (i in 1:length(patch_type_all)+1) {
 p_combined = NULL
 p_combined[[1]] = plots[[1]]
 
-for(i in 1:length(patch_type_all)+1){
+for(i in 1:length(ecosystem_type_all)+1){
   
   p_combined[[i]] = ggarrange(
   plots[[i]] +
@@ -83,13 +83,13 @@ for(i in 1:length(patch_type_all)+1){
 
 # Save combined plots
 
-for(i in 1:length(patch_type_all)+1){
+for(i in 1:length(ecosystem_type_all)+1){
   
   png(file = here("6_results", 
                   "figures", 
                   disturbance_global_input, 
                   "presentations", 
-                  paste0("patches_connected_diversity_", i, ".png")),
+                  paste0("ecosystems_connected_diversity_", i, ".png")),
       width = presentation_figure_width,
       height = presentation_figure_height,
       units = presentation_figure_units,

@@ -1,15 +1,15 @@
-plot.relationship.dominance.productivity = function(patch_type_input,
+plot.relationship.dominance.productivity = function(ecosystem_type_input,
                                                     protist_species,
                                                     protist_species_dominance) {
   
-  patch_type_input <- patch_type_input[order(match(patch_type_input, 
-                                                         patch_types_ordered))]
+  ecosystem_type_input <- ecosystem_type_input[order(match(ecosystem_type_input, 
+                                                         ecosystem_types_ordered))]
   
   for (species_input in protist_species) {
     print(
-      ds_patches %>%
+      ds_ecosystems %>%
         select(
-          patch_type,
+          ecosystem_type,
           time_point,
           bioarea_mm2_per_ml,
           protist_species_dominance
@@ -18,7 +18,7 @@ plot.relationship.dominance.productivity = function(patch_type_input,
         pivot_longer(protist_species,
                      names_to = "species",
                      values_to = "dominance") %>%
-        filter(patch_type == patch_type_input,
+        filter(ecosystem_type == ecosystem_type_input,
                species == species_input) %>%
         ggplot(aes(x = dominance,
                    y = bioarea_mm2_per_ml)) +
@@ -27,7 +27,7 @@ plot.relationship.dominance.productivity = function(patch_type_input,
         labs(title = paste0(
           species_input,
           " (Patch type = ",
-          patch_type_input,
+          ecosystem_type_input,
           ")"
         ))
     )

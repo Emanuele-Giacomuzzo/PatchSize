@@ -78,26 +78,26 @@ species_IDD_with_40_threshold = c("Ble", "Cep", "Spi")
 species_IDD_with_40_threshold_indiv_per_volume = paste0(species_IDD_with_40_threshold, "_indiv_per_volume")
 ```
 
-Parameters related to patches.
+Parameters related to ecosystems.
 
 ```{r}
-patches_to_take_off = 60 #Culture ID = 60 as it was spilled (small unconnected, high disturbance, system nr = 40)
+ecosystems_to_take_off = 60 #Culture ID = 60 as it was spilled (small unconnected, high disturbance, system nr = 40)
 culture_info = read.csv(here("2_data", "culture_info.csv"), header = TRUE)
 
-columns_patches = c("time_point",
+columns_ecosystems = c("time_point",
                     "day",
                     "culture_ID",
                     "system_nr",
                     "disturbance",
-                    "patch_type",
-                    "patch_size",
-                    "patch_size_ml",
-                    "size_connected_patch",
+                    "ecosystem_type",
+                    "ecosystem_size",
+                    "ecosystem_size_ml",
+                    "size_connected_ecosystem",
                     "metaecosystem",
                     "metaecosystem_type")
-columns_treatments = columns_patches[!columns_patches %in% c("system_nr", "culture_ID")]
+columns_treatments = columns_ecosystems[!columns_ecosystems %in% c("system_nr", "culture_ID")]
 
-variables_patches = c("bioarea_mm2_per_ml",
+variables_ecosystems = c("bioarea_mm2_per_ml",
                       "bioarea_tot_mm2",
                       "indiv_per_ml",
                       "indiv_tot",
@@ -110,9 +110,9 @@ variables_patches = c("bioarea_mm2_per_ml",
                       paste0(protist_species, "_indiv_per_ml"),
                       paste0(protist_species, "_tot_indiv"),
                       paste0(protist_species_indiv_per_ml, "_dominance"))
-baseline_columns = paste0("baseline_", variables_patches)
+baseline_columns = paste0("baseline_", variables_ecosystems)
 
-patch_types_ordered = c("Small connected to large",
+ecosystem_types_ordered = c("Small connected to large",
                         "Small connected to small",
                         "Small unconnected",
                         "Medium connected to medium",
@@ -135,14 +135,14 @@ treatments_and_controls = data.frame(treatment = c("Small connected to small",
 n_treatments = length(unique(treatments_and_controls$treatment))
 n_controls = length(unique(treatments_and_controls$control))
 n_replicates = 5
-n_patch_types = 8
+n_ecosystem_types = 8
 ```
 
 Parameters related to size classes.
 
 ```{r}
 n_size_classes = 12
-columns_classes = c(columns_patches,
+columns_classes = c(columns_ecosystems,
                     "size_class_n",
                     "mean_class_area_µm2")
 ```
@@ -151,7 +151,7 @@ Parameters related to meta-ecosystems.
 
 ```{r}
 metaecosystems_to_take_off = culture_info %>%
-  filter(culture_ID %in% patches_to_take_off) %>%
+  filter(culture_ID %in% ecosystems_to_take_off) %>%
   pull(system_nr) %>%
   unique
 
@@ -186,7 +186,7 @@ Name of the axes per response variable.
 axis_names = data.frame(variable = NA,
                         axis_name= NA) %>%
   add_row(variable = "day", axis_name = "Time (day)") %>%
-  add_row(variable = "patch_size_ml", axis_name = "Patch size (ml)") %>%
+  add_row(variable = "ecosystem_size_ml", axis_name = "Patch size (ml)") %>%
   add_row(variable = "log_size_class", axis_name = "Log size (μm2)") %>%
   add_row(variable = "class_indiv_per_µl", axis_name = "Density (ind/ml)") %>%
   add_row(variable = "bioarea_mm2_per_ml", axis_name = "Biomass (mm2/ml)") %>%

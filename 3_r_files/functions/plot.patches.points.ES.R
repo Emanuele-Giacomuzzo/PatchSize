@@ -1,26 +1,26 @@
-plot.patches.points.ES = function(ds_patches_effect_size,
-                                  patch_type_input,
+plot.ecosystems.points.ES = function(ds_ecosystems_effect_size,
+                                  ecosystem_type_input,
                                   response_variable) {
   
-  patch_type_input <- patch_type_input[order(match(patch_type_input, 
-                                                   patch_types_ordered))]
+  ecosystem_type_input <- ecosystem_type_input[order(match(ecosystem_type_input, 
+                                                   ecosystem_types_ordered))]
   
-  ds_patches_effect_size_filtered = ds_patches_effect_size %>%
+  ds_ecosystems_effect_size_filtered = ds_ecosystems_effect_size %>%
     filter(!time_point == 0,
-           patch_type %in% patch_type_input)
+           ecosystem_type %in% ecosystem_type_input)
   
-  ds_patches_effect_size_filtered$patch_type <- factor(ds_patches_effect_size_filtered$patch_type, 
-                                                       levels = patch_type_input)
+  ds_ecosystems_effect_size_filtered$ecosystem_type <- factor(ds_ecosystems_effect_size_filtered$ecosystem_type, 
+                                                       levels = ecosystem_type_input)
   
-  ds_patches_effect_size_filtered %>%
+  ds_ecosystems_effect_size_filtered %>%
     filter(!time_point == 0,
-           patch_type %in% patch_type_input) %>%
+           ecosystem_type %in% ecosystem_type_input) %>%
     ggplot(aes(
       x = day,
       y = get(response_variable),
-      color = patch_type,
-      group = interaction(day, patch_type),
-      linetype = patch_type
+      color = ecosystem_type,
+      group = interaction(day, ecosystem_type),
+      linetype = ecosystem_type
     )) +
     geom_point(stat = "summary",
                fun = "mean",
@@ -28,7 +28,7 @@ plot.patches.points.ES = function(ds_patches_effect_size,
     geom_line(
       stat = "summary",
       fun = "mean",
-      aes(group = patch_type),
+      aes(group = ecosystem_type),
       position = position_dodge(dodging),
       linewidth = treatment_lines_linewidth
     ) + 
@@ -45,29 +45,29 @@ plot.patches.points.ES = function(ds_patches_effect_size,
          color = "") +
     scale_linetype_manual(
       values = c(
-        parameters_treatments$linetype[parameters_treatments$treatment == patch_type_input[1]][1],
-        parameters_treatments$linetype[parameters_treatments$treatment == patch_type_input[2]][1],
-        parameters_treatments$linetype[parameters_treatments$treatment == patch_type_input[3]][1],
-        parameters_treatments$linetype[parameters_treatments$treatment == patch_type_input[4]][1],
-        parameters_treatments$linetype[parameters_treatments$treatment == patch_type_input[5]][1],
-        parameters_treatments$linetype[parameters_treatments$treatment == patch_type_input[6]][1],
-        parameters_treatments$linetype[parameters_treatments$treatment == patch_type_input[7]][1],
-        parameters_treatments$linetype[parameters_treatments$treatment == patch_type_input[8]][1]
+        parameters_treatments$linetype[parameters_treatments$treatment == ecosystem_type_input[1]][1],
+        parameters_treatments$linetype[parameters_treatments$treatment == ecosystem_type_input[2]][1],
+        parameters_treatments$linetype[parameters_treatments$treatment == ecosystem_type_input[3]][1],
+        parameters_treatments$linetype[parameters_treatments$treatment == ecosystem_type_input[4]][1],
+        parameters_treatments$linetype[parameters_treatments$treatment == ecosystem_type_input[5]][1],
+        parameters_treatments$linetype[parameters_treatments$treatment == ecosystem_type_input[6]][1],
+        parameters_treatments$linetype[parameters_treatments$treatment == ecosystem_type_input[7]][1],
+        parameters_treatments$linetype[parameters_treatments$treatment == ecosystem_type_input[8]][1]
       )
     ) +
     scale_color_manual(
       values = c(
-        parameters_treatments$colour[parameters_treatments$treatment == patch_type_input[1]][1],
-        parameters_treatments$colour[parameters_treatments$treatment == patch_type_input[2]][1],
-        parameters_treatments$colour[parameters_treatments$treatment == patch_type_input[3]][1],
-        parameters_treatments$colour[parameters_treatments$treatment == patch_type_input[4]][1],
-        parameters_treatments$colour[parameters_treatments$treatment == patch_type_input[5]][1],
-        parameters_treatments$colour[parameters_treatments$treatment == patch_type_input[6]][1],
-        parameters_treatments$colour[parameters_treatments$treatment == patch_type_input[7]][1],
-        parameters_treatments$colour[parameters_treatments$treatment == patch_type_input[8]][1]
+        parameters_treatments$colour[parameters_treatments$treatment == ecosystem_type_input[1]][1],
+        parameters_treatments$colour[parameters_treatments$treatment == ecosystem_type_input[2]][1],
+        parameters_treatments$colour[parameters_treatments$treatment == ecosystem_type_input[3]][1],
+        parameters_treatments$colour[parameters_treatments$treatment == ecosystem_type_input[4]][1],
+        parameters_treatments$colour[parameters_treatments$treatment == ecosystem_type_input[5]][1],
+        parameters_treatments$colour[parameters_treatments$treatment == ecosystem_type_input[6]][1],
+        parameters_treatments$colour[parameters_treatments$treatment == ecosystem_type_input[7]][1],
+        parameters_treatments$colour[parameters_treatments$treatment == ecosystem_type_input[8]][1]
       )
     ) + 
-    scale_x_continuous(breaks = unique(ds_patches_effect_size$day)) +
+    scale_x_continuous(breaks = unique(ds_ecosystems_effect_size$day)) +
     geom_vline(
       xintercept = resource_flow_days,
       linetype = resource_flow_line_type,

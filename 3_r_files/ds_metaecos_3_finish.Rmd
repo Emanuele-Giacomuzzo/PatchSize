@@ -8,7 +8,7 @@ editor_options:
 
 -   Each row is a meta-ecosystem.
 
--   It contains also "fake" meta-ecosystems which I created from unconnected patches (`metaecosystem type = Small-Large unconnected` & `metaecosystem type = Medium-Medium unconnected`).
+-   It contains also "fake" meta-ecosystems which I created from unconnected ecosystems (`metaecosystem type = Small-Large unconnected` & `metaecosystem type = Medium-Medium unconnected`).
 
 - Warning appear after the following code, as:
 (i) alpha diversity is computed for a culture that is totally crashed, so it has not meaning.
@@ -20,17 +20,17 @@ editor_options:
 
 ds_metaecosystems = NULL
 row_n = 0
-for (combination in 1:n_patches_combinations) {
+for (combination in 1:n_ecosystems_combinations) {
   for (time_point_input in time_points) {
     row_n = row_n + 1
     
     current_day = sampling_days[time_point_input + 1]
-    current_system_nr = patch_combinations[combination, ]$system_nr
-    current_combination = patch_combinations[combination, ]$patches_combined
-    current_disturbance = patch_combinations[combination, ]$disturbance
-    current_metaeco_type = patch_combinations[combination, ]$metaecosystem_type
-    current_IDs = c(patch_combinations[combination, ]$ID_first_patch,
-                    patch_combinations[combination, ]$ID_second_patch)
+    current_system_nr = ecosystem_combinations[combination, ]$system_nr
+    current_combination = ecosystem_combinations[combination, ]$ecosystems_combined
+    current_disturbance = ecosystem_combinations[combination, ]$disturbance
+    current_metaeco_type = ecosystem_combinations[combination, ]$metaecosystem_type
+    current_IDs = c(ecosystem_combinations[combination, ]$ID_first_ecosystem,
+                    ecosystem_combinations[combination, ]$ID_second_ecosystem)
     
     if (current_system_nr %in% metaecosystems_to_take_off)
       next
@@ -38,47 +38,47 @@ for (combination in 1:n_patches_combinations) {
     if (current_IDs[1] == current_IDs[2])
       next
     
-    species_vector_two_patches = ds_patches %>%
+    species_vector_two_ecosystems = ds_ecosystems %>%
       filter(time_point == time_point_input,
              culture_ID %in% current_IDs) %>%
       ungroup() %>%
       select(all_of(protist_species_indiv_per_ml))
     
-    absence_presence_two_patches <-
-      ifelse(species_vector_two_patches > 0, 1, 0)
+    absence_presence_two_ecosystems <-
+      ifelse(species_vector_two_ecosystems > 0, 1, 0)
     
-    #Alpha diversity: Shannon (mean between the two patches)
-    shannon_patch_1 = diversity(species_vector_two_patches[1, ], index = "shannon")
-    shannon_patch_2 = diversity(species_vector_two_patches[2, ], index = "shannon")
-    shannon_value = (shannon_patch_1 + shannon_patch_2) / 2
+    #Alpha diversity: Shannon (mean between the two ecosystems)
+    shannon_ecosystem_1 = diversity(species_vector_two_ecosystems[1, ], index = "shannon")
+    shannon_ecosystem_2 = diversity(species_vector_two_ecosystems[2, ], index = "shannon")
+    shannon_value = (shannon_ecosystem_1 + shannon_ecosystem_2) / 2
     
-    #Alpha diversity: Species richness (mean between the two patches)
-    richness_patch_1 = specnumber(species_vector_two_patches[1, ])
-    richness_patch_2 = specnumber(species_vector_two_patches[2, ])
-    mean_richness_value = (richness_patch_1 + richness_patch_2) / 2
+    #Alpha diversity: Species richness (mean between the two ecosystems)
+    richness_ecosystem_1 = specnumber(species_vector_two_ecosystems[1, ])
+    richness_ecosystem_2 = specnumber(species_vector_two_ecosystems[2, ])
+    mean_richness_value = (richness_ecosystem_1 + richness_ecosystem_2) / 2
     
     #Beta diversity: Jaccard
-    jaccard_index_value = vegdist(species_vector_two_patches,
+    jaccard_index_value = vegdist(species_vector_two_ecosystems,
                                   method = "jaccard") %>%
       as.numeric()
     
     #Beta diversity: Bray Curtis
-    bray_curtis_value = vegdist(species_vector_two_patches,
+    bray_curtis_value = vegdist(species_vector_two_ecosystems,
                                 method = "bray") %>%
       as.numeric()
     
     #Beta diversity: partitioning of beta diversity from Sorensen index into turnover (Simpson pair-wise dissimilarity) and nestedness (nestedness-fraction of Sorensen)
-    betapart_core_object = betapart.core(absence_presence_two_patches)
+    betapart_core_object = betapart.core(absence_presence_two_ecosystems)
     beta_spatial_turnover_value = beta.pair(betapart_core_object)$beta.sim %>% as.double()
     beta_nestedness_value = beta.pair(betapart_core_object)$beta.sne %>% as.double()
     beta_total_value = beta.pair(betapart_core_object)$beta.sor %>% as.double()
     
     #Gamma diversity: Meta-ecosystem richness
-    metaecosystem_richness_value = colSums(species_vector_two_patches) %>%
+    metaecosystem_richness_value = colSums(species_vector_two_ecosystems) %>%
       specnumber()
     
     #Put everything together
-    ds_metaecosystems[[row_n]] = ds_patches %>%
+    ds_metaecosystems[[row_n]] = ds_ecosystems %>%
       filter(culture_ID %in% current_IDs,
              time_point == time_point_input) %>%
       summarise(
@@ -97,7 +97,7 @@ for (combination in 1:n_patches_combinations) {
       ) %>%
       mutate(
         system_nr = current_system_nr,
-        patches_combined = current_combination,
+        ecosystems_combined = current_combination,
         metaecosystem_type = current_metaeco_type,
         disturbance = current_disturbance,
         time_point = time_point_input,
@@ -123,7 +123,7 @@ ds_metaecosystems = ds_metaecosystems %>%
     time_point,
     day,
     system_nr,
-    patches_combined,
+    ecosystems_combined,
     disturbance,
     metaecosystem_type,
     mean_shannon,
@@ -141,7 +141,7 @@ ds_metaecosystems = ds_metaecosystems %>%
 
 ```{r}
 expect_equal(nrow(ds_metaecosystems), 
-             n_time_points * n_patches_combinations)
+             n_time_points * n_ecosystems_combinations)
 ```
 
 ```{r}
@@ -157,9 +157,9 @@ ds_metaecosystems$connection <-
 ```
 
 ```{r}
-#Add column patch size symmetry
+#Add column ecosystem size symmetry
 
-ds_metaecosystems$patch_size_symmetry <-
+ds_metaecosystems$ecosystem_size_symmetry <-
   ifelse(
     ds_metaecosystems$metaecosystem_type %in% c("Small-Large unconnected",
                                                 "Small-Large meta-ecosystem"),

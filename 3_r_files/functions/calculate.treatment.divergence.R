@@ -1,5 +1,5 @@
 calculate.treatment.divergence = function() {
-  ds_patches$beta_diversity_from_unconnected = NA
+  ds_ecosystems$beta_diversity_from_unconnected = NA
   for (time_point_input in time_points) {
     
     for (culture_ID_treatment in 1:n_cultures) {
@@ -7,19 +7,19 @@ calculate.treatment.divergence = function() {
       print("culture ID")
       print(culture_ID_treatment)
       
-      if(culture_ID_treatment %in% patches_to_take_off){
+      if(culture_ID_treatment %in% ecosystems_to_take_off){
         next
       }
       
-      if(unique(ds_patches$metaecosystem[ds_patches$culture_ID == culture_ID_treatment]) == "no"){
+      if(unique(ds_ecosystems$metaecosystem[ds_ecosystems$culture_ID == culture_ID_treatment]) == "no"){
         next
       }
       
-      treatment_patch_type = unique(ds_patches$patch_type[ds_patches$culture_ID == culture_ID_treatment])
-      control_patch_type = treatments_and_controls$control[treatments_and_controls$treatment == treatment_patch_type]
-      disturbance_input = unique(ds_patches$disturbance[ds_patches$culture_ID == culture_ID_treatment])
+      treatment_ecosystem_type = unique(ds_ecosystems$ecosystem_type[ds_ecosystems$culture_ID == culture_ID_treatment])
+      control_ecosystem_type = treatments_and_controls$control[treatments_and_controls$treatment == treatment_ecosystem_type]
+      disturbance_input = unique(ds_ecosystems$disturbance[ds_ecosystems$culture_ID == culture_ID_treatment])
       
-      treatment_species_vector = ds_patches %>%
+      treatment_species_vector = ds_ecosystems %>%
         filter(time_point == time_point_input,
                culture_ID == culture_ID_treatment) %>%
         select(all_of(protist_species_indiv_per_ml))
@@ -30,8 +30,8 @@ calculate.treatment.divergence = function() {
       expect_equal(ncol(treatment_species_vector),
                    length(protist_species))
       
-      control_culture_IDs = ds_patches %>%
-        filter(patch_type == control_patch_type,
+      control_culture_IDs = ds_ecosystems %>%
+        filter(ecosystem_type == control_ecosystem_type,
                disturbance == disturbance_input) %>%
         select(culture_ID) %>%
         unique() %>%
@@ -42,13 +42,13 @@ calculate.treatment.divergence = function() {
       
       for (culture_ID_control in control_culture_IDs) {
         
-        if(culture_ID_treatment %in% patches_to_take_off){
+        if(culture_ID_treatment %in% ecosystems_to_take_off){
           next
         }
         
         row_pairwise_bray_curtis = row_pairwise_bray_curtis + 1
         
-        control_species_vector = ds_patches %>%
+        control_species_vector = ds_ecosystems %>%
           filter(time_point == time_point_input,
                  culture_ID == culture_ID_control) %>%
           select(all_of(protist_species_indiv_per_ml))
@@ -78,13 +78,13 @@ calculate.treatment.divergence = function() {
         
       }
       
-      ds_patches$beta_diversity_from_unconnected[ds_patches$time_point == time_point_input &
-                                                ds_patches$culture_ID ==  culture_ID_treatment] =
+      ds_ecosystems$beta_diversity_from_unconnected[ds_ecosystems$time_point == time_point_input &
+                                                ds_ecosystems$culture_ID ==  culture_ID_treatment] =
         mean(pairwise_bray_curtis)
       
     }
   }
   
-  return(ds_patches)
+  return(ds_ecosystems)
   
 }

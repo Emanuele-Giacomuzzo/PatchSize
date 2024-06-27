@@ -8,7 +8,7 @@ editor_options:
 
 ### Patches information (`culture_info`)
 
-We start by importing the information about the 110 patches of the experiment.
+We start by importing the information about the 110 ecosystems of the experiment.
 
 ```{r}
 culture_info = read.csv(here("2_data", "culture_info.csv"), header = TRUE)

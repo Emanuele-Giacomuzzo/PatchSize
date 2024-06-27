@@ -6,15 +6,15 @@ date: "2023-11-30"
 
 ### Filter according to disturbance
 
-Here I'm filtering patches to have only the ones with disturbance `r disturbance_global_input`.
+Here I'm filtering ecosystems to have only the ones with disturbance `r disturbance_global_input`.
 
 ```{r}
 #Filter data sets according to the global disturbance
 ds_individuals = ds_individuals %>%
   filter(disturbance == disturbance_global_input)
-ds_patches = ds_patches %>%
+ds_ecosystems = ds_ecosystems %>%
   filter(disturbance == disturbance_global_input)
-ds_patches_effect_size = ds_patches_effect_size %>%
+ds_ecosystems_effect_size = ds_ecosystems_effect_size %>%
   filter(disturbance == disturbance_global_input)
 ds_metaecosystems = ds_metaecosystems %>%
   filter(disturbance == disturbance_global_input)

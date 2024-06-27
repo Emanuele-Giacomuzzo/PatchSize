@@ -18,7 +18,7 @@ create.classes.ds = function(ds_individuals,
     
     for (time_point_input in time_points) {
       for (culture_ID_input in 1:n_cultures) {
-        if (culture_ID_input %in% patches_to_take_off) {
+        if (culture_ID_input %in% ecosystems_to_take_off) {
           next
         }
         
@@ -36,10 +36,10 @@ create.classes.ds = function(ds_individuals,
             summarise(class_indiv_per_µl = ((sum (N_frames)) / total_frames) / volume_recorded_μl) %>%
             pull()
           
-          single_videos_rows[[row]] = ds_patches %>%
+          single_videos_rows[[row]] = ds_ecosystems %>%
             filter(time_point == time_point_input,
                    culture_ID == culture_ID_input) %>%
-            select(all_of(columns_patches)) %>%
+            select(all_of(columns_ecosystems)) %>%
             mutate(
               replicate_video = video_input,
               size_class_n = class_input,

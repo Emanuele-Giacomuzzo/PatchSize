@@ -95,6 +95,8 @@ ds_individuals = rbind(ds_individuals_t0_elongated,
 # Rename and select columns
 
 ds_individuals = ds_individuals %>% 
+  rename(ecosystem_size = patch_size,
+         ecosystem_size_volume = patch_size_volume) %>%
   select(
     disturbance,
     disturbance_volume,
@@ -105,15 +107,15 @@ ds_individuals = ds_individuals %>%
     system_nr,
     file,
     eco_metaeco_type,
-    patch_size,
-    patch_size_volume,
+    ecosystem_size,
+    ecosystem_size_volume,
     metaecosystem,
     metaecosystem_type,
     mean_area,
     N_frames
   ) %>%
-  rename(patch_size_ml = patch_size_volume,
-         patch_type = eco_metaeco_type,
+  rename(ecosystem_size_ml = ecosystem_size_volume,
+         ecosystem_type = eco_metaeco_type,
          body_area_µm2 = mean_area)
 ```
 
@@ -122,34 +124,34 @@ ds_individuals = ds_individuals %>%
 # Rename and reorder levels
 
 ds_individuals <- ds_individuals %>%
-  mutate(patch_type = case_when(patch_type == "S" ~ "Small unconnected",
-                                patch_type == "M" ~ "Medium unconnected",
-                                patch_type == "L" ~ "Large unconnected",
-                                patch_type == "S (S_S)" ~ "Small connected to small",
-                                patch_type == "S (S_L)" ~ "Small connected to large",
-                                patch_type == "M (M_M)" ~ "Medium connected to medium",
-                                patch_type == "L (S_L)" ~ "Large connected to small",
-                                patch_type == "L (L_L)" ~ "Large connected to large",
-                                TRUE ~ patch_type),
-         patch_type = factor(patch_type,
-                             levels = patch_types_ordered))
+  mutate(ecosystem_type = case_when(ecosystem_type == "S" ~ "Small unconnected",
+                                ecosystem_type == "M" ~ "Medium unconnected",
+                                ecosystem_type == "L" ~ "Large unconnected",
+                                ecosystem_type == "S (S_S)" ~ "Small connected to small",
+                                ecosystem_type == "S (S_L)" ~ "Small connected to large",
+                                ecosystem_type == "M (M_M)" ~ "Medium connected to medium",
+                                ecosystem_type == "L (S_L)" ~ "Large connected to small",
+                                ecosystem_type == "L (L_L)" ~ "Large connected to large",
+                                TRUE ~ ecosystem_type),
+         ecosystem_type = factor(ecosystem_type,
+                             levels = ecosystem_types_ordered))
 
 ds_individuals <- ds_individuals %>%
-  mutate(patch_size = case_when(patch_size == "S" ~ "Small",
-                                patch_size == "M" ~ "Medium",
-                                patch_size == "L" ~ "Large",
-                                TRUE ~ patch_type),
-         patch_size = factor(patch_size,
+  mutate(ecosystem_size = case_when(ecosystem_size == "S" ~ "Small",
+                                ecosystem_size == "M" ~ "Medium",
+                                ecosystem_size == "L" ~ "Large",
+                                TRUE ~ ecosystem_type),
+         ecosystem_size = factor(ecosystem_size,
                              levels = "Small", 
                                       "Medium", 
                                       "Large"))
 
 ds_individuals <- ds_individuals %>%
-  mutate(size_connected_patch = case_when(patch_type == "Small connected to small" ~ "Small",
-                                          patch_type == "Small connected to large" ~ "Large",
-                                          patch_type == "Medium connected to medium" ~ "Medium",
-                                          patch_type == "Large connected to large" ~ "Large",
-                                          patch_type == "Large connected to small" ~ "Small",
+  mutate(size_connected_ecosystem = case_when(ecosystem_type == "Small connected to small" ~ "Small",
+                                          ecosystem_type == "Small connected to large" ~ "Large",
+                                          ecosystem_type == "Medium connected to medium" ~ "Medium",
+                                          ecosystem_type == "Large connected to large" ~ "Large",
+                                          ecosystem_type == "Large connected to small" ~ "Small",
                                           TRUE ~ NA_character_))
 ```
 
@@ -175,11 +177,11 @@ expect_equal(nrow(videos_to_take_off),
 ds_individuals_before_taking_off_cultures = ds_individuals
 
 ds_individuals = ds_individuals %>%
-  filter(!culture_ID %in% patches_to_take_off)
+  filter(!culture_ID %in% ecosystems_to_take_off)
 
 expect_equal(setdiff(ds_individuals_before_taking_off_cultures, 
                      ds_individuals) %>% 
                pull(culture_ID) %>% 
                unique(),
-             patches_to_take_off)
+             ecosystems_to_take_off)
 ```

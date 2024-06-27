@@ -25,7 +25,7 @@ write.csv(ds_classes,
 ds_classes = read.csv(here("results", "ds", "ds_classes.RData"))
 
 expect_equal(nrow(ds_classes),
-             (n_cultures - length(patches_to_take_off)) * (n_size_classes * sum(nr_videos)))
+             (n_cultures - length(ecosystems_to_take_off)) * (n_size_classes * sum(nr_videos)))
 ```
 
 ```{r}
@@ -36,7 +36,7 @@ ds_classes = ds_classes %>%
   summarise(class_indiv_per_µl = mean(class_indiv_per_µl))
 
 expect_equal(nrow(ds_classes),
-             (nrow(ds_patches) * n_size_classes))
+             (nrow(ds_ecosystems) * n_size_classes))
 ```
 
 ```{r}

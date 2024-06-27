@@ -1,16 +1,16 @@
-plot.relationship.BEF = function(patch_type_input,
+plot.relationship.BEF = function(ecosystem_type_input,
                                  response_variable) {
   
-  patch_type_input <- patch_type_input[order(match(patch_type_input, 
-                                                   patch_types_ordered))]
+  ecosystem_type_input <- ecosystem_type_input[order(match(ecosystem_type_input, 
+                                                   ecosystem_types_ordered))]
   
-  ds_patches %>%
-      filter(patch_type == patch_type_input) %>%
+  ds_ecosystems %>%
+      filter(ecosystem_type == ecosystem_type_input) %>%
       ggplot(aes(x = get(response_variable),
                  y = bioarea_mm2_per_ml)) +
       geom_point() +
       facet_wrap( ~ time_point) +
       labs(title = paste0("Patch type = ",
-                          patch_type_input),
+                          ecosystem_type_input),
            x = response_variable)
 }

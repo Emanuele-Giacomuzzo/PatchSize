@@ -45,7 +45,7 @@ calculate.effect.sizes.classes = function(ds,
             filter(
               time_point == time_point_input,
               disturbance == disturbance_input,
-              patch_type == treatment_input,
+              ecosystem_type == treatment_input,
               size_class_n == class_input
             )
           
@@ -55,7 +55,7 @@ calculate.effect.sizes.classes = function(ds,
             filter(
               time_point == time_point_input,
               disturbance == disturbance_input,
-              patch_type == control_input,
+              ecosystem_type == control_input,
               size_class_n == class_input
             )
           
@@ -72,21 +72,21 @@ calculate.effect.sizes.classes = function(ds,
             ds_effect_size[[paste0(response_variable, "_d")]][
               ds_effect_size$time_point == time_point_input & 
               ds_effect_size$disturbance == disturbance_input &
-              ds_effect_size$patch_type == treatment_input &
+              ds_effect_size$ecosystem_type == treatment_input &
               ds_effect_size$size_class_n == class_input] =
               hedges_d$d
             
             ds_effect_size[[paste0(response_variable, "_d_upper")]][
               ds_effect_size$time_point == time_point_input & 
               ds_effect_size$disturbance == disturbance_input &
-              ds_effect_size$patch_type == treatment_input &
+              ds_effect_size$ecosystem_type == treatment_input &
               ds_effect_size$size_class_n == class_input] =
               hedges_d$upper_CI
             
             ds_effect_size[[paste0(response_variable, "_d_lower")]][
               ds_effect_size$time_point == time_point_input & 
               ds_effect_size$disturbance == disturbance_input &
-              ds_effect_size$patch_type == treatment_input &
+              ds_effect_size$ecosystem_type == treatment_input &
               ds_effect_size$size_class_n == class_input] =
               hedges_d$lower_CI
             

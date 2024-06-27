@@ -1,18 +1,18 @@
-plot.patches.empty.presentations = function(y_min,
+plot.ecosystems.empty.presentations = function(y_min,
                                          y_max,
                                          response_variable,
-                                         patch_type = ""){
+                                         ecosystem_type = ""){
   
-  ds_patches %>%
-    filter(patch_type %in% "",
+  ds_ecosystems %>%
+    filter(ecosystem_type %in% "",
            !is.na(!!sym(response_variable))) %>%
     ggplot(
       aes(
         x = day,
         y = get(response_variable),
-        group = interaction(day, patch_type),
-        color = patch_type,
-        linetype = patch_type
+        group = interaction(day, ecosystem_type),
+        color = ecosystem_type,
+        linetype = ecosystem_type
       )
     ) +
     geom_point(
@@ -24,7 +24,7 @@ plot.patches.empty.presentations = function(y_min,
     geom_line(
       stat = "summary",
       fun = "mean",
-      aes(group = patch_type),
+      aes(group = ecosystem_type),
       position = position_dodge(dodging),
       linewidth = presentation_treatment_linewidth
     ) +

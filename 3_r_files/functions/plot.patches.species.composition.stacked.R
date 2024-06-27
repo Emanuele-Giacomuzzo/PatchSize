@@ -1,14 +1,14 @@
-plot.patches.species.composition.stacked = function(patch_type_input,
+plot.ecosystems.species.composition.stacked = function(ecosystem_type_input,
                                                     time_point_input) {
   
-  patch_type_input <- patch_type_input[order(match(patch_type_input, 
-                                                   patch_types_ordered))]
+  ecosystem_type_input <- ecosystem_type_input[order(match(ecosystem_type_input, 
+                                                   ecosystem_types_ordered))]
   
-  species_composition = ds_patches %>%
+  species_composition = ds_ecosystems %>%
     ungroup() %>%
     filter(indiv_per_ml != 0) %>%
     select(time_point,
-           patch_type,
+           ecosystem_type,
            all_of(protist_species_dominance)) %>%
     rename_at(vars(paste0(protist_species_indiv_per_ml, "_dominance")), 
               funs(gsub("_indiv_per_ml_dominance", "", .))) %>%
@@ -20,15 +20,15 @@ plot.patches.species.composition.stacked = function(patch_type_input,
   
   species_composition %>%
     group_by(time_point,
-             patch_type,
+             ecosystem_type,
              species) %>%
     summarise(dominance = mean(dominance),
               dominance = round(dominance, digits = 1)) %>%
     filter(
       time_point == time_point_input,
-      patch_type %in% patch_type_input,!dominance == 0
+      ecosystem_type %in% ecosystem_type_input,!dominance == 0
     ) %>%
-    ggplot(aes(x = patch_type,
+    ggplot(aes(x = ecosystem_type,
                y = dominance,
                fill = species)) +
     geom_bar(stat = "identity") +

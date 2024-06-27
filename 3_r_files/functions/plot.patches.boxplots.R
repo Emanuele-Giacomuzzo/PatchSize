@@ -1,18 +1,18 @@
-plot.patches.boxplots = function(patch_type_input,
+plot.ecosystems.boxplots = function(ecosystem_type_input,
                                  response_variable) {
   
-  patch_type_input <- patch_type_input[order(match(patch_type_input, 
-                                                   patch_types_ordered))]
+  ecosystem_type_input <- ecosystem_type_input[order(match(ecosystem_type_input, 
+                                                   ecosystem_types_ordered))]
   
-  ds_patches %>%
+  ds_ecosystems %>%
     filter(
-      patch_type %in% patch_type_input
+      ecosystem_type %in% ecosystem_type_input
     ) %>%
     ggplot(aes(
       x = day,
       y = get(response_variable),
-      group = interaction(day, patch_type),
-      fill = patch_type
+      group = interaction(day, ecosystem_type),
+      fill = ecosystem_type
     )) +
     geom_boxplot(width = boxplot_width) +
     labs(x = axis_names$axis_name[axis_names$variable == "day"],
@@ -21,14 +21,14 @@ plot.patches.boxplots = function(patch_type_input,
     
     scale_fill_manual(
       values = c(
-        parameters_treatments$colour[parameters_treatments$treatment == patch_type_input[1]][1],
-        parameters_treatments$colour[parameters_treatments$treatment == patch_type_input[2]][1],
-        parameters_treatments$colour[parameters_treatments$treatment == patch_type_input[3]][1],
-        parameters_treatments$colour[parameters_treatments$treatment == patch_type_input[4]][1],
-        parameters_treatments$colour[parameters_treatments$treatment == patch_type_input[5]][1],
-        parameters_treatments$colour[parameters_treatments$treatment == patch_type_input[6]][1],
-        parameters_treatments$colour[parameters_treatments$treatment == patch_type_input[7]][1],
-        parameters_treatments$colour[parameters_treatments$treatment == patch_type_input[8]][1]
+        parameters_treatments$colour[parameters_treatments$treatment == ecosystem_type_input[1]][1],
+        parameters_treatments$colour[parameters_treatments$treatment == ecosystem_type_input[2]][1],
+        parameters_treatments$colour[parameters_treatments$treatment == ecosystem_type_input[3]][1],
+        parameters_treatments$colour[parameters_treatments$treatment == ecosystem_type_input[4]][1],
+        parameters_treatments$colour[parameters_treatments$treatment == ecosystem_type_input[5]][1],
+        parameters_treatments$colour[parameters_treatments$treatment == ecosystem_type_input[6]][1],
+        parameters_treatments$colour[parameters_treatments$treatment == ecosystem_type_input[7]][1],
+        parameters_treatments$colour[parameters_treatments$treatment == ecosystem_type_input[8]][1]
       )
     ) +
     geom_vline(

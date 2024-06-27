@@ -1,24 +1,24 @@
-plot.patches.points = function(ds_patches,
-                               patch_type_input,
+plot.ecosystems.points = function(ds_ecosystems,
+                               ecosystem_type_input,
                                response_variable,
                                legend_row_n_input = 2) {
   
-  patch_type_input <- patch_type_input[order(match(patch_type_input, 
-                                                   patch_types_ordered))]
+  ecosystem_type_input <- ecosystem_type_input[order(match(ecosystem_type_input, 
+                                                   ecosystem_types_ordered))]
   
-  ds_patches %>%
+  ds_ecosystems %>%
     filter(
-      patch_type %in% patch_type_input,
+      ecosystem_type %in% ecosystem_type_input,
       !is.na(!!sym(response_variable))
     ) %>%
     summarySE(measurevar = response_variable,
-              groupvars = c("day", "patch_type")) %>%
+              groupvars = c("day", "ecosystem_type")) %>%
     ggplot(aes(
       x = day,
       y = get(response_variable),
-      group = interaction(day, patch_type),
-      color = patch_type,
-      linetype = patch_type
+      group = interaction(day, ecosystem_type),
+      color = ecosystem_type,
+      linetype = ecosystem_type
     )) +
     geom_point(stat = "summary",
                fun = "mean",
@@ -27,7 +27,7 @@ plot.patches.points = function(ds_patches,
     geom_line(
       stat = "summary",
       fun = "mean",
-      aes(group = patch_type),
+      aes(group = ecosystem_type),
       position = position_dodge(dodging),
       linewidth = treatment_lines_linewidth
     ) +
@@ -39,29 +39,29 @@ plot.patches.points = function(ds_patches,
     labs(x = axis_names$axis_name[axis_names$variable == "day"],
          y = axis_names$axis_name[axis_names$variable == response_variable],
          color = "") +
-    scale_x_continuous(breaks = unique(ds_patches$day)) +
+    scale_x_continuous(breaks = unique(ds_ecosystems$day)) +
     scale_linetype_manual(
       values = c(
-        parameters_treatments$linetype[parameters_treatments$treatment == patch_type_input[1]][1],
-        parameters_treatments$linetype[parameters_treatments$treatment == patch_type_input[2]][1],
-        parameters_treatments$linetype[parameters_treatments$treatment == patch_type_input[3]][1],
-        parameters_treatments$linetype[parameters_treatments$treatment == patch_type_input[4]][1],
-        parameters_treatments$linetype[parameters_treatments$treatment == patch_type_input[5]][1],
-        parameters_treatments$linetype[parameters_treatments$treatment == patch_type_input[6]][1],
-        parameters_treatments$linetype[parameters_treatments$treatment == patch_type_input[7]][1],
-        parameters_treatments$linetype[parameters_treatments$treatment == patch_type_input[8]][1]
+        parameters_treatments$linetype[parameters_treatments$treatment == ecosystem_type_input[1]][1],
+        parameters_treatments$linetype[parameters_treatments$treatment == ecosystem_type_input[2]][1],
+        parameters_treatments$linetype[parameters_treatments$treatment == ecosystem_type_input[3]][1],
+        parameters_treatments$linetype[parameters_treatments$treatment == ecosystem_type_input[4]][1],
+        parameters_treatments$linetype[parameters_treatments$treatment == ecosystem_type_input[5]][1],
+        parameters_treatments$linetype[parameters_treatments$treatment == ecosystem_type_input[6]][1],
+        parameters_treatments$linetype[parameters_treatments$treatment == ecosystem_type_input[7]][1],
+        parameters_treatments$linetype[parameters_treatments$treatment == ecosystem_type_input[8]][1]
       )
     ) +
     scale_color_manual(
       values = c(
-        parameters_treatments$colour[parameters_treatments$treatment == patch_type_input[1]][1],
-        parameters_treatments$colour[parameters_treatments$treatment == patch_type_input[2]][1],
-        parameters_treatments$colour[parameters_treatments$treatment == patch_type_input[3]][1],
-        parameters_treatments$colour[parameters_treatments$treatment == patch_type_input[4]][1],
-        parameters_treatments$colour[parameters_treatments$treatment == patch_type_input[5]][1],
-        parameters_treatments$colour[parameters_treatments$treatment == patch_type_input[6]][1],
-        parameters_treatments$colour[parameters_treatments$treatment == patch_type_input[7]][1],
-        parameters_treatments$colour[parameters_treatments$treatment == patch_type_input[8]][1]
+        parameters_treatments$colour[parameters_treatments$treatment == ecosystem_type_input[1]][1],
+        parameters_treatments$colour[parameters_treatments$treatment == ecosystem_type_input[2]][1],
+        parameters_treatments$colour[parameters_treatments$treatment == ecosystem_type_input[3]][1],
+        parameters_treatments$colour[parameters_treatments$treatment == ecosystem_type_input[4]][1],
+        parameters_treatments$colour[parameters_treatments$treatment == ecosystem_type_input[5]][1],
+        parameters_treatments$colour[parameters_treatments$treatment == ecosystem_type_input[6]][1],
+        parameters_treatments$colour[parameters_treatments$treatment == ecosystem_type_input[7]][1],
+        parameters_treatments$colour[parameters_treatments$treatment == ecosystem_type_input[8]][1]
       )
     ) +
     geom_vline(

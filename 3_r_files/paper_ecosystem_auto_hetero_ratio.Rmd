@@ -12,7 +12,7 @@ We want here to plot the final paper version of the ratio between autotrophic an
 
 # Define ecosystems and response variable you want to plot.
 
-patch_type_input = c("S",
+ecosystem_type_input = c("S",
                      "M",
                      "L")
 
@@ -23,24 +23,24 @@ response_variable = "auto_hetero_ratio"
 
 # Construct plot
 
-p = ds_patches %>%
+p = ds_ecosystems %>%
   
   # Manipulate
   
-  mutate(patch_type = case_when(patch_type == "Small unconnected" ~ "S",
-                                patch_type == "Medium unconnected" ~ "M",
-                                patch_type == "Large unconnected" ~ "L")) %>%
-  filter(patch_type %in% patch_type_input,
+  mutate(ecosystem_type = case_when(ecosystem_type == "Small unconnected" ~ "S",
+                                ecosystem_type == "Medium unconnected" ~ "M",
+                                ecosystem_type == "Large unconnected" ~ "L")) %>%
+  filter(ecosystem_type %in% ecosystem_type_input,
          !is.na(!!sym(response_variable))) %>%
   summarySE(measurevar = response_variable,
-            groupvars = c("day", "patch_type", "patch_size", "connection")) %>%
+            groupvars = c("day", "ecosystem_type", "ecosystem_size", "connection")) %>%
   
   # Create plot
   
   ggplot(aes(x = day,
              y = get(response_variable),
-             group = interaction(day, patch_type),
-             color = patch_type)) +
+             group = interaction(day, ecosystem_type),
+             color = ecosystem_type)) +
   
   # Points
   
@@ -57,7 +57,7 @@ p = ds_patches %>%
   
   geom_line(stat = "summary",
             fun = "mean",
-            aes(group = patch_type),
+            aes(group = ecosystem_type),
             position = position_dodge(dodging),
             linewidth = treatment_lines_linewidth) +
   
@@ -66,7 +66,7 @@ p = ds_patches %>%
   labs(x = axis_names$axis_name[axis_names$variable == "day"],
        y = axis_names$axis_name[axis_names$variable == response_variable],
        color = "") +
-  scale_x_continuous(breaks = unique(ds_patches$day)) +
+  scale_x_continuous(breaks = unique(ds_ecosystems$day)) +
   guides(color = guide_legend(title = NULL,
                               nrow = 1),
          linetype = guide_legend(title = NULL,
