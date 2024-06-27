@@ -15,7 +15,9 @@ In this dataset (`ds_patches`) each row represents a patch at a time point. I us
 
 # Import & bind t0 datasets.
 
-ds_patches_t0 = read.csv(here("2_data", "populations", "t0.csv")) %>%
+ds_patches_t0 = read.csv(here("2_data", 
+                              "populations_13_threshold", 
+                              "t0.csv")) %>%
   mutate(time_point =  as.numeric(str_extract(time_point, "\\d+")),
          day = 0,
          video_replicate = file) %>%
@@ -26,7 +28,9 @@ ds_patches_t0 = read.csv(here("2_data", "populations", "t0.csv")) %>%
          bioarea_per_volume,
          indiv_per_volume)
 
-species_ID_13_threshold_t0 = read.csv(here("2_data", "species_ID_13_threshold", paste0("t0.csv"))) %>%
+species_ID_13_threshold_t0 = read.csv(here("2_data", 
+                                           "species_ID_13_threshold", 
+                                           paste0("t0.csv"))) %>%
   rename(Ble_indiv_per_volume = Ble,
          Cep_indiv_per_volume = Cep,
          Col_indiv_per_volume = Col,
@@ -41,7 +45,9 @@ species_ID_13_threshold_t0 = read.csv(here("2_data", "species_ID_13_threshold", 
   select(file,
          all_of(species_IDD_with_13_threshold_indiv_per_volume))
 
-species_ID_40_threshold_t0 = read.csv(here("2_data", "species_ID_40_threshold", paste0("t0.csv"))) %>%
+species_ID_40_threshold_t0 = read.csv(here("2_data", 
+                                           "species_ID_40_threshold", 
+                                           paste0("t0.csv"))) %>%
   rename(Ble_indiv_per_volume = Ble,
          Cep_indiv_per_volume = Cep,
          Col_indiv_per_volume = Col,
@@ -163,7 +169,7 @@ for (time_point_i in time_points_without_t0) {
   
   
   ds_patches_t1_to_t4[[time_point_i]] = read.csv(here("2_data", 
-                                                      "populations", 
+                                                      "populations_13_threshold", 
                                                       paste0("t", time_point_i, ".csv"))) %>%
     arrange(file) %>%
     mutate(video_replicate = rep(1 : time_point_day$video_replicates[time_point_i+1],
