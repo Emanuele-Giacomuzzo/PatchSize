@@ -1,8 +1,6 @@
 # Evaporation test initial
 
-We investigated how much water evaporated from the cultures when microwaving them for three minutes.
-
-## Legend
+We investigated how much water evaporated from the cultures when microwaving them for three minutes. The columns represent the following:
 
 rack: rack number rack_position: position of the tube in the rack water_pipetted: volume of water pipetted into the tube (ml)\
 falcon_tube_weight: weight of the falcon tube before pipetting water into it (g)\
@@ -13,9 +11,7 @@ weight_water_evaporated: weight of the water evaporated after the microwaving (g
 
 # Evaporation test fill no fill
 
-We tested how much more evaporation there was when we microwaved 5 tubes with water and 10 empty tubes compared to when all the tubes had water in them.
-
-## Legend
+We tested how much more evaporation there was when we microwaved 5 tubes with water and 10 empty tubes compared to when all the tubes had water in them. The columns represent the following:
 
 tube_nr: tube number\
 all_tubes_water: whether all the tubes in the rack had water in them\
