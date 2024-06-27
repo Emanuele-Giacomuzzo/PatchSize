@@ -1,4 +1,4 @@
-This folder contains the data with the aggregated metrics of all the individuals found in each ecosystem at a certain time point. Each row is an ecosystem at a time point. All metrics (e.g., mean, standard deviation) refer to a metric across individuals. Each data file represents a time point (t0 = time point 0, t1 = time point 1, t2 = time point 2, etc.). Training refers to the monocultures we filmed before the experiment to train the species identification model. The columns in these datasets represent the following:
+This folder contains the data with the aggregated metrics of all the individuals found in each ecosystem at a certain time point. Each row is an ecosystem at a time point. All metrics (e.g., mean, standard deviation) refer to a metric across individuals. Each data file represents a time point (t0 = time point 0, t1 = time point 1, t2 = time point 2, etc.), except for training which refers to the monocultures we filmed before the experiment to train the species identification model. The columns in these datasets represent the following:
 
 - file: name of the video file 
 - date: date on which the video was taken
