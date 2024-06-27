@@ -17,3 +17,4 @@ This folder contains the data with the aggregated metrics of all the individuals
 - net_speed_mean: mean net speed, which is how quickly an individual moves from its starting point to its ending point (µm/s)
 - net_speed_sd: standard deviation of the net speed (µm/s)
 - sd_turning_mean: mean standard deviation of the turning angle of the individual
+- species (present only in training): species filmed to gather data for training the species ID model
