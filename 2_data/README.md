@@ -23,7 +23,7 @@ This directory is organised into the following folders and files:
 -   species_ID_13_threshold: Contains data for each individual detected in the videos at each time point, with species identified. Videos were analysed with the threshold set to 13.
 -   species_ID_40_threshold: Contains data for each individual detected in the videos at each time point, with species identified. Videos were analysed with the threshold set to 40.
 -   culture_info.csv: Provides information about each ecosystem.
--   water_addition: Details the amount of water added to ecosystems to compensate for evaporation.
+-   water_addition: Details the amount of water (ml) added to ecosystems to compensate for evaporation. Culture ID represents the ID of the ecosystems.
 
 # Ecosystem info
 
