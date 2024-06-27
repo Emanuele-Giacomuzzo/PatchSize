@@ -23,8 +23,16 @@ This repository contains data and code from a microcosm experiment designed to i
 -   master.Rmd: Master file to produce the R markdown with the analysis of the data
 -   PatchSize.Rproj: PatchSize project on RStudio
 -   [renv.lock](https://github.com/Emanuele-Giacomuzzo/PatchSize/blob/master/renv.lock "renv.lock"): File from the package `renv` which contains information on which packages (and versions) were used when working on this project.
--   results_high_disturbance.html: Results of the analysis for the high disturbance treatment
--   results_low_disturbance.html: Results of the analysis for the low disturbance treatment
+-   results_high_disturbance.html: Results of the analysis for the high disturbance treatment (resulting from knitting the master file with disturbance high)
+-   results_low_disturbance.html: Results of the analysis for the low disturbance treatment (resulting from knitting the master file with disturbance low)
+
+## R and R studio versions
+
+This project was developed using the following versions:
+
+-   R: 4.3.2
+
+-   RStudio: 2023.12.1.402
 
 ## Installation and Code Execution
 

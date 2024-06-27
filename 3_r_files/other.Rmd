@@ -2,6 +2,8 @@
 title: "Other"
 output: html_document
 date: "2023-08-21"
+editor_options: 
+  chunk_output_type: console
 ---
 
 ### Running time
@@ -42,6 +44,13 @@ dput()
 ### Crashed cultures
 
 The only type of patch where all cultures crashed was small connected to small at high disturbance.
+
+### R and RStudio versions
+
+```{r}
+R.version.string
+paste("RStudio version", RStudio.Version()$version)
+```
 
 ### R package versions
 
