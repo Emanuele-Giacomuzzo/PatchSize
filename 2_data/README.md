@@ -4,8 +4,8 @@ This folder contains the data obtained from the microcosm experiment. Two lowest
 
 1. __Video Analysis at Threshold 13__: Use the script in 3_r_files > BEMOVI_script_video_analysis to analyze videos at all time points and training data with threshold set to 13 (thresholds <- c(13, 255)) and save the results in 2_data.
 2. __Video Analysis at Threshold 40__: Repeat step 1 adjusting the threshold to 40 (thresholds <- c(40, 255)).
-3. __Species Identification at Threshold 13__: Use the script in 3_r_files > BEMOVI_script_species_id to identify species for all time points analyzed with the threshold set to 13. 
-4. __Species Identification at Threshold 40__: Repeat step 3 adjusting the threshold to 40.
+3. __Species Identification at Threshold 13__: Use the script in 3_r_files > BEMOVI_script_species_id to identify species for all time points analysed with the threshold set to 13. 
+4. __Species Identification at Threshold 40__: Repeat step 3 but with time points analysed with the threshold set to 40.
 
 # Summary of how to assemble the data
 
