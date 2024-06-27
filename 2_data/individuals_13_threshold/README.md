@@ -32,3 +32,4 @@ Files with the individuals that were filmed during the experiment. All the colum
 - date: date on which the video was taken
 - time_point: time point filmed
 - comment: comment on the culture filmed
+- species (present only in training): species filmed to gather data for training the species ID model
