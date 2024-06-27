@@ -1,4 +1,4 @@
-This folder contains the data with the aggregated metrics of all the individuals found in each ecosystem at a certain time point. Each row is an ecosystem at a time point. All metrics (e.g., mean, standard deviation) refer to a metric across individuals. Each data file represents a time point (t0 = time point 0, t1 = time point 1, t2 = time point 2, etc.). Training refers to the monocultures we filmed before the experiment to train the species identification model. The columns in these datasets represent the following:
+This folder contains the data with the aggregated metrics of all the individuals found in each ecosystem at a certain time point with the density of the species, which was inferred using the species identification model. Each row is an ecosystem at a time point. All metrics (e.g., mean, standard deviation) refer to a metric across individuals. Each data file represents a time point (t0 = time point 0, t1 = time point 1, t2 = time point 2, etc.), except for confusion_matrix. The columns in these datasets represent the following:
 
 - file: name of the video file 
 - date: date on which the video was taken
@@ -29,3 +29,18 @@ This folder contains the data with the aggregated metrics of all the individuals
 - Spi: density of _Spirostomum sp._, averaged across frames (indiv/µL)
 - Spi_te: density of _Spirostomum teres_, averaged across frames (indiv/µL)
 - Tet: density of _Tetrahymena cf. pyriformis_, averaged across frames (indiv/µL)
+
+The confusion matrix represents how often each species is misidentified in the species identification model. The columns in this matrix represent the following:
+
+- Ble:  _Blepharisma sp._ 
+- Cep:  _Cephalodella sp._ 
+- Col:  _Colpidium sp._ 
+- Eug:  _Euglena gracilis_ 
+- Eup:  _Euplotes aediculatus_ 
+- Lox:  _Loxocephalus sp._ 
+- Pau:  _Paramecium aurelia_ 
+- Pca:  _Paramecium caudatum_ 
+- Spi:  _Spirostomum sp._ 
+- Spi_te:  _Spirostomum teres_ 
+- Tet:  _Tetrahymena cf. pyriformis_ 
+- indiv_misclass_percent: percentage of times in which the individual was misclassified
