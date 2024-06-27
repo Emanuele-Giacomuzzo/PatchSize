@@ -82,7 +82,7 @@ Parameters related to ecosystems.
 
 ```{r}
 ecosystems_to_take_off = 60 #Culture ID = 60 as it was spilled (small unconnected, high disturbance, system nr = 40)
-culture_info = read.csv(here("2_data", "culture_info.csv"), header = TRUE)
+ecosystems_info = read.csv(here("2_data", "ecosystems_info.csv"), header = TRUE)
 
 columns_ecosystems = c("time_point",
                     "day",
@@ -150,12 +150,12 @@ columns_classes = c(columns_ecosystems,
 Parameters related to meta-ecosystems.
 
 ```{r}
-metaecosystems_to_take_off = culture_info %>%
+metaecosystems_to_take_off = ecosystems_info %>%
   filter(culture_ID %in% ecosystems_to_take_off) %>%
   pull(system_nr) %>%
   unique
 
-system_nr_metaecosystems = culture_info %>%
+system_nr_metaecosystems = ecosystems_info %>%
   filter(metaecosystem == "yes") %>%
   pull(system_nr) %>%
   unique

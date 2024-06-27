@@ -9,15 +9,18 @@ This folder contains the data obtained from the microcosm experiment. Two lowest
 
 # Summary of how to assemble the data
 
-During data analysis, we retain the individual and culture data with a threshold of 13 to represent individuals and ecosystem biomass. This threshold does not exclude any protist species, providing a more comprehensive view of these metrics compared to a threshold of 40. Next, we combine the culture data with the species densities. Specifically, data for _Blepharisma sp._, _Cephalodella sp._, and _Spirostomum sp._ from the "species_ID_13_threshold" folder and data for _Colpidium sp._, _Euglena gracilis_, _Euplotes aediculatus_, _Loxocephalus sp._, _Paramecium aurelia_, _Paramecium caudatum_, _Spirostomum teres_, and _Tetrahymena cf. pyriformis_ from the "species_ID_40_threshold" folder.
+1. *Assemble a dataset with the individuals.* Keep the individuals from the output with a threshold 13 (individuals_13_threshold). This threshold does not exclude any protist species, providing a more comprehensive view of all the individuals. Bind this data with ecosystem_info. 
+2. *Assemble a dataset with the ecosystems.* Keep the biomass and total individuals of each ecosystem from the output with a threshold 40 (ecosystems_40_threshold). This threshold does not exclude any protist species, providing a more comprehensive view of ecosystem biomass and the total number of individuals. Bind it then with the species densities of _Blepharisma sp._, _Cephalodella sp._, and _Spirostomum sp._ obtained from data analysis with threshold set to 13 (species_ID_13_threshold) and the species densities of _Colpidium sp._, _Euglena gracilis_, _Euplotes aediculatus_, _Loxocephalus sp._, _Paramecium aurelia_, _Paramecium caudatum_, _Spirostomum teres_, and _Tetrahymena cf. pyriformis_ obtained from data analysis with threshold set to 40 (species_ID_40_threshold).  Bind this data with ecosystem_info. 
 
 # Content of the folder
 
 This directory is organised into the following folders and files:
 
-- individuals_13_threshold: Contains data for each individual detected in the videos at each time point, as well as monoculture data used to train a species identification model (training). Videos were analysed with a lowest threshold in ImageJ of 13.
-- patches_13_threshold: Contains ecosystem data for each time point and monoculture data used to train a species identification model (training). Videos were analyzed with a lowest threshold in ImageJ of 13.
-- species_ID_13_threshold: Contains data for each individual detected in the videos at each time point, with species identified. Videos were analysed with a lowest threshold in ImageJ of 13.
-- species_ID_40_threshold: Contains data for each individual detected in the videos at each time point, with species identified. Videos were analysed with a lowest threshold in ImageJ of 40.
+- individuals_13_threshold: Contains data for each individual detected in the videos at each time point, as well as monoculture data used to train a species identification model (training). Videos were analysed with the threshold set to 13.
+- individuals_40_threshold: Contains data for each individual detected in the videos at each time point, as well as monoculture data used to train a species identification model (training). Videos were analysed with the threshold set to 40.
+- ecosystems_13_threshold: Contains ecosystem data for each time point and monoculture data used to train a species identification model (training). Videos were analysed with the threshold set to 13.
+- ecosystems_40_threshold: Contains ecosystem data for each time point and monoculture data used to train a species identification model (training). Videos were analysed with the threshold set to 40.
+- species_ID_13_threshold: Contains data for each individual detected in the videos at each time point, with species identified. Videos were analysed with the threshold set to 13.
+- species_ID_40_threshold: Contains data for each individual detected in the videos at each time point, with species identified. Videos were analysed with the threshold set to 40.
 - culture_info.csv: Provides information about each ecosystem.
 - water_addition: Details the amount of water added to ecosystems to compensate for evaporation.

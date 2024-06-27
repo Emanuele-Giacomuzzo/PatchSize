@@ -31,10 +31,10 @@ ds_individuals_t0_not_elongated = read.csv(here("2_data",
          mean_area)
 
 ds_individuals_t0_elongated = ds_individuals_t0_not_elongated %>%
-  map_dfr(.x = 1 : nrow(culture_info),
+  map_dfr(.x = 1 : nrow(ecosystems_info),
           .f = ~ ds_individuals_t0_not_elongated) %>% 
   arrange(id) %>% #Id refers to an individual
-  mutate(culture_ID = rep(1 : nrow(culture_info),
+  mutate(culture_ID = rep(1 : nrow(ecosystems_info),
                           times = nrow(ds_individuals_t0_not_elongated))) %>%
   select(time_point,
          day,
@@ -45,7 +45,7 @@ ds_individuals_t0_elongated = ds_individuals_t0_not_elongated %>%
          N_frames,
          mean_area)
 
-expect_equal(nrow(ds_individuals_t0_not_elongated) * nrow(culture_info),
+expect_equal(nrow(ds_individuals_t0_not_elongated) * nrow(ecosystems_info),
              nrow(ds_individuals_t0_elongated))
 ```
 
@@ -86,7 +86,7 @@ ds_individuals_t1_to_t4 = ds_individuals_t1_to_t4 %>%
 
 ds_individuals = rbind(ds_individuals_t0_elongated,
                        ds_individuals_t1_to_t4) %>%
-  left_join(culture_info,
+  left_join(ecosystems_info,
             by = "culture_ID") 
 ```
 

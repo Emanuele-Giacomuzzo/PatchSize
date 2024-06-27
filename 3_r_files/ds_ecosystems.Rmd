@@ -81,7 +81,7 @@ for (video_i in 1 : n_videos_taken_t0) {
   single_video = ds_ecosystems_t0 %>%
     filter(file == video_i)
   
-  ds_ecosystems_t0_elongated[[video_i]] = culture_info %>%
+  ds_ecosystems_t0_elongated[[video_i]] = ecosystems_info %>%
     mutate(
       time_point = 0,
       day = 0,
@@ -203,7 +203,7 @@ ds_ecosystems_t1_to_t4 = ds_ecosystems_t1_to_t4 %>%
 
 ds_ecosystems = rbind(ds_ecosystems_t0,
                    ds_ecosystems_t1_to_t4) %>%
-             left_join(culture_info,
+             left_join(ecosystems_info,
                        by = "culture_ID") 
     
 expect_equal(nrow(ds_ecosystems),

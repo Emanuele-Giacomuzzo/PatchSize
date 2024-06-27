@@ -6,10 +6,10 @@ editor_options:
   chunk_output_type: console
 ---
 
-### Patches information (`culture_info`)
+### Ecosystems information (`ecosystems_info`)
 
 We start by importing the information about the 110 ecosystems of the experiment.
 
 ```{r}
-culture_info = read.csv(here("2_data", "culture_info.csv"), header = TRUE)
+ecosystems_info = read.csv(here("2_data", "ecosystems_info.csv"), header = TRUE)
 ```

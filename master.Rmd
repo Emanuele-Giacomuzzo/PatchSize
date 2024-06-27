@@ -43,7 +43,7 @@ print(paste("!!", disturbance_global_input, "!!", "The experiment investigate th
 
 ## Data {.tabset .tabset-dropdown}
 
-```{r child = here("3_r_files", "ds_culture_info.Rmd")}
+```{r child = here("3_r_files", "ds_ecosystems_info.Rmd")}
 ```
 
 ```{r child = here("3_r_files", "ds_individuals.Rmd")}
