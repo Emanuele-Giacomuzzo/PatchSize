@@ -45,11 +45,10 @@ dput()
 
 The only type of patch where all cultures crashed was small connected to small at high disturbance.
 
-### R and RStudio versions
+### R version
 
 ```{r}
 R.version.string
-paste("RStudio version", RStudio.Version()$version)
 ```
 
 ### R package versions
