@@ -36,18 +36,25 @@ in them.
 
 ## Legend
 
-tube_nr: tube number\
-all_tubes_water: whether all the tubes in the rack had water in them\
-falcon_tube_weight: weight of the falcon tube before putting water in it
-(g) \
-weight_falcon_tube_n\_\_water: weight of the falcon tube after having
-put water in it (g)\
-weight_water_before_evaporation: weight of the water before evaporation
-(calculated from weight_falcon_tube_n\_\_water - falcon_tube_weight) (g)
-\
-weight_water_after_evaporation: weight of the water after evaporation
-(water weight was measured in a Becker after the evaporation took place)
-(g) \
-weight_water_evaporated: weight of the water that evaporated (calculated
-from weight_water_before_evaporation - weight_water_after_evaporation)
-(g)
+-   **tube_nr:** tube number
+
+-   **all_tubes_water:** whether all the tubes in the rack had water in
+    them
+
+-   **falcon_tube_weight:** weight of the falcon tube before putting
+    water in it (g)
+
+-   **weight_falcon_tube_n\_\_water:** weight of the falcon tube after
+    having put water in it (g)
+
+-   **weight_water_before_evaporation:** weight of the water before
+    evaporation (calculated from weight_falcon_tube_n\_\_water -
+    falcon_tube_weight) (g)
+
+-   **weight_water_after_evaporation:** weight of the water after
+    evaporation (water weight was measured in a Becker after the
+    evaporation took place) (g)
+
+-   **weight_water_evaporated:** weight of the water that evaporated
+    (calculated from weight_water_before_evaporation -
+    weight_water_after_evaporation) (g)
