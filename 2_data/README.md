@@ -9,7 +9,7 @@ This folder contains the data obtained from the microcosm experiment. Two lowest
 
 # Summary of how to assemble the data
 
-During data analysis we keep the individual data with threshold 13 to represent individuals. Then, we bind the data from the folder "populations"" with the species densities of _Blepharisma sp._, _Cephalodella sp._, and _Spirostomum sp._ in the folder "species_ID_13_threshold" and _Colpidium sp._, _Euglena gracilis_, _Euplotes aediculatus_, _Loxocephalus sp._, _Paramecium aurelia_, _Paramecium caudatum_, _Spirostomum teres_, and _Tetrahymena cf. pyriformis_ in the folder "species_ID_40_threshold".
+During data analysis, we retain the individual and culture data with a threshold of 13 to represent individuals and ecosystem biomass. This threshold does not exclude any protist species, providing a more comprehensive view of these metrics compared to a threshold of 40. Next, we combine the culture data with the species densities. Specifically, data for _Blepharisma sp._, _Cephalodella sp._, and _Spirostomum sp._ from the "species_ID_13_threshold" folder and data for _Colpidium sp._, _Euglena gracilis_, _Euplotes aediculatus_, _Loxocephalus sp._, _Paramecium aurelia_, _Paramecium caudatum_, _Spirostomum teres_, and _Tetrahymena cf. pyriformis_ from the "species_ID_40_threshold" folder.
 
 # Content of the folder
 
