@@ -17,7 +17,6 @@ This repository contains data and code from a microcosm experiment designed to i
 -   4_environments: RStudio environments with the objects created during the analysis
 -   5_images: Images
 -   6_results: Results saved during the analysis
--   7_paper: Files to publish the paper
 -   renv: Files related to the r package `renv`. This package enables you to restore the exact package versions used when working on this project.
 -   library.bib: Bibliography database file
 -   master.Rmd: Master file to produce the R markdown with the analysis of the data
