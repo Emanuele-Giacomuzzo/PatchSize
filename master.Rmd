@@ -821,3 +821,4 @@ response_variable = "median_body_area_µm2"
 
 ```{r echo=FALSE, message=FALSE}
 save.image(file = here("4_environments", "environment_at_the_end_of_analysis.RData"))
+```
