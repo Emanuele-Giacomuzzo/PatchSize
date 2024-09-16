@@ -19,7 +19,7 @@ editor_options:
 ---
 
 ```{r echo=FALSE}
-disturbance_global_input = "high"
+disturbance_global_input = "low"
 print(paste("!!", disturbance_global_input, "!!", "The experiment investigate the effects of two disturbance levels: low and high. To make it easier to interpet, we showcase only one of the two disturbance levels. In this document we showcase only the", disturbance_global_input, "disturbance)"))
 ```
 
@@ -303,12 +303,22 @@ ecosystem_type_i = c("Small unconnected",
 ```{r child = here("3_r_files", "analysis_ecosystems_BEF.Rmd")}
 ```
 
+#### Evaporation by treatment (single disturbance level)
+
+```{r child = here("3_r_files", "evaporation_single_disturbance_level_treatments.Rmd")}
+```
+
+#### Evaporation by size (both disturbance levels)
+
+```{r child = here("3_r_files", "evaporation_both_disturbance_levels_size.Rmd")}
+```
+
 ### $S$ vs $M$ vs $L$ {.tabset .tabset-pills}
 
 ```{r}
 ecosystem_type_i = c("Small unconnected",
-                 "Medium unconnected",
-                 "Large unconnected")
+                     "Medium unconnected",
+                     "Large unconnected")
 ```
 
 #### Shannon {.tabset .tabset-pills}
@@ -370,6 +380,14 @@ response_variable = "auto_hetero_ratio"
 ```{r child = here("3_r_files", "analysis_ecosystems_populations.Rmd")}
 ```
 
+#### Evaporation
+
+```{r}
+plot.ecosystems.points(ds_ecosystems,
+                       ecosystem_type_i,
+                       "water_addition_ml")
+```
+
 ### $S_{L}$ vs $S$ {.tabset .tabset-pills}
 
 ```{r}
@@ -425,6 +443,14 @@ response_variable = "median_body_area_µm2"
 #### Populations
 
 ```{r child = here("3_r_files", "analysis_ecosystems_populations.Rmd")}
+```
+
+#### Evaporation
+
+```{r}
+plot.ecosystems.points(ds_ecosystems,
+                       ecosystem_type_i,
+                       "water_addition_ml")
 ```
 
 ### $S_{L}$ vs $S_{S}$ {.tabset .tabset-pills}
@@ -484,6 +510,14 @@ response_variable = "median_body_area_µm2"
 ```{r child = here("3_r_files", "analysis_ecosystems_populations.Rmd")}
 ```
 
+#### Evaporation
+
+```{r}
+plot.ecosystems.points(ds_ecosystems,
+                       ecosystem_type_i,
+                       "water_addition_ml")
+```
+
 ### $S_{S}$ vs $S${.tabset .tabset-pills}
 
 ```{r}
@@ -539,6 +573,14 @@ response_variable = "median_body_area_µm2"
 #### Populations
 
 ```{r child = here("3_r_files", "analysis_ecosystems_populations.Rmd")}
+```
+
+#### Evaporation
+
+```{r}
+plot.ecosystems.points(ds_ecosystems,
+                       ecosystem_type_i,
+                       "water_addition_ml")
 ```
 
 ### $L_{S}$ vs $L$ {.tabset .tabset-pills}
@@ -598,6 +640,14 @@ response_variable = "median_body_area_µm2"
 ```{r child = here("3_r_files", "analysis_ecosystems_populations.Rmd")}
 ```
 
+#### Evaporation
+
+```{r}
+plot.ecosystems.points(ds_ecosystems,
+                       ecosystem_type_i,
+                       "water_addition_ml")
+```
+
 ### $L_{S}$ vs $L_{L}$ {.tabset .tabset-pills}
 
 ```{r}
@@ -653,6 +703,14 @@ response_variable = "median_body_area_µm2"
 #### Populations
 
 ```{r child = here("3_r_files", "analysis_ecosystems_populations.Rmd")}
+```
+
+#### Evaporation
+
+```{r}
+plot.ecosystems.points(ds_ecosystems,
+                       ecosystem_type_i,
+                       "water_addition_ml")
 ```
 
 ### $L_{L}$ vs $L$ {.tabset .tabset-pills}
@@ -712,6 +770,14 @@ response_variable = "median_body_area_µm2"
 ```{r child = here("3_r_files", "analysis_ecosystems_populations.Rmd")}
 ```
 
+#### Evaporation
+
+```{r}
+plot.ecosystems.points(ds_ecosystems,
+                       ecosystem_type_i,
+                       "water_addition_ml")
+```
+
 ### $M_{M}$ vs $M$ {.tabset .tabset-pills}
 
 ```{r}
@@ -767,6 +833,14 @@ response_variable = "median_body_area_µm2"
 #### Populations
 
 ```{r child = here("3_r_files", "analysis_ecosystems_populations.Rmd")}
+```
+
+#### Evaporation
+
+```{r}
+plot.ecosystems.points(ds_ecosystems,
+                       ecosystem_type_i,
+                       "water_addition_ml")
 ```
 
 ## Results {.tabset .tabset-pills}

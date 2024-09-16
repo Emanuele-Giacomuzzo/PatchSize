@@ -30,6 +30,7 @@ library("tidyverse")
 #Data visualisation
 library("ggpubr") #ggarrange
 library("plotly")
+library("gridExtra")
 
 #Data analysis
 library("lmerTest")
@@ -37,6 +38,7 @@ library("vegan")
 library("betapart")
 library("Rmisc") #For summarySE
 library("combinat")
+library("emmeans") #For contrasts
 
 #Conflicts
 library("conflicted")

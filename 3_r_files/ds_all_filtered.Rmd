@@ -9,6 +9,10 @@ date: "2023-11-30"
 Here I'm filtering ecosystems to have only the ones with disturbance `r disturbance_global_input`.
 
 ```{r}
+ds_ecosystems_both_disturbances = ds_ecosystems
+```
+
+```{r}
 #Filter data sets according to the global disturbance
 ds_individuals = ds_individuals %>%
   filter(disturbance == disturbance_global_input)

@@ -352,6 +352,7 @@ grey_background_color = "transparent"
 Parameters for modelling.
 
 ```{r modeling_parameters}
+time_points_with_water_addtion = 2:6
 first_time_point_model = 2 #Time point 2 is the first after disturbance
 last_time_point_model = last_time_point
 

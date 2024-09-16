@@ -456,3 +456,48 @@ ds_ecosystems = ds_ecosystems %>%
                               Spi_te_indiv_per_ml +
                               Tet_indiv_per_ml))
 ```
+
+```{r}
+
+# Add evaporation rates
+
+ds_for_evaporation = read.csv(here("2_data", "water_addition.csv")) %>%
+  pivot_longer(cols = starts_with("water_add_after_t"), 
+               names_to = "time_point",          
+               values_to = "water_addition_ml") %>%
+  mutate(time_point = as.double(str_extract(time_point, "\\d+")))
+
+ds_ecosystems = ds_ecosystems %>%
+  left_join(ds_for_evaporation)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,88 @@
+---
+title: "Untitled"
+output: html_document
+date: "2024-09-13"
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+ds_ecosystems_both_disturbances_filtered = ds_ecosystems_both_disturbances %>%
+  filter(!is.na(water_addition_ml))
+```
+
+```{r}
+
+# Compare small, medium, and large
+
+ds_ecosystems_both_disturbances_filtered %>%
+  summarySE(measurevar = "water_addition_ml",
+            groupvars = c("day", "ecosystem_size")) %>%
+  ggplot(aes(x = day,
+             y = water_addition_ml,
+             group = interaction(day, ecosystem_size),
+             color = ecosystem_size,
+             linetype = ecosystem_size)) +
+  geom_point(stat = "summary",
+             fun = "mean",
+             position = position_dodge(dodging),
+             size = treatment_points_size) + 
+  geom_line(stat = "summary",
+            fun = "mean",
+            aes(group = ecosystem_size),
+            position = position_dodge(dodging),
+            linewidth = treatment_lines_linewidth) +
+  geom_errorbar(aes(ymax = water_addition_ml + ci,
+                    ymin = water_addition_ml - ci),
+                width = width_errorbar,
+                position = position_dodge(dodging)) +
+  labs(x = "Day",
+       y = "Evaporation (ml)") +
+  theme_bw() +
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        legend.position = legend_position)
+
+full_model = lmer(water_addition_ml ~
+                  ecosystem_size +
+                    (1 | time_point),
+                  data = ds_ecosystems_both_disturbances_filtered,
+                  REML = FALSE)
+
+null_model = lmer(water_addition_ml ~
+                    (1 | time_point),
+                  data = ds_ecosystems_both_disturbances_filtered,
+                  REML = FALSE)
+
+compute.model.stats(full_model,
+                    null_model,
+                    "mixed_model")
+
+emmeans(full_model,
+        specs = pairwise ~ ecosystem_size,
+        adjust = "tukey",
+        bias.adj = TRUE,
+        lmer.df = "satterthwaite")
+
+qqnorm(resid(full_model))
+ds_ecosystems_both_disturbances_filtered %>%
+    mutate(predicted = fitted(full_model),
+           residuals = resid(full_model)) %>%
+    plot_ly(x = ~predicted,
+            y = ~residuals,
+            type = "scatter",
+            mode = "markers",
+            marker = list(size = 5, color = "#4C78A8"),
+            text = paste(" ID: ", 
+                         ds_ecosystems_both_disturbances_filtered$culture_ID, 
+                         "<br>",
+                         "Day: ", 
+                         ds_ecosystems_both_disturbances_filtered$day, 
+                         "<br>",
+                         "Ecosystem Type: ", 
+                         ds_ecosystems_both_disturbances_filtered$ecosystem_type),
+            hoverinfo = "text") %>%
+    plotly::layout(title = "Residuals vs. Fitted Values",
+                   xaxis = list(title = "Fitted Values"),
+                   yaxis = list(title = "Residuals"))
+```

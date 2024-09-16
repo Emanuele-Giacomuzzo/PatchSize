@@ -7,12 +7,12 @@ editor_options:
 ---
 
 ```{r}
-for(ecosystem_type_i in ecosystem_type_i){
+for(ecosystem_type_i_i in ecosystem_type_i){
   
-  print(ecosystem_type_i)
+  print(ecosystem_type_i_i)
 
   p = ds_ecosystems %>%
-  filter(ecosystem_type == ecosystem_type_i) %>%
+  filter(ecosystem_type == ecosystem_type_i_i) %>%
   group_by(day) %>%
   summarise(
     Ble = mean(Ble_indiv_per_ml_dominance, na.rm = TRUE),
