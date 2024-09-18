@@ -1,0 +1,200 @@
+---
+title: "Untitled"
+output: html_document
+date: "2024-09-16"
+editor_options: 
+  chunk_output_type: console
+---
+
+Following the initial inspection, we proceed to analyse differences among ecosystems. To do so, we go through the following steps.
+
+1. Add baseline level of this response variable (time point 1) to the cultures. 
+2. Filter the data to isolate the relevant data for analysis. Specifically, we exclude data points where the response variable couldn't be computed, the time points preceding the initial disturbance and resource flow, and the last time point which we are not including because we do not know how much water evaporated previously from the water addition. 
+3. Plot the data to make sure that what filtered in the right way.
+4. Develop mixed effect models to examine how ecosystem type influenced this variable. 
+
+```{r}
+
+# --- ADD BASELINES --- #
+
+baselines = ds_metaecosystems %>%
+  filter(time_point == time_point_of_baselines) %>%
+  select(system_nr,
+         all_of(response_variable)) %>%
+  rename(baseline = all_of(response_variable))
+
+data_for_analysis = ds_metaecosystems %>%
+  left_join(baselines)
+```
+
+```{r}
+
+# --- FILTER DATA AND CHANGE THE NAME OF LEVELS --- #
+
+data_for_analysis = data_for_analysis %>%
+  filter(time_point %in% time_points_model,
+         metaecosystem_type %in% metaecosystem_type_i,
+         !is.na(!!sym(response_variable)),
+         !is.na(total_water_addition_ml),
+         connection == "connected" | ecosystems_combined %in% c("1|11", "2|12", "3|13", "4|14", "5|15", "6|7", "7|8", "9|10",
+                                                                "56|66", "57|67", "58|68", "59|69", "61|62", "63|64")) %>%
+  mutate(metaecosystem_type = case_when(metaecosystem_type == "Small-Large unconnected" ~ "SL unc",
+                                    metaecosystem_type == "Medium-Medium unconnected" ~ "MM unc",
+                                    metaecosystem_type == "Small-Small meta-ecosystem" ~ "SS con",
+                                    metaecosystem_type == "Medium-Medium meta-ecosystem" ~ "MM con",
+                                    metaecosystem_type == "Large-Large meta-ecosystem" ~ "LL con",
+                                    metaecosystem_type == "Small-Large meta-ecosystem" ~ "SL con",
+                                    TRUE ~ metaecosystem_type))
+```
+
+```{r eval = FALSE, echo = FALSE}
+
+# --- ADD EVAPORATION RATES RESIDUALS --- #
+
+evaporation_model = lm(get(response_variable) ~
+                         metaecosystem_type,
+                       data = data_for_analysis)
+
+par(mfrow = c(2, 2))
+plot(evaporation_model)
+
+data_for_analysis = data_for_analysis %>%
+  mutate(evaporation_residuals = residuals(evaporation_model))
+```
+
+```{r}
+
+# --- PLOT MEAN ± 95% CI OF FILTERED DATA --- #
+
+plot.metaecos.points.3(data_for_analysis,
+                       response_variable)
+```
+
+```{r class.source = "fold-show"}
+
+# --- CONSTRUCT MODEL --- #
+
+full_model = lmer(get(response_variable) ~
+                    metaecosystem_type + 
+                    total_water_addition_ml +
+                    (1 | day) +
+                    (1 | system_nr) +
+                    (1 | baseline),
+                  data = data_for_analysis,
+                  REML = FALSE,
+                  )
+
+# Evaporation residuals and culture_ID together doesn't allow the model to converge, even if there's no correlation between these two variables.
+```
+
+```{r}
+
+# --- SHOW MODEL SUMMARY --- #
+
+print(summary(full_model), digits = 1)
+```
+
+```{r}
+
+# --- RUN ANOVA --- #
+
+car::Anova(full_model, type = "III")
+```
+
+
+<details>
+<summary>Model contrast coding</summary>
+```{r}
+
+# --- GET ECOSYSTEM TYPE CONSTRASTS --- #
+
+emmeans_output = emmeans(full_model,
+                         specs = pairwise ~ metaecosystem_type,
+                         adjust = "tukey",
+                         bias.adj = TRUE,
+                         lmer.df = "satterthwaite") 
+
+
+emmeans_output
+
+MM_conn = c(1, 0, 0, 0)
+MM_unc = c(0, 1, 0, 0)
+SL_conn = c(0, 0, 1, 0)
+SL_unc = c(0, 0, 0, 1)
+
+n_of_digits = 3
+contrasts = contrast(emmeans_output, 
+                     method = list("SL_conn - SL_unc" = SL_conn - SL_unc,
+                                   "MM_conn - MM_unc" = MM_conn - MM_unc)) %>%
+  as.data.frame() %>%
+  mutate(p.value = round(p.value, digits = n_of_digits),
+         estimate = round(estimate, digits = n_of_digits),
+         SE = round(SE, digits = n_of_digits),
+         df = round(df, digits = n_of_digits),
+         t.ratio = round(t.ratio, digits = n_of_digits),
+         e = "",
+         e = ifelse(p.value > 0.1, 
+                           "",
+                           e),
+         e = ifelse(p.value < 0.05, 
+                           "*",
+                           e),
+         e = ifelse(p.value < 0.01, 
+                           "**",
+                           e),
+         e = ifelse(p.value < 0.001, 
+                           "***",
+                           e)) %>%
+  rename(" " = e)
+```
+</details>
+
+```{r}
+
+# --- SHOW METAECOSYSTEM TYPE CONSTRASTS --- #
+
+contrasts
+```
+
+<br>
+
+```{r}
+
+# --- CONSTRUCT RESIDUALS VS FITTED VALUES PLOT --- #
+
+res_vs_fit = data_for_analysis %>%
+    mutate(predicted = fitted(full_model),
+           residuals = resid(full_model)) %>%
+    plot_ly(x = ~predicted,
+            y = ~residuals,
+            type = "scatter",
+            mode = "markers",
+            marker = list(size = 5, color = "#4C78A8"),
+            text = paste(" ID: ", 
+                         data_for_analysis$system_nr, 
+                         "<br>",
+                         "Day: ", 
+                         data_for_analysis$day, 
+                         "<br>",
+                         "Patch Type: ", 
+                         data_for_analysis$metaecosystem_type, 
+                         "<br>",
+                         "Biomass density: ", 
+                         round(data_for_analysis$total_metaecosystem_bioarea_mm2, digits = 2), 
+                         "<br>",
+                         "Mean Shannon: ", 
+                         data_for_analysis$mean_shannon, 
+                         "<br>"),
+            hoverinfo = "text") %>%
+    plotly::layout(title = "Residuals vs. Fitted Values",
+                   xaxis = list(title = "Fitted Values"),
+                   yaxis = list(title = "Residuals"))
+```
+
+```{r}
+
+# --- PLOT RESIDUALS --- #
+
+qqnorm(resid(full_model))
+res_vs_fit
+```

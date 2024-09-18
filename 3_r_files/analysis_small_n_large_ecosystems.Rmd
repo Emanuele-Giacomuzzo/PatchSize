@@ -257,3 +257,8 @@ results_table = fill.results.table(results_table,
                                    model_stats_full,
                                    model_stats_reduced)
 ```
+
+WITH THE RESIDUALS FROM THE EVAPORATION
+
+```{r child = here("3_r_files", "adding_the_residuals_connected.Rmd")}
+```

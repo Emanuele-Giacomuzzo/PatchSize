@@ -70,12 +70,26 @@ print(paste("!!", disturbance_global_input, "!!", "The experiment investigate th
 ```{r child = here("3_r_files", "ds_classes_effect_size.Rmd"), eval = FALSE}
 ```
 
+```{r echo=FALSE, message=FALSE}
+save.image(file = here("4_environments", "before.RData"))
+```
+
+### Analysis both disturbances
+
+```{r}
+response_variable = "mean_shannon"
+response_variable
+```
+
+```{r child = here("3_r_files", "both_disturbances_analysis.Rmd")}
+```
+
 ```{r child = here("3_r_files", "ds_all_filtered.Rmd")}
 ```
 
 ## Plots & Analysis {.tabset .tabset-dropdown}
 
-### All Meta-ecosystems {.tabset .tabset-pills}
+### All meta-ecosystems {.tabset .tabset-pills}
 
 ```{r}
 metaecosystem_type_i = c("Small-Small meta-ecosystem",
@@ -86,7 +100,7 @@ metaecosystem_type_i = c("Small-Small meta-ecosystem",
                          "Small-Large unconnected")
 ```
 
-#### Alpha (mean Shannon) {.tabset .tabset-pills}
+#### Alpha {.tabset .tabset-pills}
 
 ```{r}
 response_variable = "mean_shannon"
@@ -95,7 +109,7 @@ response_variable = "mean_shannon"
 ```{r child = here("3_r_files", "analysis_metaeco_variable_all.Rmd")}
 ```
 
-#### Beta (Bray-Curtis) {.tabset .tabset-pills}
+#### Beta {.tabset .tabset-pills}
 
 ```{r}
 response_variable = "bray_curtis"
@@ -104,7 +118,7 @@ response_variable = "bray_curtis"
 ```{r child = here("3_r_files", "analysis_metaeco_variable_all.Rmd")}
 ```
 
-#### Gamma (regional richness) {.tabset .tabset-pills}
+#### Gamma {.tabset .tabset-pills}
 
 ```{r}
 response_variable = "metaecosystem_richness"
@@ -124,7 +138,8 @@ response_variable = "total_metaecosystem_bioarea_mm2"
 
 ### SL vs MM {.tabset .tabset-pills}
 
-#### Alpha (mean Shannon) {.tabset .tabset-pills}
+
+#### Alpha {.tabset .tabset-pills}
 
 ```{r}
 response_variable = "mean_shannon"
@@ -137,7 +152,6 @@ metaecosystem_type_i = c("Medium-Medium meta-ecosystem",
                          "Small-Large unconnected")
 ```
 
-
 ```{r child = here("3_r_files", "analysis_metaeco_variable_all.Rmd")}
 ```
 
@@ -145,7 +159,12 @@ metaecosystem_type_i = c("Medium-Medium meta-ecosystem",
 
 Following the initial inspection, we proceed to analyse differences among meta-ecosystems. To make it easier to interpret differences, we decided to construct a model for each comparisons we are interested in, which are: asymmetric vs symmetric connected, asymmetric connected vs unconnected, and symmetric connected vs unconnected. 
 
-##### SL (connected vs unconnected) {.tabset .tabset-pills}
+##### Holistic
+
+```{r child = here("3_r_files", "holistic_model_metaecosystems.Rmd")}
+```
+
+##### SL {.tabset .tabset-pills}
 
 ```{r}
 metaecosystem_type_i = c("Small-Large meta-ecosystem",
@@ -155,7 +174,7 @@ metaecosystem_type_i = c("Small-Large meta-ecosystem",
 ```{r child = here("3_r_files", "analysis_metaeco_connection.Rmd")}
 ```
 
-##### MM (connected vs unconnected) {.tabset .tabset-pills}
+##### MM {.tabset .tabset-pills}
 
 ```{r}
 metaecosystem_type_i = c("Medium-Medium meta-ecosystem",
@@ -169,7 +188,7 @@ metaecosystem_type_i = c("Medium-Medium meta-ecosystem",
 
 Following the initial inspection, we proceed to analyse differences among meta-ecosystems. To make it easier to interpret differences, we decided to construct a model for each comparisons we are interested in, which are: asymmetric vs symmetric connected, asymmetric connected vs unconnected, and symmetric connected vs unconnected. 
 
-#### Beta (Bray-Curtis) {.tabset .tabset-pills}
+#### Beta {.tabset .tabset-pills}
 
 ```{r}
 response_variable = "bray_curtis"
@@ -185,7 +204,12 @@ metaecosystem_type_i = c("Medium-Medium meta-ecosystem",
 ```{r child = here("3_r_files", "analysis_metaeco_variable_all.Rmd")}
 ```
 
-##### SL (connected vs unconnected) {.tabset .tabset-pills}
+##### Holistic
+
+```{r child = here("3_r_files", "holistic_model_metaecosystems.Rmd")}
+```
+
+##### SL {.tabset .tabset-pills}
 
 ```{r}
 metaecosystem_type_i = c("Small-Large meta-ecosystem",
@@ -195,7 +219,7 @@ metaecosystem_type_i = c("Small-Large meta-ecosystem",
 ```{r child = here("3_r_files", "analysis_metaeco_connection.Rmd")}
 ```
 
-##### MM (connected vs unconnected) {.tabset .tabset-pills}
+##### MM {.tabset .tabset-pills}
 
 ```{r}
 metaecosystem_type_i = c("Medium-Medium meta-ecosystem",
@@ -209,7 +233,7 @@ metaecosystem_type_i = c("Medium-Medium meta-ecosystem",
 
 Following the initial inspection, we proceed to analyse differences among meta-ecosystems. To make it easier to interpret differences, we decided to construct a model for each comparisons we are interested in, which are: asymmetric vs symmetric connected, asymmetric connected vs unconnected, and symmetric connected vs unconnected. 
 
-#### Gamma (regional richness) {.tabset .tabset-pills}
+#### Gamma {.tabset .tabset-pills}
 
 ```{r}
 response_variable = "metaecosystem_richness"
@@ -225,7 +249,12 @@ metaecosystem_type_i = c("Medium-Medium meta-ecosystem",
 ```{r child = here("3_r_files", "analysis_metaeco_variable_all.Rmd")}
 ```
 
-##### SL (connected vs unconnected) {.tabset .tabset-pills}
+##### Holistic
+
+```{r child = here("3_r_files", "holistic_model_metaecosystems.Rmd")}
+```
+
+##### SL {.tabset .tabset-pills}
 
 ```{r}
 metaecosystem_type_i = c("Small-Large meta-ecosystem",
@@ -235,7 +264,7 @@ metaecosystem_type_i = c("Small-Large meta-ecosystem",
 ```{r child = here("3_r_files", "analysis_metaeco_connection.Rmd")}
 ```
 
-##### MM (connected vs unconnected) {.tabset .tabset-pills}
+##### MM {.tabset .tabset-pills}
 
 ```{r}
 metaecosystem_type_i = c("Medium-Medium meta-ecosystem",
@@ -265,7 +294,15 @@ metaecosystem_type_i = c("Medium-Medium meta-ecosystem",
 
 Following the initial inspection, we proceed to analyse differences among meta-ecosystems. To make it easier to interpret differences, we decided to construct a model for each comparisons we are interested in, which are: asymmetric vs symmetric connected, asymmetric connected vs unconnected, and symmetric connected vs unconnected. 
 
-##### SL (connected vs unconnected) {.tabset .tabset-pills}
+##### Holistic
+
+```{r child = here("3_r_files", "holistic_model_metaecosystems.Rmd"), eval = (disturbance_global_input == "high")}
+```
+
+```{r child = here("3_r_files", "holistic_model_metaecosystems_automatic_optimiser.Rmd"), eval = (disturbance_global_input == "low")}
+```
+
+##### SL {.tabset .tabset-pills}
 
 ```{r}
 metaecosystem_type_i = c("Small-Large meta-ecosystem",
@@ -275,7 +312,7 @@ metaecosystem_type_i = c("Small-Large meta-ecosystem",
 ```{r child = here("3_r_files", "analysis_metaeco_connection.Rmd")}
 ```
 
-##### MM (connected vs unconnected) {.tabset .tabset-pills}
+##### MM {.tabset .tabset-pills}
 
 ```{r}
 metaecosystem_type_i = c("Medium-Medium meta-ecosystem",
@@ -298,20 +335,40 @@ ecosystem_type_i = c("Small unconnected",
                      "Large connected to large")
 ```
 
+#### Shannon
+
+```{r}
+response_variable = "shannon"
+```
+
+```{r child = here("3_r_files", "holistic_model_ecosystems.Rmd")}
+```
+
+#### Biomass
+
+```{r}
+response_variable = "bioarea_mm2_per_ml"
+```
+
+```{r child = here("3_r_files", "holistic_model_ecosystems.Rmd")}
+```
+
 #### BEF {.tabset .tabset-pills}
 
 ```{r child = here("3_r_files", "analysis_ecosystems_BEF.Rmd")}
 ```
 
-#### Evaporation by treatment (single disturbance level)
-
-```{r child = here("3_r_files", "evaporation_single_disturbance_level_treatments.Rmd")}
-```
-
-#### Evaporation by size (both disturbance levels)
+#### Evaporation (both disturbance levels)
 
 ```{r child = here("3_r_files", "evaporation_both_disturbance_levels_size.Rmd")}
 ```
+
+#### Species abundances correlation
+
+```{r}
+ggpairs(ds_ecosystems %>%select(Ble_indiv_per_ml_dominance:Tet_indiv_per_ml_dominance))
+```
+
 
 ### $S$ vs $M$ vs $L$ {.tabset .tabset-pills}
 
@@ -392,7 +449,7 @@ plot.ecosystems.points(ds_ecosystems,
 
 ```{r}
 ecosystem_type_i = c("Small connected to large",
-                 "Small unconnected")
+                     "Small unconnected")
 ```
 
 #### Shannon {.tabset .tabset-pills}

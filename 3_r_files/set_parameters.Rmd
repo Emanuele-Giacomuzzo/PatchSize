@@ -285,6 +285,18 @@ parameters_treatments = data.frame(treatment = NA,
   add_row(treatment = "Large-Large meta-ecosystem", colour = "#67000d", linetype = "solid") %>%
   add_row(treatment = "Small-Small meta-ecosystem", colour = "#fc9272", linetype = "solid") %>%
   slice(-1)
+
+treatment_colours = c("Small" = "#feb24c",
+                      "Medium" = "#1b7837",
+                      "Large" = "#3182bd",
+                      "asymmetric" = "#762a83",
+                      "symmetric" = "#1b7837")
+
+treatment_linetype = c("connected to small" = "solid",
+                       "connected to medium" = "dashed",
+                       "connected to large" = "longdash",
+                       "connected" = "solid",
+                       "unconnected" = "dotted")
 ```
 
 Parameters for plotting.
@@ -353,8 +365,10 @@ Parameters for modelling.
 
 ```{r modeling_parameters}
 time_points_with_water_addtion = 2:6
+time_point_of_baselines = 1
 first_time_point_model = 2 #Time point 2 is the first after disturbance
-last_time_point_model = last_time_point
+last_time_point_model = 6
+time_points_model = 2:6
 
 optimizer_input = 'Nelder_Mead'
 method_input = ''

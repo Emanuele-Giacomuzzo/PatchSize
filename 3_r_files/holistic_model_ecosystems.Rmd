@@ -1,0 +1,219 @@
+---
+title: "Untitled"
+output: html_document
+date: "2024-09-16"
+editor_options: 
+  chunk_output_type: console
+---
+
+We want to know whether the connection influenced this response variable. We first start from plotting how this response variable changed in connected and unconnected ecosystems throughout the experiment through its mean ± 95 confidence interval:
+
+```{r}
+
+# --- PLOT MEAN ± 95% CI --- #
+
+plot.all.patches.points(data = ds_ecosystems,
+                        response_variable)
+```
+
+ <br>
+
+Following the initial inspection, we proceed to analyse differences among ecosystems. To do so, we go through the following steps.
+
+1. Add baseline level of this response variable (time point 1) to the cultures. 
+2. Filter the data to isolate the relevant data for analysis. Specifically, we exclude data points where the response variable couldn't be computed, the time points preceding the initial disturbance and resource flow, and the last time point which we are not including because we do not know how much water evaporated previously from the water addition. 
+3. Plot the data to make sure that what filtered in the right way.
+4. Develop mixed effect models to examine how ecosystem type influenced this variable. 
+
+```{r}
+
+# --- ADD BASELINES --- #
+
+baselines = ds_ecosystems %>%
+  filter(time_point == time_point_of_baselines) %>%
+  select(culture_ID,
+         all_of(response_variable)) %>%
+  rename(baseline = all_of(response_variable))
+
+data_for_analysis = ds_ecosystems %>%
+  left_join(baselines)
+```
+
+```{r}
+
+# --- FILTER DATA AND CHANGE THE NAME OF LEVELS --- #
+
+data_for_analysis = data_for_analysis %>%
+  filter(time_point %in% time_points_model,
+         ecosystem_type %in% ecosystem_type_i,
+         !is.na(!!sym(response_variable)),
+         !is.na(water_addition_ml)) %>%
+  mutate(ecosystem_type = case_when(ecosystem_type == "Small unconnected" ~ "S",
+                                    ecosystem_type == "Medium unconnected" ~ "M",
+                                    ecosystem_type == "Large unconnected" ~ "L",
+                                    ecosystem_type == "Small connected to small" ~ "S_S",
+                                    ecosystem_type == "Small connected to large" ~ "S_L",
+                                    ecosystem_type == "Medium connected to medium" ~ "M_M",
+                                    ecosystem_type == "Large connected to large" ~ "L_L",
+                                    ecosystem_type == "Large connected to small" ~ "L_S",
+                                    TRUE ~ ecosystem_type))
+  
+```
+
+```{r eval = FALSE, echo = FALSE}
+
+# --- ADD EVAPORATION RATES RESIDUALS --- #
+
+evaporation_model = lm(get(response_variable) ~
+                         ecosystem_type,
+                       data = data_for_analysis)
+
+par(mfrow = c(2, 2))
+plot(evaporation_model)
+
+data_for_analysis = data_for_analysis %>%
+  mutate(evaporation_residuals = residuals(evaporation_model))
+```
+
+```{r}
+
+# --- PLOT MEAN ± 95% CI OF FILTERED DATA --- #
+
+plot.all.patches.points(data = data_for_analysis,
+                        response_variable)
+```
+
+```{r class.source = "fold-show"}
+
+# --- CONSTRUCT MODEL --- #
+
+full_model = lmer(get(response_variable) ~
+                    ecosystem_type + 
+                    water_addition_ml +
+                    (1 | day) +
+                    (1 | culture_ID) +
+                    (1 | baseline),
+                  data = data_for_analysis,
+                  REML = FALSE,
+                  control = lmerControl(optimizer = "nloptwrap")) # Evaporation residuals and culture_ID together doesn't allow the model to converge, even if there's no correlation between these two variables.
+```
+
+```{r}
+
+# --- SHOW MODEL SUMMARY --- #
+
+print(summary(full_model), digits = 1)
+```
+
+```{r}
+
+# --- RUN ANOVA --- #
+
+car::Anova(full_model, type = "III")
+```
+
+
+<details>
+<summary>Model contrast coding</summary>
+```{r}
+
+# --- GET ECOSYSTEM TYPE CONSTRASTS --- #
+
+emmeans_output = emmeans(full_model,
+        specs = pairwise ~ ecosystem_type,
+        adjust = "tukey",
+        bias.adj = TRUE,
+        lmer.df = "satterthwaite") 
+
+
+emmeans_output
+
+L = c(1, 0, 0, 0, 0, 0, 0, 0)
+L_L = c(0, 1, 0, 0, 0, 0, 0, 0)
+L_S = c(0, 0, 1, 0, 0, 0, 0, 0)
+M = c(0, 0, 0, 1, 0, 0, 0, 0)
+M_M = c(0, 0, 0, 0, 1, 0, 0, 0)
+S = c(0, 0, 0, 0, 0, 1, 0, 0)
+S_L = c(0, 0, 0, 0, 0, 0, 1, 0)
+S_S = c(0, 0, 0, 0, 0, 0, 0, 1)
+
+n_of_digits = 3
+contrasts = contrast(emmeans_output, 
+                     method = list("S_L - S" = S_L - S,
+                                   "S_L - S_S" = S_L - S_S,
+                                   "S_S - S" = S_S - S,
+                                   "M_M - M" = M_M - M,
+                                   "L_S - L" = L_S - L,
+                                   "L_S - L_L" = L_S - L_L,
+                                   "L_L - L" = L_L - L)) %>%
+  as.data.frame() %>%
+  mutate(p.value = round(p.value, digits = n_of_digits),
+         estimate = round(estimate, digits = n_of_digits),
+         SE = round(SE, digits = n_of_digits),
+         df = round(df, digits = n_of_digits),
+         t.ratio = round(t.ratio, digits = n_of_digits),
+         e = "",
+         e = ifelse(p.value > 0.1, 
+                           "",
+                           e),
+         e = ifelse(p.value < 0.05, 
+                           "*",
+                           e),
+         e = ifelse(p.value < 0.01, 
+                           "**",
+                           e),
+         e = ifelse(p.value < 0.001, 
+                           "***",
+                           e)) %>%
+  rename(" " = e)
+```
+</details>
+
+```{r}
+
+# --- SHOW ECOSYSTEM TYPE CONSTRASTS --- #
+contrasts
+```
+
+<br>
+
+```{r}
+
+# --- CONSTRUCT RESIDUALS VS FITTED VALUES PLOT --- #
+
+res_vs_fit = data_for_analysis %>%
+    mutate(predicted = fitted(full_model),
+           residuals = resid(full_model)) %>%
+    plot_ly(x = ~predicted,
+            y = ~residuals,
+            type = "scatter",
+            mode = "markers",
+            marker = list(size = 5, color = "#4C78A8"),
+            text = paste(" ID: ", 
+                         data_for_analysis$culture_ID, 
+                         "<br>",
+                         "Day: ", 
+                         data_for_analysis$day, 
+                         "<br>",
+                         "Patch Type: ", 
+                         data_for_analysis$ecosystem_type, 
+                         "<br>",
+                         "Biomass density: ", 
+                         round(data_for_analysis$bioarea_mm2_per_ml, digits = 2), 
+                         "<br>",
+                         "Species richness: ", 
+                         data_for_analysis$species_richness, 
+                         "<br>"),
+            hoverinfo = "text") %>%
+    plotly::layout(title = "Residuals vs. Fitted Values",
+                   xaxis = list(title = "Fitted Values"),
+                   yaxis = list(title = "Residuals"))
+```
+
+```{r}
+
+# --- PLOT RESIDUALS --- #
+
+qqnorm(resid(full_model))
+res_vs_fit
+```

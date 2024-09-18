@@ -31,6 +31,7 @@ library("tidyverse")
 library("ggpubr") #ggarrange
 library("plotly")
 library("gridExtra")
+library("GGally") #Scatter plots for all variables
 
 #Data analysis
 library("lmerTest")
@@ -39,6 +40,8 @@ library("betapart")
 library("Rmisc") #For summarySE
 library("combinat")
 library("emmeans") #For contrasts
+library("broom.mixed") #To clean up mixed effect models
+
 
 #Conflicts
 library("conflicted")

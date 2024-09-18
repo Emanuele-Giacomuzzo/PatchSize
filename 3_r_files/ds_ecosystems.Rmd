@@ -471,6 +471,19 @@ ds_ecosystems = ds_ecosystems %>%
   left_join(ds_for_evaporation)
 ```
 
+```{r}
+
+# Add connection type
+
+ds_ecosystems <- ds_ecosystems %>%
+  mutate(connection_type = case_when(str_detect(ecosystem_type, "connected to large") ~ "connected to large",
+                                     str_detect(ecosystem_type, "connected to medium") ~ "connected to medium",
+                                     str_detect(ecosystem_type, "connected to small") ~ "connected to small",
+                                     str_detect(ecosystem_type, "unconnected") ~ "unconnected",
+                                     TRUE ~ ""))
+```
+
+
 
 
 

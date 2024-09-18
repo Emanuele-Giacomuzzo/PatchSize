@@ -81,36 +81,33 @@ for (combination in 1:n_ecosystems_combinations) {
     ds_metaecosystems[[row_n]] = ds_ecosystems %>%
       filter(culture_ID %in% current_IDs,
              time_point == time_point_input) %>%
-      summarise(
-        total_metaecosystem_bioarea_mm2 = sum(bioarea_tot_mm2),
-        total_metaecosystem_Ble_indiv = sum(Ble_tot_indiv),
-        total_metaecosystem_Cep_indiv = sum(Cep_tot_indiv),
-        total_metaecosystem_Col_indiv = sum(Col_tot_indiv),
-        total_metaecosystem_Eug_indiv = sum(Eug_tot_indiv),
-        total_metaecosystem_Eup_indiv = sum(Eup_tot_indiv),
-        total_metaecosystem_Lox_indiv = sum(Lox_tot_indiv),
-        total_metaecosystem_Pau_indiv = sum(Pau_tot_indiv),
-        total_metaecosystem_Pca_indiv = sum(Pca_tot_indiv),
-        total_metaecosystem_Spi_indiv = sum(Spi_tot_indiv),
-        total_metaecosystem_Spi_te_indiv = sum(Spi_te_tot_indiv),
-        total_metaecosystem_Tet_indiv = sum(Tet_tot_indiv)
-      ) %>%
-      mutate(
-        system_nr = current_system_nr,
-        ecosystems_combined = current_combination,
-        metaecosystem_type = current_metaeco_type,
-        disturbance = current_disturbance,
-        time_point = time_point_input,
-        day = current_day,
-        jaccard_index = jaccard_index_value,
-        bray_curtis = bray_curtis_value,
-        beta_spatial_turnover = beta_spatial_turnover_value,
-        beta_nestedness = beta_nestedness_value,
-        beta_total = beta_total_value,
-        metaecosystem_richness = metaecosystem_richness_value,
-        mean_shannon = shannon_value,
-        mean_richness = mean_richness_value
-      ) %>%
+      summarise(total_metaecosystem_bioarea_mm2 = sum(bioarea_tot_mm2),
+                total_metaecosystem_Ble_indiv = sum(Ble_tot_indiv),
+                total_metaecosystem_Cep_indiv = sum(Cep_tot_indiv),
+                total_metaecosystem_Col_indiv = sum(Col_tot_indiv),
+                total_metaecosystem_Eug_indiv = sum(Eug_tot_indiv),
+                total_metaecosystem_Eup_indiv = sum(Eup_tot_indiv),
+                total_metaecosystem_Lox_indiv = sum(Lox_tot_indiv),
+                total_metaecosystem_Pau_indiv = sum(Pau_tot_indiv),
+                total_metaecosystem_Pca_indiv = sum(Pca_tot_indiv),
+                total_metaecosystem_Spi_indiv = sum(Spi_tot_indiv),
+                total_metaecosystem_Spi_te_indiv = sum(Spi_te_tot_indiv),
+                total_metaecosystem_Tet_indiv = sum(Tet_tot_indiv),
+                total_water_addition_ml = sum(water_addition_ml)) %>%
+      mutate(system_nr = current_system_nr,
+             ecosystems_combined = current_combination,
+             metaecosystem_type = current_metaeco_type,
+             disturbance = current_disturbance,
+             time_point = time_point_input,
+             day = current_day,
+             jaccard_index = jaccard_index_value,
+             bray_curtis = bray_curtis_value,
+             beta_spatial_turnover = beta_spatial_turnover_value,
+             beta_nestedness = beta_nestedness_value,
+             beta_total = beta_total_value,
+             metaecosystem_richness = metaecosystem_richness_value,
+             mean_shannon = shannon_value,
+             mean_richness = mean_richness_value) %>%
       ungroup()
     
   }
@@ -119,24 +116,23 @@ for (combination in 1:n_ecosystems_combinations) {
 ds_metaecosystems = ds_metaecosystems %>%
   bind_rows() %>%
   as.data.frame() %>%
-  select(
-    time_point,
-    day,
-    system_nr,
-    ecosystems_combined,
-    disturbance,
-    metaecosystem_type,
-    mean_shannon,
-    mean_richness,
-    jaccard_index,
-    bray_curtis,
-    beta_spatial_turnover,
-    beta_nestedness,
-    beta_total,
-    metaecosystem_richness,
-    total_metaecosystem_bioarea_mm2,
-    paste0("total_metaecosystem_", protist_species, "_indiv")
-  )
+  select(time_point,
+         day,
+         system_nr,
+         ecosystems_combined,
+         disturbance,
+         metaecosystem_type,
+         mean_shannon,
+         mean_richness,
+         jaccard_index,
+         bray_curtis,
+         beta_spatial_turnover,
+         beta_nestedness,
+         beta_total,
+         metaecosystem_richness,
+         total_metaecosystem_bioarea_mm2,
+         paste0("total_metaecosystem_", protist_species, "_indiv"),
+         total_water_addition_ml)
 ```
 
 ```{r}
@@ -184,14 +180,16 @@ full_join(ds_metaecosystems,
 
 ```{r}
 ds_metaecosystems <- ds_metaecosystems %>%
-  mutate(
-    type = case_when(
-      metaecosystem_type == "Small-Large unconnected" ~ "asymmetric",
-      metaecosystem_type == "Small-Large meta-ecosystem" ~ "asymmetric",
-      metaecosystem_type == "Medium-Medium unconnected" ~ "symmetric",
-      metaecosystem_type == "Medium-Medium meta-ecosystem" ~ "symmetric",
-      metaecosystem_type == "Small-Small meta-ecosystem" ~ "Small-Small",
-      metaecosystem_type == "Medium-Medium meta-ecosystem" ~ "Medium-Medium"
-    ))
+  mutate(type = case_when(metaecosystem_type == "Small-Large unconnected" ~ "asymmetric",
+                          metaecosystem_type == "Small-Large meta-ecosystem" ~ "asymmetric",
+                          metaecosystem_type == "Medium-Medium unconnected" ~ "symmetric",
+                          metaecosystem_type == "Medium-Medium meta-ecosystem" ~ "symmetric",
+                          metaecosystem_type == "Small-Small meta-ecosystem" ~ "Small-Small",
+                          metaecosystem_type == "Medium-Medium meta-ecosystem" ~ "Medium-Medium")) %>%
+  mutate(type_2 = case_when(metaecosystem_type == "Small-Large unconnected" ~ "Small-Large",
+                            metaecosystem_type == "Small-Large meta-ecosystem" ~ "Small-Large",
+                            metaecosystem_type == "Medium-Medium unconnected" ~ "Medium-Medium",
+                            metaecosystem_type == "Medium-Medium meta-ecosystem" ~ "Medium-Medium",
+                            metaecosystem_type == "Small-Small meta-ecosystem" ~ "Small-Small",
+                            metaecosystem_type == "Medium-Medium meta-ecosystem" ~ "Medium-Medium"))
 ```
-
