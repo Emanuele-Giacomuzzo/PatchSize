@@ -1,0 +1,197 @@
+---
+title: "Video analysis script"
+output: html_document
+date: "2022-11-09"
+---
+
+To analyse the videos I took of the ecosystems, I used the package BEMOVI. For this, I had to use the powerful computer. Below is the code utilised for video analysis on the powerful computer.
+
+```{r eval = FALSE}
+
+# Clear workspace
+rm(list = ls())
+
+# Set working directory
+setwd("/media/mendel-himself/ID_061_Ema2/PatchSizePilot/training")
+
+# Load required libraries
+# library(devtools)
+# install_github("femoerman/bemovi", ref="master")
+library(bemovi)
+library(parallel)
+library(doParallel)
+library(foreach)
+
+# Define memory allocation parameters (in MB)
+memory.alloc <- 240000           # Total memory allocated
+memory.per.identifier <- 40000   # Memory per identifier
+memory.per.linker <- 5000        # Memory per linker
+memory.per.overlay <- 60000      # Memory per overlay
+
+# Set paths for tools and particle linker
+tools.path <- "/home/mendel-himself/bemovi_tools/" # Path to tools folder
+to.particlelinker <- tools.path
+
+# Set directories and file names
+to.data <- paste(getwd(), "/", sep = "")
+video.description.folder <- "0_video_description/"
+video.description.file <- "video_description.txt"
+raw.video.folder <- "1_raw/"
+raw.avi.folder <- "1a_raw_avi/"
+metadata.folder <- "1b_raw_meta/"
+particle.data.folder <- "2_particle_data/"
+trajectory.data.folder <- "3_trajectory_data/"
+temp.overlay.folder <- "4a_temp_overlays/"
+overlay.folder <- "4_overlays/"
+merged.data.folder <- "5_merged_data/"
+ijmacs.folder <- "ijmacs/"
+
+######################################################################
+# VIDEO PARAMETERS
+
+# Define video parameters
+fps <- 25                  # Video frame rate (frames per second)
+total_frames <- 125        # Total length of video (frames)
+width <- 2048              # Video width (pixels)
+height <- 2048             # Video height (pixels)
+measured_volume <- 34.4    # Measured volume (microliters) for Leica M205 C with 1.6 fold magnification, sample height 0.5 mm and Hamamatsu Orca Flash 4
+pixel_to_scale <- 4.05     # Size of a pixel (micrometers) for Leica M205 C with 1.6 fold magnification, sample height 0.5 mm and Hamamatsu Orca Flash 4
+video.format <- "cxd"      # Video file format (avi, cxd, mov, tiff)
+difference.lag <- 10       # Difference lag
+thresholds <- c(13, 255)   # Threshold values of pixel intensity (considered a measure of pixel "whiteness") for determining if a pixel belongs to an individual rather than the background
+
+######################################################################
+# FILTERING PARAMETERS
+# optimized for Perfex Pro 10 stereomicrocope with Perfex SC38800 (IDS UI-3880LE-M-GL) camera
+# tested stereomicroscopes: Perfex Pro 10, Nikon SMZ1500, Leica M205 C
+# tested cameras: Perfex SC38800, Canon 5D Mark III, Hamamatsu Orca Flash 4
+# tested species: Tet, Col, Pau, Pca, Eug, Chi, Ble, Ceph, Lox, Spi
+
+particle_min_size <- 10           # Minimum particle size (pixels)
+particle_max_size <- 1000         # Maximum particle size (pixels)
+trajectory_link_range <- 3        # Number of adjacent frames for linking particles
+trajectory_displacement <- 16     # Maximum displacement of a particle between frames
+
+# Filtering criteria
+filter_min_net_disp <- 25         # Minimum net displacement (µm)
+filter_min_duration <- 1          # Minimum duration (s)
+filter_detection_freq <- 0.1      # Minimum detection frequency (1/s)
+filter_median_step_length <- 3    # Minimum median step length (µm)
+
+######################################################################
+# VIDEO ANALYSIS
+
+# Check if all tools are installed and set permissions
+check_tools_folder(tools.path)
+system(paste0("chmod a+x ", tools.path, "bftools/bf.sh"))
+system(paste0("chmod a+x ", tools.path, "bftools/bfconvert"))
+system(paste0("chmod a+x ", tools.path, "bftools/showinf"))
+
+# Convert video files to compressed avi format
+convert_to_avi(to.data,
+               raw.video.folder,
+               raw.avi.folder,
+               metadata.folder,
+               tools.path,
+               fps,
+               video.format)
+
+
+# Uncomment the following lines for testing
+# check_video_file_names(to.data, raw.avi.folder, video.description.folder, video.description.file)
+# check_threshold_values(to.data, raw.avi.folder, ijmacs.folder, 2, difference.lag, thresholds, tools.path, memory.alloc)
+
+# Identify particles in the video
+locate_and_measure_particles(to.data,
+                             raw.avi.folder,
+                             particle.data.folder,
+                             difference.lag,
+                             min_size = particle_min_size,
+                             max_size = particle_max_size,
+                             thresholds = thresholds,
+                             tools.path,
+                             memory = memory.alloc,
+                             memory.per.identifier = memory.per.identifier,
+                             max.cores = detectCores() - 1)
+
+# Link particles across frames to form trajectories
+link_particles(to.data,
+               particle.data.folder,
+               trajectory.data.folder,
+               linkrange = trajectory_link_range,
+               disp = trajectory_displacement,
+               start_vid = 1,
+               memory = memory.alloc,
+               memory_per_linkerProcess = memory.per.linker,
+               raw.avi.folder,
+               max.cores = detectCores() - 1,
+               max_time = 1)
+
+# Merge video description file with particle data
+merge_data(to.data,
+           particle.data.folder,
+           trajectory.data.folder,
+           video.description.folder,
+           video.description.file,
+           merged.data.folder)
+
+# Load the merged data
+load(paste0(to.data, merged.data.folder, "Master.RData"))
+
+# Filter trajectory data based on defined criteria
+trajectory.data.filtered <- filter_data(trajectory.data,
+                                        filter_min_net_disp,
+                                        filter_min_duration,
+                                        filter_detection_freq,
+                                        filter_median_step_length)
+
+# Summarize trajectory data to individual-based data
+morph_mvt <- summarize_trajectories(trajectory.data.filtered,
+                                    calculate.median = F,
+                                    write = T,
+                                    to.data,
+                                    merged.data.folder)
+
+# Summarize sample level data
+summarize_populations(trajectory.data.filtered,
+                      morph_mvt,
+                      write = T,
+                      to.data,
+                      merged.data.folder,
+                      video.description.folder,
+                      video.description.file,
+                      total_frames)
+
+# Create overlays for validation
+create.subtitle.overlays(to.data,
+                         traj.data = trajectory.data.filtered,
+                         raw.video.folder,
+                         raw.avi.folder,
+                         temp.overlay.folder,
+                         overlay.folder,
+                         fps,
+                         vid.length = total_frames / fps,
+                         width,
+                         height,
+                         tools.path = tools.path,
+                         overlay.type = "number",
+                         video.format)
+
+# Create overlays (old method)
+create_overlays(traj.data = trajectory.data.filtered,
+                to.data = to.data,
+                merged.data.folder = merged.data.folder,
+                raw.video.folder = raw.avi.folder,
+                temp.overlay.folder = "4a_temp_overlays_old/",
+                overlay.folder = "4_overlays_old/",
+                width = width,
+                height = height,
+                difference.lag = difference.lag,
+                type = "traj",
+                predict_spec = F,
+                contrast.enhancement = 1,
+                IJ.path = "/home/mendel-himself/bemovi_tools",
+                memory = memory.alloc,
+                max.cores = detectCores() - 1,
+                memory.per.overlay = memory.per.overlay)
+```

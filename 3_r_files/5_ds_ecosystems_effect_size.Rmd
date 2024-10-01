@@ -1,0 +1,103 @@
+---
+title: "Data Patches Averaged"
+output: html_document
+date: "2022-11-22"
+editor_options: 
+  chunk_output_type: console
+---
+
+### Patch effect sizes (`ds_ecosystems_effect_size`)
+
+In this dataset (`ds_ecosystems_effect_size`) each row represents a treatment at a time point. It contains the effect size of the connection of a ecosystem (connected vs unconnected).
+
+```{r}
+
+# Calculate the mean & sd of response variables for each treatment/control at each time point
+
+ds_ecosystems_effect_size = NULL
+variable_nr = 0
+
+for (variable_i in variables_ecosystems) {
+  
+  variable_nr = variable_nr + 1
+  
+  ds_ecosystems_effect_size[[variable_nr]] = ds_ecosystems %>%
+    filter(time_point >= 1,
+           !is.na(!!sym(variable_i))) %>%
+    group_by(across(all_of(columns_ecosystems[columns_ecosystems != "culture_ID" & 
+                                           columns_ecosystems != "system_nr"]))) %>%
+    summarise(across(all_of(variable_i),
+                     list(mean = mean,
+                          sd = sd)),
+              sample_size = n()) %>%
+    rename_with( ~ paste0(variable_i, "_sample_size"),
+                 matches("sample_size"))
+  
+}
+
+ds_ecosystems_effect_size <- reduce(ds_ecosystems_effect_size,
+                                    full_join,
+                                    by = columns_ecosystems[columns_ecosystems != "culture_ID" & columns_ecosystems != "system_nr"])
+
+expect_equal(nrow(ds_ecosystems_effect_size),
+             n_ecosystem_types * (n_time_points-1) * n_disturbance_levels)
+```
+
+```{r}
+
+# Calculate the effect size (Hedge's d) for each treatment at each time point
+  
+  for (variable_i in variables_ecosystems) {
+    ds_ecosystems_effect_size <- ds_ecosystems_effect_size %>%
+      mutate(!!paste0(variable_i, "_d") := NA,
+             !!paste0(variable_i, "_d_upper") := NA,
+             !!paste0(variable_i, "_d_lower") := NA)
+  }
+  
+  row_i = 0
+  for (treatment_selected in treatments_and_controls$treatment) {
+    for (time_point_selected in time_points) {
+      
+      row_i = row_i + 1
+      
+      control_input = treatments_and_controls$control[treatments_and_controls$treatment == treatment_selected]
+      
+      treatment_row = ds_ecosystems_effect_size %>%
+        filter(ecosystem_type == treatment_selected,
+               time_point == time_point_selected)
+      
+      control_row = ds_ecosystems_effect_size %>%
+        filter(ecosystem_type == control_input,
+               time_point == time_point_selected)
+      
+      for (response_variable in variables_ecosystems) {
+        
+        hedges_d = calculate.hedges_d(treatment_row[[paste0(response_variable, "_mean")]],
+                                      treatment_row[[paste0(response_variable, "_sd")]],
+                                      treatment_row[[paste0(response_variable, "_sample_size")]],
+                                      control_row[[paste0(response_variable, "_mean")]],
+                                      control_row[[paste0(response_variable, "_sd")]],
+                                      control_row[[paste0(response_variable, "_sample_size")]])
+        
+        ds_ecosystems_effect_size[[paste0(response_variable, "_d")]][
+          ds_ecosystems_effect_size$ecosystem_type == treatment_selected &
+          ds_ecosystems_effect_size$time_point == time_point_selected] =
+          hedges_d$d
+        
+        ds_ecosystems_effect_size[[paste0(response_variable, "_d_upper")]][
+          ds_ecosystems_effect_size$ecosystem_type == treatment_selected &
+          ds_ecosystems_effect_size$time_point == time_point_selected] =
+          hedges_d$upper_CI
+        
+        ds_ecosystems_effect_size[[paste0(response_variable, "_d_lower")]][
+          ds_ecosystems_effect_size$ecosystem_type == treatment_selected &
+          ds_ecosystems_effect_size$time_point == time_point_selected] =
+          hedges_d$lower_CI
+        
+      }
+    }
+  }
+
+expect_equal(nrow(ds_ecosystems_effect_size),
+             n_ecosystem_types * (n_time_points-1) * n_disturbance_levels)
+```

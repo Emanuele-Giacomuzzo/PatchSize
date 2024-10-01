@@ -1,0 +1,149 @@
+---
+title: "Untitled"
+output: html_document
+date: "2023-11-30"
+editor_options: 
+  chunk_output_type: console
+---
+
+We want here to plot the final paper version of the biodiversity and productivity of the small and large ecosystems. We need to plot it again instead of using the plots we used in the analysis because we want to have the underscores in the legend. We don't use underscores in the analysis because we can't easily input them from a level name vector. 
+
+```{r}
+
+# Define ecosystems you want to plot.
+
+ecosystem_type_selected = c("Small connected to large",
+                            "Small connected to small",
+                            "Small unconnected",
+                            "Large connected to small",
+                            "Large connected to large",
+                            "Large unconnected")
+```
+
+```{r}
+
+# Construct function to plot how the response variable (biomass or Shannon) of small and large ecosystems changes across time.
+
+plot.single.plot = function(response_variable_selected){
+  
+  ds_ecosystems %>%
+    filter(ecosystem_type %in% ecosystem_type_selected,
+           !is.na(!!sym(response_variable_selected))) %>%
+    summarySE(measurevar = response_variable_selected,
+              groupvars = c("day", "time_point", "ecosystem_type", "ecosystem_size", "connection")) %>%
+    ggplot(aes(x = day,
+               y = get(response_variable_selected),
+               group = interaction(day, ecosystem_type),
+               color = ecosystem_type,
+               linetype = ecosystem_type)) +
+    geom_point(stat = "summary",
+               fun = "mean",
+               position = position_dodge(dodging),
+               size = treatment_points_size) +
+    geom_line(stat = "summary",
+              fun = "mean",
+              aes(group = ecosystem_type),
+              position = position_dodge(dodging),
+              linewidth = treatment_lines_linewidth) +
+    geom_errorbar(aes(ymax = get(response_variable_selected) + ci,
+                      ymin = get(response_variable_selected) - ci),
+                  width = width_errorbar,
+                  position = position_dodge(dodging)) +
+    labs(x = axis_names$axis_name[axis_names$variable == "day"],
+         y = axis_names$axis_name[axis_names$variable == response_variable_selected],
+         color = "") +
+    scale_color_manual(values = c("#993404",
+                                  "#993404",
+                                  "#993404",
+                                  "#3182bd",
+                                  "#3182bd",
+                                  "#3182bd"),
+                       label = expression(S[L], 
+                                          S[S],
+                                          S,
+                                          L[S], 
+                                          L[L], 
+                                          L)) +
+    scale_linetype_manual(values = c("solid",
+                                     "dashed",
+                                     "dotted",
+                                     "solid",
+                                     "dashed",
+                                     "dotted"),
+                          label = expression(S[L], 
+                                             S[S],
+                                             S,
+                                             L[S], 
+                                             L[L], 
+                                             L)) +
+    geom_vline(xintercept = resource_flow_days,
+               linetype = resource_flow_line_type,
+               color = resource_flow_line_colour,
+               linewidth = resource_flow_line_width) +
+    geom_hline(yintercept = 0,
+               color = zero_line_colour,
+               linetype = zero_line_line_type,
+               linewidth = zero_line_line_width) +
+    theme_bw() +
+    theme(panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank(),
+          legend.position = legend_position,
+          legend.key.width = unit(legend_width_cm, "cm")) +
+    guides(color = guide_legend(title = NULL,
+                                nrow = 3),
+           linetype = guide_legend(title = NULL,
+                                   nrow = 3)) + 
+    geom_rect(xmin = grey_background_xmin, 
+              xmax = grey_background_xmax,
+              ymin = grey_background_ymin, 
+              ymax = grey_background_ymax, 
+              fill = grey_background_fill, 
+              alpha = grey_background_alpha,
+              color = grey_background_color)
+}
+```
+
+```{r fig.height = figures_height_rmd_output}
+
+# Combine plots
+
+p_combined = ggarrange(plot.single.plot("shannon") +
+                         rremove("xlab") +
+                         theme(axis.text.x = element_blank(),
+                               axis.ticks.x = element_blank()) +
+                         font("legend.text", 
+                              size = paper_labels_size) +
+                         font("ylab", 
+                              size = paper_labels_size),
+                       plot.single.plot("bioarea_mm2_per_ml") +
+                         font("legend.text", 
+                              size = paper_labels_size) +
+                         font("xlab", 
+                              size = paper_labels_size) +
+                         font("ylab", 
+                              size = paper_labels_size) +
+                         scale_x_continuous(breaks = unique(ds_ecosystems$day)),
+                       heights = c(0.8, 0.8, 1),
+                       nrow = 2,
+                       align = "v",
+                       labels = c("(a)", "(b)"),
+                       label.x = 0.1,
+                       label.y = 0.8,
+                       common.legend = TRUE) %>%
+  print()
+```
+
+```{r echo = FALSE, results=FALSE}
+
+# Save combined plots
+
+png(file = here("6_results", "figures", disturbance_global_selected, "paper", "ecosystem_diversity_n_function.png"),
+    width = paper_width,
+    height = paper_height,
+    units = paper_units,
+    res = paper_res)
+
+p_combined
+
+dev.off()
+```

@@ -1,0 +1,383 @@
+---
+title: "Untitled"
+output:
+  html_document:
+    code_folding: hide
+    profiling: yes
+date: "2023-04-14"
+editor_options: 
+  chunk_output_type: console
+---
+
+Our first step in the data analysis involves filtering the data to isolate the relevant data. Specifically, we exclude data points where the response variable couldn’t be computed, as well as time points preceding the initial disturbance and resource flow. Then we plot the data to make sure we filtered data the right way.
+
+```{r}
+
+# --- FILTER DATA --- #
+
+filtered_data = ds_metaecosystems %>%
+  filter(time_point %in% time_points_model,
+         metaecosystem_type %in% metaecosystem_type_selected,
+         !is.na(!!sym("total_water_addition_ml")))
+```
+
+```{r}
+
+# --- PLOT FILTERED DATA --- #
+
+plot.metaecos.points(filtered_data,
+                     metaecosystem_type_selected,
+                     connection_selected,
+                     response_variable_selected)
+```
+
+Then, given that we have gathered measurements from the same meta-ecosystem on multiple occasions, we can develop mixed effect models to examine how the connection influenced this meta-ecosystem variable. To study the effects of connection we compare two models to a null model using ANOVA: a full model and a reduced model. In all models, we treat system nr as having a random effect on how the slope and intercept of the relationship between response variable and time, with the slope and intercept being correlated [@Bates2015]. We also include the total water that was added due to evaporation in the microwave and the time point before the first disturbance (baseline). In the syntax of lmer4 the three models look this this:
+
+`Full model = response_variable ~connection * scale(day) + scale(total_water_addition_ml) * scale(day) + scale(baseline) * scale(day) + (day | system_nr)`
+
+`Reduced model = response_variable ~connection + scale(day) + scale(total_water_addition_ml) * scale(day) + scale(baseline) * scale(day) + (day | system_nr)`
+
+`Null model = response_variable ~scale(day) + scale(total_water_addition_ml) * scale(day) + scale(baseline) * scale(day) + (day | system_nr)`
+
+Unconnected meta-ecosystems are made of paired unconnected ecosystems, which are paired randomly. However, how to pair unconnected ecosystems can be done in multiple ways, as unconnected ecosystems did not interact and therefore any combination between ecosystems would be arbitrary. To make sure that the random combination we selected did not bias our results, we run all the possible combinations of ecosystems constituting unconnected meta-ecosystems. The ecosystem combinations are into the objects `unconnected_combinations_sets` (Data \> Meta-ecosystems). We therefore compute a p-value for each unconnected ecosystems combination, creating a p-value distribution. We keep as p-value of the comparison the median of such distributions.
+
+<details>
+
+<summary>Code we used to computed the p-values</summary>
+
+ <br>
+
+```{r}
+
+# --- ADD BASELINES --- #
+
+baselines = ds_metaecosystems %>%
+  filter(time_point == time_point_of_baselines) %>%
+  select(system_nr,
+         all_of(response_variable_selected)) %>%
+  rename(baseline = all_of(response_variable_selected))
+
+filtered_data = filtered_data %>%
+  left_join(baselines)
+```
+
+```{r}
+
+# --- PREPARE TO COMPARE FULL, REDUCED, AND NULL MODEL WHILE RESHUFFLING ECOSYSTEM COMBINATIONS --- #
+
+unconnected_combinations_sets_filtered =  unconnected_combinations_sets %>%
+  filter(disturbance == disturbance_global_selected,
+         metaecosystem_type %in% metaecosystem_type_selected)
+
+n_sets = unconnected_combinations_sets_filtered %>%
+  pull(set) %>%
+  max()
+
+iterated_results_table = data.frame(Response = as.character(NA),
+                                    Levels = as.character(NA),
+                                    ΔAIC_full = NA,
+                                    p_full = NA,
+                                    ΔR2_full = NA,
+                                    ΔAIC_fix = NA,
+                                    p_fix = NA,
+                                    ΔR2_fix = NA,
+                                    combination_set = NA,
+                                    system_nr_unconnected_systems = as.character(NA)) %>%
+  slice(-1)
+```
+
+```{r}
+
+# --- COMPARE FULL, REDUCED, AND NULL MODEL WHILE RESHUFFLING ECOSYSTEM COMBINATIONS --- #
+
+full_model_res_vs_fit = NULL
+reduced_model_res_vs_fit = NULL
+null_model_res_vs_fit = NULL
+
+for (set_i in 1:n_sets) {
+  
+  # Filter the data to contain all the connected meta-ecosystems and only a subset of unconnected meta-ecosystems
+  
+  system_nr_unconnected_systems_input = unconnected_combinations_sets_filtered %>%
+    filter(metaecosystem_type %in% metaecosystem_type_selected,
+           connection == "unconnected",
+           set == set_i) %>%
+    pull(system_nr)
+  
+  filtered_data_2 = filtered_data %>%
+    filter(connection == "connected" | 
+          (connection == "unconnected" &
+           system_nr %in% system_nr_unconnected_systems_input))
+  
+  # Construct models
+  
+  full_model = try.different.optimizer.full.model()
+  reduced_model = try.different.optimizer.reduced.model()
+  null_model = try.different.optimizer.null.model()
+  
+  # If all the optimisers fail, move on to the next iteration
+
+  if (is.null(full_model) || is.null(reduced_model) || is.null(null_model)) {
+    
+    cat("This model could not be fitted with any optimiser. The unconnected meta-ecosystems in this iteration were:", 
+        system_nr_unconnected_systems_input, 
+        "\n")
+    next
+    
+  }
+  
+  if(plot_model_residuals_metaecos == TRUE){
+    
+    # Plot residuals - full model
+    
+    print(qqnorm(resid(full_model))); print(qqline(resid(full_model)))
+    
+    #full_model_res_vs_fit[[set_i]] = create.res.vs.fit.metaecos(filtered_data_2, full_model)
+    
+    plot = filtered_data_2 %>%
+      mutate(predicted = fitted(full_model),
+             residuals = resid(full_model)) %>%
+      ggplot(aes(x = predicted,
+                 y = residuals)) +
+      geom_point()
+    
+    ggsave(here("6_results",
+                "residual_plots",
+                paste0(disturbance_global_selected,
+                       "_disturbance_",
+                       gsub(pattern = " ", replacement = "", metaecosystem_type_selected[[1]]),
+                       "_",
+                       response_variable_selected,
+                       "_",
+                       set_i,
+                       "_full_model.png")), 
+           plot = plot, 
+           width = 8, 
+           height = 6)
+  
+    # Plot residuals - reduced model
+  
+    print(qqnorm(resid(reduced_model))); print(qqline(resid(reduced_model)))
+    #reduced_model_res_vs_fit[[set_i]] = create.res.vs.fit.metaecos(filtered_data_2, reduced_model)
+    plot = filtered_data_2 %>%
+      mutate(predicted = fitted(reduced_model),
+             residuals = resid(reduced_model)) %>%
+      ggplot(aes(x = predicted,
+                 y = residuals)) +
+      geom_point()
+    
+    ggsave(here("6_results",
+                "residual_plots",
+                paste0(disturbance_global_selected,
+                       "_disturbance_",
+                       gsub(pattern = " ", replacement = "", metaecosystem_type_selected[[1]]),
+                       "_",
+                       response_variable_selected,
+                       "_",
+                       set_i,
+                       "_reduced_model.png")), 
+           plot = plot, 
+           width = 8, 
+           height = 6)
+  
+    # Plot residuals - null model
+  
+    print(qqnorm(resid(null_model))); print(qqline(resid(null_model)))
+    #null_model_res_vs_fit[[set_i]] = create.res.vs.fit.metaecos(filtered_data_2, null_model)
+    plot = filtered_data_2 %>%
+      mutate(predicted = fitted(null_model),
+             residuals = resid(null_model)) %>%
+      ggplot(aes(x = predicted,
+                 y = residuals)) +
+      geom_point()
+    
+    ggsave(here("6_results",
+                "residual_plots",
+                paste0(disturbance_global_selected,
+                       "_disturbance_",
+                       gsub(pattern = " ", replacement = "", metaecosystem_type_selected[[1]]),
+                       "_",
+                       response_variable_selected,
+                       "_",
+                       set_i,
+                       "_null_model.png")), 
+           plot = plot, 
+           width = 8, 
+           height = 6)
+  }
+  
+  # Give model statistics
+
+  model_stats_full = compute.model.stats(full_model,
+                                         null_model,
+                                         "mixed_model")
+  
+  model_stats_reduced = compute.model.stats(reduced_model,
+                                            null_model,
+                                            "mixed_model")
+  
+  # Save model statistics
+  
+  iterated_results_table = fill.results.table(iterated_results_table,
+                                              response_variable_selected,
+                                              metaecosystem_type_selected,
+                                              model_stats_full,
+                                              model_stats_reduced)
+  
+  iterated_results_table$set[nrow(iterated_results_table)] = set_i
+  
+  iterated_results_table$system_nr_unconnected_systems[nrow(iterated_results_table)] = 
+  paste(system_nr_unconnected_systems_input, collapse = " ")
+  
+}
+```
+
+</details>
+
+ <br>  <br>  <br>
+
+**Full vs null model**
+
+<details open="open">
+
+<summary>P-value of the comparison between full and null model</summary>
+
+```{r}
+
+# --- FULL VS NULL MODEL - SHOW MODEL STATS --- #
+
+model_stats_full = data.frame(deltaAIC = median(iterated_results_table$ΔAIC_full),
+                              p_value = median(iterated_results_table$p_full),
+                              R2 = NA)
+
+model_stats_full %>%
+  mutate(deltaAIC = round(deltaAIC, digits = 1),
+         p_value = round(p_value, digits = 3),
+         R2 = NULL,
+         evidence = "",
+         evidence = ifelse(p_value > 0.1, 
+                           "none",
+                           evidence),
+         evidence = ifelse(p_value < 0.1, 
+                           "* weak",
+                           evidence),
+         evidence = ifelse(p_value < 0.05, 
+                           "** moderate",
+                           evidence),
+         evidence = ifelse(p_value < 0.01, 
+                           "*** strong",
+                           evidence),
+         evidence = ifelse(p_value < 0.001, 
+                           "**** very strong",
+                           evidence),
+         p_value = ifelse(p_value < 0.001,
+                           "< 0.001",
+                           p_value)) %>%
+  print()
+```
+
+</details>
+
+<details>
+
+<summary>ΔAIC and p-value distributions of the comparison between full and null models</summary>
+
+```{r}
+
+# --- FULL VS NULL MODEL - SHOW ΔAIC & P VALUE DISTRIBUTIONS --- #
+
+hist(iterated_results_table$ΔAIC_full, main = "Distribution of ΔAIC of the full model.") 
+hist(iterated_results_table$p_full, main = "Distribution of p-values of the full model.") 
+```
+
+</details>
+
+<details>
+
+<summary>Unconnected meta-ecosystem numbers produced which AIC in the comparison between full and null model</summary>
+
+```{r}
+
+# --- FULL VS NULL MODEL - SHOW WHICH UNCONNECTED META-ECOSYSTEM NUMBER PRODUCD WHICH AIC --- #
+
+iterated_results_table %>% 
+  select(system_nr_unconnected_systems,
+         ΔAIC_full) %>%
+  arrange(ΔAIC_full)
+```
+
+</details>
+
+ <br>  <br>  <br>
+
+**Reduced vs null model**
+
+<details open="open">
+
+<summary>ΔAIC and p-value distributions of the comparison between reduced and null models</summary>
+
+```{r}
+
+# --- REDUCED VS NULL MODEL - SHOW MODEL STATS --- #
+
+model_stats_reduced = data.frame(deltaAIC = median(iterated_results_table$ΔAIC_fix),
+                               p_value = median(iterated_results_table$p_fix),
+                               R2 = NA)
+
+model_stats_reduced %>%
+  mutate(deltaAIC = round(deltaAIC, digits = 1),
+         p_value = round(p_value, digits = 3),
+         R2 = NULL,
+         evidence = "",
+         evidence = ifelse(p_value > 0.1, 
+                           "none",
+                           evidence),
+         evidence = ifelse(p_value < 0.1, 
+                           "* weak",
+                           evidence),
+         evidence = ifelse(p_value < 0.05, 
+                           "** moderate",
+                           evidence),
+         evidence = ifelse(p_value < 0.01, 
+                           "*** strong",
+                           evidence),
+         evidence = ifelse(p_value < 0.001, 
+                           "**** very strong",
+                           evidence),
+         p_value = ifelse(p_value < 0.001,
+                           "< 0.001",
+                           p_value)) %>%
+  print()
+```
+
+</summary>
+
+<details>
+
+<summary>ΔAIC and p-value distributions of the comparison between reduced and null models</summary>
+
+```{r}
+
+# --- REDUCED VS NULL MODEL - SHOW ΔAIC & P VALUE --- #
+
+hist(iterated_results_table$ΔAIC_fix, main = "Distribution of ΔAIC of the reduced model.") 
+hist(iterated_results_table$p_fix, main = "Distribution of p-values of the reduced model.") 
+```
+
+</details>
+
+<details>
+
+<summary>Unconnected meta-ecosystem numbers produced which AIC in the comparison between full and null model</summary>
+
+```{r}
+
+# --- REDUCED VS NULL MODEL - SHOW WHICH UNCONNECTED META-ECOSYSTEM NUMBER PRODUCD WHICH AIC --- #
+
+iterated_results_table %>% 
+  select(system_nr_unconnected_systems,
+         ΔAIC_fix) %>%
+  arrange(ΔAIC_fix)
+```
+
+</details>

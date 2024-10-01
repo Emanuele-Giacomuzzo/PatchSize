@@ -19,72 +19,64 @@ editor_options:
 ---
 
 ```{r echo=FALSE}
-disturbance_global_input = "low"
-print(paste("!!", disturbance_global_input, "!!", "The experiment investigate the effects of two disturbance levels: low and high. To make it easier to interpet, we showcase only one of the two disturbance levels. In this document we showcase only the", disturbance_global_input, "disturbance)"))
+disturbance_global_selected = "high"
+print(paste("!!", 
+            disturbance_global_selected, 
+            "!!", 
+            "The experiment investigate the effects of two disturbance levels: low and high.",
+            "To make it easier to interpet, we showcase only one of the two disturbance levels. In this document we showcase only the", 
+            disturbance_global_selected, 
+            "disturbance)"))
 ```
 
-```{r child = here::here("3_r_files", "set_packages.Rmd"), echo = FALSE, message = FALSE, cache = FALSE, autodep = FALSE}
+```{r child = here::here("3_r_files", "-2_set_packages.Rmd"), echo = FALSE, message = FALSE, cache = FALSE, autodep = FALSE}
 ```
 
-```{r child = here("3_r_files", "set_functions.Rmd"), echo=FALSE}
+```{r child = here("3_r_files", "-1_set_functions.Rmd"), echo=FALSE}
 ```
 
 #  {.tabset}
 
 ## Design {.tabset .tabset-pills}
 
-```{r child = here("3_r_files", "design.Rmd")}
+```{r child = here("3_r_files", "0_design.Rmd")}
 ```
 
 ## Parameters
 
-```{r child = here("3_r_files", "set_parameters.Rmd"), class.source = 'fold-show'}
+```{r child = here("3_r_files", "1_set_parameters.Rmd"), class.source = 'fold-show'}
 ```
 
 ## Data {.tabset .tabset-dropdown}
 
-```{r child = here("3_r_files", "ds_ecosystems_info.Rmd")}
+```{r child = here("3_r_files", "2_ds_ecosystems_info.Rmd")}
 ```
 
-```{r child = here("3_r_files", "ds_individuals.Rmd")}
+```{r child = here("3_r_files", "3_ds_individuals.Rmd")}
 ```
 
-```{r child = here("3_r_files", "ds_ecosystems.Rmd")}
+```{r child = here("3_r_files", "4_ds_ecosystems.Rmd")}
 ```
 
-```{r child = here("3_r_files", "ds_ecosystems_effect_size.Rmd")}
+```{r child = here("3_r_files", "5_ds_ecosystems_effect_size.Rmd")}
 ```
 
-```{r child = here("3_r_files", "ds_metaecos_1_ecosystem_combinations.Rmd")}
+```{r child = here("3_r_files", "6_ds_metaecos_1_ecosystem_combinations.Rmd")}
 ```
 
-```{r child = here("3_r_files", "ds_metaecos_2_ecosystem_combination_sets.Rmd")}
+```{r child = here("3_r_files", "7_ds_metaecos_2_ecosystem_combination_sets.Rmd")}
 ```
 
-```{r child = here("3_r_files", "ds_metaecos_3_finish.Rmd")}
+```{r child = here("3_r_files", "8_ds_metaecos_3_finish.Rmd")}
 ```
 
-```{r child = here("3_r_files", "ds_classes.Rmd"), eval = FALSE}
+```{r child = here("3_r_files", "9_ds_classes.Rmd"), eval = FALSE}
 ```
 
-```{r child = here("3_r_files", "ds_classes_effect_size.Rmd"), eval = FALSE}
+```{r child = here("3_r_files", "10_ds_classes_effect_size.Rmd"), eval = FALSE}
 ```
 
-```{r echo=FALSE, message=FALSE}
-save.image(file = here("4_environments", "before.RData"))
-```
-
-### Analysis both disturbances
-
-```{r}
-response_variable = "mean_shannon"
-response_variable
-```
-
-```{r child = here("3_r_files", "both_disturbances_analysis.Rmd")}
-```
-
-```{r child = here("3_r_files", "ds_all_filtered.Rmd")}
+```{r child = here("3_r_files", "11_ds_all_filtered.Rmd")}
 ```
 
 ## Plots & Analysis {.tabset .tabset-dropdown}
@@ -92,811 +84,768 @@ response_variable
 ### All meta-ecosystems {.tabset .tabset-pills}
 
 ```{r}
-metaecosystem_type_i = c("Small-Small meta-ecosystem",
-                         "Medium-Medium meta-ecosystem",
-                         "Medium-Medium unconnected",
-                         "Large-Large meta-ecosystem",
-                         "Small-Large meta-ecosystem",
-                         "Small-Large unconnected")
+metaecosystem_type_selected = c("Small-Small",
+                                "Large-Large",
+                                "Medium-Medium",
+                                "Small-Large")
+
+connection_selected = c("connected",
+                        "unconnected")
 ```
 
 #### Alpha {.tabset .tabset-pills}
 
 ```{r}
-response_variable = "mean_shannon"
+response_variable_selected = "mean_shannon"
 ```
 
-```{r child = here("3_r_files", "analysis_metaeco_variable_all.Rmd")}
+```{r child = here("3_r_files", "12_metaecos_plot_all.Rmd")}
 ```
 
 #### Beta {.tabset .tabset-pills}
 
 ```{r}
-response_variable = "bray_curtis"
+response_variable_selected = "bray_curtis"
 ```
 
-```{r child = here("3_r_files", "analysis_metaeco_variable_all.Rmd")}
+```{r child = here("3_r_files", "12_metaecos_plot_all.Rmd")}
 ```
 
 #### Gamma {.tabset .tabset-pills}
 
 ```{r}
-response_variable = "metaecosystem_richness"
+response_variable_selected = "metaecosystem_richness"
 ```
 
-```{r child = here("3_r_files", "analysis_metaeco_variable_all.Rmd")}
+```{r child = here("3_r_files", "12_metaecos_plot_all.Rmd")}
 ```
 
 #### Biomass {.tabset .tabset-pills}
 
 ```{r}
-response_variable = "total_metaecosystem_bioarea_mm2"
+response_variable_selected = "total_metaecosystem_bioarea_mm2"
 ```
 
-```{r child = here("3_r_files", "analysis_metaeco_variable_all.Rmd")}
+```{r child = here("3_r_files", "12_metaecos_plot_all.Rmd")}
 ```
 
 ### SL vs MM {.tabset .tabset-pills}
 
-
 #### Alpha {.tabset .tabset-pills}
 
 ```{r}
-response_variable = "mean_shannon"
+response_variable_selected = "mean_shannon"
 ```
 
 ```{r}
-metaecosystem_type_i = c("Medium-Medium meta-ecosystem",
-                         "Medium-Medium unconnected",
-                         "Small-Large meta-ecosystem",
-                         "Small-Large unconnected")
+metaecosystem_type_selected = c("Medium-Medium",
+                                "Small-Large")
 ```
 
-```{r child = here("3_r_files", "analysis_metaeco_variable_all.Rmd")}
+```{r child = here("3_r_files", "12_metaecos_plot_all.Rmd")}
 ```
 
 <br>
 
-Following the initial inspection, we proceed to analyse differences among meta-ecosystems. To make it easier to interpret differences, we decided to construct a model for each comparisons we are interested in, which are: asymmetric vs symmetric connected, asymmetric connected vs unconnected, and symmetric connected vs unconnected. 
+Following the initial inspection, we proceed to analyse differences among meta-ecosystems. To make it easier to interpret differences, we decided to construct a model for each comparisons we are interested in, which are: SL (connected vs unconnected) and MM (connected vs unconnected).
 
-##### Holistic
+```{r}
+comparison_type = "all"
+```
 
-```{r child = here("3_r_files", "holistic_model_metaecosystems.Rmd")}
+```{r child = here("3_r_files", "13_metaecos_stats_holistic.Rmd"), eval = FALSE}
 ```
 
 ##### SL {.tabset .tabset-pills}
 
 ```{r}
-metaecosystem_type_i = c("Small-Large meta-ecosystem",
-                         "Small-Large unconnected")
+metaecosystem_type_selected = c("Small-Large")
 ```
 
-```{r child = here("3_r_files", "analysis_metaeco_connection.Rmd")}
+```{r child = here("3_r_files", "15_metaecos_stats_connection.Rmd")}
 ```
 
 ##### MM {.tabset .tabset-pills}
 
 ```{r}
-metaecosystem_type_i = c("Medium-Medium meta-ecosystem",
-                         "Medium-Medium unconnected")
+metaecosystem_type_selected = c("Medium-Medium")
 ```
 
-```{r child = here("3_r_files", "analysis_metaeco_connection.Rmd")}
+```{r child = here("3_r_files", "15_metaecos_stats_connection.Rmd")}
 ```
 
 <br>
 
-Following the initial inspection, we proceed to analyse differences among meta-ecosystems. To make it easier to interpret differences, we decided to construct a model for each comparisons we are interested in, which are: asymmetric vs symmetric connected, asymmetric connected vs unconnected, and symmetric connected vs unconnected. 
+Following the initial inspection, we proceed to analyse differences among meta-ecosystems. To make it easier to interpret differences, we decided to construct a model for each comparisons we are interested in, which are: SL (connected vs unconnected) and MM (connected vs unconnected). 
 
 #### Beta {.tabset .tabset-pills}
 
 ```{r}
-response_variable = "bray_curtis"
+response_variable_selected = "bray_curtis"
 ```
 
 ```{r}
-metaecosystem_type_i = c("Medium-Medium meta-ecosystem",
-                         "Medium-Medium unconnected",
-                         "Small-Large meta-ecosystem",
-                         "Small-Large unconnected")
+metaecosystem_type_selected = c("Medium-Medium",
+                                "Small-Large")
 ```
 
-```{r child = here("3_r_files", "analysis_metaeco_variable_all.Rmd")}
+```{r child = here("3_r_files", "12_metaecos_plot_all.Rmd")}
 ```
 
-##### Holistic
-
-```{r child = here("3_r_files", "holistic_model_metaecosystems.Rmd")}
+```{r child = here("3_r_files", "13_metaecos_stats_holistic.Rmd"), eval = FALSE}
 ```
 
 ##### SL {.tabset .tabset-pills}
 
 ```{r}
-metaecosystem_type_i = c("Small-Large meta-ecosystem",
-                         "Small-Large unconnected")
+metaecosystem_type_selected = c("Small-Large")
 ```
 
-```{r child = here("3_r_files", "analysis_metaeco_connection.Rmd")}
+```{r child = here("3_r_files", "15_metaecos_stats_connection.Rmd")}
 ```
 
 ##### MM {.tabset .tabset-pills}
 
 ```{r}
-metaecosystem_type_i = c("Medium-Medium meta-ecosystem",
-                         "Medium-Medium unconnected")
+metaecosystem_type_selected = c("Medium-Medium")
 ```
 
-```{r child = here("3_r_files", "analysis_metaeco_connection.Rmd")}
+```{r child = here("3_r_files", "15_metaecos_stats_connection.Rmd")}
 ```
 
 <br>
 
-Following the initial inspection, we proceed to analyse differences among meta-ecosystems. To make it easier to interpret differences, we decided to construct a model for each comparisons we are interested in, which are: asymmetric vs symmetric connected, asymmetric connected vs unconnected, and symmetric connected vs unconnected. 
+Following the initial inspection, we proceed to analyse differences among meta-ecosystems. To make it easier to interpret differences, we decided to construct a model for each comparisons we are interested in, which are: SL (connected vs unconnected) and MM (connected vs unconnected). 
 
 #### Gamma {.tabset .tabset-pills}
 
 ```{r}
-response_variable = "metaecosystem_richness"
+response_variable_selected = "metaecosystem_richness"
 ```
 
 ```{r}
-metaecosystem_type_i = c("Medium-Medium meta-ecosystem",
-                         "Medium-Medium unconnected",
-                         "Small-Large meta-ecosystem",
-                         "Small-Large unconnected")
+metaecosystem_type_selected = c("Medium-Medium",
+                                "Small-Large")
 ```
 
-```{r child = here("3_r_files", "analysis_metaeco_variable_all.Rmd")}
+```{r child = here("3_r_files", "12_metaecos_plot_all.Rmd")}
 ```
 
-##### Holistic
-
-```{r child = here("3_r_files", "holistic_model_metaecosystems.Rmd")}
+```{r child = here("3_r_files", "13_metaecos_stats_holistic.Rmd"), eval = FALSE}
 ```
 
 ##### SL {.tabset .tabset-pills}
 
 ```{r}
-metaecosystem_type_i = c("Small-Large meta-ecosystem",
-                         "Small-Large unconnected")
+metaecosystem_type_selected = c("Small-Large")
 ```
 
-```{r child = here("3_r_files", "analysis_metaeco_connection.Rmd")}
+```{r child = here("3_r_files", "15_metaecos_stats_connection.Rmd")}
 ```
 
 ##### MM {.tabset .tabset-pills}
 
 ```{r}
-metaecosystem_type_i = c("Medium-Medium meta-ecosystem",
-                         "Medium-Medium unconnected")
+metaecosystem_type_selected = c("Medium-Medium")
 ```
 
-```{r child = here("3_r_files", "analysis_metaeco_connection.Rmd")}
+```{r child = here("3_r_files", "15_metaecos_stats_connection.Rmd")}
 ```
 
 #### Biomass {.tabset .tabset-pills}
 
 ```{r}
-response_variable = "total_metaecosystem_bioarea_mm2"
+response_variable_selected = "total_metaecosystem_bioarea_mm2"
 ```
 
 ```{r}
-metaecosystem_type_i = c("Medium-Medium meta-ecosystem",
-                         "Medium-Medium unconnected",
-                         "Small-Large meta-ecosystem",
-                         "Small-Large unconnected")
+metaecosystem_type_selected = c("Medium-Medium",
+                                "Small-Large")
 ```
 
-```{r child = here("3_r_files", "analysis_metaeco_variable_all.Rmd")}
+```{r child = here("3_r_files", "12_metaecos_plot_all.Rmd")}
 ```
 
 <br>
 
-Following the initial inspection, we proceed to analyse differences among meta-ecosystems. To make it easier to interpret differences, we decided to construct a model for each comparisons we are interested in, which are: asymmetric vs symmetric connected, asymmetric connected vs unconnected, and symmetric connected vs unconnected. 
+Following the initial inspection, we proceed to analyse differences among meta-ecosystems. To make it easier to interpret differences, we decided to construct a model for each comparisons we are interested in, which are: SL (connected vs unconnected) and MM (connected vs unconnected).
 
-##### Holistic
-
-```{r child = here("3_r_files", "holistic_model_metaecosystems.Rmd"), eval = (disturbance_global_input == "high")}
-```
-
-```{r child = here("3_r_files", "holistic_model_metaecosystems_automatic_optimiser.Rmd"), eval = (disturbance_global_input == "low")}
+```{r child = here("3_r_files", "13_metaecos_stats_holistic.Rmd"), eval = FALSE}
 ```
 
 ##### SL {.tabset .tabset-pills}
 
 ```{r}
-metaecosystem_type_i = c("Small-Large meta-ecosystem",
-                         "Small-Large unconnected")
+metaecosystem_type_selected = c("Small-Large")
 ```
 
-```{r child = here("3_r_files", "analysis_metaeco_connection.Rmd")}
+```{r child = here("3_r_files", "15_metaecos_stats_connection.Rmd")}
 ```
 
 ##### MM {.tabset .tabset-pills}
 
 ```{r}
-metaecosystem_type_i = c("Medium-Medium meta-ecosystem",
-                         "Medium-Medium unconnected")
+metaecosystem_type_selected = c("Medium-Medium")
 ```
 
-```{r child = here("3_r_files", "analysis_metaeco_connection.Rmd")}
+```{r child = here("3_r_files", "15_metaecos_stats_connection.Rmd")}
 ```
 
 ### All ecosystems {.tabset .tabset-pills}
 
 ```{r}
-ecosystem_type_i = c("Small unconnected",
-                     "Medium unconnected",
-                     "Large unconnected",
-                     "Small connected to small",
-                     "Small connected to large",
-                     "Medium connected to medium",
-                     "Large connected to small",
-                     "Large connected to large")
-```
-
-#### Shannon
-
-```{r}
-response_variable = "shannon"
-```
-
-```{r child = here("3_r_files", "holistic_model_ecosystems.Rmd")}
-```
-
-#### Biomass
-
-```{r}
-response_variable = "bioarea_mm2_per_ml"
-```
-
-```{r child = here("3_r_files", "holistic_model_ecosystems.Rmd")}
+ecosystem_type_selected = c("Small unconnected",
+                            "Medium unconnected",
+                            "Large unconnected",
+                            "Small connected to small",
+                            "Small connected to large",
+                            "Medium connected to medium",
+                            "Large connected to small",
+                            "Large connected to large")
 ```
 
 #### BEF {.tabset .tabset-pills}
 
-```{r child = here("3_r_files", "analysis_ecosystems_BEF.Rmd")}
+```{r child = here("3_r_files", "16_ecos_plot_BEF.Rmd")}
 ```
 
 #### Evaporation (both disturbance levels)
 
-```{r child = here("3_r_files", "evaporation_both_disturbance_levels_size.Rmd")}
-```
-
-#### Species abundances correlation
-
 ```{r}
-ggpairs(ds_ecosystems %>%select(Ble_indiv_per_ml_dominance:Tet_indiv_per_ml_dominance))
+response_variable = "water_addition_ml"
 ```
 
+```{r child = here("3_r_files", "17_ecos_stats_evaporation.Rmd")}
+```
 
 ### $S$ vs $M$ vs $L$ {.tabset .tabset-pills}
 
 ```{r}
-ecosystem_type_i = c("Small unconnected",
-                     "Medium unconnected",
-                     "Large unconnected")
+ecosystem_type_selected = c("Small unconnected",
+                            "Medium unconnected",
+                            "Large unconnected")
 ```
 
 #### Shannon {.tabset .tabset-pills}
 
 ```{r}
-response_variable = "shannon"
+response_variable_selected = "shannon"
 ```
 
-```{r child = here("3_r_files", "analysis_unconnected_ecosystems_variable.Rmd")}
+```{r child = here("3_r_files", "19_ecos_stats_unconnected.Rmd")}
 ```
 
 #### Biomass {.tabset .tabset-pills}
 
 ```{r}
-response_variable = "bioarea_mm2_per_ml"
+response_variable_selected = "bioarea_mm2_per_ml"
 ```
 
-```{r child = here("3_r_files", "analysis_unconnected_ecosystems_variable.Rmd")}
+```{r child = here("3_r_files", "19_ecos_stats_unconnected.Rmd")}
 ```
 
 #### Richness {.tabset .tabset-pills}
 
 ```{r}
-response_variable = "species_richness"
+response_variable_selected = "species_richness"
 ```
 
-```{r child = here("3_r_files", "analysis_unconnected_ecosystems_variable.Rmd")}
+```{r child = here("3_r_files", "19_ecos_stats_unconnected.Rmd")}
 ```
 
 #### Evenness {.tabset .tabset-pills}
 
 ```{r}
-response_variable = "evenness_pielou"
+response_variable_selected = "evenness_pielou"
 ```
 
-```{r child = here("3_r_files", "analysis_unconnected_ecosystems_variable.Rmd")}
+```{r child = here("3_r_files", "19_ecos_stats_unconnected.Rmd")}
 ```
 
 #### Median Size {.tabset .tabset-pills}
 
 ```{r}
-response_variable = "median_body_area_µm2"
+response_variable_selected = "median_body_area_µm2"
 ```
 
-```{r child = here("3_r_files", "analysis_unconnected_ecosystems_variable.Rmd")}
+```{r child = here("3_r_files", "19_ecos_stats_unconnected.Rmd")}
 ```
 
 #### Auto/Hetero {.tabset .tabset-pills}
 
 ```{r}
-response_variable = "auto_hetero_ratio"
+response_variable_selected = "auto_hetero_ratio"
 ```
 
-```{r child = here("3_r_files", "analysis_unconnected_ecosystems_variable.Rmd")}
+```{r child = here("3_r_files", "19_ecos_stats_unconnected.Rmd")}
 ```
 
 #### Populations
 
-```{r child = here("3_r_files", "analysis_ecosystems_populations.Rmd")}
+```{r child = here("3_r_files", "20_ecos_plot_populations.Rmd")}
 ```
 
-#### Evaporation
+#### Evaporation (both disturbance levels)
 
 ```{r}
-plot.ecosystems.points(ds_ecosystems,
-                       ecosystem_type_i,
-                       "water_addition_ml")
+response_variable = "water_addition_ml"
+```
+
+```{r child = here("3_r_files", "17_ecos_stats_evaporation.Rmd")}
 ```
 
 ### $S_{L}$ vs $S$ {.tabset .tabset-pills}
 
 ```{r}
-ecosystem_type_i = c("Small connected to large",
-                     "Small unconnected")
+ecosystem_type_selected = c("Small connected to large",
+                            "Small unconnected")
 ```
 
 #### Shannon {.tabset .tabset-pills}
 
 ```{r}
-response_variable = "shannon"
+response_variable_selected = "shannon"
 ```
 
-```{r child = here("3_r_files", "analysis_small_n_large_ecosystems.Rmd")}
+```{r child = here("3_r_files", "21_ecos_stats_S_L.Rmd")}
 ```
 
 #### Biomass {.tabset .tabset-pills}
 
 ```{r}
-response_variable = "bioarea_mm2_per_ml"
+response_variable_selected = "bioarea_mm2_per_ml"
 ```
 
-```{r child = here("3_r_files", "analysis_small_n_large_ecosystems.Rmd")}
+```{r child = here("3_r_files", "21_ecos_stats_S_L.Rmd")}
 ```
 
 #### Richness {.tabset .tabset-pills}
 
 ```{r}
-response_variable = "species_richness"
+response_variable_selected = "species_richness"
 ```
 
-```{r child = here("3_r_files", "analysis_small_n_large_ecosystems.Rmd")}
+```{r child = here("3_r_files", "21_ecos_stats_S_L.Rmd")}
 ```
 
 #### Evenness {.tabset .tabset-pills}
 
 ```{r}
-response_variable = "evenness_pielou"
+response_variable_selected = "evenness_pielou"
 ```
 
-```{r child = here("3_r_files", "analysis_small_n_large_ecosystems.Rmd")}
+```{r child = here("3_r_files", "21_ecos_stats_S_L.Rmd")}
 ```
 
 #### Median Size {.tabset .tabset-pills}
 
 ```{r}
-response_variable = "median_body_area_µm2"
+response_variable_selected = "median_body_area_µm2"
 ```
 
-```{r child = here("3_r_files", "analysis_small_n_large_ecosystems.Rmd")}
+```{r child = here("3_r_files", "21_ecos_stats_S_L.Rmd")}
 ```
 
 #### Populations
 
-```{r child = here("3_r_files", "analysis_ecosystems_populations.Rmd")}
+```{r child = here("3_r_files", "20_ecos_plot_populations.Rmd")}
 ```
 
 #### Evaporation
 
 ```{r}
 plot.ecosystems.points(ds_ecosystems,
-                       ecosystem_type_i,
+                       ecosystem_type_selected,
                        "water_addition_ml")
 ```
 
 ### $S_{L}$ vs $S_{S}$ {.tabset .tabset-pills}
 
 ```{r}
-ecosystem_type_i = c("Small connected to large",
-                 "Small connected to small")
+ecosystem_type_selected = c("Small connected to large",
+                     "Small connected to small")
 ```
 
 #### Shannon {.tabset .tabset-pills}
 
 ```{r}
-response_variable = "shannon"
+response_variable_selected = "shannon"
 ```
 
-```{r child = here("3_r_files", "analysis_small_n_large_ecosystems.Rmd")}
+```{r child = here("3_r_files", "21_ecos_stats_S_L.Rmd")}
 ```
 
 #### Biomass {.tabset .tabset-pills}
 
 ```{r}
-response_variable = "bioarea_mm2_per_ml"
+response_variable_selected = "bioarea_mm2_per_ml"
 ```
 
-```{r child = here("3_r_files", "analysis_small_n_large_ecosystems.Rmd")}
+```{r child = here("3_r_files", "21_ecos_stats_S_L.Rmd")}
 ```
 
 #### Richness {.tabset .tabset-pills}
 
 ```{r}
-response_variable = "species_richness"
+response_variable_selected = "species_richness"
 ```
 
-```{r child = here("3_r_files", "analysis_small_n_large_ecosystems.Rmd")}
+```{r child = here("3_r_files", "21_ecos_stats_S_L.Rmd")}
 ```
 
 #### Evenness {.tabset .tabset-pills}
 
 ```{r}
-response_variable = "evenness_pielou"
+response_variable_selected = "evenness_pielou"
 ```
 
-```{r child = here("3_r_files", "analysis_small_n_large_ecosystems.Rmd")}
+```{r child = here("3_r_files", "21_ecos_stats_S_L.Rmd")}
 ```
 
 #### Median Size {.tabset .tabset-pills}
 
 ```{r}
-response_variable = "median_body_area_µm2"
+response_variable_selected = "median_body_area_µm2"
 ```
 
-```{r child = here("3_r_files", "analysis_small_n_large_ecosystems.Rmd")}
+```{r child = here("3_r_files", "21_ecos_stats_S_L.Rmd")}
 ```
 
 #### Populations
 
-```{r child = here("3_r_files", "analysis_ecosystems_populations.Rmd")}
+```{r child = here("3_r_files", "20_ecos_plot_populations.Rmd")}
 ```
 
 #### Evaporation
 
 ```{r}
 plot.ecosystems.points(ds_ecosystems,
-                       ecosystem_type_i,
+                       ecosystem_type_selected,
                        "water_addition_ml")
 ```
 
 ### $S_{S}$ vs $S${.tabset .tabset-pills}
 
 ```{r}
-ecosystem_type_i = c("Small connected to small",
-                 "Small unconnected")
+ecosystem_type_selected = c("Small connected to small",
+                     "Small unconnected")
 ```
 
 #### Shannon {.tabset .tabset-pills}
 
 ```{r}
-response_variable = "shannon"
+response_variable_selected = "shannon"
 ```
 
-```{r child = here("3_r_files", "analysis_small_n_large_ecosystems.Rmd")}
+```{r child = here("3_r_files", "21_ecos_stats_S_L.Rmd")}
 ```
 
 #### Biomass {.tabset .tabset-pills}
 
 ```{r}
-response_variable = "bioarea_mm2_per_ml"
+response_variable_selected = "bioarea_mm2_per_ml"
 ```
 
-```{r child = here("3_r_files", "analysis_small_n_large_ecosystems.Rmd")}
+```{r child = here("3_r_files", "21_ecos_stats_S_L.Rmd")}
 ```
 
 #### Richness {.tabset .tabset-pills}
 
 ```{r}
-response_variable = "species_richness"
+response_variable_selected = "species_richness"
 ```
 
-```{r child = here("3_r_files", "analysis_small_n_large_ecosystems.Rmd")}
+```{r child = here("3_r_files", "21_ecos_stats_S_L.Rmd")}
 ```
 
 #### Evenness {.tabset .tabset-pills}
 
 ```{r}
-response_variable = "evenness_pielou"
+response_variable_selected = "evenness_pielou"
 ```
 
-```{r child = here("3_r_files", "analysis_small_n_large_ecosystems.Rmd")}
+```{r child = here("3_r_files", "21_ecos_stats_S_L.Rmd")}
 ```
 
 #### Median Size {.tabset .tabset-pills}
 
 ```{r}
-response_variable = "median_body_area_µm2"
+response_variable_selected = "median_body_area_µm2"
 ```
 
-```{r child = here("3_r_files", "analysis_small_n_large_ecosystems.Rmd")}
+```{r child = here("3_r_files", "21_ecos_stats_S_L.Rmd")}
 ```
 
 #### Populations
 
-```{r child = here("3_r_files", "analysis_ecosystems_populations.Rmd")}
+```{r child = here("3_r_files", "20_ecos_plot_populations.Rmd")}
 ```
 
 #### Evaporation
 
 ```{r}
 plot.ecosystems.points(ds_ecosystems,
-                       ecosystem_type_i,
+                       ecosystem_type_selected,
                        "water_addition_ml")
 ```
 
 ### $L_{S}$ vs $L$ {.tabset .tabset-pills}
 
 ```{r}
-ecosystem_type_i = c("Large connected to small",
-                 "Large unconnected")
+ecosystem_type_selected = c("Large connected to small",
+                     "Large unconnected")
 ```
 
 #### Shannon {.tabset .tabset-pills}
 
 ```{r}
-response_variable = "shannon"
+response_variable_selected = "shannon"
 ```
 
-```{r child = here("3_r_files", "analysis_small_n_large_ecosystems.Rmd")}
+```{r child = here("3_r_files", "21_ecos_stats_S_L.Rmd")}
 ```
 
 #### Biomass {.tabset .tabset-pills}
 
 ```{r}
-response_variable = "bioarea_mm2_per_ml"
+response_variable_selected = "bioarea_mm2_per_ml"
 ```
 
-```{r child = here("3_r_files", "analysis_small_n_large_ecosystems_special_control.Rmd")}
+```{r child = here("3_r_files", "21_ecos_stats_S_L.Rmd")}
 ```
 
 #### Richness {.tabset .tabset-pills}
 
 ```{r}
-response_variable = "species_richness"
+response_variable_selected = "species_richness"
 ```
 
-```{r child = here("3_r_files", "analysis_small_n_large_ecosystems.Rmd")}
+```{r child = here("3_r_files", "21_ecos_stats_S_L.Rmd")}
 ```
 
 #### Evenness {.tabset .tabset-pills}
 
 ```{r}
-response_variable = "evenness_pielou"
+response_variable_selected = "evenness_pielou"
 ```
 
-```{r child = here("3_r_files", "analysis_small_n_large_ecosystems.Rmd")}
+```{r child = here("3_r_files", "21_ecos_stats_S_L.Rmd")}
 ```
 
 #### Median Size {.tabset .tabset-pills}
 
 ```{r}
-response_variable = "median_body_area_µm2"
+response_variable_selected = "median_body_area_µm2"
 ```
 
-```{r child = here("3_r_files", "analysis_small_n_large_ecosystems.Rmd")}
+```{r child = here("3_r_files", "21_ecos_stats_S_L.Rmd")}
 ```
 
 #### Populations
 
-```{r child = here("3_r_files", "analysis_ecosystems_populations.Rmd")}
+```{r child = here("3_r_files", "20_ecos_plot_populations.Rmd")}
 ```
 
 #### Evaporation
 
 ```{r}
 plot.ecosystems.points(ds_ecosystems,
-                       ecosystem_type_i,
+                       ecosystem_type_selected,
                        "water_addition_ml")
 ```
 
 ### $L_{S}$ vs $L_{L}$ {.tabset .tabset-pills}
 
 ```{r}
-ecosystem_type_i = c("Large connected to small",
+ecosystem_type_selected = c("Large connected to small",
                  "Large connected to large")
 ```
 
 #### Shannon {.tabset .tabset-pills}
 
 ```{r}
-response_variable = "shannon"
+response_variable_selected = "shannon"
 ```
 
-```{r child = here("3_r_files", "analysis_small_n_large_ecosystems.Rmd")}
+```{r child = here("3_r_files", "21_ecos_stats_S_L.Rmd")}
 ```
 
 #### Biomass {.tabset .tabset-pills}
 
 ```{r}
-response_variable = "bioarea_mm2_per_ml"
+response_variable_selected = "bioarea_mm2_per_ml"
 ```
 
-```{r child = here("3_r_files", "analysis_small_n_large_ecosystems_special_control.Rmd")}
+```{r child = here("3_r_files", "21_ecos_stats_S_L.Rmd")}
 ```
 
 #### Richness {.tabset .tabset-pills}
 
 ```{r}
-response_variable = "species_richness"
+response_variable_selected = "species_richness"
 ```
 
-```{r child = here("3_r_files", "analysis_small_n_large_ecosystems.Rmd")}
+```{r child = here("3_r_files", "21_ecos_stats_S_L.Rmd")}
 ```
 
 #### Evenness {.tabset .tabset-pills}
 
 ```{r}
-response_variable = "evenness_pielou"
+response_variable_selected = "evenness_pielou"
 ```
 
-```{r child = here("3_r_files", "analysis_small_n_large_ecosystems.Rmd")}
+```{r child = here("3_r_files", "21_ecos_stats_S_L.Rmd")}
 ```
 
 #### Median Size {.tabset .tabset-pills}
 
 ```{r}
-response_variable = "median_body_area_µm2"
+response_variable_selected = "median_body_area_µm2"
 ```
 
-```{r child = here("3_r_files", "analysis_small_n_large_ecosystems.Rmd")}
+```{r child = here("3_r_files", "21_ecos_stats_S_L.Rmd")}
 ```
 
 #### Populations
 
-```{r child = here("3_r_files", "analysis_ecosystems_populations.Rmd")}
+```{r child = here("3_r_files", "20_ecos_plot_populations.Rmd")}
 ```
 
 #### Evaporation
 
 ```{r}
 plot.ecosystems.points(ds_ecosystems,
-                       ecosystem_type_i,
+                       ecosystem_type_selected,
                        "water_addition_ml")
 ```
 
 ### $L_{L}$ vs $L$ {.tabset .tabset-pills}
 
 ```{r}
-ecosystem_type_i = c("Large connected to large",
+ecosystem_type_selected = c("Large connected to large",
                  "Large unconnected")
 ```
 
 #### Shannon {.tabset .tabset-pills}
 
 ```{r}
-response_variable = "shannon"
+response_variable_selected = "shannon"
 ```
 
-```{r child = here("3_r_files", "analysis_small_n_large_ecosystems.Rmd")}
+```{r child = here("3_r_files", "21_ecos_stats_S_L.Rmd")}
 ```
 
 #### Biomass {.tabset .tabset-pills}
 
 ```{r}
-response_variable = "bioarea_mm2_per_ml"
+response_variable_selected = "bioarea_mm2_per_ml"
 ```
 
-```{r child = here("3_r_files", "analysis_small_n_large_ecosystems.Rmd")}
+```{r child = here("3_r_files", "21_ecos_stats_S_L.Rmd")}
 ```
 
 #### Richness {.tabset .tabset-pills}
 
 ```{r}
-response_variable = "species_richness"
+response_variable_selected = "species_richness"
 ```
 
-```{r child = here("3_r_files", "analysis_small_n_large_ecosystems.Rmd")}
+```{r child = here("3_r_files", "21_ecos_stats_S_L.Rmd")}
 ```
 
 #### Evenness {.tabset .tabset-pills}
 
 ```{r}
-response_variable = "evenness_pielou"
+response_variable_selected = "evenness_pielou"
 ```
 
-```{r child = here("3_r_files", "analysis_small_n_large_ecosystems.Rmd")}
+```{r child = here("3_r_files", "21_ecos_stats_S_L.Rmd")}
 ```
 
 #### Median Size {.tabset .tabset-pills}
 
 ```{r}
-response_variable = "median_body_area_µm2"
+response_variable_selected = "median_body_area_µm2"
 ```
 
-```{r child = here("3_r_files", "analysis_small_n_large_ecosystems.Rmd")}
+```{r child = here("3_r_files", "21_ecos_stats_S_L.Rmd")}
 ```
 
 #### Populations
 
-```{r child = here("3_r_files", "analysis_ecosystems_populations.Rmd")}
+```{r child = here("3_r_files", "20_ecos_plot_populations.Rmd")}
 ```
 
 #### Evaporation
 
 ```{r}
 plot.ecosystems.points(ds_ecosystems,
-                       ecosystem_type_i,
+                       ecosystem_type_selected,
                        "water_addition_ml")
 ```
 
 ### $M_{M}$ vs $M$ {.tabset .tabset-pills}
 
 ```{r}
-ecosystem_type_i = c("Medium unconnected",
+ecosystem_type_selected = c("Medium unconnected",
                      "Medium connected to medium")
 ```
 
 #### Shannon {.tabset .tabset-pills}
 
 ```{r}
-response_variable = "shannon"
+response_variable_selected = "shannon"
 ```
 
-```{r child = here("3_r_files", "analysis_small_n_large_ecosystems.Rmd")}
+```{r child = here("3_r_files", "21_ecos_stats_S_L.Rmd")}
 ```
 
 #### Biomass {.tabset .tabset-pills}
 
 ```{r}
-response_variable = "bioarea_mm2_per_ml"
+response_variable_selected = "bioarea_mm2_per_ml"
 ```
 
-```{r child = here("3_r_files", "analysis_small_n_large_ecosystems.Rmd")}
+```{r child = here("3_r_files", "21_ecos_stats_S_L.Rmd")}
 ```
 
 #### Richness {.tabset .tabset-pills}
 
 ```{r}
-response_variable = "species_richness"
+response_variable_selected = "species_richness"
 ```
 
-```{r child = here("3_r_files", "analysis_small_n_large_ecosystems.Rmd")}
+```{r child = here("3_r_files", "21_ecos_stats_S_L.Rmd")}
 ```
 
 #### Evenness {.tabset .tabset-pills}
 
 ```{r}
-response_variable = "evenness_pielou"
+response_variable_selected = "evenness_pielou"
 ```
 
-```{r child = here("3_r_files", "analysis_small_n_large_ecosystems.Rmd")}
+```{r child = here("3_r_files", "21_ecos_stats_S_L.Rmd")}
 ```
 
 #### Median Size {.tabset .tabset-pills}
 
 ```{r}
-response_variable = "median_body_area_µm2"
+response_variable_selected = "median_body_area_µm2"
 ```
 
-```{r child = here("3_r_files", "analysis_small_n_large_ecosystems.Rmd")}
+```{r child = here("3_r_files", "21_ecos_stats_S_L.Rmd")}
 ```
 
 #### Populations
 
-```{r child = here("3_r_files", "analysis_ecosystems_populations.Rmd")}
+```{r child = here("3_r_files", "20_ecos_plot_populations.Rmd")}
 ```
 
 #### Evaporation
 
 ```{r}
 plot.ecosystems.points(ds_ecosystems,
-                       ecosystem_type_i,
+                       ecosystem_type_selected,
                        "water_addition_ml")
 ```
 
@@ -904,49 +853,56 @@ plot.ecosystems.points(ds_ecosystems,
 
 ### Meta-ecosystem diversity & function
 
-```{r child = here("3_r_files", "paper_metaecosystem_diversity_n_function.Rmd")}
+```{r child = here("3_r_files", "23_paper_metaecos.Rmd")}
 ```
 
-```{r child = here("3_r_files", "present_metaecosystem_diversity_n_function.Rmd"), echo = FALSE}
+```{r child = here("3_r_files", "24_present_metaecos.Rmd"), echo = FALSE}
 ```
 
 ### Ecosystem diversity & function
 
-```{r child = here("3_r_files", "paper_ecosystems_S_n_L_diversity_n_function.Rmd")} 
+```{r child = here("3_r_files", "25.1_paper_ecos_S_L.Rmd")} 
 ```
 
-```{r child = here("3_r_files", "paper_ecosystems_M_diversity_n_function.Rmd")} 
+```{r child = here("3_r_files", "25.2_present_ecos_S_L.Rmd"), eval = FALSE} 
+```
+
+```{r child = here("3_r_files", "26_paper_ecos_M.Rmd")} 
 ```
 
 ### Ecosystem autotrophic/heterotrophic ratio
 
-```{r child = here("3_r_files", "paper_ecosystem_auto_hetero_ratio.Rmd")}
+```{r child = here("3_r_files", "27_paper_ecos_AH_ratio.Rmd")}
 ```
 
 ## Evaporation
 
-```{r child = here("3_r_files", "evaporation_model.Rmd"), eval=FALSE}
-```
-
-```{r child = here("3_r_files", "evaporation_test.Rmd")}
+```{r child = here("3_r_files", "28_test_evaporation.Rmd")}
 ```
 
 ## Analysis scripts {.tabset .tabset-pills}
 
 ### Video analysis
 
-```{r child = here("3_r_files", "BEMOVI_script_video_analysis.Rmd"), class.source = "fold-show"}
+```{r child = here("3_r_files", "29_script_BEMOVI_video_analysis.Rmd"), class.source = "fold-show"}
 ```
 
 ### Species identification
 
-```{r child = here("3_r_files", "BEMOVI_script_species_id.Rmd"), class.source = "fold-show"}
+```{r child = here("3_r_files", "30_script_BEMOVI_species_id.Rmd"), class.source = "fold-show"}
 ```
 
 ## Other
 
-```{r child = here("3_r_files", "other.Rmd")}
+```{r child = here("3_r_files", "31_show_other.Rmd")}
 ```
+
+## Before submitting
+
+- Take off the holistic models
+- Update that you took off the third time point
+- Comment code
+
 
 ## References
 

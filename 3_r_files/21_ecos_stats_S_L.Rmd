@@ -1,0 +1,152 @@
+---
+title: "Untitled"
+output:
+  html_document:
+    code_folding: hide
+    profiling: yes
+date: "2023-04-14"
+editor_options: 
+  chunk_output_type: console
+---
+
+We want to know whether the connection influenced this response variable. We first start from plotting how this response variable changed in connected and unconnected ecosystems throughout the experiment through its mean ± 95 confidence interval:
+
+```{r}
+
+# --- PLOT ORIGINAL DATA --- #
+
+plot.ecosystems.points(ds_ecosystems,
+                       ecosystem_type_selected,
+                       response_variable_selected)
+```
+
+ <br>
+
+Following the initial inspection, we proceed to analyse differences among ecosystems. Our first step involves filtering the data to isolate the relevant data for analysis. Specifically, we exclude data points where the response variable couldn't be computed, as well as time points preceding the initial disturbance and resource flow. Then we plot the data to make sure that what filtered the data in the right way.
+
+```{r}
+
+# --- FILTER DATA --- #
+
+filtered_data = ds_ecosystems %>%
+  filter(time_point %in% time_points_model,
+         ecosystem_type %in% ecosystem_type_selected,
+         !is.na(!!sym(response_variable_selected)),
+         !is.na(!!sym("water_addition_ml")))
+```
+
+```{r}
+
+# --- PLOT FILTERED DATA --- #
+
+plot.ecosystems.points(filtered_data,
+                    ecosystem_type_selected,
+                    response_variable_selected) 
+```
+
+ <br>
+
+Then, given that we have gathered measurements from the same ecosystem on multiple occasions, we can develop mixed effect models to examine how the connection influenced this variable. To study the effects of ecosystem connection we compare two models to a null model using ANOVA: a full model and a reduced model. In all models, we treat culture ID as having a random effect on how the slope and intercept of the relationship between response variable and time, with the slope and intercept being correlated [@Bates2015]. The full model contains the interaction of connection with time (`Response variable ~ connection * day + (day | culture ID)`), the reduced model contains the connection but without the interaction with time (`Response variable ~ connection + day + (day | culture ID)`), and the null model doesn't contain the connection at all (`Response variable ~ day + (day | culture ID)`). If any of the two model comparisons is significant, then ecosystem connection had an effect.
+
+```{r}
+
+# --- ADD BASELINES --- #
+
+baselines = ds_ecosystems %>%
+  filter(time_point == time_point_of_baselines) %>%
+  select(culture_ID,
+         all_of(response_variable_selected)) %>%
+  rename(baseline = all_of(response_variable_selected))
+
+filtered_data = filtered_data %>%
+  left_join(baselines)
+```
+
+```{r class.source = "fold-show"}
+
+# --- COMPARE FULL, REDUCED, AND NULL MODEL --- #
+
+full_model = lmer(get(response_variable_selected) ~
+                    ecosystem_type * scale(day) +
+                    scale(water_addition_ml) * scale(day) +
+                    scale(baseline) * scale(day) +
+                    (day | culture_ID),
+                  data = filtered_data,
+                  REML = FALSE)
+
+reduced_model = lmer(get(response_variable_selected) ~
+                       ecosystem_type + 
+                       scale(day) +
+                       scale(water_addition_ml) * scale(day) +
+                       scale(baseline) * scale(day) +
+                       (day | culture_ID),
+                     data = filtered_data,
+                     REML = FALSE)
+
+null_model = lmer(get(response_variable_selected) ~
+                    scale(day) +
+                    scale(water_addition_ml) * scale(day) +
+                    scale(baseline) * scale(day) +
+                    (day | culture_ID),
+                  data = filtered_data,
+                  REML = FALSE)
+```
+
+<br>
+
+**Full model vs null model**
+
+<details open="open">
+<summary>Click to view the results of the ANOVA comparison between full and null model.</summary>
+```{r}
+
+# --- FULL VS NULL MODEL - SHOW MODEL STATS --- #
+
+compute.model.stats(full_model,
+                    null_model,
+                    "mixed_model") %>%
+  print()
+```
+</details>
+
+<details>
+<summary>Click to view the full model residual plots</summary>
+
+```{r}
+
+# --- FULL MODEL - SHOW RESIDUAL PLOTS --- #
+
+create.res.vs.fit.ecos(filtered_data, full_model)
+qqnorm(resid(full_model))
+qqline(resid(full_model))
+```
+</details>
+
+<br>
+
+**Reduced vs null model**
+
+<details open="open">
+<summary>ANOVA comparison between reduced and null model.</summary>
+```{r}
+
+# --- REDUCED VS NULL MODEL - SHOW MODEL STATS --- #
+
+compute.model.stats(reduced_model,
+                    null_model,
+                    "mixed_model") %>%
+  print()
+```
+</details>
+
+<details>
+<summary>Reduced model residual plots</summary>
+```{r}
+
+# --- REDUCED MODEL - SHOW RESIDUAL PLOTS --- #
+
+create.res.vs.fit.ecos(filtered_data, reduced_model)
+qqnorm(resid(reduced_model))
+qqline(resid(reduced_model))
+```
+</details>
