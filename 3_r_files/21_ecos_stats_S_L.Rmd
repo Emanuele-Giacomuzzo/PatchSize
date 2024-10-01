@@ -72,7 +72,8 @@ full_model = lmer(get(response_variable_selected) ~
                     scale(baseline) * scale(day) +
                     (day | culture_ID),
                   data = filtered_data,
-                  REML = FALSE)
+                  REML = FALSE,
+                  control = lmerControl(optimizer = "bobyqa"))
 
 reduced_model = lmer(get(response_variable_selected) ~
                        ecosystem_type + 
@@ -81,7 +82,8 @@ reduced_model = lmer(get(response_variable_selected) ~
                        scale(baseline) * scale(day) +
                        (day | culture_ID),
                      data = filtered_data,
-                     REML = FALSE)
+                     REML = FALSE,
+                     control = lmerControl(optimizer = "bobyqa"))
 
 null_model = lmer(get(response_variable_selected) ~
                     scale(day) +
@@ -89,7 +91,8 @@ null_model = lmer(get(response_variable_selected) ~
                     scale(baseline) * scale(day) +
                     (day | culture_ID),
                   data = filtered_data,
-                  REML = FALSE)
+                  REML = FALSE,
+                  control = lmerControl(optimizer = "bobyqa"))
 ```
 
 <br>
@@ -97,7 +100,7 @@ null_model = lmer(get(response_variable_selected) ~
 **Full model vs null model**
 
 <details open="open">
-<summary>Click to view the results of the ANOVA comparison between full and null model.</summary>
+<summary>Full vs null model - ANOVA </summary>
 ```{r}
 
 # --- FULL VS NULL MODEL - SHOW MODEL STATS --- #
@@ -105,12 +108,22 @@ null_model = lmer(get(response_variable_selected) ~
 compute.model.stats(full_model,
                     null_model,
                     "mixed_model") %>%
-  print()
+  show.tidy.model.stats(.)
 ```
 </details>
 
 <details>
-<summary>Click to view the full model residual plots</summary>
+<summary>Full model - summary</summary>
+```{r}
+
+# --- FULL MODEL - SHOW SUMMARY --- #
+
+print(summary(full_model), digits = 1)
+```
+</details>
+
+<details>
+<summary>Full model - residual plots</summary>
 
 ```{r}
 
@@ -127,7 +140,7 @@ qqline(resid(full_model))
 **Reduced vs null model**
 
 <details open="open">
-<summary>ANOVA comparison between reduced and null model.</summary>
+<summary>Reduced vs null model - ANOVA</summary>
 ```{r}
 
 # --- REDUCED VS NULL MODEL - SHOW MODEL STATS --- #
@@ -135,12 +148,23 @@ qqline(resid(full_model))
 compute.model.stats(reduced_model,
                     null_model,
                     "mixed_model") %>%
-  print()
+  show.tidy.model.stats(.)
 ```
 </details>
 
 <details>
-<summary>Reduced model residual plots</summary>
+<summary>Reduced model - summary</summary>
+
+```{r}
+
+# --- REDUCED MODEL - SHOW SUMMARY --- #
+
+print(summary(reduced_model), digits = 1)
+```
+</details>
+
+<details>
+<summary>Reduced model - residual plots</summary>
 ```{r}
 
 # --- REDUCED MODEL - SHOW RESIDUAL PLOTS --- #

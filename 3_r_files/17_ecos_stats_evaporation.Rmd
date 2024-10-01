@@ -119,7 +119,7 @@ null_model = lmer(get(response_variable) ~
 <br>
 
 <details open="open">
-<summary>Full vs Null model - ANOVA</summary>
+<summary>Full vs null model - ANOVA</summary>
 ```{r}
 
 # --- FULL VS NULL MODEL - SHOW MODEL STATS --- #
@@ -132,13 +132,23 @@ compute.model.stats(full_model,
 </details>
 
 <details>
-<summary>Full model residual plots</summary>
+<summary>Full model - summary</summary>
+```{r}
+
+# --- FULL MODEL - SHOW SUMMARY --- #
+
+print(summary(full_model), digits = 1)
+```
+</details>
+
+<details>
+<summary>Full model - residual plots</summary>
 
 ```{r}
 
 # --- FULL MODEL - SHOW RESIDUAL PLOTS --- #
 
-print(create.res.vs.fit.ecos(ds_ecosystems_both_disturbances_filtered, full_model))
+create.res.vs.fit.ecos(ds_ecosystems_both_disturbances_filtered, full_model)
 qqnorm(resid(full_model))
 qqline(resid(full_model))
 ```

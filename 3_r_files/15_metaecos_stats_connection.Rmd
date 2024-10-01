@@ -90,15 +90,11 @@ iterated_results_table = data.frame(Response = as.character(NA),
 
 # --- COMPARE FULL, REDUCED, AND NULL MODEL WHILE RESHUFFLING ECOSYSTEM COMBINATIONS --- #
 
-full_model_res_vs_fit = NULL
-reduced_model_res_vs_fit = NULL
-null_model_res_vs_fit = NULL
-
 for (set_i in 1:n_sets) {
   
   # Filter the data to contain all the connected meta-ecosystems and only a subset of unconnected meta-ecosystems
   
-  system_nr_unconnected_systems_input = unconnected_combinations_sets_filtered %>%
+  system_nr_unconnected_systems_selected = unconnected_combinations_sets_filtered %>%
     filter(metaecosystem_type %in% metaecosystem_type_selected,
            connection == "unconnected",
            set == set_i) %>%
@@ -107,7 +103,7 @@ for (set_i in 1:n_sets) {
   filtered_data_2 = filtered_data %>%
     filter(connection == "connected" | 
           (connection == "unconnected" &
-           system_nr %in% system_nr_unconnected_systems_input))
+           system_nr %in% system_nr_unconnected_systems_selected))
   
   # Construct models
   
@@ -120,7 +116,7 @@ for (set_i in 1:n_sets) {
   if (is.null(full_model) || is.null(reduced_model) || is.null(null_model)) {
     
     cat("This model could not be fitted with any optimiser. The unconnected meta-ecosystems in this iteration were:", 
-        system_nr_unconnected_systems_input, 
+        system_nr_unconnected_systems_selected, 
         "\n")
     next
     
@@ -227,7 +223,7 @@ for (set_i in 1:n_sets) {
   iterated_results_table$set[nrow(iterated_results_table)] = set_i
   
   iterated_results_table$system_nr_unconnected_systems[nrow(iterated_results_table)] = 
-  paste(system_nr_unconnected_systems_input, collapse = " ")
+  paste(system_nr_unconnected_systems_selected, collapse = " ")
   
 }
 ```
@@ -246,34 +242,10 @@ for (set_i in 1:n_sets) {
 
 # --- FULL VS NULL MODEL - SHOW MODEL STATS --- #
 
-model_stats_full = data.frame(deltaAIC = median(iterated_results_table$ΔAIC_full),
-                              p_value = median(iterated_results_table$p_full),
-                              R2 = NA)
-
-model_stats_full %>%
-  mutate(deltaAIC = round(deltaAIC, digits = 1),
-         p_value = round(p_value, digits = 3),
-         R2 = NULL,
-         evidence = "",
-         evidence = ifelse(p_value > 0.1, 
-                           "none",
-                           evidence),
-         evidence = ifelse(p_value < 0.1, 
-                           "* weak",
-                           evidence),
-         evidence = ifelse(p_value < 0.05, 
-                           "** moderate",
-                           evidence),
-         evidence = ifelse(p_value < 0.01, 
-                           "*** strong",
-                           evidence),
-         evidence = ifelse(p_value < 0.001, 
-                           "**** very strong",
-                           evidence),
-         p_value = ifelse(p_value < 0.001,
-                           "< 0.001",
-                           p_value)) %>%
-  print()
+data.frame(deltaAIC = median(iterated_results_table$ΔAIC_full),
+           p_value = median(iterated_results_table$p_full),
+           R2 = NA) %>%
+  show.tidy.model.stats(.)
 ```
 
 </details>
@@ -320,34 +292,10 @@ iterated_results_table %>%
 
 # --- REDUCED VS NULL MODEL - SHOW MODEL STATS --- #
 
-model_stats_reduced = data.frame(deltaAIC = median(iterated_results_table$ΔAIC_fix),
-                               p_value = median(iterated_results_table$p_fix),
-                               R2 = NA)
-
-model_stats_reduced %>%
-  mutate(deltaAIC = round(deltaAIC, digits = 1),
-         p_value = round(p_value, digits = 3),
-         R2 = NULL,
-         evidence = "",
-         evidence = ifelse(p_value > 0.1, 
-                           "none",
-                           evidence),
-         evidence = ifelse(p_value < 0.1, 
-                           "* weak",
-                           evidence),
-         evidence = ifelse(p_value < 0.05, 
-                           "** moderate",
-                           evidence),
-         evidence = ifelse(p_value < 0.01, 
-                           "*** strong",
-                           evidence),
-         evidence = ifelse(p_value < 0.001, 
-                           "**** very strong",
-                           evidence),
-         p_value = ifelse(p_value < 0.001,
-                           "< 0.001",
-                           p_value)) %>%
-  print()
+data.frame(deltaAIC = median(iterated_results_table$ΔAIC_fix),
+           p_value = median(iterated_results_table$p_fix),
+           R2 = NA) %>%
+  show.tidy.model.stats(.)
 ```
 
 </summary>

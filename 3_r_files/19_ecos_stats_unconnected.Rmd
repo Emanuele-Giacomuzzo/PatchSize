@@ -106,7 +106,17 @@ null_model = lmer(get(response_variable_selected) ~
 compute.model.stats(full_model,
                     null_model,
                     "mixed_model") %>%
-  print()
+  show.tidy.model.stats(.)
+```
+</details>
+
+<details>
+<summary>Full model - summary</summary>
+```{r}
+
+# --- FULL MODEL - SHOW SUMMARY --- #
+
+print(summary(full_model), digits = 1)
 ```
 </details>
 
@@ -134,7 +144,17 @@ qqline(resid(full_model))
 compute.model.stats(reduced_model,
                     null_model,
                     "mixed_model") %>%
-  print()
+  show.tidy.model.stats(.)
+```
+</details>
+
+<details>
+<summary>Reduced model - summary</summary>
+```{r}
+
+# --- FULL MODEL - SHOW SUMMARY --- #
+
+print(summary(reduced_model), digits = 1)
 ```
 </details>
 

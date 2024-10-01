@@ -162,6 +162,10 @@ comparison_type = "all"
 metaecosystem_type_selected = c("Small-Large")
 ```
 
+```{r echo=FALSE, message=FALSE}
+save.image(file = here("4_environments", "before.RData"))
+```
+
 ```{r child = here("3_r_files", "15_metaecos_stats_connection.Rmd")}
 ```
 
@@ -902,7 +906,6 @@ plot.ecosystems.points(ds_ecosystems,
 - Take off the holistic models
 - Update that you took off the third time point
 - Comment code
-
 
 ## References
 
