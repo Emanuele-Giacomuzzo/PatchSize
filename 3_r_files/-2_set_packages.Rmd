@@ -35,6 +35,7 @@ library("GGally") #Scatter plots for all variables
 
 #Data analysis
 library("lmerTest")
+library("glmmTMB")
 library("vegan")
 library("betapart")
 library("Rmisc") #For summarySE

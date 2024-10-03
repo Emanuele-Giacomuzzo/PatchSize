@@ -1,30 +1,30 @@
 plot.all.patches.points = function(data,
-                                   response_variable){
+                                   response_variable_selected){
   
   p = data %>%
-    filter(!is.na(!!sym(response_variable))) %>%
-    summarySE(measurevar = response_variable,
-              groupvars = c("day", "ecosystem_size", "connection_type")) %>%
+    filter(!is.na(!!sym(response_variable_selected))) %>%
+    summarySE(measurevar = response_variable_selected,
+              groupvars = c("day", "ecosystem_size", "connection")) %>%
     ggplot(aes(x = day,
-               y = get(response_variable),
-               group = interaction(day, ecosystem_size, connection_type),
+               y = get(response_variable_selected),
+               group = interaction(day, ecosystem_size, connection),
                color = ecosystem_size,
-               linetype = connection_type)) +
+               linetype = connection)) +
     geom_point(stat = "summary",
                fun = "mean",
                position = position_dodge(dodging),
                size = treatment_points_size) +
     geom_line(stat = "summary",
               fun = "mean",
-              aes(group =  interaction(ecosystem_size, connection_type)),
+              aes(group =  interaction(ecosystem_size, connection)),
               position = position_dodge(dodging),
               linewidth = treatment_lines_linewidth) +
-    geom_errorbar(aes(ymax = get(response_variable) + ci,
-                      ymin = get(response_variable) - ci),
+    geom_errorbar(aes(ymax = get(response_variable_selected) + ci,
+                      ymin = get(response_variable_selected) - ci),
                   width = width_errorbar,
                   position = position_dodge(dodging)) +
     labs(x = axis_names$axis_name[axis_names$variable == "day"],
-         y = axis_names$axis_name[axis_names$variable == response_variable],
+         y = axis_names$axis_name[axis_names$variable == response_variable_selected],
          color = "",
          linetype = "") +
     scale_x_continuous(breaks = unique(data$day)) +

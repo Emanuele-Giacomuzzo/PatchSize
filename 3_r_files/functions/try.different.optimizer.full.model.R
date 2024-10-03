@@ -52,8 +52,8 @@ try.different.optimizer.full.model = function(){
       if (!is.null(opt$method)) {
         lmer(get(response_variable_selected) ~
                connection * scale(day) + 
-               scale(total_water_addition_ml) * scale(day) + 
-               scale(baseline) * scale(day) + 
+               scale(total_water_addition_ml) * scale(day)+ 
+               scale(baseline) * scale(day)+ 
                (day | system_nr),
              data = filtered_data_2,
              REML = FALSE,
@@ -61,8 +61,8 @@ try.different.optimizer.full.model = function(){
       } else {
         lmer(get(response_variable_selected) ~
                connection * scale(day) + 
-               scale(total_water_addition_ml) * scale(day) + 
-               scale(baseline) * scale(day) + 
+               scale(total_water_addition_ml) * scale(day)+ 
+               scale(baseline) * scale(day)+ 
                (day | system_nr),
              data = filtered_data_2,
              REML = FALSE,

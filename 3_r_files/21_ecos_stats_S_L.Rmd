@@ -95,6 +95,10 @@ null_model = lmer(get(response_variable_selected) ~
                   control = lmerControl(optimizer = "bobyqa"))
 ```
 
+```{r class.source = "fold-show"}
+car::Anova(full_model, type = "III")
+```
+
 <br>
 
 **Full model vs null model**

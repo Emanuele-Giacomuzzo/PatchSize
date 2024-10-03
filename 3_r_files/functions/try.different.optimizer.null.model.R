@@ -45,8 +45,8 @@ try.different.optimizer.null.model = function(){
       if (!is.null(opt$method)) {
         lmer(get(response_variable_selected ) ~
                scale(day) + 
-               scale(total_water_addition_ml) * scale(day) + 
-               scale(baseline) * scale(day) + 
+               scale(total_water_addition_ml) * scale(day)+ 
+               scale(baseline) * scale(day)+ 
                (day | system_nr),
              data = filtered_data_2,
              REML = FALSE,

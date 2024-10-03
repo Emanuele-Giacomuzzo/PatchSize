@@ -6,7 +6,38 @@ editor_options:
   chunk_output_type: console
 ---
 
-##### Holistic
+Here we want to look at how this meta-ecosystem variable changed across time by plotting its mean ± 95 confidence interval:
+
+```{r}
+"High disturbance"
+plot.metaecos.points(ds_metaecosystems_both_disturbances %>% filter(disturbance == "high"),
+                     metaecosystem_type_selected,
+                     connection_selected,
+                     response_variable_selected)
+
+"Low disturbance"
+plot.metaecos.points(ds_metaecosystems_both_disturbances %>% filter(disturbance == "low"),
+                     metaecosystem_type_selected,
+                     connection_selected,
+                     response_variable_selected)
+```
+
+<details>
+    <summary>Data represented through the single replicates</summary>
+```{r}
+"High disturbance"
+plot.metaecos.replicates(ds_metaecosystems_both_disturbances %>% filter(disturbance == "high"),
+                         metaecosystem_type_selected,
+                         response_variable_selected)
+
+"Low disturbance"
+plot.metaecos.replicates(ds_metaecosystems_both_disturbances %>% filter(disturbance == "low"),
+                         metaecosystem_type_selected,
+                         response_variable_selected)
+```
+</details>
+
+<br>
 
 Following the initial inspection, we proceed to analyse differences among ecosystems. To do so, we go through the following steps.
 
@@ -22,8 +53,8 @@ Following the initial inspection, we proceed to analyse differences among ecosys
 baselines = ds_metaecosystems_both_disturbances %>%
   filter(time_point == time_point_of_baselines) %>%
   select(system_nr,
-         all_of(response_variable)) %>%
-  rename(baseline = all_of(response_variable))
+         all_of(response_variable_selected)) %>%
+  rename(baseline = all_of(response_variable_selected))
 
 data_for_analysis = ds_metaecosystems_both_disturbances %>%
   left_join(baselines)
@@ -35,8 +66,8 @@ data_for_analysis = ds_metaecosystems_both_disturbances %>%
 
 data_for_analysis = data_for_analysis %>%
   filter(time_point %in% time_points_model,
-         metaecosystem_type %in% metaecosystem_type_i,
-         !is.na(!!sym(response_variable)),
+         metaecosystem_type %in% metaecosystem_type_selected,
+         !is.na(!!sym(response_variable_selected)),
          !is.na(total_water_addition_ml),
          connection == "connected" | ecosystems_combined %in% c("1|11", "2|12", "3|13", "4|14", "5|15", "6|7", "7|8", "9|10",
                                                                 "56|66", "57|67", "58|68", "59|69", "61|62", "63|64")) %>%
@@ -46,15 +77,16 @@ data_for_analysis = data_for_analysis %>%
                                     metaecosystem_type == "Medium-Medium meta-ecosystem" ~ "MM con",
                                     metaecosystem_type == "Large-Large meta-ecosystem" ~ "LL con",
                                     metaecosystem_type == "Small-Large meta-ecosystem" ~ "SL con",
-                                    TRUE ~ metaecosystem_type))
+                                    TRUE ~ metaecosystem_type),
+         type_conn = paste(metaecosystem_type, connection))
 ```
 
 ```{r eval = FALSE, echo = FALSE}
 
 # --- ADD EVAPORATION RATES RESIDUALS --- #
 
-evaporation_model = lm(get(response_variable) ~
-                         metaecosystem_type,
+evaporation_model = lm(get(response_variable_selected) ~
+                         type_conn,
                        data = data_for_analysis)
 
 par(mfrow = c(2, 2))
@@ -69,60 +101,44 @@ data_for_analysis = data_for_analysis %>%
 # --- PLOT MEAN ± 95% CI OF FILTERED DATA --- #
 
 "High disturbance"
-plot.metaecos.points.3(data_for_analysis %>% filter(disturbance == "high"),
-                       response_variable)
+plot.metaecos.points(data_for_analysis %>% filter(disturbance == "high"),
+                     metaecosystem_type_selected,
+                     connection_selected,
+                     response_variable_selected)
 
 "Low disturbance"
-plot.metaecos.points.3(data_for_analysis %>% filter(disturbance == "low"),
-                       response_variable)
+plot.metaecos.points(data_for_analysis %>% filter(disturbance == "low"),
+                     metaecosystem_type_selected,
+                     connection_selected,
+                     response_variable_selected)
 ```
 
 ```{r}
 
-# --- FIND MODEL OPTIMIZER --- #
-
-model_type = "full"
-
-optimizer_n_control_filtered = optizimers_n_methods %>%
-  filter(disturbance == disturbance_global_input, 
-         response_variable == response_variable,
-         comparison == comparison_type,
-         model_type == model_type)
-
-optimizer_input = optimizer_n_control_filtered$optimizer
-control_input = optimizer_n_control_filtered$control
-```
-
-
-```{r class.source = "fold-show"}
-
 # --- CONSTRUCT MODEL --- #
 
-full_model = lmer(get(response_variable) ~
-                    metaecosystem_type * disturbance * day + 
-                    total_water_addition_ml * day +
-                    baseline * day +
-                    (day | system_nr),
-                  data = data_for_analysis,
-                  REML = FALSE,
-                  control = lmerControl(optimizer = optimizer_input,
-                                        optCtrl = list(algorithm = control_input)))
+full_model = try.different.optimizer.full.model.holistic(data_for_analysis)
 ```
 
+<details>
+<summary>Model summary</summary>
 ```{r}
 
 # --- SHOW MODEL SUMMARY --- #
 
 print(summary(full_model), digits = 1)
 ```
+</details>
 
+<details>
+<summary>Model ANOVA</summary>
 ```{r}
 
 # --- RUN ANOVA --- #
 
 car::Anova(full_model, type = "III")
 ```
-
+</details>
 
 <details>
 <summary>Model contrast coding</summary>
@@ -131,8 +147,8 @@ car::Anova(full_model, type = "III")
 # --- GET ECOSYSTEM TYPE CONSTRASTS --- #
 
 emmeans_output = emmeans(full_model,
-                         specs = pairwise ~ metaecosystem_type * disturbance,
-                         adjust = "tukey",
+                         specs = ~ type_conn * day * disturbance,
+                         adjust = "sidak",
                          bias.adj = TRUE,
                          lmer.df = "satterthwaite") 
 
@@ -177,20 +193,28 @@ contrasts = contrast(emmeans_output,
 ```
 </details>
 
+<details open="open">
+<summary>Model contrasts</summary>
 ```{r}
 
 # --- SHOW METAECOSYSTEM TYPE CONSTRASTS --- #
 
 contrasts
 ```
+</details>
 
 <br>
 
+<details open="open">
+<summary>Model residuals</summary>
 ```{r}
 
-# --- CONSTRUCT RESIDUALS VS FITTED VALUES PLOT --- #
+# --- PLOT RESIDUALS --- #
 
-res_vs_fit = data_for_analysis %>%
+qqnorm(resid(full_model))
+qqline(resid(full_model))
+
+data_for_analysis %>%
     mutate(predicted = fitted(full_model),
            residuals = resid(full_model)) %>%
     plot_ly(x = ~predicted,
@@ -218,12 +242,4 @@ res_vs_fit = data_for_analysis %>%
                    xaxis = list(title = "Fitted Values"),
                    yaxis = list(title = "Residuals"))
 ```
-
-```{r}
-
-# --- PLOT RESIDUALS --- #
-
-qqnorm(resid(full_model))
-qqline(resid(full_model))
-res_vs_fit
-```
+</details>

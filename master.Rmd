@@ -24,7 +24,8 @@ print(paste("!!",
             disturbance_global_selected, 
             "!!", 
             "The experiment investigate the effects of two disturbance levels: low and high.",
-            "To make it easier to interpet, we showcase only one of the two disturbance levels. In this document we showcase only the", 
+            "To make it easier to interpet, we showcase only one of the two disturbance levels.",
+            "In this document we showcase only the", 
             disturbance_global_selected, 
             "disturbance)"))
 ```
@@ -149,21 +150,19 @@ metaecosystem_type_selected = c("Medium-Medium",
 
 Following the initial inspection, we proceed to analyse differences among meta-ecosystems. To make it easier to interpret differences, we decided to construct a model for each comparisons we are interested in, which are: SL (connected vs unconnected) and MM (connected vs unconnected).
 
+##### Holistic {.tabset .tabset-pills}
+
 ```{r}
 comparison_type = "all"
 ```
 
-```{r child = here("3_r_files", "13_metaecos_stats_holistic.Rmd"), eval = FALSE}
+```{r child = here("3_r_files", "13_metaecos_stats_holistic.Rmd")}
 ```
 
 ##### SL {.tabset .tabset-pills}
 
 ```{r}
 metaecosystem_type_selected = c("Small-Large")
-```
-
-```{r echo=FALSE, message=FALSE}
-save.image(file = here("4_environments", "before.RData"))
 ```
 
 ```{r child = here("3_r_files", "15_metaecos_stats_connection.Rmd")}
@@ -196,7 +195,13 @@ metaecosystem_type_selected = c("Medium-Medium",
 ```{r child = here("3_r_files", "12_metaecos_plot_all.Rmd")}
 ```
 
-```{r child = here("3_r_files", "13_metaecos_stats_holistic.Rmd"), eval = FALSE}
+##### Holistic {.tabset .tabset-pills}
+
+```{r}
+comparison_type = "all"
+```
+
+```{r child = here("3_r_files", "13_metaecos_stats_holistic.Rmd")}
 ```
 
 ##### SL {.tabset .tabset-pills}
@@ -235,7 +240,13 @@ metaecosystem_type_selected = c("Medium-Medium",
 ```{r child = here("3_r_files", "12_metaecos_plot_all.Rmd")}
 ```
 
-```{r child = here("3_r_files", "13_metaecos_stats_holistic.Rmd"), eval = FALSE}
+##### Holistic {.tabset .tabset-pills}
+
+```{r}
+comparison_type = "all"
+```
+
+```{r child = here("3_r_files", "13_metaecos_stats_holistic.Rmd")}
 ```
 
 ##### SL {.tabset .tabset-pills}
@@ -274,7 +285,13 @@ metaecosystem_type_selected = c("Medium-Medium",
 
 Following the initial inspection, we proceed to analyse differences among meta-ecosystems. To make it easier to interpret differences, we decided to construct a model for each comparisons we are interested in, which are: SL (connected vs unconnected) and MM (connected vs unconnected).
 
-```{r child = here("3_r_files", "13_metaecos_stats_holistic.Rmd"), eval = FALSE}
+##### Holistic {.tabset .tabset-pills}
+
+```{r}
+comparison_type = "all"
+```
+
+```{r child = here("3_r_files", "13_metaecos_stats_holistic.Rmd")}
 ```
 
 ##### SL {.tabset .tabset-pills}
@@ -316,10 +333,28 @@ ecosystem_type_selected = c("Small unconnected",
 #### Evaporation (both disturbance levels)
 
 ```{r}
-response_variable = "water_addition_ml"
+response_variable_selected = "water_addition_ml"
 ```
 
 ```{r child = here("3_r_files", "17_ecos_stats_evaporation.Rmd")}
+```
+
+#### Shannon {.tabset .tabset-pills}
+
+```{r}
+response_variable_selected = "shannon"
+```
+
+```{r child = here("3_r_files", "18_ecos_stats_holistic.Rmd")}
+```
+
+#### Biomass {.tabset .tabset-pills}
+
+```{r}
+response_variable_selected = "bioarea_mm2_per_ml"
+```
+
+```{r child = here("3_r_files", "18_ecos_stats_holistic.Rmd")}
 ```
 
 ### $S$ vs $M$ vs $L$ {.tabset .tabset-pills}
@@ -387,15 +422,6 @@ response_variable_selected = "auto_hetero_ratio"
 #### Populations
 
 ```{r child = here("3_r_files", "20_ecos_plot_populations.Rmd")}
-```
-
-#### Evaporation (both disturbance levels)
-
-```{r}
-response_variable = "water_addition_ml"
-```
-
-```{r child = here("3_r_files", "17_ecos_stats_evaporation.Rmd")}
 ```
 
 ### $S_{L}$ vs $S$ {.tabset .tabset-pills}
