@@ -1,0 +1,509 @@
+---
+title: "Data manipulation: PatchSizePilot"
+author: "Emanuele Giacomuzzo"
+date: "2022-08-04"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+### Patches (`ds_ecosystems`)
+
+In this dataset (`ds_ecosystems`) each row represents a ecosystem at a time point. I use the data from the 40 threshold analysis for Ble, Cep, Spi and the data from the 13 threshold analysis for all the other protists (Col, Eup, Lox, Pau, Pca, Spi te, Tet).
+
+```{r}
+
+# ---  IMPORT & BIND T0 DATASETS --- #
+
+# Import t0
+
+ds_ecosystems_t0 = read.csv(here("1_data", 
+                                 "ecosystems_13_threshold", 
+                                 "t0.csv")) %>%
+  mutate(time_point =  as.numeric(str_extract(time_point, "\\d+")),
+         day = 0,
+         video_replicate = file) %>%
+  select(time_point,
+         day,
+         video_replicate,
+         file,
+         bioarea_per_volume,
+         indiv_per_volume)
+
+# Describe code
+
+species_ID_13_threshold_t0 = read.csv(here("1_data", 
+                                           "species_ID_13_threshold", 
+                                           paste0("t0.csv"))) %>%
+  rename(Ble_indiv_per_volume = Ble,
+         Cep_indiv_per_volume = Cep,
+         Col_indiv_per_volume = Col,
+         Eug_indiv_per_volume = Eug,
+         Eup_indiv_per_volume = Eup,
+         Lox_indiv_per_volume = Lox,
+         Pau_indiv_per_volume = Pau,
+         Pca_indiv_per_volume = Pca,
+         Spi_indiv_per_volume = Spi,
+         Spi_te_indiv_per_volume = Spi_te,
+         Tet_indiv_per_volume = Tet) %>%
+  select(file,
+         all_of(species_IDD_with_13_threshold_indiv_per_volume))
+
+species_ID_40_threshold_t0 = read.csv(here("1_data", 
+                                           "species_ID_40_threshold", 
+                                           paste0("t0.csv"))) %>%
+  rename(Ble_indiv_per_volume = Ble,
+         Cep_indiv_per_volume = Cep,
+         Col_indiv_per_volume = Col,
+         Eug_indiv_per_volume = Eug,
+         Eup_indiv_per_volume = Eup,
+         Lox_indiv_per_volume = Lox,
+         Pau_indiv_per_volume = Pau,
+         Pca_indiv_per_volume = Pca,
+         Spi_indiv_per_volume = Spi,
+         Spi_te_indiv_per_volume = Spi_te,
+         Tet_indiv_per_volume = Tet) %>%
+  select(file,
+         all_of(species_IDD_with_40_threshold_indiv_per_volume))
+
+# Describe code
+
+ds_ecosystems_t0 = ds_ecosystems_t0 %>%
+  left_join(species_ID_13_threshold_t0,
+            by = "file") %>%
+  left_join(species_ID_40_threshold_t0,
+            by = "file") %>%
+  mutate(file =  as.numeric(str_extract(file, "\\d+")))
+```
+
+```{r}
+
+# ---  ELONGATE T0 DATASET --- #
+
+# Set up parameters
+
+ds_ecosystems_t0_elongated <- list()
+
+# Describe code
+
+for (video_i in 1 : n_videos_taken_t0) {
+  
+  # Describe code
+
+  single_video = ds_ecosystems_t0 %>%
+    filter(file == video_i)
+  
+  # Describe code
+
+  ds_ecosystems_t0_elongated[[video_i]] = ecosystems_info %>%
+    mutate(time_point = 0,
+           day = 0,
+           file = single_video$file,
+           video_replicate = single_video$video_replicate,
+           bioarea_per_volume = single_video$bioarea_per_volume,
+           indiv_per_volume = single_video$indiv_per_volume,
+           Ble_indiv_per_volume = single_video$Ble_indiv_per_volume,
+           Cep_indiv_per_volume = single_video$Cep_indiv_per_volume,
+           Col_indiv_per_volume = single_video$Col_indiv_per_volume,
+           Eug_indiv_per_volume = single_video$Eug_indiv_per_volume,
+           Eup_indiv_per_volume = single_video$Eup_indiv_per_volume,
+           Lox_indiv_per_volume = single_video$Lox_indiv_per_volume,
+           Pau_indiv_per_volume = single_video$Pau_indiv_per_volume,
+           Pca_indiv_per_volume = single_video$Pca_indiv_per_volume,
+           Spi_indiv_per_volume = single_video$Spi_indiv_per_volume,
+           Spi_te_indiv_per_volume = single_video$Spi_te_indiv_per_volume,
+           Tet_indiv_per_volume = single_video$Tet_indiv_per_volume)
+}
+
+# Describe code
+
+ds_ecosystems_t0_elongated = ds_ecosystems_t0_elongated %>%
+  bind_rows()
+```
+
+```{r}
+
+# ---  CLEAN THE COLUMNS OF T0 --- #
+
+ds_ecosystems_t0 = ds_ecosystems_t0_elongated %>%
+  select(file,
+         time_point,
+         day,
+         culture_ID,
+         video_replicate,
+         bioarea_per_volume,
+         indiv_per_volume,
+         all_of(protist_species_indiv_per_volume))
+
+expect_equal(nrow(ds_ecosystems_t0), 
+             sum(n_videos_taken_t0 * n_cultures))
+```
+
+```{r}
+
+# ---  IMPORT AND BIND ALL TIME POINTS BUT T0 --- #
+
+ds_ecosystems_t1_to_t7 = NULL
+
+for (time_point_i in time_points_without_t0) {
+  
+  species_ID_13_threshold = read.csv(here("1_data", 
+                                          "species_ID_13_threshold", 
+                                          paste0("t", time_point_i, ".csv"))) %>%
+    rename(Ble_indiv_per_volume = Ble,
+           Cep_indiv_per_volume = Cep,
+           Col_indiv_per_volume = Col,
+           Eug_indiv_per_volume = Eug,
+           Eup_indiv_per_volume = Eup,
+           Lox_indiv_per_volume = Lox,
+           Pau_indiv_per_volume = Pau,
+           Pca_indiv_per_volume = Pca,
+           Spi_indiv_per_volume = Spi,
+           Spi_te_indiv_per_volume = Spi_te,
+           Tet_indiv_per_volume = Tet) %>% 
+    select(file,
+           all_of(species_IDD_with_13_threshold_indiv_per_volume))
+  
+  
+  species_ID_40_threshold = read.csv(here("1_data", 
+                                          "species_ID_40_threshold", 
+                                          paste0("t", time_point_i, ".csv"))) %>%
+    rename(Ble_indiv_per_volume = Ble,
+           Cep_indiv_per_volume = Cep,
+           Col_indiv_per_volume = Col,
+           Eug_indiv_per_volume = Eug,
+           Eup_indiv_per_volume = Eup,
+           Lox_indiv_per_volume = Lox,
+           Pau_indiv_per_volume = Pau,
+           Pca_indiv_per_volume = Pca,
+           Spi_indiv_per_volume = Spi,
+           Spi_te_indiv_per_volume = Spi_te,
+           Tet_indiv_per_volume = Tet) %>% 
+    select(file,
+           all_of(species_IDD_with_40_threshold_indiv_per_volume))
+  
+  
+  ds_ecosystems_t1_to_t7[[time_point_i]] = read.csv(here("1_data", 
+                                                      "ecosystems_13_threshold", 
+                                                      paste0("t", time_point_i, ".csv"))) %>%
+    arrange(file) %>%
+    mutate(video_replicate = rep(1 : time_point_day$video_replicates[time_point_i+1],
+                                 each = n_cultures),
+           day = time_point_day$day[time_point_day$time_point == time_point_i]) %>%
+    select(file,
+           time_point,
+           day,
+           video_replicate,
+           file,
+           culture_ID,
+           bioarea_per_volume,
+           indiv_per_volume)
+  
+  ds_ecosystems_t1_to_t7[[time_point_i]] = ds_ecosystems_t1_to_t7[[time_point_i]] %>%
+    left_join(species_ID_13_threshold,
+                by = "file") %>%
+    left_join(species_ID_40_threshold,
+                by = "file")
+    
+}
+
+ds_ecosystems_t1_to_t7 = ds_ecosystems_t1_to_t7 %>%
+  bind_rows()
+```
+
+```{r}
+
+# ---  BIND T0 WITH ALL OTHER TIME POINTS --- #
+
+ds_ecosystems = rbind(ds_ecosystems_t0,
+                      ds_ecosystems_t1_to_t7) %>%
+  left_join(ecosystems_info,
+            by = "culture_ID") 
+    
+expect_equal(nrow(ds_ecosystems),
+             sum(sum(time_point_day$video_replicates) * n_cultures))
+```
+
+```{r}
+
+# ---  REODER AND RENAME COLUMNS --- #
+
+ds_ecosystems = ds_ecosystems %>%
+  rename(ecosystem_size = patch_size,
+         ecosystem_size_ml = patch_size_volume) %>%
+  select(file,
+         time_point,
+         day,
+         disturbance,
+         culture_ID,
+         system_nr,
+         eco_metaeco_type,
+         ecosystem_size,
+         ecosystem_size_ml,
+         metaecosystem,
+         metaecosystem_type,
+         video_replicate,
+         bioarea_per_volume,
+         indiv_per_volume,
+         all_of(protist_species_indiv_per_volume)) %>% 
+  rename(bioarea_µm2_per_μL = bioarea_per_volume) %>%
+  rename_all( ~ gsub("volume", "μL", .))
+```
+
+```{r}
+
+# ---  RENAME AND REODER LEVELS --- #
+
+ds_ecosystems <- ds_ecosystems %>%
+  mutate(ecosystem_size = case_when(ecosystem_size == "S" ~ "Small",
+                                    ecosystem_size == "M" ~ "Medium",
+                                    ecosystem_size == "L" ~ "Large",
+                                    TRUE ~ ecosystem_size), 
+         connection = case_when(eco_metaeco_type == "S" ~ "unconnected",
+                                     eco_metaeco_type == "M" ~ "unconnected",
+                                     eco_metaeco_type == "L" ~ "unconnected",
+                                     eco_metaeco_type == "S (S_S)" ~ "connected to small",
+                                     eco_metaeco_type == "S (S_L)" ~ "connected to large",
+                                     eco_metaeco_type == "M (M_M)" ~ "connected to medium",
+                                     eco_metaeco_type == "L (S_L)" ~ "connected to small",
+                                     eco_metaeco_type == "L (L_L)" ~ "connected to large"), 
+         ecosystem_type = paste(ecosystem_size, connection),
+         metaecosystem_type = case_when(metaecosystem_type == "S_S" ~ "Small-Small",
+                                        metaecosystem_type == "M_M" ~ "Medium-Medium",
+                                        metaecosystem_type == "L_L" ~ "Large-Large",
+                                        metaecosystem_type == "S_L" ~ "Small-Large",
+                                        TRUE ~ metaecosystem_type),
+    time_point =  as.numeric(str_extract(time_point, "\\d+")),
+    file =  as.numeric(str_extract(file, "\\d+")))
+```
+
+```{r}
+
+# ---  CHANGE UNITS OF MEASUREMENTS TO ML --- #
+
+ds_ecosystems = ds_ecosystems %>%
+  mutate(bioarea_µm2_per_ml = bioarea_µm2_per_μL * 10^3,
+         bioarea_mm2_per_ml = bioarea_µm2_per_ml * 10^(-6),
+         Ble_indiv_per_ml = Ble_indiv_per_μL * 10^3,
+         Cep_indiv_per_ml = Cep_indiv_per_μL * 10^3,
+         Col_indiv_per_ml = Col_indiv_per_μL * 10^3,
+         Eug_indiv_per_ml = Eug_indiv_per_μL * 10^3,
+         Eup_indiv_per_ml = Eup_indiv_per_μL * 10^3,
+         Lox_indiv_per_ml = Lox_indiv_per_μL * 10^3,
+         Pau_indiv_per_ml = Pau_indiv_per_μL * 10^3,
+         Pca_indiv_per_ml = Pca_indiv_per_μL * 10^3,
+         Spi_indiv_per_ml = Spi_indiv_per_μL * 10^3,
+         Spi_te_indiv_per_ml = Spi_te_indiv_per_μL * 10^3,
+         Tet_indiv_per_ml = Tet_indiv_per_μL * 10^3)
+```
+
+```{r}
+
+# ---  TAKE OFF PROBLEMATIC VIDEOS --- #
+
+# Set up parameters
+
+ds_ecosystems_before_taking_off_videos = ds_ecosystems
+
+# Take off problematic videos
+
+ds_ecosystems = ds_ecosystems %>%
+  filter(!(time_point %in% videos_to_take_off$time_point & file %in% videos_to_take_off$file))
+
+# Test code
+
+diff = setdiff(ds_ecosystems_before_taking_off_videos, ds_ecosystems)
+expect_equal(nrow(videos_to_take_off),
+             nrow(expand.grid(diff$culture_ID, diff$time_point, diff$file) %>% unique()))
+```
+
+```{r}
+
+# ---  TAKE OFF PROBLEMATIC ECOSYSTEMS --- #
+
+# Set up parameters
+
+ds_ecosystems_before_taking_off_cultures = ds_ecosystems
+
+# Take off problematic ecosystems
+
+ds_ecosystems = ds_ecosystems %>%
+  filter(!culture_ID %in% ecosystems_to_take_off)
+
+# Test code
+
+expect_equal(setdiff(ds_ecosystems_before_taking_off_cultures, 
+                     ds_ecosystems) %>% 
+               pull(culture_ID) %>% 
+               unique(),
+             ecosystems_to_take_off)
+```
+
+
+```{r}
+
+# ---  AVERAGE VIDEOS --- #
+
+# Average videos
+
+ds_ecosystems = ds_ecosystems %>%
+  group_by(across(all_of(columns_ecosystems))) %>%
+  summarise(across(contains("_per_ml"), mean),
+            across(contains("_tot"), mean)) %>%
+  ungroup()
+
+# Test code
+
+expect_equal(nrow(ds_ecosystems), 
+             (n_cultures - length(ecosystems_to_take_off)) * length(time_points))
+```
+
+```{r}
+
+# ---  ADD CONNECTION AND INDIVIDUALS --- #
+
+ds_ecosystems = ds_ecosystems %>%
+  mutate(indiv_per_ml = !!rlang::parse_expr(paste(protist_species_indiv_per_ml, 
+                                                  collapse = " + ")))
+```
+
+```{r}
+
+# --- CALCULATE TOTAL RESPONSE VARIABLE FOR THE WHOLE ECOSYSTEM --- #
+
+ds_ecosystems = ds_ecosystems %>%
+  mutate(bioarea_tot_mm2 = bioarea_mm2_per_ml * ecosystem_size_ml,
+         indiv_tot = indiv_per_ml * ecosystem_size_ml,
+         Ble_tot_indiv = Ble_indiv_per_ml * ecosystem_size_ml,
+         Cep_tot_indiv = Cep_indiv_per_ml * ecosystem_size_ml,
+         Col_tot_indiv = Col_indiv_per_ml * ecosystem_size_ml,
+         Eug_tot_indiv = Eug_indiv_per_ml * ecosystem_size_ml,
+         Eup_tot_indiv = Eup_indiv_per_ml * ecosystem_size_ml,
+         Lox_tot_indiv = Lox_indiv_per_ml * ecosystem_size_ml,
+         Pau_tot_indiv = Pau_indiv_per_ml * ecosystem_size_ml,
+         Pca_tot_indiv = Pca_indiv_per_ml * ecosystem_size_ml,
+         Spi_tot_indiv = Spi_indiv_per_ml * ecosystem_size_ml,
+         Spi_te_tot_indiv = Spi_te_indiv_per_ml * ecosystem_size_ml,
+         Tet_tot_indiv = Tet_indiv_per_ml * ecosystem_size_ml)
+```
+
+```{r}
+
+# ---  CALCULATE SPECIES DOMINANCE --- #
+
+# Calculate species dominance
+
+ds_ecosystems = ds_ecosystems %>%
+  mutate(across(.cols = all_of(protist_species_indiv_per_ml), 
+                .fns = list(dominance = ~ (. / indiv_per_ml) * 100), 
+                .names = "{col}_dominance"))
+
+# Test code
+
+expect_equal(unique(ds_ecosystems$Ble_indiv_per_ml_dominance[ds_ecosystems$indiv_per_ml == 0]), NaN)
+if (FALSE %in% unique((ds_ecosystems$Ble_indiv_per_ml/ds_ecosystems$indiv_per_ml) *100 == ds_ecosystems$Ble_indiv_per_ml_dominance)) stop()
+```
+
+```{r}
+
+# ---  CALCULATE ALPHA DIVERSITY (SHANNON, SIMPSON, INVERSE SIMPSON, EVENNESS) --- #
+
+# Set up parameters for testing
+
+n_rows_ds_ecosystems_before_calculating_alpha = nrow(ds_ecosystems)
+
+# Calculate alpha diversity
+
+ds_ecosystems = calculate.alpha.diversity()
+
+# Test code
+
+expect_equal(max(ds_ecosystems$species_richness), 
+             length(protist_species))
+
+expect_equal(nrow(ds_ecosystems),
+             n_rows_ds_ecosystems_before_calculating_alpha)
+```
+
+```{r}
+
+# ---  CALCULATE MEDIAN BODY SIZE --- #
+
+# Set up parameters for testing
+
+n_rows_ds_ecosystems_before_median_size = nrow(ds_ecosystems)
+
+# Calculate median body size
+
+ds_median_body_size = ds_individuals %>%
+  group_by(time_point,
+           culture_ID,
+           file) %>%
+  summarise(median_body_area_µm2 = median(body_area_µm2)) %>%
+  group_by(time_point,
+           culture_ID) %>%
+  summarise(median_body_area_µm2 = mean(median_body_area_µm2))
+
+# Test code
+
+expect_true(nrow(ds_median_body_size) <= nrow(ds_ecosystems)) #Ds median body size could be less because some cultures might be crashed and not have any individual.
+
+# Set up parameters for testing
+
+ds_ecosystems_before_full_join = ds_ecosystems
+
+# Join the median body size with ds_ecosystems
+
+ds_ecosystems = full_join(ds_ecosystems, ds_median_body_size)
+
+# Test code
+
+expect_equal(nrow(ds_ecosystems), 
+             n_rows_ds_ecosystems_before_median_size)
+```
+
+```{r}
+
+# --- CALCULATE AUTO/HETEROTROPHIC RATIO --- #
+
+ds_ecosystems = ds_ecosystems %>%
+  mutate(auto_hetero_ratio = (Eug_indiv_per_ml + Eup_indiv_per_ml) / 
+                             (Ble_indiv_per_ml + 
+                              Cep_indiv_per_ml + 
+                              Col_indiv_per_ml + 
+                              Lox_indiv_per_ml + 
+                              Pau_indiv_per_ml + 
+                              Pca_indiv_per_ml +
+                              Spi_indiv_per_ml + 
+                              Spi_te_indiv_per_ml +
+                              Tet_indiv_per_ml))
+```
+
+```{r}
+
+# --- ADD EVAPORATION RATES --- #
+
+# Manipulate evaporation rates data
+
+ds_for_evaporation = read.csv(here("1_data", 
+                                   "evaporation", 
+                                   "water_addition.csv")) %>%
+  pivot_longer(cols = starts_with("water_add_after_t"), 
+               names_to = "time_point",          
+               values_to = "water_addition_ml") %>%
+  mutate(time_point = as.double(str_extract(time_point, "\\d+")) + 1)
+
+# Add evaporation rates to ds_ecosystems
+
+ds_ecosystems = ds_ecosystems %>%
+  left_join(ds_for_evaporation)
+```
+
+```{r}
+
+# --- ADD TRANSFORMED VARIABLES --- #
+
+ds_ecosystems = ds_ecosystems %>%
+  mutate(sqrt_bioarea_mm2_per_ml = sqrt(bioarea_mm2_per_ml),
+         sqrt_auto_hetero_ratio = sqrt(auto_hetero_ratio))
+```

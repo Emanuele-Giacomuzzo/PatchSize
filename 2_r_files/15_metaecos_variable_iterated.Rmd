@@ -1,0 +1,326 @@
+---
+title: "Untitled"
+output: html_document
+date: "2024-10-02"
+editor_options: 
+  chunk_output_type: console
+---
+
+<br>
+
+```{r}
+
+# --- ORIGINAL DATA - PLOT MEAN ± 95% CI --- # 
+
+"High disturbance"
+plot.metaecos.points(ds_metaecosystems %>% filter(disturbance == "high"),
+                     metaecosystem_type_selected,
+                     connection_selected,
+                     response_variable_selected)
+
+"Low disturbance"
+plot.metaecos.points(ds_metaecosystems %>% filter(disturbance == "low"),
+                     metaecosystem_type_selected,
+                     connection_selected,
+                     response_variable_selected)
+```
+
+<details>
+    <summary>Same data single replicates</summary>
+```{r}
+
+# --- ORIGINAL DATA - PLOT SINGLE REPLICATES --- # 
+
+"High disturbance"
+plot.metaecos.replicates(ds_metaecosystems %>% filter(disturbance == "high"),
+                         metaecosystem_type_selected,
+                         response_variable_selected)
+
+"Low disturbance"
+plot.metaecos.replicates(ds_metaecosystems %>% filter(disturbance == "low"),
+                         metaecosystem_type_selected,
+                         response_variable_selected)
+```
+</details>
+
+<br>
+
+```{r}
+
+# --- PREPARE DATA --- #
+
+# Add baselines
+
+baselines = ds_metaecosystems %>%
+  filter(time_point == time_point_of_baselines) %>%
+  select(system_nr,
+         all_of(response_variable_selected)) %>%
+  rename(baseline = all_of(response_variable_selected))
+
+data_for_analysis = ds_metaecosystems %>%
+  left_join(baselines)
+
+# Filter and change level names
+
+data_for_analysis = data_for_analysis %>%
+  filter(time_point %in% time_points_model,
+         metaecosystem_type %in% metaecosystem_type_selected,
+         !is.na(!!sym(response_variable_selected)),
+         !is.na(total_water_addition_ml)) %>%
+  mutate(metaecosystem_type = case_when(metaecosystem_type == "Small-Large unconnected" ~ "SL unc",
+                                        metaecosystem_type == "Medium-Medium unconnected" ~ "MM unc",
+                                        metaecosystem_type == "Small-Small meta-ecosystem" ~ "SS con",
+                                        metaecosystem_type == "Medium-Medium meta-ecosystem" ~ "MM con",
+                                        metaecosystem_type == "Large-Large meta-ecosystem" ~ "LL con",
+                                        metaecosystem_type == "Small-Large meta-ecosystem" ~ "SL con",
+                                        TRUE ~ metaecosystem_type),
+         type_conn = paste(metaecosystem_type, connection))
+```
+
+<details>
+<summary>Filtered data mean ± 95% CI</summary>
+```{r}
+
+# --- DATA FOR ANALYSIS - PLOT MEAN ± 95% CI OF FILTERED DATA --- #
+
+"High disturbance"
+plot.metaecos.points(data_for_analysis %>% filter(disturbance == "high"),
+                     metaecosystem_type_selected,
+                     connection_selected,
+                     response_variable_selected)
+
+"Low disturbance"
+plot.metaecos.points(data_for_analysis %>% filter(disturbance == "low"),
+                     metaecosystem_type_selected,
+                     connection_selected,
+                     response_variable_selected)
+```
+</details>
+
+```{r}
+
+# --- FIND ECOSYSTEM COMBINATIONS FOR ANALYSIS --- #
+
+# Set up parameters
+
+set.seed(98)
+bootstrap_iterations = 1000
+
+# Produce random (bootstrapped) rows
+
+random_sets_of_sets <- runif(bootstrap_iterations, 
+                             min = 1, 
+                             max = nrow(ecos_combin_unconn_sets_of_sets)) %>% 
+  round()
+
+# Filter combinations according to the random rows
+
+sets_of_sets_filtered = ecos_combin_unconn_sets_of_sets %>%
+  filter(row_number() %in% random_sets_of_sets)
+```
+
+<details>
+<summary>Model computation</summary>
+
+```{r}
+
+# --- DEFINE WHERE TO SAVE (AND FROM WHERE TO LATER READ) THE RESULTS OF THE ANALYSIS --- #
+
+file_path = here("3_results", "tables", 
+                      paste0("results_metaeco_", 
+                             response_variable_selected, 
+                             "_", 
+                             bootstrap_iterations,
+                             "_iterations",
+                             ".csv"))
+```
+
+```{r eval = recompute_lengthy_analyses}
+
+# --- FIND MODEL STATISTICS THROUGH MULTIPLE ITERATIONS RESHUFFLING ECOSYSTEM COMBINATIONS --- #
+
+results_table = NULL
+
+for (comb_i in 1:bootstrap_iterations) {
+  
+  # Find system numbers
+  
+  system_nr_unconn_selected = ecos_combin_unconn_sets %>%
+    filter(metaecosystem_type == "Small-Large" & 
+           disturbance == "low" & 
+           set == sets_of_sets_filtered[comb_i, ]$set_SL_low |
+           metaecosystem_type == "Small-Large" & 
+           disturbance == "high" & 
+           set == sets_of_sets_filtered[comb_i, ]$set_SL_high |
+           metaecosystem_type == "Medium-Medium" & 
+           disturbance == "low" & 
+           set == sets_of_sets_filtered[comb_i, ]$set_MM_low |
+           metaecosystem_type == "Medium-Medium" & 
+           disturbance == "high" & 
+           set == sets_of_sets_filtered[comb_i, ]$set_MM_high) %>%
+    pull(system_nr)
+  
+  # Prepare data for analysis
+  
+  data_for_analysis_comb_i = data_for_analysis %>%
+    filter(system_nr %in% system_nr_unconn_selected | connection == "connected")
+  
+  # Run model
+  
+  model = try.different.optimizers.metaecos(data_for_analysis_comb_i)
+  
+  # If all the optimisers fail, move on to the next iteration
+
+  if (is.null(model)) {
+    cat("This model could not be fitted with any optimiser.",
+        " The unconnected meta-ecosystems in this iteration were:", 
+        system_nr_unconn_selected, 
+        "\n")
+    next 
+  }
+  
+  # Residuals - show Q-Q plot
+  
+  print(qqnorm(resid(model))); print(qqline(resid(model)))
+  
+  # Residuals - save Residuals vs Fitted plot
+  
+  plot = data_for_analysis_comb_i %>%
+      mutate(predicted = fitted(model),
+             residuals = resid(model)) %>%
+      ggplot(aes(x = predicted,
+                 y = residuals)) +
+      geom_point()
+  
+  ggsave(here("3_results",
+              "residual_plots",
+                paste0("res_vs_fit_",
+                       response_variable_selected,
+                       "_combination_",
+                       comb_i,
+                       ".png")), 
+           plot = plot, 
+           width = 8, 
+           height = 6)
+  
+  # Set up contrasts
+  
+  emmeans_output = emmeans(model,
+                           specs = ~ type_conn * day * disturbance ,
+                           method = "pairwise", 
+                           adjust = "sidak",
+                           bias.adj = TRUE,
+                           lmer.df = "satterthwaite") 
+  
+  summary(emmeans_output)
+
+  zeros = rep(0, 8)
+  high_MM_conn = zeros; high_MM_conn[1] = 1
+  high_MM_unc = zeros; high_MM_unc[2] = 1
+  high_SL_conn = zeros; high_SL_conn[3] = 1
+  high_SL_unc = zeros; high_SL_unc[4] = 1
+  low_MM_conn = zeros; low_MM_conn[5] = 1
+  low_MM_unc = zeros; low_MM_unc[6] = 1
+  low_SL_conn = zeros; low_SL_conn[7] = 1
+  low_SL_unc = zeros; low_SL_unc[8] = 1
+  
+  # Save contrasts in a table
+
+  results_table[[comb_i]] = contrast(
+    emmeans_output, 
+    method = list("high SL_conn - SL_unc" = high_SL_conn - high_SL_unc,
+                  "high MM_conn - MM_unc" = high_MM_conn - high_MM_unc,
+                  "low SL_conn - SL_unc" = low_SL_conn - low_SL_unc,
+                  "low MM_conn - MM_unc" = low_MM_conn - low_MM_unc)) %>%
+    as.data.frame() %>%
+    mutate(combination = comb_i,
+           system_nr_unconnected_systems = paste(system_nr_unconn_selected, collapse = ", "))
+  
+  }
+
+# Bind rows within the list results_table
+
+results_table = results_table %>%
+  bind_rows()
+
+# Save the results
+
+write.csv(results_table,
+          file = file_path,
+          row.names = F)
+```
+
+```{r}
+
+# --- READ THE RESULTS AFTER LENGTHY COMPUTATION --- #
+
+results_table = read.csv(file = file_path)
+```
+
+</details>
+
+<details>
+<summary>Iterated results - P value distributions</summary>
+```{r}
+
+# --- SHOW ITERATED RESULTS - P VALUE DSITRIBUTIONS --- #
+
+results_table %>% 
+  filter(contrast == "high MM_conn - MM_unc") %>% 
+  pull(p.value) %>% 
+  hist(main = "p values high MM_conn - MM_unc")
+
+results_table %>% 
+  filter(contrast == "high SL_conn - SL_unc") %>% 
+  pull(p.value) %>% 
+  hist(main = "p values high SL_conn - SL_unc")
+
+results_table %>% 
+  filter(contrast == "low MM_conn - MM_unc") %>% 
+  pull(p.value) %>% 
+  hist(main = "p values low MM_conn - MM_unc")
+
+results_table %>% 
+  filter(contrast == "low SL_conn - SL_unc") %>% 
+  pull(p.value) %>% 
+  hist(main = "p values low SL_conn vs SL_unc")
+```
+</details>
+
+```{r}
+
+# --- SHOW ITERATED RESULTS - TABLE WITH AVERAGED VALUES --- #
+
+results_table %>%
+  group_by(contrast) %>%
+  summarise(estimate = median(estimate),
+            SE = median(SE),
+            df = median(df),
+            t.ratio = median(t.ratio),
+            p.value = median(p.value)) %>%
+  as.data.frame() %>%
+  mutate(estimate = round(estimate, digits = 3),
+         SE = round(SE, digits = 3),
+         df = round(df, digits = 3),
+         t.ratio = round(t.ratio, digits = 3),
+         p.value = round(p.value, digits = 3),
+         evidence = "",
+         evidence = ifelse(p.value > 0.1,
+                           "none",
+                           evidence),
+         evidence = ifelse(p.value < 0.1,
+                           "* weak",
+                           evidence),
+         evidence = ifelse(p.value < 0.05,
+                           "** moderate",
+                           evidence),
+         evidence = ifelse(p.value < 0.01,
+                           "*** strong",
+                           evidence),
+         evidence = ifelse(p.value < 0.001,
+                           "**** very strong",
+                           evidence),
+         p.value = ifelse(p.value < 0.001,
+                          "< 0.001",
+                          p.value))
+```

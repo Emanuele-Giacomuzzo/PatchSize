@@ -1,0 +1,202 @@
+---
+title: "Data manipulation of body size data"
+author: "Emanuele Giacomuzzo"
+date: "2022-08-07"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+### Individuals (ds_individuals)
+
+In this dataset (`ds_individuals`) each row represents an individual at a time point.
+
+```{r}
+
+# --- IMPORT T0 --- #
+
+# Import the individual data of t0. We considered cultures to be all the same at the beginning (t0). Because of this reason, we filmed only the bottles from which cultures were assembled. Because we want to plot also t0 for the different treatments, we want to assign the video of bottles to all cultures at t0.
+
+ds_individuals_t0_not_elongated = read.csv(here("1_data", 
+                                                "individuals_13_threshold", 
+                                                "t0.csv")) %>%
+  mutate(time_point =  as.numeric(str_extract(time_point, "\\d+")),
+         day = 0,
+         file =  as.numeric(str_extract(file, "\\d+")),
+         video_replicate = file) %>%
+  select(time_point,
+         day,
+         video_replicate,
+         file,
+         id,
+         N_frames,
+         mean_area)
+
+# Elongate t0
+
+ds_individuals_t0_elongated = ds_individuals_t0_not_elongated %>%
+  map_dfr(.x = 1 : nrow(ecosystems_info),
+          .f = ~ ds_individuals_t0_not_elongated) %>% 
+  arrange(id) %>% #Id refers to an individual
+  mutate(culture_ID = rep(1 : nrow(ecosystems_info),
+                          times = nrow(ds_individuals_t0_not_elongated))) %>%
+  select(time_point,
+         day,
+         video_replicate,
+         file,
+         culture_ID,
+         id,
+         N_frames,
+         mean_area)
+
+expect_equal(nrow(ds_individuals_t0_not_elongated) * nrow(ecosystems_info),
+             nrow(ds_individuals_t0_elongated))
+```
+
+```{r}
+
+# --- IMPORT ALL TIME POINTS BUT T0 --- #
+
+# Set up parameters
+
+ds_individuals_t1_to_t7 = NULL
+
+# Import all time points but t0
+
+for (time_point_i in time_points_without_t0) {
+  
+  ds_individuals_t1_to_t7[[time_point_i]] = read.csv(here("1_data", 
+                                                          "individuals_13_threshold", 
+                                                          paste0("t", 
+                                                                 time_point_i, 
+                                                                 ".csv"))) %>%
+    mutate(time_point =  as.numeric(str_extract(time_point, "\\d+")),
+           day = time_point_day$day[time_point_day$time_point == time_point_i],
+           file =  as.numeric(str_extract(file, "\\d+")),
+           video_replicate = ceiling(file/n_cultures)) #Until 110 video replicate = 1, then 2
+}
+
+# Tidy up all time points but t0
+
+ds_individuals_t1_to_t7 = ds_individuals_t1_to_t7 %>%
+  bind_rows() %>%
+  select(time_point,
+         day,
+         video_replicate,
+         file,
+         culture_ID,
+         id,
+         N_frames,
+         mean_area)
+```
+
+```{r}
+
+# --- BIND T0 WITH OTHER TIME POINTS --- #
+
+ds_individuals = rbind(ds_individuals_t0_elongated,
+                       ds_individuals_t1_to_t7) %>%
+  left_join(ecosystems_info,
+            by = "culture_ID") 
+```
+
+```{r}
+
+# --- RENAME AND SELECT COLUMNS --- #
+
+ds_individuals = ds_individuals %>% 
+  rename(ecosystem_size = patch_size,
+         ecosystem_size_volume = patch_size_volume) %>%
+  select(disturbance,
+         disturbance_volume,
+         time_point,
+         day,
+         video_replicate,
+         culture_ID,
+         system_nr,
+         file,
+         eco_metaeco_type,
+         ecosystem_size,
+         ecosystem_size_volume,
+         metaecosystem,
+         metaecosystem_type,
+         mean_area,
+         N_frames) %>% 
+  rename(ecosystem_size_ml = ecosystem_size_volume,
+         ecosystem_type = eco_metaeco_type,
+         body_area_µm2 = mean_area)
+```
+
+```{r}
+
+# --- RENAME AND REORDER LEVELS --- #
+
+ds_individuals <- ds_individuals %>%
+  mutate(ecosystem_type = case_when(ecosystem_type == "S" ~ "Small unconnected",
+                                    ecosystem_type == "M" ~ "Medium unconnected",
+                                    ecosystem_type == "L" ~ "Large unconnected",
+                                    ecosystem_type == "S (S_S)" ~ "Small connected to small",
+                                    ecosystem_type == "S (S_L)" ~ "Small connected to large",
+                                    ecosystem_type == "M (M_M)" ~ "Medium connected to medium",
+                                    ecosystem_type == "L (S_L)" ~ "Large connected to small",
+                                    ecosystem_type == "L (L_L)" ~ "Large connected to large",
+                                    TRUE ~ ecosystem_type), 
+         ecosystem_type = factor(ecosystem_type,
+                                 levels = ecosystem_types_ordered),
+         ecosystem_size = case_when(ecosystem_size == "S" ~ "Small",
+                                    ecosystem_size == "M" ~ "Medium",
+                                    ecosystem_size == "L" ~ "Large",
+                                    TRUE ~ ecosystem_type),
+         ecosystem_size = factor(ecosystem_size,
+                                 levels = "Small", 
+                                 "Medium", 
+                                 "Large"),
+         size_connected_ecosystem = case_when(ecosystem_type == "Small connected to small" ~ "Small",
+                                              ecosystem_type == "Small connected to large" ~ "Large",
+                                              ecosystem_type == "Medium connected to medium" ~ "Medium",
+                                              ecosystem_type == "Large connected to large" ~ "Large",
+                                              ecosystem_type == "Large connected to small" ~ "Small",
+                                              TRUE ~ NA_character_))
+```
+
+```{r}
+
+# --- TAKE OFF PROBLEMATIC VIDEOS --- #
+
+# Set up parameters for testing
+
+ds_individuals_before_taking_off_videos = ds_individuals
+
+# Take off problematic videos
+
+ds_individuals = ds_individuals %>%
+  filter(!(time_point %in% videos_to_take_off$time_point & file %in% videos_to_take_off$file))
+
+# Test code
+
+diff = setdiff(ds_individuals_before_taking_off_videos, ds_individuals)
+expect_equal(nrow(videos_to_take_off),
+             nrow(expand.grid(diff$culture_ID, diff$time_point, diff$file) %>% unique()))
+```
+
+```{r}
+
+# --- TAKE OFF PROBLEMATIC ECOSYSTEMS --- #
+
+# Set up parameters for testing
+
+ds_individuals_before_taking_off_cultures = ds_individuals
+
+# Take off problematic ecosystems
+
+ds_individuals = ds_individuals %>%
+  filter(!culture_ID %in% ecosystems_to_take_off)
+
+# Test code
+
+expect_equal(setdiff(ds_individuals_before_taking_off_cultures, 
+                     ds_individuals) %>% 
+               pull(culture_ID) %>% 
+               unique(),
+             ecosystems_to_take_off)
+```

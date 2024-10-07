@@ -1,0 +1,217 @@
+---
+html_document:
+  toc: yes
+  toc_float: yes
+  code_folding: hide
+  number_sections: yes
+  includes:
+    after_body: "tabset-dropdown.html"
+author: "Emanuele Giacomuzzo"
+date: "`r format(Sys.time(), '%Y-%m-%d %H:%M')`"
+output:
+  html_document:
+    code_folding: hide
+    profiling: yes
+title: "PatchSize"
+editor_options:
+  chunk_output_type: console
+---
+
+```{r child = here::here("2_r_files", "1_set_packages.Rmd"), echo = FALSE, message = FALSE, cache = FALSE, autodep = FALSE}
+```
+
+```{r child = here("2_r_files", "2_set_functions.Rmd"), echo=FALSE}
+```
+
+#  {.tabset}
+
+## Design {.tabset .tabset-pills}
+
+```{r child = here("2_r_files", "3_design.Rmd")}
+```
+
+## Parameters
+
+```{r child = here("2_r_files", "4_set_parameters.Rmd"), class.source = 'fold-show'}
+```
+
+## Data {.tabset .tabset-dropdown}
+
+```{r child = here("2_r_files", "5_ds_ecosystems_info.Rmd")}
+```
+
+```{r child = here("2_r_files", "6_ds_individuals.Rmd")}
+```
+
+```{r child = here("2_r_files", "7_ds_ecosystems.Rmd")}
+```
+
+```{r child = here("2_r_files", "8_ds_ecosystems_effect_size.Rmd")}
+```
+
+```{r child = here("2_r_files", "9_ecos_combinations.Rmd")}
+```
+
+```{r child = here("2_r_files", "10_ecos_combinations_sets.Rmd")}
+```
+
+```{r child = here("2_r_files", "11_ds_metaecos.Rmd")}
+```
+
+```{r child = here("2_r_files", "12_ds_classes.Rmd"), eval = FALSE}
+```
+
+```{r child = here("2_r_files", "13_ds_classes_effect_size.Rmd"), eval = FALSE}
+```
+
+## Meta-ecosystems {.tabset .tabset-pills}
+
+### Alpha {.tabset .tabset-pills}
+
+```{r}
+response_variable_selected = "mean_shannon"
+```
+
+```{r child = here("2_r_files", "15_metaecos_variable_iterated.Rmd")}
+```
+
+### Beta {.tabset .tabset-pills}
+
+```{r}
+response_variable_selected = "bray_curtis"
+```
+
+```{r child = here("2_r_files", "15_metaecos_variable_iterated.Rmd")}
+```
+
+### Gamma {.tabset .tabset-pills}
+
+```{r}
+response_variable_selected = "metaecosystem_richness"
+```
+
+```{r child = here("2_r_files", "15_metaecos_variable_iterated.Rmd")}
+```
+
+### Biomass {.tabset .tabset-pills}
+
+```{r}
+response_variable_selected = "total_metaecosystem_bioarea_mm2"
+```
+
+```{r child = here("2_r_files", "15_metaecos_variable_iterated.Rmd")}
+```
+
+## Ecosystems {.tabset .tabset-pills}
+
+### Shannon {.tabset .tabset-pills}
+
+```{r}
+response_variable_selected = "shannon"
+```
+
+```{r child = here("2_r_files", "16_ecos_variable.Rmd")}
+```
+
+### Biomass {.tabset .tabset-pills}
+
+```{r}
+response_variable_selected = "sqrt_bioarea_mm2_per_ml"
+```
+
+```{r child = here("2_r_files", "16_ecos_variable.Rmd")}
+```
+
+### Richness {.tabset .tabset-pills}
+
+```{r}
+response_variable_selected = "species_richness"
+```
+
+```{r child = here("2_r_files", "16_ecos_variable.Rmd")}
+```
+
+### Evenness {.tabset .tabset-pills}
+
+```{r}
+response_variable_selected = "evenness_pielou"
+```
+
+```{r child = here("2_r_files", "16_ecos_variable.Rmd")}
+```
+
+### Median Size {.tabset .tabset-pills}
+
+```{r}
+response_variable_selected = "median_body_area_µm2"
+```
+
+```{r child = here("2_r_files", "16_ecos_variable.Rmd")}
+```
+
+### Auto/Hetero {.tabset .tabset-pills}
+
+```{r}
+response_variable_selected = "sqrt_auto_hetero_ratio"
+```
+
+```{r child = here("2_r_files", "16_ecos_variable.Rmd")}
+```
+
+### BEF {.tabset .tabset-pills}
+
+```{r child = here("2_r_files", "17_ecos_BEF.Rmd")}
+```
+
+### Populations
+
+```{r child = here("2_r_files", "18_ecos_populations.Rmd"), eval = FALSE}
+```
+
+## Results {.tabset .tabset-pills}
+
+### Meta-ecosystem diversity & function
+
+```{r child = here("2_r_files", "19_metaecos_paper.Rmd"), eval = FALSE}
+```
+
+```{r child = here("2_r_files", "20_metaecos_present.Rmd"), echo = FALSE, eval = FALSE}
+```
+
+### Ecosystem diversity & function
+
+```{r child = here("2_r_files", "21_S_L_paper.Rmd"), eval = FALSE} 
+```
+
+```{r child = here("2_r_files", "22_S_L_present.Rmd"), eval = FALSE} 
+```
+
+```{r child = here("2_r_files", "23_M_paper.Rmd"), eval = FALSE} 
+```
+
+### Ecosystem autotrophic/heterotrophic ratio
+
+```{r child = here("2_r_files", "24_unconnected_AH_ratio_paper.Rmd"), eval = FALSE}
+```
+
+## Evaporation
+
+```{r child = here("2_r_files", "25_test_evaporation.Rmd")}
+```
+
+## Analysis scripts {.tabset .tabset-pills}
+
+### Video analysis
+
+```{r child = here("2_r_files", "26_script_BEMOVI_video_analysis.Rmd"), class.source = "fold-show"}
+```
+
+### Species identification
+
+```{r child = here("2_r_files", "27_script_BEMOVI_species_id.Rmd"), class.source = "fold-show"}
+```
+
+## Other
+
+```{r child = here("2_r_files", "28_show_other.Rmd")}
+```

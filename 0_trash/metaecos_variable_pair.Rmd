@@ -1,0 +1,253 @@
+---
+title: "Untitled"
+output: html_document
+date: "2023-11-30"
+editor_options: 
+  chunk_output_type: console
+---
+
+ <br>
+
+###### Filter
+
+```{r}
+filtered_data = ds_metaecosystems %>%
+  filter(
+    metaecosystem_type %in% metaecosystem_type_i,
+    time_point >= first_time_point_model,
+    time_point <= last_time_point_model,!is.na(!!sym(response_variable))
+  )
+```
+
+###### Plot filtered data
+
+```{r}
+plot.metaecos.points(filtered_data,
+                    metaecosystem_type_i,
+                    response_variable,
+                    legend_rows = 1)
+```
+
+<details>
+
+<summary>Replicates</summary>
+
+```{r}
+plot.metaecos.replicates(filtered_data,
+                           metaecosystem_type_i,
+                           response_variable)
+```
+
+</details>
+
+<details>
+
+<summary>Raw figure (to make sure lines are labeled correctly)</summary>
+
+```{r}
+```
+
+</details>
+
+ <br>
+
+###### Analysis
+
+The p-values and ΔAIC of the connection are computed for all possible combinations of the unconnected ecosystems, creating a p-value and ΔAIC distributions. We keep as p-value and ΔAIC of the comparison the mean of such distributions.
+
+<details>
+
+<summary>Click for bootstrapping ΔAIC and p-value</summary>
+
+ <br>
+
+If you see "*Warning in (function (iprint = 0L, maxfun = 10000L, FtolAbs = 1e-05, FtolRel = \## 1e-15, : unused control arguments ignored*", Ignore it. It just means that you didn't pass the control argument to the Nelder_Mead optimiser, so it uses the default.
+
+```{r}
+
+# Compute stats for all ecosystem combinations 
+
+unconnected_combinations_sets_filtered =  unconnected_combinations_sets %>%
+  filter(metaecosystem_type %in% metaecosystem_type_i)
+
+n_sets = unconnected_combinations_sets_filtered %>%
+  pull(set) %>%
+  max()
+
+iterated_results_table = data.frame(
+  Response = as.character(NA),
+  Levels = as.character(NA),
+  ΔAIC_full = NA,
+  p_full = NA,
+  ΔR2_full = NA,
+  ΔAIC_reduced = NA,
+  p_reduced = NA,
+  ΔR2_reduced = NA,
+  combination_set = NA
+) %>%
+  slice(-1)
+
+for (set_i in 1 : n_sets) {
+  
+  system_nrs_in_set_i = unconnected_combinations_sets_filtered %>%
+    filter(
+      metaecosystem_type %in% metaecosystem_type_i,
+      connection == "unconnected",
+      set == set_i
+    ) %>%
+    pull(system_nr)
+  
+  filtered_data = ds_metaecosystems %>%
+    filter(
+      time_point >= first_time_point_model,
+      time_point <= last_time_point_model,
+      metaecosystem_type %in% metaecosystem_type_i,
+      connection == "connected" |
+        (connection == "unconnected" & system_nr %in% system_nrs_in_set_i)
+    )
+  
+  null_model = lmer(
+    get(response_variable) ~
+      day +
+      (day | system_nr),
+    data = filtered_data,
+    REML = FALSE,
+    control = lmerControl(optimizer = optimizer_input,
+                          optCtrl = list(method = method_input))
+  )
+  
+  full_model = lmer(
+    get(response_variable) ~
+      day +
+      connection +
+      connection:day +
+      (day | system_nr),
+    data = filtered_data,
+    REML = FALSE,
+    control = lmerControl(optimizer = optimizer_input,
+                          optCtrl = list(method = method_input))
+  )
+  
+  model_stats_full = compute.model.stats(full_model,
+                                         null_model,
+                                         "mixed_model")
+  
+  reduced_model = lmer(
+    get(response_variable) ~
+      day +
+      connection +
+      (day | system_nr),
+    data = filtered_data,
+    REML = FALSE,
+    control = lmerControl(optimizer = optimizer_input,
+                          optCtrl = list(method = method_input))
+  )
+  
+  model_stats_reduced = compute.model.stats(reduced_model,
+                                          null_model,
+                                          "mixed_model")
+  
+  # Here I want to fill 
+  
+  iterated_results_table = fill.iterated.results.table(
+    iterated_results_table = iterated_results_table,
+    response_variable = response_variable,
+    ecosystem_or_metaecosystem_type_i = metaecosystem_type_i,
+    model_stats_full = model_stats_full,
+    model_stats_reduced = model_stats_reduced
+  )
+  
+  iterated_results_table$set[nrow(iterated_results_table)] = set_i
+  iterated_results_table$system_nr_unconnected_systems[nrow(iterated_results_table)] = paste(system_nrs_in_set_i, collapse = " ")
+}
+```
+
+Full model
+
+```{r}
+hist(iterated_results_table$ΔAIC_full, main = "Distribution of ΔAIC of the full model.") 
+hist(iterated_results_table$p_full, main = "Distribution of p-values of the full model.")
+
+model_stats_full = data.frame(
+  deltaAIC = mean(iterated_results_table$ΔAIC_full),
+  p_value = mean(iterated_results_table$p_full),
+  R2 = NA
+)
+```
+
+Reduced model
+
+```{r}
+hist(iterated_results_table$ΔAIC_reduced, main = "Distribution of ΔAIC of the reduced model.") 
+hist(iterated_results_table$p_reduced, main = "Distribution of p-values of the reduced model.")
+
+model_stats_reduced = data.frame(
+  deltaAIC = mean(iterated_results_table$ΔAIC_reduced),
+  p_value = mean(iterated_results_table$p_reduced),
+  R2 = NA
+)
+```
+
+</details>
+
+ <br>
+
+###### Results
+
+Full model
+
+```{r}
+model_stats_full %>%
+  mutate(deltaAIC = round(deltaAIC, digits = 1),
+         p_value = round(p_value, digits = 3),
+         R2 = NULL,
+         evidence = "",
+         evidence = ifelse(p_value > 0.1, 
+                           "none",
+                           evidence),
+         evidence = ifelse(p_value < 0.1, 
+                           "* weak",
+                           evidence),
+         evidence = ifelse(p_value < 0.05, 
+                           "** moderate",
+                           evidence),
+         evidence = ifelse(p_value < 0.01, 
+                           "*** strong",
+                           evidence),
+         evidence = ifelse(p_value < 0.001, 
+                           "**** very strong",
+                           evidence),
+         p_value = ifelse(p_value < 0.001,
+                           "< 0.001",
+                           p_value)) %>%
+  print()
+```
+
+Reduced model
+
+```{r}
+model_stats_reduced %>%
+  mutate(deltaAIC = round(deltaAIC, digits = 1),
+         p_value = round(p_value, digits = 3),
+         R2 = NULL,
+         evidence = "",
+         evidence = ifelse(p_value > 0.1, 
+                           "none",
+                           evidence),
+         evidence = ifelse(p_value < 0.1, 
+                           "* weak",
+                           evidence),
+         evidence = ifelse(p_value < 0.05, 
+                           "** moderate",
+                           evidence),
+         evidence = ifelse(p_value < 0.01, 
+                           "*** strong",
+                           evidence),
+         evidence = ifelse(p_value < 0.001, 
+                           "**** very strong",
+                           evidence),
+         p_value = ifelse(p_value < 0.001,
+                           "< 0.001",
+                           p_value)) %>%
+  print()
+```
