@@ -295,6 +295,12 @@ treatment_colours = c("Small" = "#feb24c",
                       "symmetric" = "#1b7837",
                       "asymmetric" = "#762a83")
 
+treatment_colours_paper = c("symmetric" = "#1b7837",
+                            "asymmetric" = "#762a83")
+
+treatment_linetype_paper = c("connected" = "solid",
+                             "unconnected" = "dashed") 
+
 treatment_linetype = c("connected to small" = "solid",
                        "connected to medium" = "dashed",
                        "connected to large" = "longdash",
@@ -357,7 +363,7 @@ presentation_figure_units = "cm"
 presentation_figure_res = 600
 
 grey_background_xmin = -Inf
-grey_background_xmax = 7.5
+grey_background_xmax = 7.5 + 4
 grey_background_ymin = -Inf
 grey_background_ymax = Inf
 grey_background_fill = "#f0f0f0"

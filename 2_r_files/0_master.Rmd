@@ -168,31 +168,61 @@ response_variable_selected = "sqrt_auto_hetero_ratio"
 ```{r child = here("2_r_files", "18_ecos_populations.Rmd"), eval = FALSE}
 ```
 
-## Results {.tabset .tabset-pills}
+## Figures {.tabset .tabset-pills}
 
-### Meta-ecosystem diversity & function
+### High disturbance
 
-```{r child = here("2_r_files", "19_metaecos_paper.Rmd"), eval = FALSE}
+```{r}
+disturbance_selected = "high"
 ```
 
-```{r child = here("2_r_files", "20_metaecos_present.Rmd"), echo = FALSE, eval = FALSE}
+```{r child = here("2_r_files", "19_paper_metaecos.Rmd")}
 ```
 
-### Ecosystem diversity & function
-
-```{r child = here("2_r_files", "21_S_L_paper.Rmd"), eval = FALSE} 
+```{r child = here("2_r_files", "20_paper_S_L.Rmd")} 
 ```
 
-```{r child = here("2_r_files", "22_S_L_present.Rmd"), eval = FALSE} 
+```{r child = here("2_r_files", "21_paper_M.Rmd")} 
 ```
 
-```{r child = here("2_r_files", "23_M_paper.Rmd"), eval = FALSE} 
+```{r child = here("2_r_files", "22_paper_unconnected_AH_ratio.Rmd")}
 ```
 
-### Ecosystem autotrophic/heterotrophic ratio
-
-```{r child = here("2_r_files", "24_unconnected_AH_ratio_paper.Rmd"), eval = FALSE}
+<details>
+<summary>Figures to present</summary>
+```{r child = here("2_r_files", "23_present_metaecos.Rmd"), echo = FALSE}
 ```
+
+```{r child = here("2_r_files", "24_present_S_L.Rmd")} 
+```
+</details>
+
+### Low disturbance
+
+```{r}
+disturbance_selected = "low"
+```
+
+```{r child = here("2_r_files", "19_paper_metaecos.Rmd")}
+```
+
+```{r child = here("2_r_files", "20_paper_S_L.Rmd")} 
+```
+
+```{r child = here("2_r_files", "21_paper_M.Rmd")} 
+```
+
+```{r child = here("2_r_files", "22_paper_unconnected_AH_ratio.Rmd")}
+```
+
+<details>
+<summary>Figures to present</summary>
+```{r child = here("2_r_files", "23_present_metaecos.Rmd"), echo = FALSE}
+```
+
+```{r child = here("2_r_files", "24_present_S_L.Rmd")} 
+```
+</details>
 
 ## Evaporation
 
