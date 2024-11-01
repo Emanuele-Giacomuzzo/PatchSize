@@ -1,0 +1,56 @@
+Anova.glmmTMB           Downstream methods
+Owls                    Begging by Owl Nestlings
+Salamanders             Repeated counts of salamanders in streams
+as.theta.vcov           Get theta parameterisation of a covariance
+                        structure
+confint.glmmTMB         Calculate confidence intervals
+diagnose                diagnose model problems
+dtruncated_nbinom2      truncated distributions
+epil2                   Seizure Counts for Epileptics - Extended
+family_params           Retrieve family-specific parameters
+fitTMB                  Optimize TMB models and package results,
+                        modularly
+fixef                   Extract fixed-effects estimates
+formatVC                Format the 'VarCorr' Matrix of Random Effects
+formula.glmmTMB         Extract the formula of a glmmTMB object
+getCapabilities         List model options that glmmTMB knows about
+getME.glmmTMB           Extract or Get Generalize Components from a
+                        Fitted Mixed Effects Model
+getReStruc              Calculate random effect structure Calculates
+                        number of random effects, number of parameters,
+                        block size and number of blocks.  Mostly for
+                        internal use.
+getXReTrms              Create X and random effect terms from formula
+get_cor                 translate vector of correlation parameters to
+                        correlation values
+glmmTMB                 Fit Models with TMB
+glmmTMBControl          Control parameters for glmmTMB optimization
+isLMM.glmmTMB           support methods for parametric bootstrapping
+map.theta.propto        Set map values for theta to be fixed (NA) for
+                        propto
+nbinom2                 Family functions for glmmTMB
+numFactor               Factor with numeric interpretable levels.
+omp_check               Check OpenMP status
+predict.glmmTMB         prediction
+print.VarCorr.glmmTMB   Printing The Variance and Correlation
+                        Parameters of a 'glmmTMB'
+priors                  use of priors in glmmTMB
+profile.glmmTMB         Compute likelihood profiles for a fitted model
+ranef.glmmTMB           Extract Random Effects
+reinstalling            Reinstalling binary dependencies
+residuals.glmmTMB       Compute residuals for a glmmTMB object
+set_simcodes            helper function to modify simulation settings
+                        for random effects
+sigma.glmmTMB           Extract residual standard deviation or
+                        dispersion parameter
+simulate.glmmTMB        Simulate from a glmmTMB fitted model
+simulate_new            Simulate from covariate/metadata in the absence
+                        of a real data set (EXPERIMENTAL)
+spider_long             Spider data from CANOCO, long format
+terms.glmmTMB           Methods for extracting developer-level
+                        information from 'glmmTMB' models
+up2date                 conditionally update glmmTMB object fitted with
+                        an old TMB version
+vcov.glmmTMB            Calculate Variance-Covariance Matrix for a
+                        Fitted glmmTMB model
+weights.glmmTMB         Extract weights from a glmmTMB object

@@ -1,0 +1,58 @@
+benchmarkRuntime        Benchmark runtimes of several functions
+createDHARMa            Create a DHARMa object from hand-coded
+                        simulations or Bayesian posterior predictive
+                        simulations.
+createData              Simulate test data
+getFamily               Get model family
+getFitted               Get fitted/predicted values
+getFixedEffects         Extract fixed effects of a supported model
+getObservedResponse     Get model response
+getPearsonResiduals     Get Pearson residuals
+getQuantile             Calculate Residual Quantiles
+getRandomState          Record and restore a random state
+getRefit                Get model refit
+getResiduals            Get model residuals
+getSimulations          Get model simulations
+hist.DHARMa             Histogram of DHARMa residuals
+hurricanes              Hurricanes
+outliers                Return outliers
+plot.DHARMa             DHARMa standard residual plots
+plot.DHARMaBenchmark    Plots DHARMa benchmarks
+plotConventionalResiduals
+                        Conventional residual plot
+plotQQunif              Quantile-quantile plot for a uniform
+                        distribution
+plotResiduals           Generic res ~ pred scatter plot with spline or
+                        quantile regression on top
+plotSimulatedResiduals
+                        DHARMa standard residual plots
+print.DHARMa            Print simulated residuals
+recalculateResiduals    Recalculate residuals with grouping
+residuals.DHARMa        Return residuals of a DHARMa simulation
+runBenchmarks           Benchmark calculations
+simulateLRT             Simulated likelihood ratio tests for
+                        (generalized) linear mixed models
+simulateResiduals       Create simulated residuals
+testCategorical         Test for categorical dependencies
+testDispersion          DHARMa dispersion tests
+testGeneric             Test for a generic summary statistic based on
+                        simulated data
+testOutliers            Test for outliers
+testOverdispersion      Simulated overdisperstion tests
+testOverdispersionParametric
+                        Parametric overdisperstion tests
+testPDistribution       Plot distribution of p-values.
+testPhylogeneticAutocorrelation
+                        Test for phylogenetic autocorrelation
+testQuantiles           Test for quantiles
+testResiduals           DHARMa general residual test
+testSimulatedResiduals
+                        Residual tests
+testSpatialAutocorrelation
+                        Test for distance-based spatial (or similar
+                        type) autocorrelation
+testTemporalAutocorrelation
+                        Test for temporal autocorrelation
+testUniformity          Test for overall uniformity
+testZeroInflation       Tests for zero-inflation
+transformQuantiles      Transform quantiles to pdf (deprecated)
