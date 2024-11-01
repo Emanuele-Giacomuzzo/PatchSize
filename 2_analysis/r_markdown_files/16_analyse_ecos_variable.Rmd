@@ -1,0 +1,317 @@
+---
+title: "Analyse an Ecosystem Variable"
+output: html_document
+date: "2024-09-16"
+editor_options: 
+  chunk_output_type: console
+---
+
+<details open = "open">
+     <summary>Plot original data</summary>
+```{r fig.height = figures_height_rmd_output}
+
+# --- ORIGINAL DATA - PLOT MEAN ± 95% CI --- #
+
+p1 = plot.all.patches.points(data = ds_ecosystems %>% 
+                               filter(disturbance == "high"),
+                             response_variable_selected) +
+  annotate("text", 
+           x = Inf, 
+           y = Inf, 
+           label = "High disturbance", 
+           hjust = 1.1, 
+           vjust = 1.1, 
+           size = 5, 
+           fontface = "bold") + # Adjust position and style
+  theme(axis.title.x = element_blank(),  # Remove x-axis title
+        axis.text.x = element_blank())  # Remove x-axis text
+
+p2 = plot.all.patches.points(data = ds_ecosystems %>% 
+                               filter(disturbance == "low"),
+                             response_variable_selected) +
+  theme(legend.position = "none") +
+  annotate("text", 
+           x = Inf, 
+           y = Inf, 
+           label = "Low disturbance", 
+           hjust = 1.1, 
+           vjust = 1.1, 
+           size = 5, 
+           fontface = "bold") # Adjust position and style
+
+# Arrange the plots vertically
+
+ggarrange(p1, 
+          p2, 
+          ncol = 1, 
+          nrow = 2, 
+          heights = c(1, 0.7))
+```
+</details>
+
+<details>
+    <summary>Prepare data for analysis</summary>
+```{r}
+
+# --- PREPARE DATA FOR ANALYSIS --- #
+
+# Add baselines
+
+baselines = ds_ecosystems %>%
+  filter(time_point == time_point_of_baselines) %>%
+  select(culture_ID,
+         all_of(response_variable_selected)) %>%
+  rename(baseline = all_of(response_variable_selected))
+
+data_for_analysis = ds_ecosystems %>%
+  left_join(baselines)
+
+# Filter data and change level names
+
+data_for_analysis = data_for_analysis %>%
+  filter(time_point %in% time_points_model,
+         #!is.na(water_addition_ml),
+         !is.na(!!sym(response_variable_selected)),
+         !is.infinite(!!sym(response_variable_selected))) %>%
+  mutate(ecosystem_type = case_when(ecosystem_type == "Small unconnected" ~ "S",
+                                    ecosystem_type == "Medium unconnected" ~ "M",
+                                    ecosystem_type == "Large unconnected" ~ "L",
+                                    ecosystem_type == "Small connected to small" ~ "S_S",
+                                    ecosystem_type == "Small connected to large" ~ "S_L",
+                                    ecosystem_type == "Medium connected to medium" ~ "M_M",
+                                    ecosystem_type == "Large connected to large" ~ "L_L",
+                                    ecosystem_type == "Large connected to small" ~ "L_S",
+                                    TRUE ~ ecosystem_type)) %>%
+  ungroup()
+```
+</details>
+
+<details>
+<summary>Plot data for analysis means</summary>
+```{r fig.height = figures_height_rmd_output}
+
+# --- DATA FOR ANALYSIS - PLOT MEAN ± 95% CI --- #
+
+p1 = plot.all.patches.points(data = data_for_analysis %>% 
+                               filter(disturbance == "high"),
+                             response_variable_selected) +
+  annotate("text", 
+           x = Inf, 
+           y = Inf, 
+           label = "High disturbance", 
+           hjust = 1.1, 
+           vjust = 1.1, 
+           size = 5, 
+           fontface = "bold") + # Adjust position and style
+  theme(axis.title.x = element_blank(),  # Remove x-axis title
+        axis.text.x = element_blank())  # Remove x-axis text
+
+p2 = plot.all.patches.points(data = data_for_analysis %>% 
+                               filter(disturbance == "low"),
+                             response_variable_selected) +
+  theme(legend.position = "none") +
+  annotate("text", 
+           x = Inf, 
+           y = Inf, 
+           label = "Low disturbance", 
+           hjust = 1.1, 
+           vjust = 1.1, 
+           size = 5, 
+           fontface = "bold") # Adjust position and style
+
+# Arrange the plots vertically
+
+ggarrange(p1, 
+          p2, 
+          ncol = 1, 
+          nrow = 2, 
+          heights = c(1, 0.7))
+```
+</details>
+
+<details>
+<summary>Compute model results</summary>
+```{r class.source = "fold-show"}
+
+# --- MODEL - CONSTRUCT --- #
+
+# Define formula
+
+formula = paste("get(response_variable_selected) ~",
+                "ecosystem_type * disturbance * day +",
+                "(day | culture_ID) +",
+                "(day | baseline)") %>%
+  print()
+
+# Construct model
+
+model = try.different.optimizers.ecos(data_for_analysis,
+                                      formula)
+```
+
+```{r}
+
+# --- MODEL - SUMMARY --- #
+
+print(summary(model), digits = 1)
+```
+
+```{r}
+
+# --- MODEL - ANOVA --- #
+
+car::Anova(model, type = "III")
+```
+
+```{r}
+
+# --- ESTIMATE MARGINAL MEANS --- #
+
+emmeans_output = emmeans(model,
+                         specs = ~ ecosystem_type * disturbance * day,
+                         adjust = "sidak",
+                         bias.adj = TRUE,
+                         lmer.df = "satterthwaite") 
+
+emmeans_output
+```
+
+```{r class.source = "fold-show"}
+
+# --- CODE EACH LEVEL OF DISTURBANCE AND ECOSYSTEM TYPE TO THEN PRODUCE CONTRASTS --- #
+
+high_L = c(1, rep(0,15)) 
+high_L_L = c(rep(0,1), 1, rep(0,14)) 
+high_L_S = c(rep(0,2), 1, rep(0,13)) 
+high_M = c(rep(0,3), 1, rep(0,12)) 
+high_M_M = c(rep(0,4), 1, rep(0,11)) 
+high_S = c(rep(0,5), 1, rep(0,10)) 
+high_S_L = c(rep(0,6), 1, rep(0,9)) 
+high_S_S = c(rep(0,7), 1, rep(0,8)) 
+low_L = c(rep(0,8), 1, rep(0,7))
+low_L_L = c(rep(0,9), 1, rep(0,6))
+low_L_S = c(rep(0,10), 1, rep(0,5))
+low_M = c(rep(0,11), 1, rep(0,4))
+low_M_M = c(rep(0,12), 1, rep(0,3))
+low_S = c(rep(0,13), 1, rep(0,2))
+low_S_L = c(rep(0,14), 1, rep(0,1))
+low_S_S = c(rep(0,15), 1)
+```
+
+```{r eval = (response_variable_selected == "auto_hetero_ratio"), echo = (response_variable_selected == "auto_hetero_ratio")}
+
+# --- PRODUCE ECOSYSTEM TYPE CONTRASTS --- #
+
+# Set parameters
+
+n_of_digits = 3
+
+# Compute constrasts
+
+contrasts = contrast(emmeans_output, 
+         method = list("high L - S" = high_L - high_S,
+                       "high M - S" = high_M - high_S,
+                       "low L - S" = low_L - low_S,
+                       "low M - S" = low_M - low_S)) %>%
+  as.data.frame() %>%
+  mutate(p.value = round(p.value, digits = n_of_digits),
+         estimate = round(estimate, digits = n_of_digits),
+         SE = round(SE, digits = n_of_digits),
+         df = round(df, digits = n_of_digits),
+         t.ratio = round(t.ratio, digits = n_of_digits),
+         e = "",
+         e = ifelse(p.value > 0.1, 
+                           "",
+                           e),
+         e = ifelse(p.value < 0.05, 
+                           "*",
+                           e),
+         e = ifelse(p.value < 0.01, 
+                           "**",
+                           e),
+         e = ifelse(p.value < 0.001, 
+                           "***",
+                           e)) %>%
+  rename(" " = e)
+```
+
+```{r eval = (response_variable_selected !="auto_hetero_ratio"), echo = (response_variable_selected !="auto_hetero_ratio")}
+
+# --- PRODUCE ECOSYSTEM TYPE CONTRASTS --- #
+
+# Set parameters
+
+n_of_digits = 3
+
+# Compute constrasts
+
+contrasts = contrast(emmeans_output, 
+                     method = list("high S_L - S" = high_S_L - high_S,
+                                   "high S_L - S_S" = high_S_L - high_S_S,
+                                   "high S_S - S" = high_S_S - high_S,
+                                   "high M_M - M" = high_M_M - high_M,
+                                   "high L_S - L" = high_L_S - high_L,
+                                   "high L_S - L_L" = high_L_S - high_L_L,
+                                   "high L_L - L" = high_L_L - high_L,
+                                   "low S_L - S" = low_S_L - low_S,
+                                   "low S_L - S_S" = low_S_L - low_S_S,
+                                   "low S_S - S" = low_S_S - low_S,
+                                   "low M_M - M" = low_M_M - low_M,
+                                   "low L_S - L" = low_L_S - low_L,
+                                   "low L_S - L_L" = low_L_S - low_L_L,
+                                   "low L_L - L" = low_L_L - low_L)) %>%
+  as.data.frame() %>%
+  mutate(p.value = round(p.value, digits = n_of_digits),
+         estimate = round(estimate, digits = n_of_digits),
+         SE = round(SE, digits = n_of_digits),
+         df = round(df, digits = n_of_digits),
+         t.ratio = round(t.ratio, digits = n_of_digits),
+         e = "",
+         e = ifelse(p.value > 0.1, 
+                           "",
+                           e),
+         e = ifelse(p.value < 0.05, 
+                           "*",
+                           e),
+         e = ifelse(p.value < 0.01, 
+                           "**",
+                           e),
+         e = ifelse(p.value < 0.001, 
+                           "***",
+                           e)) %>%
+  rename(" " = e)
+```
+</details>
+
+<details open="open">
+<summary>Show results</summary>
+```{r}
+
+# --- SHOW ECOSYSTEM TYPE CONSTRASTS --- #
+
+contrasts
+```
+</details>
+
+<br>
+
+<details>
+<summary>Show model residuals residuals</summary>
+```{r}
+
+# --- PLOT MODEL RESIDUALS --- #
+
+# Simulate residuals from the fitted model
+
+simulationOutput <- simulateResiduals(fittedModel = model, 
+                                      n = 1000) 
+
+# Test for overdispersion in the model to check if variance exceeds mean
+
+testDispersion(simulationOutput)
+
+# Plot Q-Q and Residuals vs Fitted plots
+
+plot(simulationOutput)
+```
+</details>

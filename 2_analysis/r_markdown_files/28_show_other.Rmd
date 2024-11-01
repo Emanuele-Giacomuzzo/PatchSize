@@ -1,0 +1,61 @@
+---
+title: "Other"
+output: html_document
+date: "2023-08-21"
+editor_options: 
+  chunk_output_type: console
+---
+
+### Running time
+
+```{r running-time, echo = FALSE, eval = TRUE}
+end_time = Sys.time()
+round(end_time - start_time, digits = 1)
+```
+
+### Useful code
+
+If you want to change a certain part of the code using the following code in Unix:
+
+```{r eval = FALSE, class.source = 'fold-show'}
+#Rmd script
+cd /Users/Ema/Documents/Github/PatchSize/3_r_files
+sed -i '' 's/old_string/new_string/g' *.Rmd
+
+#R script
+cd /Users/ema/Documents/GitHub/PatchSize/3_r_files/functions
+sed -i '' 's/old_string/new_string/g' *.R
+```
+
+you want to share a dataset and get a reproducible object, use the following R code:
+
+```{r eval = FALSE}
+dput()
+```
+
+### Crashed cultures
+
+The only type of ecosystem where all cultures crashed was small connected to small at high disturbance.
+
+### R version
+
+```{r}
+R.version.string
+```
+
+### R package versions
+
+The R packages we used with their version are as follows:
+
+```{r}
+sessionInfo()
+```
+
+#### References
+
+```{r echo=FALSE, message=FALSE}
+save.image(file = here("..",
+                       "3_results", 
+                       "environments", 
+                       "environment_at_the_end_of_analysis.RData"))
+```

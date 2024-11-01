@@ -1,0 +1,46 @@
+---
+title: "Data Classes Effect Size"
+output: html_document
+date: "2022-12-04"
+editor_options: 
+  chunk_output_type: console
+---
+
+### Size classes effect size (`ds_classes_effect_size`)
+
+```{r}
+
+# --- SET UP PARAMETERS --- #
+
+vars_to_group_by = columns_classes[columns_classes != "culture_ID" & columns_classes != "system_nr"]
+```
+
+```{r eval = recompute_lengthy_analyses }
+
+# --- CALCULATE EFFECT SIZES & SAVE THEM --- #
+
+#Calculate effect sizes & save dataset after heavy computation 
+
+ds_classes_effect_size = calculate.effect.sizes.classes(ds_classes,
+                                                        vars_to_group_by,
+                                                        "class_indiv_per_µl")
+
+# Save
+
+saveRDS(ds_classes_effect_size, file = here("results", "ds", "ds_classes_effect_size.RData"))
+```
+
+```{r}
+
+# --- READ DATASET AFTER HEAVY COMPUTATION --- #
+
+# Read dataset
+
+ds_classes_effect_size = readRDS(here("results", "ds", "ds_classes_effect_size.RData")) %>%
+  filter(metaecosystem == "yes")
+
+# Test code
+
+expect_equal(nrow(ds_classes_effect_size),
+             n_time_points * n_disturbance_levels * n_treatments * n_size_classes)
+```

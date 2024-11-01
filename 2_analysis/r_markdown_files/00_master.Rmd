@@ -1,0 +1,246 @@
+---
+title: "PatchSize"
+html_document:
+  toc: yes
+  toc_float: yes
+  code_folding: hide
+  number_sections: yes
+  includes:
+    after_body: "tabset-dropdown.html"
+author: "Emanuele Giacomuzzo"
+date: "`r format(Sys.time(), '%Y-%m-%d %H:%M')`"
+output:
+  html_document:
+    code_folding: hide
+    profiling: yes
+editor_options:
+  chunk_output_type: console
+---
+
+#  {.tabset}
+
+## Design {.tabset .tabset-pills}
+
+```{r child = here::here("r_markdown_files", "01_show_design.Rmd")}
+```
+
+## Parameters
+
+```{r child = here::here("r_markdown_files", "02_set_packages.Rmd"), echo = FALSE, message = FALSE, cache = FALSE, autodep = FALSE}
+```
+
+```{r child = here("r_markdown_files", "03_set_functions.Rmd"), echo=FALSE}
+```
+
+```{r child = here("r_markdown_files", "04_set_parameters.Rmd"), class.source = 'fold-show'}
+```
+
+## Data {.tabset .tabset-dropdown}
+
+```{r child = here("r_markdown_files", "05_create_ecos_info.Rmd")}
+```
+
+```{r child = here("r_markdown_files", "06_create_ds_individuals.Rmd")}
+```
+
+```{r child = here("r_markdown_files", "07_create_ds_ecos.Rmd")}
+```
+
+```{r child = here("r_markdown_files", "08_create_ds_ecos_effect_size.Rmd")}
+```
+
+```{r child = here("r_markdown_files", "09_create_ecos_combinations.Rmd")}
+```
+
+```{r child = here("r_markdown_files", "10_create_ecos_combinations_sets.Rmd")}
+```
+
+```{r child = here("r_markdown_files", "11_create_ds_metaecos.Rmd")}
+```
+
+```{r child = here("r_markdown_files", "12_create_ds_classes.Rmd"), eval = FALSE}
+```
+
+```{r child = here("r_markdown_files", "13_create_ds_classes_effect_size.Rmd"), eval = FALSE}
+```
+
+## Meta-ecosystems {.tabset .tabset-pills}
+
+```{r}
+metaecosystem_type_selected = c("Medium-Medium", "Small-Large")
+```
+
+### Alpha {.tabset .tabset-pills}
+
+```{r}
+response_variable_selected = "mean_shannon"
+```
+
+```{r child = here("r_markdown_files", "15_analyse_metaecos_variable.Rmd")}
+```
+
+### Beta {.tabset .tabset-pills}
+
+```{r}
+response_variable_selected = "bray_curtis"
+```
+
+```{r child = here("r_markdown_files", "15_analyse_metaecos_variable.Rmd")}
+```
+
+### Gamma {.tabset .tabset-pills}
+
+```{r}
+response_variable_selected = "metaecosystem_richness"
+```
+
+```{r child = here("r_markdown_files", "15_analyse_metaecos_variable.Rmd")}
+```
+
+### Biomass {.tabset .tabset-pills}
+
+```{r}
+response_variable_selected = "total_metaecosystem_bioarea_mm2"
+```
+
+```{r child = here("r_markdown_files", "15_analyse_metaecos_variable.Rmd")}
+```
+
+## Ecosystems {.tabset .tabset-pills}
+
+### Shannon {.tabset .tabset-pills}
+
+```{r}
+response_variable_selected = "shannon"
+```
+
+```{r child = here("r_markdown_files", "16_analyse_ecos_variable.Rmd")}
+```
+
+### Biomass {.tabset .tabset-pills}
+
+```{r}
+response_variable_selected = "bioarea_mm2_per_ml"
+```
+
+```{r child = here("r_markdown_files", "16_analyse_ecos_variable.Rmd")}
+```
+
+### Richness {.tabset .tabset-pills}
+
+```{r}
+response_variable_selected = "species_richness"
+```
+
+```{r child = here("r_markdown_files", "16_analyse_ecos_variable.Rmd")}
+```
+
+### Evenness {.tabset .tabset-pills}
+
+```{r}
+response_variable_selected = "evenness_pielou"
+```
+
+```{r child = here("r_markdown_files", "16_analyse_ecos_variable.Rmd")}
+```
+
+### Median Size {.tabset .tabset-pills}
+
+```{r}
+response_variable_selected = "median_body_area_µm2"
+```
+
+```{r child = here("r_markdown_files", "16_analyse_ecos_variable.Rmd")}
+```
+
+### Auto/Hetero {.tabset .tabset-pills}
+
+```{r}
+response_variable_selected = "auto_hetero_ratio"
+```
+
+```{r child = here("r_markdown_files", "16_analyse_ecos_variable.Rmd")}
+```
+
+### BEF {.tabset .tabset-pills}
+
+```{r child = here("r_markdown_files", "17_analyse_ecos_BEF.Rmd")}
+```
+
+### Populations
+
+```{r child = here("r_markdown_files", "18_analyse_ecos_populations.Rmd"), eval = FALSE}
+```
+
+## Figures {.tabset .tabset-pills}
+
+### High disturbance
+
+```{r}
+disturbance_selected = "high"
+```
+
+```{r child = here("r_markdown_files", "19_save_plot_paper_metaecos.Rmd")}
+```
+
+```{r child = here("r_markdown_files", "20_save_plot_paper_S_L.Rmd")} 
+```
+
+```{r child = here("r_markdown_files", "21_save_plot_paper_M.Rmd")} 
+```
+
+```{r child = here("r_markdown_files", "22_save_plot_paper_unconnected_AH_ratio.Rmd")}
+```
+
+<details>
+<summary>Figures to present</summary>
+```{r child = here("r_markdown_files", "23_save_plot_present_metaecos.Rmd"), echo = FALSE}
+```
+
+```{r child = here("r_markdown_files", "24_save_plot_present_S_L.Rmd")} 
+```
+</details>
+
+### Low disturbance
+
+```{r}
+disturbance_selected = "low"
+```
+
+```{r child = here("r_markdown_files", "19_save_plot_paper_metaecos.Rmd")}
+```
+
+```{r child = here("r_markdown_files", "20_save_plot_paper_S_L.Rmd")} 
+```
+
+```{r child = here("r_markdown_files", "21_save_plot_paper_M.Rmd")} 
+```
+
+```{r child = here("r_markdown_files", "22_save_plot_paper_unconnected_AH_ratio.Rmd")}
+```
+
+<details>
+<summary>Figures to present</summary>
+```{r child = here("r_markdown_files", "23_save_plot_present_metaecos.Rmd"), echo = FALSE}
+```
+
+```{r child = here("r_markdown_files", "24_save_plot_present_S_L.Rmd")} 
+```
+</details>
+
+## Analysis scripts {.tabset .tabset-pills}
+
+### Video analysis
+
+```{r child = here("r_markdown_files", "26_script_BEMOVI_video_analysis.Rmd"), class.source = "fold-show"}
+```
+
+### Species identification
+
+```{r child = here("r_markdown_files", "27_script_BEMOVI_species_id.Rmd"), class.source = "fold-show"}
+```
+
+## Other
+
+```{r child = here("r_markdown_files", "28_show_other.Rmd")}
+```

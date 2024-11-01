@@ -1,0 +1,138 @@
+---
+title: "Untitled"
+output: html_document
+date: "2023-11-30"
+editor_options: 
+  chunk_output_type: console
+---
+```{r}
+
+# --- PREPARE DATA FOR PLOTTING --- #
+
+# Define parameters
+
+ecosystem_type_selected = c("Medium connected to medium",
+                            "Medium unconnected")
+
+# Filter data
+
+data_for_plotting = ds_ecosystems %>%
+  filter(ecosystem_type %in% ecosystem_type_selected,
+         disturbance == disturbance_selected,
+         !is.na(!!sym(response_variable_selected)))
+```
+
+```{r}
+
+# --- CONSTRUCT FUNCTION TO PLOT BIOMASS/SHANNON OF MEDIUM ECOSYSTEMS --- #
+
+plot.single.plot = function(response_variable_selected){
+  
+  data_for_plotting %>%
+    summarySE(measurevar = response_variable_selected,
+              groupvars = c("day", "time_point", "ecosystem_type", "ecosystem_size", "connection")) %>%
+    ggplot(aes(x = day,
+               y = get(response_variable_selected),
+               group = interaction(day, ecosystem_type),
+               color = ecosystem_type,
+               linetype = ecosystem_type)) +
+    geom_point(stat = "summary",
+               fun = "mean",
+               position = position_dodge(dodging),
+               size = treatment_points_size) +
+    geom_line(stat = "summary",
+              fun = "mean",
+              aes(group = ecosystem_type),
+              position = position_dodge(dodging),
+              linewidth = treatment_lines_linewidth) +
+    geom_errorbar(aes(ymax = get(response_variable_selected) + ci,
+                      ymin = get(response_variable_selected) - ci),
+                  width = width_errorbar,
+                  position = position_dodge(dodging)) +
+    labs(x = axis_names$axis_name[axis_names$variable == "day"],
+         y = axis_names$axis_name[axis_names$variable == response_variable_selected],
+         color = "") +
+    scale_color_manual(values = c("#d95f0e",
+                                  "#d95f0e"),
+                       label = expression(M[M], 
+                                          M)) +
+    scale_linetype_manual(values = c("dashed",
+                                     "dotted"),
+                          label = expression(M[M], 
+                                             M)) +
+    geom_vline(xintercept = resource_flow_days,
+               linetype = resource_flow_line_type,
+               color = resource_flow_line_colour,
+               linewidth = resource_flow_line_width) +
+    geom_hline(yintercept = 0,
+               color = zero_line_colour,
+               linetype = zero_line_line_type,
+               linewidth = zero_line_line_width) +
+    theme_bw() +
+    theme(panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank(),
+          legend.position = legend_position,
+          legend.key.width = unit(legend_width_cm, "cm")) +
+    guides(color = guide_legend(title = NULL,
+                                nrow = 3),
+           linetype = guide_legend(title = NULL,
+                                   nrow = 3)) + 
+    geom_rect(xmin = grey_background_xmin, 
+              xmax = grey_background_xmax,
+              ymin = grey_background_ymin, 
+              ymax = grey_background_ymax, 
+              fill = grey_background_fill, 
+              alpha = grey_background_alpha,
+              color = grey_background_color)
+}
+```
+
+```{r fig.height = figures_height_rmd_output}
+
+# --- COMBINE PLOTS OF SHANNON AND BIOMASS --- #
+
+p_combined = ggarrange(plot.single.plot("shannon") +
+                         rremove("xlab") +
+                         theme(axis.text.x = element_blank(),
+                               axis.ticks.x = element_blank()) +
+                         font("legend.text", 
+                              size = paper_labels_size) +
+                         font("ylab", 
+                              size = paper_labels_size),
+                       plot.single.plot("bioarea_mm2_per_ml") +
+                         font("legend.text", 
+                              size = paper_labels_size) +
+                         font("xlab", 
+                              size = paper_labels_size) +
+                         font("ylab", 
+                              size = paper_labels_size) +
+                         scale_x_continuous(breaks = unique(data_for_plotting$day)),
+                       heights = c(0.8, 0.8, 1),
+                       nrow = 2,
+                       align = "v",
+                       labels = c("(a)", "(b)"),
+                       label.x = 0.1,
+                       label.y = 0.8,
+                       common.legend = TRUE) %>%
+  print()
+```
+
+```{r echo = FALSE, results=FALSE}
+
+# --- SAVE COMBINED PLOTS --- #
+
+png(file = here("..",
+                "3_results", 
+                "figures", 
+                disturbance_selected, 
+                "paper", 
+                "ecosystems_M_diversity_n_function.png"),
+    width = paper_width,
+    height = paper_height,
+    units = paper_units,
+    res = paper_res)
+
+p_combined
+
+dev.off()
+```

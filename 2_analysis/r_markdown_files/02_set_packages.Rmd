@@ -1,0 +1,81 @@
+---
+title: "Untitled"
+output: html_document
+date: "2023-11-30"
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r echo = FALSE, results = FALSE, message = FALSE, cache = FALSE, warnings = FALSE}
+
+# --- SET UP RENV ENVIRONMENT --- #
+
+# Install the package "renv" if it's not installed yet.
+#Renv allows you to reinstall the specific package versions that were used when writing code for this project.
+
+# if (!requireNamespace("renv", quietly = TRUE)) {
+#   install.packages("renv")
+# }
+# 
+# # Reinstall the specific package versions that were used when writing code for this project.
+# 
+# renv::restore()
+
+# renv::snapshot() #Save the current versions of the packages you have on your machine. This is useful when you have changed the version of a package, installed, or uninstalled some packages. 
+
+#renv::update() #Update all packages on your machine to their newest version. Watch out: if you update all packages things might not work anymore. Only do so if you are okay with changing the code to adapt to new package versions.
+```
+
+```{r echo = FALSE, results = FALSE, message = FALSE, cache = FALSE, warnings = FALSE}
+
+# --- LOAD PACKAGES --- #
+
+# General computing
+
+library("here")
+library("testthat")
+library("renv")
+
+# Data manipulation
+
+library("plyr")
+library("tidyverse")
+
+# Data visualisation
+
+library("ggpubr") # ggarrange
+library("plotly")
+library("gridExtra")
+library("GGally") # Scatter plots for all variables
+library("DHARMa")
+
+# Data analysis
+
+library("lmerTest")
+library("glmmTMB")
+library("vegan")
+library("betapart")
+library("Rmisc") # For summarySE
+library("combinat")
+library("emmeans") # For contrasts
+library("broom.mixed") # To clean up mixed effect models
+
+# Conflicts
+
+library("conflicted")
+```
+
+```{r echo = FALSE, results = FALSE, message = FALSE, cache = FALSE, warnings = FALSE}
+
+# --- SOLVE CONFLICTS --- #
+
+conflict_prefer("load", "base")
+conflict_prefer("filter", "dplyr")
+conflict_prefer("mutate", "dplyr")
+conflict_prefer("summarise", "dplyr")
+conflict_prefer("rename", "dplyr")
+conflict_prefer("arrange", "dplyr")
+conflict_prefer("here", "here")
+conflict_prefer("combn", "combinat")
+conflict_prefer("lmer", "lmerTest")
+```

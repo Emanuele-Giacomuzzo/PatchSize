@@ -1,0 +1,9 @@
+---
+title: "Untitled"
+output: html_document
+date: "2023-11-30"
+---
+
+Ecosystem size is a key factor driving biodiversity and ecosystem function. Larger ecosystems contain more species and can be hubs of dispersal and resource flows in networks of multiple ecosystems. However, whether and how ecosystem size and resource flows interact to affect biodiversity and ecosystem function has been largely overlooked. Here, we investigated how ecosystem size asymmetry affects biodiversity and function of two-ecosystem meta-ecosystems connected through flows of non-living resources. We conducted microcosm experiments, mimicking resource flows between ecosystems of different sizes, yet otherwise being identical. We found that meta-ecosystems with asymmetric ecosystem sizes had higher β-diversity but lower α-diversity and ecosystem function (total biomass) than their unconnected counterparts, while such an effect was not found for meta-ecosystems of identical ecosystem sizes. Our work demonstrates of how cross-ecosystem dynamics modulated by differences in ecosystem sizes affect biodiversity and function, with a direct implication for conservation and management of connected ecosystems.
+
+![](../../4_other/Design.png)
