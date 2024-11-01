@@ -1,3 +1,5 @@
+.DS_Store
+.Renviron.txt
 .Rproj.user
 .Rhistory
 .RData
