@@ -15,7 +15,11 @@ In this dataset (`ds_individuals`) each row represents an individual at a time p
 
 # --- IMPORT T0 --- #
 
-# Import the individual data of t0. We considered cultures to be all the same at the beginning (t0). Because of this reason, we filmed only the bottles from which cultures were assembled. Because we want to plot also t0 for the different treatments, we want to assign the video of bottles to all cultures at t0.
+# Import the individual data of t0. We considered cultures to be all the same at 
+# the beginning (t0). Because of this reason, we filmed only the bottles from
+# which cultures were assembled. Because we want to plot also t0 for the 
+# different treatments, we want to assign the video of bottles to all cultures 
+# at t0.
 
 ds_individuals_t0_not_elongated = read.csv(here("..",
                                                 "1_data", 
@@ -75,7 +79,7 @@ for (time_point_i in time_points_without_t0) {
     mutate(time_point =  as.numeric(str_extract(time_point, "\\d+")),
            day = time_point_day$day[time_point_day$time_point == time_point_i],
            file =  as.numeric(str_extract(file, "\\d+")),
-           video_replicate = ceiling(file/n_cultures)) #Until 110 video replicate = 1, then 2
+           video_replicate = ceiling(file/n_cultures)) # Until 110 video replicate = 1, then 2
 }
 
 # Tidy up all time points but t0

@@ -7,7 +7,7 @@ editor_options:
   chunk_output_type: console
 ---
 
-### Patches (`ds_ecosystems`)
+### Ecosystems (`ds_ecosystems`)
 
 In this dataset (`ds_ecosystems`) each row represents a ecosystem at a time point. I use the data from the 40 threshold analysis for Ble, Cep, Spi and the data from the 13 threshold analysis for all the other protists (Col, Eup, Lox, Pau, Pca, Spi te, Tet).
 
