@@ -18,8 +18,13 @@ editor_options:
 
 # --- COMPUTE META-ECOSYSTEMS FOR EACH TIME POINT --- #
 
-ds_metaecosystems = NULL
+# Set parameters and initialise
+
+ds_metaecosystems = list()
 row_i = 0
+
+# 
+
 for (combination_i in 1:n_ecosystems_combinations) {
   for (time_point_selected in time_points) {
     
@@ -42,7 +47,7 @@ for (combination_i in 1:n_ecosystems_combinations) {
     
     species_vector_two_ecosystems = ds_ecosystems %>%
       filter(time_point == time_point_selected,
-             culture_ID %in% current_IDs) %>%
+             ecosystem_ID %in% current_IDs) %>%
       ungroup() %>%
       select(all_of(protist_species_indiv_per_ml))
     
@@ -88,7 +93,7 @@ for (combination_i in 1:n_ecosystems_combinations) {
     #Put everything together
     
     ds_metaecosystems[[row_i]] = ds_ecosystems %>%
-      filter(culture_ID %in% current_IDs,
+      filter(ecosystem_ID %in% current_IDs,
              time_point == time_point_selected) %>%
       summarise(total_metaecosystem_bioarea_mm2 = sum(bioarea_tot_mm2),
                 total_metaecosystem_Ble_indiv = sum(Ble_tot_indiv),
@@ -101,8 +106,7 @@ for (combination_i in 1:n_ecosystems_combinations) {
                 total_metaecosystem_Pca_indiv = sum(Pca_tot_indiv),
                 total_metaecosystem_Spi_indiv = sum(Spi_tot_indiv),
                 total_metaecosystem_Spi_te_indiv = sum(Spi_te_tot_indiv),
-                total_metaecosystem_Tet_indiv = sum(Tet_tot_indiv),
-                total_water_addition_ml = sum(water_addition_ml)) %>%
+                total_metaecosystem_Tet_indiv = sum(Tet_tot_indiv)) %>%
       mutate(system_nr = current_system_nr,
              ecosystems_combined = current_combination,
              metaecosystem_type = current_metaeco_type,
@@ -149,8 +153,7 @@ ds_metaecosystems = ds_metaecosystems %>%
          beta_total,
          metaecosystem_richness,
          total_metaecosystem_bioarea_mm2,
-         paste0("total_metaecosystem_", protist_species, "_indiv"),
-         total_water_addition_ml)
+         paste0("total_metaecosystem_", protist_species, "_indiv"))
 ```
 
 ```{r}

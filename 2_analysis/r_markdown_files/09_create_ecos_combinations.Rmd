@@ -17,37 +17,37 @@ In this dataset (`ds_metaecosystems`) each row represents a meta-ecosystem or a 
 ID_unconnected_S_low = ds_ecosystems %>%
   filter(ecosystem_type == "Small unconnected",
          disturbance == "low") %>%
-  pull(culture_ID) %>%
+  pull(ecosystem_ID) %>%
   unique()
 
 ID_unconnected_M_low = ds_ecosystems %>%
   filter(ecosystem_type == "Medium unconnected",
          disturbance == "low") %>%
-  pull(culture_ID) %>%
+  pull(ecosystem_ID) %>%
   unique()
 
 ID_unconnected_L_low = ds_ecosystems %>%
   filter(ecosystem_type == "Large unconnected",
          disturbance == "low") %>%
-  pull(culture_ID) %>%
+  pull(ecosystem_ID) %>%
   unique()
 
 ID_unconnected_S_high = ds_ecosystems %>%
   filter(ecosystem_type == "Small unconnected",
          disturbance == "high") %>%
-  pull(culture_ID) %>%
+  pull(ecosystem_ID) %>%
   unique()
 
 ID_unconnected_M_high = ds_ecosystems %>%
   filter(ecosystem_type == "Medium unconnected",
          disturbance == "high") %>%
-  pull(culture_ID) %>%
+  pull(ecosystem_ID) %>%
   unique()
 
 ID_unconnected_L_high = ds_ecosystems %>%
   filter(ecosystem_type == "Large unconnected",
          disturbance == "high") %>%
-  pull(culture_ID) %>%
+  pull(ecosystem_ID) %>%
   unique()
 ```
 
@@ -153,12 +153,12 @@ combinations_connected_metaeco = ds_ecosystems %>%
   select(system_nr,
          disturbance,
          metaecosystem_type,
-         culture_ID) %>%
+         ecosystem_ID) %>%
   group_by(system_nr,
            disturbance,
            metaecosystem_type) %>%
-  summarise(ID_first_ecosystem = (mean(culture_ID) - 0.5),
-            ID_second_ecosystem = (mean(culture_ID) + 0.5)) %>%
+  summarise(ID_first_ecosystem = (mean(ecosystem_ID) - 0.5),
+            ID_second_ecosystem = (mean(ecosystem_ID) + 0.5)) %>%
   mutate(connection = "connected") %>%
   as.data.frame()
 ```

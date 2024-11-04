@@ -46,7 +46,7 @@ editor_options:
 ```{r child = here("r_markdown_files", "07_create_ds_ecos.Rmd")}
 ```
 
-```{r child = here("r_markdown_files", "08_create_ds_ecos_effect_size.Rmd")}
+```{r child = here("r_markdown_files", "08_create_ds_ecos_effect_size.Rmd"), eval = FALSE}
 ```
 
 ```{r child = here("r_markdown_files", "09_create_ecos_combinations.Rmd")}

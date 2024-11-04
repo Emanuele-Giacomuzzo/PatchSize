@@ -59,7 +59,7 @@ ggarrange(p1,
 
 baselines = ds_ecosystems %>%
   filter(time_point == time_point_of_baselines) %>%
-  select(culture_ID,
+  select(ecosystem_ID,
          all_of(response_variable_selected)) %>%
   rename(baseline = all_of(response_variable_selected))
 
@@ -139,7 +139,7 @@ ggarrange(p1,
 
 formula = paste("get(response_variable_selected) ~",
                 "ecosystem_type * disturbance * day +",
-                "(day | culture_ID) +",
+                "(day | ecosystem_ID) +",
                 "(day | baseline)") %>%
   print()
 

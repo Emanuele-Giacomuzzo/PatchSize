@@ -14,7 +14,9 @@ In this dataset (`ds_ecosystems_effect_size`) each row represents a treatment at
 
 # ---  CALCULATE THE MEAN & SD OF RESPONSE VARIABLES FOR EACH TREATMENT/CONTROL AT EACH TIME POINT --- #
 
-ds_ecosystems_effect_size = NULL
+# Set parameters and initialise
+
+ds_ecosystems_effect_size = list()
 variable_nr = 0
 
 for (variable_i in variables_ecosystems) {

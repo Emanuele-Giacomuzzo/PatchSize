@@ -55,10 +55,10 @@ time_point_day = data.frame(time_point = first_time_point:last_time_point,
                             day = sampling_days,
                             video_replicates = nr_videos)
 
-videos_to_take_off = data.frame(culture_ID = NA,
+videos_to_take_off = data.frame(ecosystem_ID = NA,
                                 time_point = NA,
                                 file = NA) %>%
-                     add_row(culture_ID = 137-110, 
+                     add_row(ecosystem_ID = 137-110, 
                              time_point = 7, 
                              file = 137) %>%
                      slice(-1)
@@ -93,11 +93,12 @@ ecosystems_to_take_off = 60 #Culture ID = 60 as it was spilled (small unconnecte
 ecosystems_info = read.csv(here("..",
                                 "1_data", 
                                 "ecosystems_info.csv"), 
-                           header = TRUE)
+                           header = TRUE) %>%
+  rename(ecosystem_ID = culture_ID)
 
 columns_ecosystems = c("time_point",
                        "day",
-                       "culture_ID",
+                       "ecosystem_ID",
                        "system_nr",
                        "disturbance",
                        "ecosystem_type",
@@ -106,7 +107,7 @@ columns_ecosystems = c("time_point",
                        "ecosystem_size_ml",
                        "metaecosystem",
                        "metaecosystem_type")
-columns_treatments = columns_ecosystems[!columns_ecosystems %in% c("system_nr", "culture_ID")]
+columns_treatments = columns_ecosystems[!columns_ecosystems %in% c("system_nr", "ecosystem_ID")]
 
 variables_ecosystems = c("bioarea_mm2_per_ml",
                          "bioarea_tot_mm2",
@@ -164,7 +165,7 @@ columns_classes = c(columns_ecosystems,
 # --- SET UP META-ECOSYSTEM PARAMETERS --- #
 
 metaecosystems_to_take_off = ecosystems_info %>%
-  filter(culture_ID %in% ecosystems_to_take_off) %>%
+  filter(ecosystem_ID %in% ecosystems_to_take_off) %>%
   pull(system_nr) %>%
   unique
 

@@ -20,13 +20,13 @@ for (disturbance_i in 1:length(disturbance_levels)) {
   ID_small_ecosystems = ds_ecosystems %>%
     filter(disturbance == disturbance_levels[disturbance_i],
            ecosystem_type == "Small unconnected") %>%
-    pull(culture_ID) %>%
+    pull(ecosystem_ID) %>%
     unique()
   
   ID_large_ecosystems = ds_ecosystems %>%
     filter(disturbance == disturbance_levels[disturbance_i],
            ecosystem_type == "Large unconnected") %>%
-    pull(culture_ID) %>%
+    pull(ecosystem_ID) %>%
     unique()
   
   #Force small and large ecosystems vectors to have the same length
@@ -103,7 +103,7 @@ expect_equal(length(SL_unconn_ecos_comb_sets %>%
 
 # --- CREATE SETS FOR MEDIUM-MEDIUM UNCONNECTED META-ECOSYSTEMS --- #
 
-# Create sets for Medium-Medium unconnected meta-ecosystems where in each set two different medium ecosystems are paired. To do so, initialise MM_unconn_ecos_comb_sets. Assign 10^4 rows to each matrix so that we have enough rows not to run out of them when we try to assign values to them. Assign 4 columns which will include culture_ID of the first system, second culture_ID of the fist system, culture_ID of the second system, and second culture_ID of the second system.  
+# Create sets for Medium-Medium unconnected meta-ecosystems where in each set two different medium ecosystems are paired. To do so, initialise MM_unconn_ecos_comb_sets. Assign 10^4 rows to each matrix so that we have enough rows not to run out of them when we try to assign values to them. Assign 4 columns which will include ecosystem_ID of the first system, second ecosystem_ID of the fist system, ecosystem_ID of the second system, and second ecosystem_ID of the second system.  
 
 MM_unconn_ecos_comb_sets = NULL
 for(disturbance_i in 1:length(disturbance_levels)){
@@ -118,7 +118,7 @@ for (disturbance_i in 1:length(disturbance_levels)) {
   ID_medium_ecosystems = ds_ecosystems %>%
     filter(disturbance == disturbance_levels[disturbance_i],
            ecosystem_type == "Medium unconnected") %>%
-    pull(culture_ID) %>%
+    pull(ecosystem_ID) %>%
     unique()
   
   MM_unconnected_systems = combn(ID_medium_ecosystems, 
