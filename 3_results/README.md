@@ -1,3 +1,3 @@
 # Folder content
 
-- *Hello*
+- **Hello**
