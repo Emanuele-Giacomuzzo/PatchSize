@@ -2,9 +2,9 @@
 
 This folder contains the data obtained from the microcosm experiment. Two lower threshold levels of pixel intensities were used to differentiate between individuals and the background using ImageJ because different protist species were better identified at different lower intensity thresholds. Specifically, *Colpidium sp.*, *Euglena gracilis*, *Euplotes aediculatus*, *Loxocephalus sp.*, *Paramecium aurelia*, *Paramecium caudatum*, *Spirostomum teres*, and *Tetrahymena cf. pyriformis* were identified with a lower intensity threshold of 13 while *Blepharisma sp.*, *Cephalodella sp.*, and *Spirostomum sp.* were identified with an lower intensity threshold of 40. Data was obtained from video files through the following steps:
 
-1.  **Video Analysis at lower intensity threshold 13**: Use the script in `2_analysis → r_markdown_files → 05_generate_data_video_analysis.Rmd` to analyze videos at all time points and training data with lower intensity threshold set to 13 (thresholds \<- c(13, 255)) and save the results in 2_data.
-2.  **Video Analysis at lower intensity threshold 40**: Repeat step 1 adjusting the lower intensity threshold to 40 (thresholds \<- c(40, 255)).
-3.  **Species Identification at lower intensity threshold 13**: Use the script in 3_r_files \> BEMOVI_script_species_id to identify species for all time points analysed with the lower intensity threshold set to 13.
+1.  **Video Analysis at lower intensity threshold 13**: Use the script `2_analysis → r_markdown_files → 05_generate_data_video_analysis.Rmd` to analyze videos at all time points and training data with lower intensity threshold set to 13 (`thresholds <- c(13, 255)`) and save the results in 2_data.
+2.  **Video Analysis at lower intensity threshold 40**: Repeat step 1 adjusting the lower intensity threshold to 40 (`thresholds <- c(40, 255)`).
+3.  **Species Identification at lower intensity threshold 13**: Use the script `2_analysis → r_markdown_files → 06_generate_data_species_id.Rmd` to identify species for all time points analysed with the lower intensity threshold set to 13.
 4.  **Species Identification at lower intensity threshold 40**: Repeat step 3 but with time points analysed with the lower intensity threshold set to 40.
 
 # Summary of how to assemble the data
@@ -37,4 +37,4 @@ The columns in the ecosystems_info file represent the following (this file uses 
 - **patch_size_volume**: Size of the ecosystem (ml)  
 - **metaecosystem**: Indicates whether the ecosystem is part of a connected meta-ecosystem  
 - **metaecosystem_type**: Type of connected meta-ecosystem (S_S = small-small, M_M = medium-medium, L_L = large-large, S_L = small-large)  
-- **eco_metaeco_type**: Ecosystem type followed by the connected meta-ecosystem it is part of in parentheses
+- **eco_metaeco_type**: Ecosystem type followed by the connected meta-ecosystem it is part of
