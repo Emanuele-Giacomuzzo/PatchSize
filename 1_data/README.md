@@ -9,8 +9,8 @@ This folder contains the data obtained from the microcosm experiment. Two lowest
 
 # Summary of how to assemble the data
 
-1.  **Assemble a dataset with the individuals.** Keep the individuals from the output with a threshold 13 (individuals_13_threshold). This threshold does not exclude any protist species, providing a more comprehensive view of all the individuals. Bind this data with ecosystem_info.
-2.  **Assemble a dataset with the ecosystems.** Keep the biomass and total individuals of each ecosystem from the output with a threshold 13 (ecosystems_13_threshold). This threshold does not exclude any protist species, providing a more comprehensive view of ecosystem biomass and the total number of individuals. Bind it then with the species densities of the species densities of *Colpidium sp.*, *Euglena gracilis*, *Euplotes aediculatus*, *Loxocephalus sp.*, *Paramecium aurelia*, *Paramecium caudatum*, *Spirostomum teres*, and *Tetrahymena cf. pyriformis* obtained from data analysis with threshold set to 13 (species_ID_13_threshold) and *Blepharisma sp.*, *Cephalodella sp.*, and *Spirostomum sp.* obtained from data analysis with threshold set to 40 (species_ID_40_threshold). Bind this data with ecosystem_info.
+1.  **Assemble a dataset with the individuals.** Keep the individuals from the output with a threshold 13 (individuals_13_threshold). This threshold does not exclude any protist species, providing a more comprehensive view of all the individuals. Bind this data with 'ecosystems_info.csv'.
+2.  **Assemble a dataset with the ecosystems.** Keep the biomass and total individuals of each ecosystem from the output with a threshold 13 (ecosystems_13_threshold). This threshold does not exclude any protist species, providing a more comprehensive view of ecosystem biomass and the total number of individuals. Bind it then with the species densities of the species densities of *Colpidium sp.*, *Euglena gracilis*, *Euplotes aediculatus*, *Loxocephalus sp.*, *Paramecium aurelia*, *Paramecium caudatum*, *Spirostomum teres*, and *Tetrahymena cf. pyriformis* obtained from data analysis with threshold set to 13 (species_ID_13_threshold) and *Blepharisma sp.*, *Cephalodella sp.*, and *Spirostomum sp.* obtained from data analysis with threshold set to 40 (species_ID_40_threshold). Bind this data with 'ecosystems_info.csv'.
 
 # Content of the folder
 
@@ -22,7 +22,7 @@ This directory is organised into the following folders and files:
 -   ecosystems_40_threshold: Contains ecosystem data for each time point and monoculture data used to train a species identification model (training). Videos were analysed with the threshold set to 40.
 -   species_ID_13_threshold: Contains data for each individual detected in the videos at each time point, with species identified. Videos were analysed with the threshold set to 13.
 -   species_ID_40_threshold: Contains data for each individual detected in the videos at each time point, with species identified. Videos were analysed with the threshold set to 40.
--   culture_info.csv: Provides information about each ecosystem.
+-   ecosystems_info.csv: Provides information about each ecosystem.
 -   water_addition: Details the amount of water (ml) added to ecosystems to compensate for evaporation. Culture ID represents the ID of the ecosystems.
 
 # Ecosystem info
