@@ -36,148 +36,117 @@ Although the `renv` package should enable you to reinstall all packages with the
 - `base` - Core R functions.
 
 ### Other Attached Packages
-- `conflicted` - Manages namespace conflicts.
-- `optimx` - Advanced optimization tools.
-- `broom.mixed` - Tidies mixed models.
-- `emmeans` - Estimated marginal means.
-- `combinat` - Combinatorial functions.
-- `Rmisc` - Summary statistics and plot utilities.
-- `betapart` - Beta diversity calculations.
-- `vegan` - Ecological diversity analysis.
-- `lattice` - Advanced, grid-based plotting.
-- `permute` - Permutation tests.
-- `glmmTMB` - Generalized linear mixed models.
-- `lmerTest` - Linear mixed models with tests.
-- `lme4` - Linear and nonlinear mixed models.
-- `Matrix` - Matrix data structures.
-- `DHARMa` - Diagnostics for hierarchical models.
-- `GGally` - Additional ggplot2 functions.
-- `gridExtra` - Extends grid graphics layout.
-- `plotly` - Interactive plotting.
-- `ggpubr` - Simplifies ggplot2-based publication plots.
-- `lubridate` - Date and time manipulation.
-- `forcats` - Factor variable management.
-- `stringr` - String manipulation.
-- `dplyr` - Data manipulation grammar.
-- `purrr` - Functional programming tools.
-- `readr` - Data import.
-- `tidyr` - Data tidying.
-- `tibble` - Enhanced data frames.
-- `ggplot2` - Data visualization.
-- `tidyverse` - Collection of data science packages.
-- `plyr` - Data manipulation tools.
-- `renv` - Dependency management.
-- `testthat` - Unit testing framework.
-- `here` - Simplifies file path management.
+- `conflicted` (1.2.0) - Manages namespace conflicts.
+- `optimx` (2023-10.21) - Advanced optimization tools.
+- `broom.mixed` (0.2.9.6) - Tidies mixed models.
+- `emmeans` (1.10.5) - Estimated marginal means.
+- `combinat` (0.0-8) - Combinatorial functions.
+- `Rmisc` (1.5.1) - Summary statistics and plot utilities.
+- `betapart` (1.6) - Beta diversity calculations.
+- `vegan` (2.6-8) - Ecological diversity analysis.
+- `lattice` (0.22-6) - Advanced, grid-based plotting.
+- `permute` (0.9-7) - Permutation tests.
+- `glmmTMB` (1.1.10) - Generalized linear mixed models.
+- `lmerTest` (3.1-3) - Linear mixed models with tests.
+- `lme4` (1.1-35.5) - Linear and nonlinear mixed models.
+- `Matrix` (1.7-0) - Matrix data structures.
+- `DHARMa` (0.4.7) - Diagnostics for hierarchical models.
+- `GGally` (2.2.1) - Additional ggplot2 functions.
+- `gridExtra` (2.3) - Extends grid graphics layout.
+- `plotly` (4.10.4) - Interactive plotting.
+- `ggpubr` (0.6.0) - Simplifies ggplot2-based publication plots.
+- `lubridate` (1.9.3) - Date and time manipulation.
+- `forcats` (1.0.0) - Factor variable management.
+- `stringr` (1.5.1) - String manipulation.
+- `dplyr` (1.1.4) - Data manipulation grammar.
+- `purrr` (1.0.2) - Functional programming tools.
+- `readr` (2.1.5) - Data import.
+- `tidyr` (1.3.1) - Data tidying.
+- `tibble` (3.2.1) - Enhanced data frames.
+- `ggplot2` (3.5.1) - Data visualization.
+- `tidyverse` (2.0.0) - Collection of data science packages.
+- `plyr` (1.8.9) - Data manipulation tools.
+- `renv` (1.0.11) - Dependency management.
+- `testthat` (3.2.1.1) - Unit testing framework.
+- `here` (1.0.1) - Simplifies file path management.
 
 ### Loaded via Namespace (and Not Attached)
-- `RColorBrewer` - Color palettes.
-- `rstudioapi` - RStudio interface tools.
-- `jsonlite` - JSON handling.
-- `magrittr` - Pipe operators.
-- `estimability` - Matrix calculations for estimable functions.
-- `farver` - Color space conversion.
-- `nloptr` - Nonlinear optimization.
-- `rmarkdown` - Document conversion.
-- `vctrs` - Vector types and coercion.
-- `memoise` - Caching for functions.
-- `minqa` - Optimization algorithms.
-- `rstatix` - Statistical functions.
-- `htmltools` - HTML tools for web output.
-- `itertools` - Iterator functions.
-- `broom` - Tidies statistical outputs.
-- `Formula` - Formula notation.
-- `pracma` - Practical math functions.
-- `sass` - CSS with superpowers.
-- `parallelly` - Tools for parallel processing.
-- `bslib` - Bootstrap themes.
-- `desc` - Manipulate DESCRIPTION files.
-- `htmlwidgets` - Interactive web visualizations.
-- `cachem` - Cache management.
-- `TMB` - Template Model Builder for complex models.
-- `mime` - MIME type utilities.
-- `lifecycle` - Lifecycle management.
-- `minpack.lm` - Nonlinear regression.
-- `iterators` - Create iterators.
-- `pkgconfig` - Package options.
-- `gap` - Genetic analysis programs.
-- `R6` - R6 class system.
-- `fastmap` - Fast key-value mapping.
-- `shiny` - Web applications.
-- `rbibutils` - Bibliography utilities.
-- `future` - Asynchronous programming.
-- `magic` - Magic square and other functions.
-- `digest` - Hashing functions.
-- `numDeriv` - Numerical derivatives.
-- `colorspace` - Color space utilities.
-- `furrr` - Parallel mapping functions.
-- `rprojroot` - Find root directories.
-- `pkgload` - Load packages.
-- `qgam` - Quantile additive models.
-- `labeling` - Enhanced label handling.
-- `fansi` - Advanced string handling.
-- `timechange` - Time zone manipulation.
-- `httr` - HTTP request handling.
-- `abind` - Array binding.
-- `mgcv` - Generalized additive models.
-- `compiler` - Compile R code.
-- `doParallel` - Parallel computation.
-- `withr` - Temporary changes to global state.
-- `backports` - Backward compatibility.
-- `carData` - Companion to Applied Regression datasets.
-- `ggstats` - Statistical extensions for ggplot2.
-- `highr` - Syntax highlighting.
-- `ggsignif` - Add significance bars to ggplots.
-- `MASS` - Statistical functions and datasets.
-- `tools` - Low-level utilities.
-- `ape` - Phylogenetic analysis.
-- `httpuv` - HTTP and WebSocket server.
-- `glue` - String interpolation.
-- `rcdd` - Computational geometry.
-- `promises` - Promises for asynchronous programming.
-- `nlme` - Mixed-effects models.
-- `grid` - Low-level graphics functions.
-- `cluster` - Clustering functions.
-- `generics` - S3 method generics.
-- `snow` - Simple network of workstations.
-- `gtable` - Table layouts for grid graphics.
-- `tzdb` - Time zone database.
-- `data.table` - Fast data manipulation.
-- `hms` - Time-of-day values.
-- `car` - Companion to Applied Regression.
-- `utf8` - UTF-8 text handling.
-- `foreach` - Looping construct for parallel.
-- `pillar` - Format columns.
-- `later` - Deferred execution.
-- `splines` - Spline functions.
-- `tidyselect` - Helper for selecting variables.
-- `knitr` - Dynamic report generation.
-- `reformulas` - Reparameterizes models.
-- `xfun` - Miscellaneous functions.
-- `brio` - Basic R I/O.
-- `stringi` - String processing.
-- `lazyeval` - Lazy evaluation.
-- `yaml` - YAML parser.
-- `boot` - Bootstrap functions.
-- `evaluate` - Evaluate R code with output capture.
-- `codetools` - Code analysis.
-- `cli` - Command-line tools.
-- `xtable` - Export tables to LaTeX or HTML.
-- `geometry` - Computational geometry.
-- `Rdpack` - Utilities for Rd documentation.
-- `munsell` - Munsell color system.
-- `jquerylib` - jQuery library.
-- `Rcpp` - R and C++ integration.
-- `doSNOW` - Parallel computing with snow.
-- `globals` - Global variable handling.
-- `coda` - MCMC diagnostics.
-- `parallel` - Parallel processing.
-- `picante` - Phylogenetic community analysis.
-- `gap.datasets` - Genetic analysis datasets.
-- `listenv` - List environments.
-- `viridisLite` - Color scales.
-- `mvtnorm` - Multivariate normal and t distributions.
-- `scales` - Graphical scales for visualizations.
-- `rlang` - Tools for programming in R.
-- `cowplot` - Plot grids and annotations.
-- `fastmatch` - Fast matching.
+- `RColorBrewer` (1.1-3) - Color palettes.
+- `rstudioapi` (0.17.1) - RStudio interface tools.
+- `jsonlite` (1.8.9) - JSON handling.
+- `magrittr` (2.0.3) - Pipe operators.
+- `estimability` (1.5.1) - Matrix calculations for estimable functions.
+- `farver` (2.1.2) - Color space conversion.
+- `nloptr` (2.1.1) - Nonlinear optimization.
+- `rmarkdown` (2.28) - Document conversion.
+- `vctrs` (0.6.5) - Vector types and coercion.
+- `memoise` (2.0.1) - Caching for functions.
+- `minqa` (1.2.8) - Optimization algorithms.
+- `rstatix` (0.7.2) - Statistical functions.
+- `htmltools` (0.5.8.1) - HTML tools for web output.
+- `itertools` (0.1-3) - Iterator functions.
+- `broom` (1.0.7) - Tidies statistical outputs.
+- `Formula` (1.2-5) - Formula notation.
+- `pracma` (2.4.4) - Practical math functions.
+- `sass` (0.4.9) - CSS with superpowers.
+- `parallelly` (1.38.0) - Tools for parallel processing.
+- `bslib` (0.8.0) - Bootstrap themes.
+- `desc` (1.4.3) - Manipulate DESCRIPTION files.
+- `htmlwidgets` (1.6.4) - Interactive web visualizations.
+- `cachem` (1.1.0) - Cache management.
+- `TMB` (1.9.15) - Template Model Builder for complex models.
+- `mime` (0.12) - MIME type utilities.
+- `lifecycle` (1.0.4) - Lifecycle management.
+- `minpack.lm` (1.2-4) - Nonlinear regression.
+- `iterators` (1.0.14) - Create iterators.
+- `pkgconfig` (2.0.3) - Package options.
+- `gap` (1.6) - Genetic analysis programs.
+- `R6` (2.5.1) - R6 class system.
+- `fastmap` (1.2.0) - Fast key-value mapping.
+- `shiny` (1.9.1) - Web applications.
+- `rbibutils` (2.3) - Bibliography utilities.
+- `future` (1.34.0) - Asynchronous programming.
+- `magic` (1.6-1) - Magic square and other functions.
+- `digest` (0.6.37) - Hashing functions.
+- `numDeriv` (2016.8-1.1) - Numerical derivatives.
+- `colorspace` (2.1-1) - Color space utilities.
+- `furrr` (0.3.1) - Parallel mapping functions.
+- `rprojroot` (2.0.4) - Find root directories.
+- `pkgload` (1.4.0) - Load packages.
+- `qgam` (1.3.4) - Quantile additive models.
+- `labeling` (0.4.3) - Enhanced label handling.
+- `fansi` (1.0.6) - Advanced string handling.
+- `timechange` (0.3.0) - Time zone manipulation.
+- `httr` (1.4.7) - HTTP request handling.
+- `abind` (1.4-8) - Array binding.
+- `mgcv` (1.9-1) - Generalized additive models.
+- `compiler` (4.4.1) - Compile R code.
+- `doParallel` (1.0.17) - Parallel computation.
+- `withr` (3.0.2) - Temporary changes to global state.
+- `backports` (1.5.0) - Backward compatibility.
+- `carData` (3.0-5) - Companion to Applied Regression datasets.
+- `ggstats` (0.7.0) - Statistical extensions for ggplot2.
+- `highr` (0.11) - Syntax highlighting.
+- `ggsignif` (0.6.4) - Add significance bars to ggplots.
+- `MASS` (7.3-60.2) - Statistical functions and datasets.
+- `tools` (4.4.1) - Low-level utilities.
+- `ape` (5.8) - Phylogenetic analysis.
+- `httpuv` (1.6.15) - HTTP and WebSocket server.
+- `glue` (1.8.0) - String interpolation.
+- `rcdd` (1.6) - Computational geometry.
+- `promises` (1.3.0) - Promises for asynchronous programming.
+- `nlme` (3.1-164) - Mixed-effects models.
+- `grid` (4.4.1) - Low-level graphics functions.
+- `cluster` (2.1.6) - Clustering functions.
+- `generics` (0.1.3) - S3 method generics.
+- `snow` (0.4-4) - Simple network of workstations.
+- `gtable` (0.3.6) - Table layouts for grid graphics.
+- `tzdb` (0.4.0) - Time zone database.
+- `data.table` (1.16.2) - Fast data manipulation.
+- `hms` (1.1.3) - Time-of-day values.
+- `car` (3.1-3) - Companion to Applied Regression.
+- `utf8` (1.2.4) - UTF-8 text handling.
+- `foreach` (1.5.2) - Looping construct for parallel.
+- `pillar` (1.9.0) - Format columns.
+- `later` (1.3.2) - Deferred execution.
+- `splines` (4.4.1)
