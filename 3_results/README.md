@@ -1,4 +1,4 @@
-# Folder content
+# Content of the folder
 
 - **environments:** R Studio environments saved during analysis
 - **figures:** figures saved during analysis
