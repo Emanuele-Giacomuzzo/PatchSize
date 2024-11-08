@@ -27,156 +27,157 @@ This project was developed using the following versions:
 Although the `renv` package should enable you to reinstall all packages with the correct versions, I'm providing you with the necessary packages in case there are any issues with `renv`.
 
 ### Base Packages
-stats
-graphics
-grDevices
-utils
-datasets
-methods
-base
-Other Attached Packages
-conflicted_1.2.0
-optimx_2023-10.21
-broom.mixed_0.2.9.6
-emmeans_1.10.5
-combinat_0.0-8
-Rmisc_1.5.1
-betapart_1.6
-vegan_2.6-8
-lattice_0.22-6
-permute_0.9-7
-glmmTMB_1.1.10
-lmerTest_3.1-3
-lme4_1.1-35.5
-Matrix_1.7-0
-DHARMa_0.4.7
-GGally_2.2.1
-gridExtra_2.3
-plotly_4.10.4
-ggpubr_0.6.0
-lubridate_1.9.3
-forcats_1.0.0
-stringr_1.5.1
-dplyr_1.1.4
-purrr_1.0.2
-readr_2.1.5
-tidyr_1.3.1
-tibble_3.2.1
-ggplot2_3.5.1
-tidyverse_2.0.0
-plyr_1.8.9
-renv_1.0.11
-testthat_3.2.1.1
-here_1.0.1
+- `stats` - Statistical functions and models.
+- `graphics` - Basic plotting functions.
+- `grDevices` - Graphics devices for output.
+- `utils` - Utility functions for data manipulation.
+- `datasets` - Sample datasets for R.
+- `methods` - Object-oriented programming.
+- `base` - Core R functions.
+
+### Other Attached Packages
+- `conflicted` - Manages namespace conflicts.
+- `optimx` - Advanced optimization tools.
+- `broom.mixed` - Tidies mixed models.
+- `emmeans` - Estimated marginal means.
+- `combinat` - Combinatorial functions.
+- `Rmisc` - Summary statistics and plot utilities.
+- `betapart` - Beta diversity calculations.
+- `vegan` - Ecological diversity analysis.
+- `lattice` - Advanced, grid-based plotting.
+- `permute` - Permutation tests.
+- `glmmTMB` - Generalized linear mixed models.
+- `lmerTest` - Linear mixed models with tests.
+- `lme4` - Linear and nonlinear mixed models.
+- `Matrix` - Matrix data structures.
+- `DHARMa` - Diagnostics for hierarchical models.
+- `GGally` - Additional ggplot2 functions.
+- `gridExtra` - Extends grid graphics layout.
+- `plotly` - Interactive plotting.
+- `ggpubr` - Simplifies ggplot2-based publication plots.
+- `lubridate` - Date and time manipulation.
+- `forcats` - Factor variable management.
+- `stringr` - String manipulation.
+- `dplyr` - Data manipulation grammar.
+- `purrr` - Functional programming tools.
+- `readr` - Data import.
+- `tidyr` - Data tidying.
+- `tibble` - Enhanced data frames.
+- `ggplot2` - Data visualization.
+- `tidyverse` - Collection of data science packages.
+- `plyr` - Data manipulation tools.
+- `renv` - Dependency management.
+- `testthat` - Unit testing framework.
+- `here` - Simplifies file path management.
 
 ### Loaded via Namespace (and Not Attached)
-RColorBrewer_1.1-3
-rstudioapi_0.17.1
-jsonlite_1.8.9
-magrittr_2.0.3
-estimability_1.5.1
-farver_2.1.2
-nloptr_2.1.1
-rmarkdown_2.28
-vctrs_0.6.5
-memoise_2.0.1
-minqa_1.2.8
-rstatix_0.7.2
-htmltools_0.5.8.1
-itertools_0.1-3
-broom_1.0.7
-Formula_1.2-5
-pracma_2.4.4
-sass_0.4.9
-parallelly_1.38.0
-bslib_0.8.0
-desc_1.4.3
-htmlwidgets_1.6.4
-cachem_1.1.0
-TMB_1.9.15
-mime_0.12
-lifecycle_1.0.4
-minpack.lm_1.2-4
-iterators_1.0.14
-pkgconfig_2.0.3
-gap_1.6
-R6_2.5.1
-fastmap_1.2.0
-shiny_1.9.1
-rbibutils_2.3
-future_1.34.0
-magic_1.6-1
-digest_0.6.37
-numDeriv_2016.8-1.1
-colorspace_2.1-1
-furrr_0.3.1
-rprojroot_2.0.4
-pkgload_1.4.0
-qgam_1.3.4
-labeling_0.4.3
-fansi_1.0.6
-timechange_0.3.0
-httr_1.4.7
-abind_1.4-8
-mgcv_1.9-1
-compiler_4.4.1
-doParallel_1.0.17
-withr_3.0.2
-backports_1.5.0
-carData_3.0-5
-ggstats_0.7.0
-highr_0.11
-ggsignif_0.6.4
-MASS_7.3-60.2
-tools_4.4.1
-ape_5.8
-httpuv_1.6.15
-glue_1.8.0
-rcdd_1.6
-promises_1.3.0
-nlme_3.1-164
-grid_4.4.1
-cluster_2.1.6
-generics_0.1.3
-snow_0.4-4
-gtable_0.3.6
-tzdb_0.4.0
-data.table_1.16.2
-hms_1.1.3
-car_3.1-3
-utf8_1.2.4
-foreach_1.5.2
-pillar_1.9.0
-later_1.3.2
-splines_4.4.1
-tidyselect_1.2.1
-knitr_1.48
-reformulas_0.3.0
-xfun_0.49
-brio_1.1.5
-stringi_1.8.4
-lazyeval_0.2.2
-yaml_2.3.10
-boot_1.3-30
-evaluate_1.0.1
-codetools_0.2-20
-cli_3.6.3
-xtable_1.8-4
-geometry_0.5.0
-Rdpack_2.6.1
-munsell_0.5.1
-jquerylib_0.1.4
-Rcpp_1.0.13
-doSNOW_1.0.20
-globals_0.16.3
-coda_0.19-4.1
-parallel_4.4.1
-picante_1.8.2
-gap.datasets_0.0.6
-listenv_0.9.1
-viridisLite_0.4.2
-mvtnorm_1.3-1
-scales_1.3.0
-rlang_1.1.4
-cowplot_1.1.3
-fastmatch_1.1-4
+- `RColorBrewer` - Color palettes.
+- `rstudioapi` - RStudio interface tools.
+- `jsonlite` - JSON handling.
+- `magrittr` - Pipe operators.
+- `estimability` - Matrix calculations for estimable functions.
+- `farver` - Color space conversion.
+- `nloptr` - Nonlinear optimization.
+- `rmarkdown` - Document conversion.
+- `vctrs` - Vector types and coercion.
+- `memoise` - Caching for functions.
+- `minqa` - Optimization algorithms.
+- `rstatix` - Statistical functions.
+- `htmltools` - HTML tools for web output.
+- `itertools` - Iterator functions.
+- `broom` - Tidies statistical outputs.
+- `Formula` - Formula notation.
+- `pracma` - Practical math functions.
+- `sass` - CSS with superpowers.
+- `parallelly` - Tools for parallel processing.
+- `bslib` - Bootstrap themes.
+- `desc` - Manipulate DESCRIPTION files.
+- `htmlwidgets` - Interactive web visualizations.
+- `cachem` - Cache management.
+- `TMB` - Template Model Builder for complex models.
+- `mime` - MIME type utilities.
+- `lifecycle` - Lifecycle management.
+- `minpack.lm` - Nonlinear regression.
+- `iterators` - Create iterators.
+- `pkgconfig` - Package options.
+- `gap` - Genetic analysis programs.
+- `R6` - R6 class system.
+- `fastmap` - Fast key-value mapping.
+- `shiny` - Web applications.
+- `rbibutils` - Bibliography utilities.
+- `future` - Asynchronous programming.
+- `magic` - Magic square and other functions.
+- `digest` - Hashing functions.
+- `numDeriv` - Numerical derivatives.
+- `colorspace` - Color space utilities.
+- `furrr` - Parallel mapping functions.
+- `rprojroot` - Find root directories.
+- `pkgload` - Load packages.
+- `qgam` - Quantile additive models.
+- `labeling` - Enhanced label handling.
+- `fansi` - Advanced string handling.
+- `timechange` - Time zone manipulation.
+- `httr` - HTTP request handling.
+- `abind` - Array binding.
+- `mgcv` - Generalized additive models.
+- `compiler` - Compile R code.
+- `doParallel` - Parallel computation.
+- `withr` - Temporary changes to global state.
+- `backports` - Backward compatibility.
+- `carData` - Companion to Applied Regression datasets.
+- `ggstats` - Statistical extensions for ggplot2.
+- `highr` - Syntax highlighting.
+- `ggsignif` - Add significance bars to ggplots.
+- `MASS` - Statistical functions and datasets.
+- `tools` - Low-level utilities.
+- `ape` - Phylogenetic analysis.
+- `httpuv` - HTTP and WebSocket server.
+- `glue` - String interpolation.
+- `rcdd` - Computational geometry.
+- `promises` - Promises for asynchronous programming.
+- `nlme` - Mixed-effects models.
+- `grid` - Low-level graphics functions.
+- `cluster` - Clustering functions.
+- `generics` - S3 method generics.
+- `snow` - Simple network of workstations.
+- `gtable` - Table layouts for grid graphics.
+- `tzdb` - Time zone database.
+- `data.table` - Fast data manipulation.
+- `hms` - Time-of-day values.
+- `car` - Companion to Applied Regression.
+- `utf8` - UTF-8 text handling.
+- `foreach` - Looping construct for parallel.
+- `pillar` - Format columns.
+- `later` - Deferred execution.
+- `splines` - Spline functions.
+- `tidyselect` - Helper for selecting variables.
+- `knitr` - Dynamic report generation.
+- `reformulas` - Reparameterizes models.
+- `xfun` - Miscellaneous functions.
+- `brio` - Basic R I/O.
+- `stringi` - String processing.
+- `lazyeval` - Lazy evaluation.
+- `yaml` - YAML parser.
+- `boot` - Bootstrap functions.
+- `evaluate` - Evaluate R code with output capture.
+- `codetools` - Code analysis.
+- `cli` - Command-line tools.
+- `xtable` - Export tables to LaTeX or HTML.
+- `geometry` - Computational geometry.
+- `Rdpack` - Utilities for Rd documentation.
+- `munsell` - Munsell color system.
+- `jquerylib` - jQuery library.
+- `Rcpp` - R and C++ integration.
+- `doSNOW` - Parallel computing with snow.
+- `globals` - Global variable handling.
+- `coda` - MCMC diagnostics.
+- `parallel` - Parallel processing.
+- `picante` - Phylogenetic community analysis.
+- `gap.datasets` - Genetic analysis datasets.
+- `listenv` - List environments.
+- `viridisLite` - Color scales.
+- `mvtnorm` - Multivariate normal and t distributions.
+- `scales` - Graphical scales for visualizations.
+- `rlang` - Tools for programming in R.
+- `cowplot` - Plot grids and annotations.
+- `fastmatch` - Fast matching.
