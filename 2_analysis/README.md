@@ -149,4 +149,35 @@ Although the `renv` package should enable you to reinstall all packages with the
 - `foreach` (1.5.2) - Looping construct for parallel.
 - `pillar` (1.9.0) - Format columns.
 - `later` (1.3.2) - Deferred execution.
-- `splines` (4.4.1)
+- `splines` (4.4.1) - Functions for spline interpolation.
+- `tidyselect` (1.2.1) - Helpers for selecting columns.
+- `knitr` (1.48) - Dynamic report generation.
+- `reformulas` (0.3.0) - Formula manipulation.
+- `xfun` (0.49) - Utility functions for R packages.
+- `brio` (1.1.5) - Read/write binary data.
+- `stringi` (1.8.4) - Advanced string manipulation.
+- `lazyeval` (0.2.2) - Lazy evaluation functions.
+- `yaml` (2.3.10) - YAML file handling.
+- `boot` (1.3-30) - Bootstrap resampling.
+- `evaluate` (1.0.1) - Expression evaluation utilities.
+- `codetools` (0.2-20) - Tools for analyzing R code.
+- `cli` (3.6.3) - Command-line interface utilities.
+- `xtable` (1.8-4) - LaTeX and HTML table conversion.
+- `geometry` (0.5.0) - Computational geometry functions.
+- `Rdpack` (2.6.1) - R documentation utilities.
+- `munsell` (0.5.1) - Color handling.
+- `jquerylib` (0.1.4) - jQuery dependency for web apps.
+- `Rcpp` (1.0.13) - R and C++ integration.
+- `doSNOW` (1.0.20) - Parallel computing using snow.
+- `globals` (0.16.3) - Global variable management.
+- `coda` (0.19-4.1) - Markov Chain Monte Carlo diagnostics.
+- `parallel` (4.4.1) - Parallel computing functions.
+- `picante` (1.8.2) - Phylogenetic analysis of communities.
+- `gap.datasets` (0.0.6) - Datasets for genetic analysis.
+- `listenv` (0.9.1) - Environment for lists.
+- `viridisLite` (0.4.2) - Color scales.
+- `mvtnorm` (1.3-1) - Multivariate normal distributions.
+- `scales` (1.3.0) - Scales for plotting.
+- `rlang` (1.1.4) - Functions for working with R expressions.
+- `cowplot` (1.1.3) - Publication-ready plots with ggplot2.
+- `fastmatch` (1.1-4) - Fast matching for R objects.
