@@ -29,13 +29,13 @@ This directory is organised into the following folders and files:
 
 The columns in the ecosystems_info file represent the following (this file uses two synonyms for ecosystem-patch and culture):
 
-culture_ID: ID of the ecosystem\
-system_nr: ID of the system (a system is either an unconnected ecosystem or a connected meta-ecosystem; in other words, an unconnected ecosystem has its own system number, while two connected ecosystems share the same system number)\
-treatment_replicate: treatment replicate\
-disturbance: level of disturbance\
-disturbance_volume: volume of the ecosystem that was disturbed (ml)\
-patch_size: size of the ecosystem (S = small, M = medium, L = large)\
-patch_size_volume: size of the ecosystem (ml) \
-metaecosystem: indicates whether the ecosystem is part of a connected meta-ecosystem\
-metaecosystem_type: type of connected meta-ecosystem the ecosystem is part of (S_S = small-small, M_M = medium-medium, L_L = large-large, S_L = small-large)\
-eco_metaeco_type: ecosystem type followed by the connected meta-ecosystem it is part of in parentheses
+- **culture_ID**: ID of the ecosystem  
+- **system_nr**: ID of the system (a system is either an unconnected ecosystem or a connected meta-ecosystem; unconnected ecosystems have their own system number, while connected ecosystems share the same system number)  
+- **treatment_replicate**: Treatment replicate  
+- **disturbance**: Level of disturbance  
+- **disturbance_volume**: Volume of the ecosystem that was disturbed (ml)  
+- **patch_size**: Size of the ecosystem (S = small, M = medium, L = large)  
+- **patch_size_volume**: Size of the ecosystem (ml)  
+- **metaecosystem**: Indicates whether the ecosystem is part of a connected meta-ecosystem  
+- **metaecosystem_type**: Type of connected meta-ecosystem (S_S = small-small, M_M = medium-medium, L_L = large-large, S_L = small-large)  
+- **eco_metaeco_type**: Ecosystem type followed by the connected meta-ecosystem it is part of in parentheses
