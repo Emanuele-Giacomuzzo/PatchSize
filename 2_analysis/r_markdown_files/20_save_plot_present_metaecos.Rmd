@@ -146,7 +146,7 @@ for(i in 1:length(alpha_beta_plot_number$alpha)){
   png(file = here("..",
                   "3_results", 
                   "figures", 
-                  disturbance_selected, 
+                  paste0(disturbance_selected, "_disturbance"), 
                   "presentations", 
                   paste0(i, "_metaecos_diversity.png")),
       width = presentation_figure_width,

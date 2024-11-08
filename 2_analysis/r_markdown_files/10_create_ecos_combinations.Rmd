@@ -110,11 +110,8 @@ combinations_M_and_M_high = combinat::combn(ID_unconnected_M_high,
                                    connection,
                                    ID_first_ecosystem,
                                    ID_second_ecosystem)
-```
 
-```{r echo = FALSE}
-
-# --- TEST CODE --- #
+# Test code
 
 expect_equal(nrow(combinations_S_and_L_low),
              length(ID_unconnected_S_low) * length(ID_unconnected_L_low))
@@ -172,11 +169,8 @@ ecos_combin = rbind(combinations_unconnected_metaeco,
   mutate(ecosystems_combined = paste0(ID_first_ecosystem, "|", ID_second_ecosystem))
 
 n_ecosystems_combinations = nrow(ecos_combin)
-```
 
-```{r echo = FALSE}
-
-# --- TEST CODE --- #
+# Test code
 
 expect_equal(nrow(ecos_combin), 
              nrow(combinations_unconnected_metaeco) + nrow(combinations_connected_metaeco))

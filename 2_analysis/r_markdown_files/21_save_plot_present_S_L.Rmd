@@ -107,7 +107,7 @@ for(i in 1:length(ecosystem_type_all)+1){
   png(file = here("..",
                   "3_results", 
                   "figures", 
-                  disturbance_selected, 
+                  paste0(disturbance_selected, "_disturbance"), 
                   "presentations", 
                   paste0("ecosystems_connected_diversity_", i, ".png")),
       width = presentation_figure_width,

@@ -122,7 +122,7 @@ p
 png(file = here("..",
                 "3_results", 
                 "figures", 
-                disturbance_selected, 
+                paste0(disturbance_selected, "_disturbance"), 
                 "paper", 
                 "ecosystem_photo_heterotrophic_ratio.png"),
     width = paper_width,

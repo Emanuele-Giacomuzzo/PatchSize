@@ -9,7 +9,7 @@ editor_options:
 
 ### Dataset with ecosystems (`ds_ecosystems`)
 
-In this dataset (`ds_ecosystems`) each row represents a ecosystem at a time point. 
+In this dataset (`ds_ecosystems`) each row represents an ecosystem at a time point. 
 
 ```{r}
 

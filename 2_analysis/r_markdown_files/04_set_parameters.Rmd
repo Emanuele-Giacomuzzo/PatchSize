@@ -16,7 +16,7 @@ start_time = Sys.time()
 knitr::opts_chunk$set(message = FALSE,
                       cache = FALSE,
                       autodep = FALSE)
-recompute_lengthy_analyses = TRUE
+recompute_lengthy_analyses = FALSE
 plot_model_residuals_metaecos = FALSE
 ```
 

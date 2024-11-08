@@ -124,7 +124,7 @@ p_combined = ggarrange(plot.single.plot("shannon") +
 png(file = here("..",
                 "3_results", 
                 "figures", 
-                disturbance_selected, 
+                paste0(disturbance_selected, "_disturbance"), 
                 "paper", 
                 "ecosystems_M_diversity_n_function.png"),
     width = paper_width,
