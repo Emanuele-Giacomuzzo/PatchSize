@@ -1,0 +1,328 @@
+---
+title: "Find combination sets for unconnected SL / MM systems"
+output: html_document
+date: "2023-05-19"
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r unconnected-SL-systems-combination-sets-create}
+
+# --- CREATE SETS FOR SMALL-LARGE UNCONNECTED META-ECOSYSTEMS --- #
+# Create sets for Small-Large unconnected meta-ecosystems where in each set a 
+# small and a large ecosystems are paired differently (keep the small ecosystems 
+# on the same order and perform permutations on the large ecosystems)
+
+# Initialize a list to store combinations for each disturbance level
+
+SL_unconn_ecos_comb_sets <- vector("list",
+                                  length(disturbance_levels))
+
+# Loop over each disturbance level
+
+for (disturbance_i in 1:length(disturbance_levels)) {
+  
+  # Extract unique IDs for small and large unconnected ecosystems for the 
+  # current disturbance level
+  
+  ID_small_ecosystems = ds_ecosystems %>%
+    filter(disturbance == disturbance_levels[disturbance_i],
+           ecosystem_type == "Small unconnected") %>%
+    pull(ecosystem_ID) %>%
+    unique()
+  
+  ID_large_ecosystems = ds_ecosystems %>%
+    filter(disturbance == disturbance_levels[disturbance_i],
+           ecosystem_type == "Large unconnected") %>%
+    pull(ecosystem_ID) %>%
+    unique()
+  
+  #Force small and large ecosystems vectors to have the same length
+  
+  length_difference <- length(ID_small_ecosystems) - length(ID_large_ecosystems)
+  
+  # Ensure small and large ecosystems vectors have the same length
+  
+  if (length_difference > 0) {
+    
+    ID_large_ecosystems = c(ID_large_ecosystems,
+                       rep("Patch taken off",
+                           times = abs(length(ID_small_ecosystems) - 
+                                       length(ID_large_ecosystems))))
+    
+    } else if (length_difference < 0) {
+      
+    ID_small_ecosystems = c(ID_small_ecosystems,
+                         rep("Patch taken off",
+                             times = abs(length(ID_large_ecosystems) - 
+                                         length(ID_small_ecosystems))))
+    }
+
+  # Generate permutations of large ecosystem IDs
+  
+  permutations_large = permn(ID_large_ecosystems)
+  
+  # Create a dataframe for combinations of small and large ecosystems
+  
+  SL_unconn_ecos_comb_sets[[disturbance_i]] = data.frame(
+    disturbance = disturbance_levels[disturbance_i],
+    metaecosystem_type = "Small-Large",
+    connection = "unconnected",
+    ID_first_ecosystem = rep(ID_small_ecosystems, 
+                             times = length(permutations_large)),
+    ID_second_ecosystem = unlist(permutations_large),
+    set = rep(1 : length(permutations_large), 
+              each = length(ID_small_ecosystems)))
+
+  # Verify the number of rows in the dataframe matches the expected count
+  
+  expect_equal(nrow(SL_unconn_ecos_comb_sets[[disturbance_i]]),
+               length(ID_small_ecosystems) * length(permutations_large))
+  
+  # Filter out any rows with "Patch taken off" and convert IDs to double
+  
+  SL_unconn_ecos_comb_sets[[disturbance_i]] = SL_unconn_ecos_comb_sets[[disturbance_i]] %>%
+    filter(!ID_first_ecosystem == "Patch taken off",
+           !ID_second_ecosystem == "Patch taken off") %>%
+    mutate(ID_first_ecosystem = as.double(ID_first_ecosystem),
+           ID_second_ecosystem = as.double(ID_second_ecosystem)) %>%
+    full_join(ecos_combin %>%
+                filter(disturbance == disturbance_levels[disturbance_i], 
+                       metaecosystem_type == "Small-Large",
+                       connection == "unconnected")) 
+
+}
+
+# Store the combinations before binding into a single dataframe
+
+SL_unconn_ecos_comb_sets_before_binding = SL_unconn_ecos_comb_sets
+
+# Bind all the sets into a single dataframe
+
+SL_unconn_ecos_comb_sets = SL_unconn_ecos_comb_sets %>%
+  bind_rows()
+
+# Test: check that the total number of rows matches the expected sum of 
+# combinations 
+
+expect_equal(nrow(SL_unconn_ecos_comb_sets),
+             nrow(SL_unconn_ecos_comb_sets_before_binding[[1]]) + 
+                  nrow(SL_unconn_ecos_comb_sets_before_binding[[2]]))
+
+# Test: verify that the unique system numbers in the final dataframe match 
+# those in the original combinations
+
+expect_equal(length(SL_unconn_ecos_comb_sets %>% 
+                      pull(system_nr) %>% 
+                      unique()),
+             length(ecos_combin %>%
+                      filter(metaecosystem_type == "Small-Large",
+                             connection == "unconnected") %>%
+                      pull(system_nr) %>%
+                      unique()))
+```
+
+```{r unconnected-MM-systems-combination-sets-create}
+
+# --- CREATE SETS FOR MEDIUM-MEDIUM UNCONNECTED META-ECOSYSTEMS --- #
+
+# Create sets for Medium-Medium unconnected meta-ecosystems where in each set 
+# two different medium ecosystems are paired. To do so, initialise 
+# MM_unconn_ecos_comb_sets. Assign 10^4 rows to each matrix so that we have 
+# enough rows not to run out of them when we try to assign values to them. 
+# Assign 4 columns which will include ecosystem_ID of the first system, second 
+# ecosystem_ID of the fist system, ecosystem_ID of the second system, and second 
+# ecosystem_ID of the second system.  
+
+# Initialize an empty list to store combinations for each disturbance level
+
+MM_unconn_ecos_comb_sets = list()
+
+# Assign an empty matrix with 10^4 rows and 4 columns for each disturbance level
+
+for(disturbance_i in 1:length(disturbance_levels)){
+  
+  MM_unconn_ecos_comb_sets[[disturbance_i]] <- matrix(nrow = 10 ^ 4, 
+                                                 ncol = 4)
+  
+}
+
+# Loop over each disturbance level to generate combinations of medium ecosystems
+
+for (disturbance_i in 1:length(disturbance_levels)) {
+  
+  # Extract unique IDs for medium unconnected ecosystems for the current 
+  # disturbance level
+  
+  ID_medium_ecosystems = ds_ecosystems %>%
+    filter(disturbance == disturbance_levels[disturbance_i],
+           ecosystem_type == "Medium unconnected") %>%
+    pull(ecosystem_ID) %>%
+    unique()
+  
+  # Generate all combinations of two medium ecosystems
+  
+  MM_unconnected_systems = combn(ID_medium_ecosystems, 
+                              2) %>%
+    t()
+  
+  matrix_row = 0
+  
+  # Loop through combinations to find valid pairs of unconnected ecosystems
+  
+  for (first_system_i in 1:nrow(MM_unconnected_systems)) {
+    
+    # Identify the first ecosystem
+    
+    first_system = MM_unconnected_systems[first_system_i, ]
+    
+    for (second_system_i in 1:nrow(MM_unconnected_systems)) {
+      
+      # Identify the second ecosystem
+      
+      second_system = MM_unconnected_systems[second_system_i, ]
+      
+      # Check for shared elements between the two systems
+      
+      shared_elements_among_systems = intersect(first_system,
+                                                second_system)
+      
+      # If there are no shared elements, store the combination
+      
+      if (length(shared_elements_among_systems) == 0) {
+        
+        matrix_row = matrix_row + 1
+        
+        #Make first and second system into a set
+        
+        MM_unconn_ecos_comb_sets[[disturbance_i]][matrix_row,] = c(first_system,
+                                                                   second_system)
+        
+      }
+    }
+  }
+  
+  # Convert the matrix to a dataframe and remove NA rows
+  
+  MM_unconn_ecos_comb_sets[[disturbance_i]] = MM_unconn_ecos_comb_sets[[disturbance_i]] %>%
+    as.data.frame() %>%
+    drop_na()
+  
+  # Test: ensure no duplicate IDs in the combinations
+  
+  expect_equal(MM_unconn_ecos_comb_sets[[disturbance_i]] %>% 
+                 filter(V1 == V2 | 
+                        V1 == V3 | 
+                        V1 == V4 | 
+                        V2 == V3 | 
+                        V2 == V4 | 
+                        V3 == V4) %>% 
+                 nrow(),
+               0)
+  
+  # Reorder the dataset with all the ecosystem combinations
+  
+  MM_unconn_ecos_comb_sets_reordered = data.frame(ID_first_ecosystem = NA,
+                                          ID_second_ecosystem = NA,
+                                          set = NA)
+  
+  for (set_input in 1:nrow(MM_unconn_ecos_comb_sets[[disturbance_i]])) {
+    MM_unconn_ecos_comb_sets_reordered = MM_unconn_ecos_comb_sets_reordered %>%
+      add_row(ID_first_ecosystem = MM_unconn_ecos_comb_sets[[disturbance_i]][set_input, 1],
+              ID_second_ecosystem = MM_unconn_ecos_comb_sets[[disturbance_i]][set_input, 2],
+              set = set_input) %>%
+      add_row(ID_first_ecosystem = MM_unconn_ecos_comb_sets[[disturbance_i]][set_input, 3],
+              ID_second_ecosystem = MM_unconn_ecos_comb_sets[[disturbance_i]][set_input, 4],
+              set = set_input)
+  }
+  
+  #Add to a list
+  
+  MM_unconn_ecos_comb_sets[[disturbance_i]] = MM_unconn_ecos_comb_sets_reordered %>%
+    drop_na() %>%
+    mutate(disturbance = disturbance_levels[disturbance_i],
+           metaecosystem_type = "Medium-Medium",
+           connection = "unconnected")
+  
+  #Add system nr
+  
+  ID_combinations_MM_unconnected = ecos_combin %>%
+    filter(disturbance == disturbance_levels[disturbance_i],
+           metaecosystem_type == "Medium-Medium",
+           connection == "unconnected")
+  
+  MM_unconn_ecos_comb_sets[[disturbance_i]] = full_join(MM_unconn_ecos_comb_sets[[disturbance_i]],
+                                                   ID_combinations_MM_unconnected)
+  
+}
+
+# Bind all sets of medium-medium unconnected combinations into a single 
+# dataframe
+
+MM_unconn_ecos_comb_sets = MM_unconn_ecos_comb_sets %>%
+  bind_rows()
+
+# Test
+
+expect_equal(length(MM_unconn_ecos_comb_sets %>%
+                      pull(system_nr) %>%
+                      unique()),
+             length(ecos_combin %>%
+                      filter(metaecosystem_type == "Medium-Medium",
+                             connection == "unconnected") %>%
+                      pull(system_nr) %>%
+                      unique()))
+```
+
+```{r unconnected-systems-combination-sets-join}
+
+# --- BIND SL AND MM UNCONNECTED META-ECOSYSTEMS SETS --- #
+
+ecos_combin_unconn_sets = rbind(SL_unconn_ecos_comb_sets, 
+                                MM_unconn_ecos_comb_sets) %>%
+  select(disturbance,
+         metaecosystem_type,
+         connection,
+         set,
+         system_nr,
+         ID_first_ecosystem,
+         ID_second_ecosystem)
+```
+
+```{r}
+
+# --- FIND SETS OF SETS --- #
+
+# Find the number of combinations of SL & MM low or high disturbance
+
+n_SL_low_sets = ecos_combin_unconn_sets %>%
+  filter(metaecosystem_type == "Small-Large",
+         disturbance == "low") %>%
+  pull(set) %>%
+  max()
+
+n_SL_high_sets = ecos_combin_unconn_sets %>%
+  filter(metaecosystem_type == "Small-Large",
+         disturbance == "high") %>%
+  pull(set) %>%
+  max()
+
+n_MM_low_sets = ecos_combin_unconn_sets %>%
+  filter(metaecosystem_type == "Medium-Medium",
+         disturbance == "low") %>%
+  pull(set) %>%
+  max()
+
+n_MM_high_sets = ecos_combin_unconn_sets %>%
+  filter(metaecosystem_type == "Medium-Medium",
+         disturbance == "high") %>%
+  pull(set) %>%
+  max()
+
+# Find combinations of sets
+
+ecos_combin_unconn_sets_of_sets <- expand.grid(set_SL_low = 1:n_SL_low_sets,
+                                            set_SL_high = 1:n_SL_high_sets,
+                                            set_MM_low = 1:n_MM_low_sets,
+                                            set_MM_high = 1:n_MM_high_sets)
+```

@@ -1,0 +1,159 @@
+---
+title: ""
+author: "Emanuele Giacomuzzo"
+date: "2022-08-07"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+### Dataset with individuals (ds_individuals)
+
+In this dataset (`ds_individuals`) each row represents an individual at a time point.
+
+```{r}
+
+# --- IMPORT TIME POINT 0 --- #
+
+# Import the individual data of t0. We considered cultures to be all the same at 
+# the beginning (t0). Because of this reason, we filmed only the bottles from
+# which cultures were assembled. Because we want to plot also t0 for the 
+# different treatments, we want to assign the video of bottles to all cultures 
+# at t0.
+
+ds_individuals_t0_not_elongated = read.csv(here("..",
+                                                "1_data", 
+                                                "individuals_13_threshold", 
+                                                "t0.csv")) %>%
+  
+  # Rename columns
+  
+  rename(body_area_µm2 = mean_area) %>%
+  
+  # Extract numeric values from 'time_point' and 'file' columns, add day and 
+  # video replicate
+  
+  mutate(time_point =  as.numeric(str_extract(time_point, "\\d+")),
+         day = 0,
+         file =  as.numeric(str_extract(file, "\\d+")),
+         video_replicate = file) %>%
+  
+  # Select relevant columns
+  
+  select(time_point,
+         day,
+         video_replicate,
+         file,
+         id,
+         N_frames,
+         body_area_µm2)
+
+# Elongate 't0' dataset by replicating rows based on the number of ecosystems
+
+ds_individuals_t0_elongated = ds_individuals_t0_not_elongated %>%
+  map_dfr(.x = 1 : nrow(ecosystems_info),
+          .f = ~ ds_individuals_t0_not_elongated) %>% 
+  arrange(id) %>% # Id refers to an individual
+  
+  # Add ecosystem_ID by repeating it across rows
+  
+  mutate(ecosystem_ID = rep(1 : nrow(ecosystems_info),
+                          times = nrow(ds_individuals_t0_not_elongated))) %>%
+  
+  # Select relevant columns
+  
+  select(time_point,
+         day,
+         video_replicate,
+         file,
+         ecosystem_ID,
+         id,
+         N_frames,
+         body_area_µm2)
+
+# Test: Check that row count matches the expected elongated dataset size
+
+expect_equal(nrow(ds_individuals_t0_not_elongated) * nrow(ecosystems_info),
+             nrow(ds_individuals_t0_elongated))
+```
+
+```{r}
+
+# --- IMPORT TIME POINTS 1 TO 7 --- #
+
+# Initialise an empty list to store data for time points t1 to t7
+
+ds_individuals_t1_to_t7 <- list()
+
+# Loop over each time point (excluding t0) to import data
+
+for (time_point_i in time_points_without_t0) {
+  
+  # Read each time point's CSV file, rename columns, and set up new columns
+  
+  ds_individuals_t1_to_t7[[time_point_i]] <- read.csv(here("..", 
+                                                           "1_data", 
+                                                           "individuals_13_threshold", 
+                                                           paste0("t", 
+                                                                  time_point_i, 
+                                                                  ".csv"))) %>%
+    
+    # Rename columns
+    
+    rename(ecosystem_ID = culture_ID,
+           body_area_µm2 = mean_area) %>%
+    mutate(time_point = as.numeric(str_extract(time_point, "\\d+")),
+           day = time_point_day$day[time_point_day$time_point == time_point_i], # Map day based on time_point
+           file = as.numeric(str_extract(file, "\\d+")),
+           video_replicate = ceiling(file / n_cultures)) # Group files into video replicates
+}
+
+# Combine all imported time points (excluding t0) into a single data frame
+
+ds_individuals_t1_to_t7 <- ds_individuals_t1_to_t7 %>%
+  bind_rows() %>%
+  
+  # Select relevant columns for the final dataset
+
+  select(time_point, 
+         day, 
+         video_replicate, 
+         file, 
+         ecosystem_ID, 
+         id, 
+         N_frames,
+         body_area_µm2)
+```
+
+```{r}
+
+# --- CREATE DS_INDIVIDUALS --- #
+
+# Bind time points 0 with time points 1 to 7 and add ecosystem information
+
+ds_individuals = rbind(ds_individuals_t0_elongated,
+                       ds_individuals_t1_to_t7) %>%
+  left_join(ecosystems_info,
+            by = "ecosystem_ID") %>%
+  
+  # Take off problematic videos & ecosystems
+  
+  filter(!(time_point %in% videos_to_take_off$time_point & file %in% videos_to_take_off$file),
+         !ecosystem_ID %in% ecosystems_to_take_off) %>%
+  
+  # Select relevant columns
+  
+  select(disturbance,
+         time_point,
+         day,
+         video_replicate,
+         ecosystem_ID,
+         system_nr,
+         file,
+         ecosystem_size,
+         ecosystem_size_ml,
+         metaecosystem,
+         metaecosystem_type,
+         body_area_µm2,
+         N_frames)
+```

@@ -1,0 +1,161 @@
+---
+title: ""
+output: html_document
+date: "2022-11-22"
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+
+# --- COMPUTE META-ECOSYSTEMS FOR EACH TIME POINT --- #
+
+# Set parameters and initialise
+
+ds_metaecosystems = list()
+row_i = 0
+
+# Compute meta-ecosystems
+
+for (combination_i in 1:n_ecosystems_combinations) {
+  for (time_point_selected in time_points) {
+    
+    row_i = row_i + 1
+    
+    current_day = sampling_days[time_point_selected + 1]
+    current_system_nr = ecos_combin[combination_i, ]$system_nr
+    current_combination = ecos_combin[combination_i, ]$ecosystems_combined
+    current_disturbance = ecos_combin[combination_i, ]$disturbance
+    current_metaeco_type = ecos_combin[combination_i, ]$metaecosystem_type
+    current_connection = ecos_combin[combination_i, ]$connection
+    current_IDs = c(ecos_combin[combination_i, ]$ID_first_ecosystem,
+                    ecos_combin[combination_i, ]$ID_second_ecosystem)
+    
+    if (current_system_nr %in% metaecosystems_to_take_off)
+      next
+    
+    if (current_IDs[1] == current_IDs[2])
+      next
+    
+    species_vector_two_ecosystems = ds_ecosystems %>%
+      filter(time_point == time_point_selected,
+             ecosystem_ID %in% current_IDs) %>%
+      ungroup() %>%
+      select(all_of(protist_species_indiv_per_ml))
+    
+    absence_presence_two_ecosystems <-
+      ifelse(species_vector_two_ecosystems > 0, 1, 0)
+    
+    #Alpha diversity: Shannon (mean between the two ecosystems)
+    
+    shannon_ecosystem_1 = diversity(species_vector_two_ecosystems[1, ], 
+                                    index = "shannon")
+    shannon_ecosystem_2 = diversity(species_vector_two_ecosystems[2, ], 
+                                    index = "shannon")
+    shannon_value = (shannon_ecosystem_1 + shannon_ecosystem_2) / 2
+    
+    #Alpha diversity: Species richness (mean between the two ecosystems)
+    
+    richness_ecosystem_1 = specnumber(species_vector_two_ecosystems[1, ])
+    richness_ecosystem_2 = specnumber(species_vector_two_ecosystems[2, ])
+    mean_richness_value = (richness_ecosystem_1 + richness_ecosystem_2) / 2
+    
+    #Beta diversity: Jaccard
+    
+    jaccard_index_value = vegdist(species_vector_two_ecosystems,
+                                  method = "jaccard") %>%
+      as.numeric()
+    
+    #Beta diversity: Bray Curtis
+    
+    bray_curtis_value = vegdist(species_vector_two_ecosystems,
+                                method = "bray") %>%
+      as.numeric()
+    
+    #Beta diversity: partitioning of beta diversity from Sorensen index into 
+    # turnover (Simpson pair-wise dissimilarity) and nestedness 
+    # (nestedness-fraction of Sorensen)
+    
+    betapart_core_object = betapart.core(absence_presence_two_ecosystems)
+    beta_spatial_turnover_value = beta.pair(betapart_core_object)$beta.sim %>% 
+      as.double()
+    beta_nestedness_value = beta.pair(betapart_core_object)$beta.sne %>% 
+      as.double()
+    beta_total_value = beta.pair(betapart_core_object)$beta.sor %>% 
+      as.double()
+    
+    #Gamma diversity: Meta-ecosystem richness
+    
+    metaecosystem_richness_value = colSums(species_vector_two_ecosystems) %>%
+      specnumber()
+    
+    #Put everything together
+    
+    ds_metaecosystems[[row_i]] = ds_ecosystems %>%
+      filter(ecosystem_ID %in% current_IDs,
+             time_point == time_point_selected) %>%
+      summarise(total_metaecosystem_bioarea_mm2 = sum(bioarea_tot_mm2),
+                total_metaecosystem_Ble_indiv = sum(Ble_tot_indiv),
+                total_metaecosystem_Cep_indiv = sum(Cep_tot_indiv),
+                total_metaecosystem_Col_indiv = sum(Col_tot_indiv),
+                total_metaecosystem_Eug_indiv = sum(Eug_tot_indiv),
+                total_metaecosystem_Eup_indiv = sum(Eup_tot_indiv),
+                total_metaecosystem_Lox_indiv = sum(Lox_tot_indiv),
+                total_metaecosystem_Pau_indiv = sum(Pau_tot_indiv),
+                total_metaecosystem_Pca_indiv = sum(Pca_tot_indiv),
+                total_metaecosystem_Spi_indiv = sum(Spi_tot_indiv),
+                total_metaecosystem_Spi_te_indiv = sum(Spi_te_tot_indiv),
+                total_metaecosystem_Tet_indiv = sum(Tet_tot_indiv)) %>%
+      mutate(system_nr = current_system_nr,
+             ecosystems_combined = current_combination,
+             metaecosystem_type = current_metaeco_type,
+             ecosystem_size_symmetry = case_when(
+               metaecosystem_type == "Small-Large" ~ "asymmetric",
+               metaecosystem_type == "Medium-Medium" ~ "symmetric",
+               metaecosystem_type == "Small-Small" ~ "symmetric",
+               metaecosystem_type == "Large-Large" ~ "symmetric"),
+             connection = current_connection,
+             disturbance = current_disturbance,
+             time_point = time_point_selected,
+             day = current_day,
+             jaccard_index = jaccard_index_value,
+             bray_curtis = bray_curtis_value,
+             beta_spatial_turnover = beta_spatial_turnover_value,
+             beta_nestedness = beta_nestedness_value,
+             beta_total = beta_total_value,
+             metaecosystem_richness = metaecosystem_richness_value,
+             mean_shannon = shannon_value,
+             mean_richness = mean_richness_value) %>%
+      ungroup() %>%
+      as.data.frame() %>%
+      select(time_point,
+             day,
+             system_nr,
+             ecosystems_combined,
+             disturbance,
+             metaecosystem_type,
+             ecosystem_size_symmetry,
+             connection,
+             mean_shannon,
+             mean_richness,
+             jaccard_index,
+             bray_curtis,
+             beta_spatial_turnover,
+             beta_nestedness,
+             beta_total,
+             metaecosystem_richness,
+             total_metaecosystem_bioarea_mm2,
+             paste0("total_metaecosystem_", protist_species, "_indiv"))
+  }
+}
+
+# Bind everything together
+
+ds_metaecosystems = ds_metaecosystems %>%
+  bind_rows()
+
+# Test: check the number of rows are right
+
+expect_equal(nrow(ds_metaecosystems), 
+             n_time_points * n_ecosystems_combinations)
+```

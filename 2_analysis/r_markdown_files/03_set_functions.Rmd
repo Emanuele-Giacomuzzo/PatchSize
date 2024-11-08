@@ -10,9 +10,13 @@ editor_options:
 
 # --- IMPORT FUNCTIONS --- #
 
-functions_paths = list.files(here("functions"), 
-                             pattern = ".R$", 
-                             full.names = TRUE)
-lapply(functions_paths, 
-       source)
+# Get list of .R files in "functions" folder with full paths
+
+functions_paths <- list.files(here("functions"), 
+                              pattern = ".R$", 
+                              full.names = TRUE)
+
+# Source each .R file to load functions into the environment
+
+lapply(functions_paths, source)
 ```

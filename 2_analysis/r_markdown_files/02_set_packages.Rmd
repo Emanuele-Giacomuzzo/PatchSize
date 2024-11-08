@@ -58,6 +58,7 @@ library("Rmisc") # For summarySE
 library("combinat")
 library("emmeans") # For contrasts
 library("broom.mixed") # To clean up mixed effect models
+library("optimx")
 
 # Conflicts
 

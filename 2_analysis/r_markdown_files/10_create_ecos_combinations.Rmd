@@ -1,0 +1,183 @@
+---
+title: "Find combinations of ecosystems"
+output: html_document
+date: "2023-05-02"
+editor_options: 
+  chunk_output_type: console
+---
+
+### Dataset with meta-ecosystems (`ds_metaecosystems`)
+
+In this dataset (`ds_metaecosystems`) each row represents a meta-ecosystem at a time point. 
+
+```{r}
+
+# --- FIND IDS OF UNCONNECTED ECOSYSTEMS --- #
+
+ID_unconnected_S_low = ds_ecosystems %>%
+  filter(ecosystem_type == "Small unconnected",
+         disturbance == "low") %>%
+  pull(ecosystem_ID) %>%
+  unique()
+
+ID_unconnected_M_low = ds_ecosystems %>%
+  filter(ecosystem_type == "Medium unconnected",
+         disturbance == "low") %>%
+  pull(ecosystem_ID) %>%
+  unique()
+
+ID_unconnected_L_low = ds_ecosystems %>%
+  filter(ecosystem_type == "Large unconnected",
+         disturbance == "low") %>%
+  pull(ecosystem_ID) %>%
+  unique()
+
+ID_unconnected_S_high = ds_ecosystems %>%
+  filter(ecosystem_type == "Small unconnected",
+         disturbance == "high") %>%
+  pull(ecosystem_ID) %>%
+  unique()
+
+ID_unconnected_M_high = ds_ecosystems %>%
+  filter(ecosystem_type == "Medium unconnected",
+         disturbance == "high") %>%
+  pull(ecosystem_ID) %>%
+  unique()
+
+ID_unconnected_L_high = ds_ecosystems %>%
+  filter(ecosystem_type == "Large unconnected",
+         disturbance == "high") %>%
+  pull(ecosystem_ID) %>%
+  unique()
+```
+
+```{r unconnected-IDs-find}
+
+# --- FIND COMBINATIONS OF ECOSYSTEMS TO CREATE UNCONNECTED META-ECOSYSTEMS --- #
+
+combinations_S_and_L_low = crossing(ID_unconnected_S_low,
+                                    ID_unconnected_L_low) %>%
+                            mutate(disturbance = "low",
+                                   metaecosystem_type = "Small-Large",
+                                   connection = "unconnected") %>%
+                            rename(ID_first_ecosystem = ID_unconnected_S_low,
+                                   ID_second_ecosystem = ID_unconnected_L_low) %>%
+                            select(disturbance,
+                                   metaecosystem_type,
+                                   connection,
+                                   ID_first_ecosystem,
+                                   ID_second_ecosystem)
+
+combinations_S_and_L_high = crossing(ID_unconnected_S_high,
+                                     ID_unconnected_L_high) %>%
+                            mutate(disturbance = "high",
+                                   metaecosystem_type = "Small-Large",
+                                   connection = "unconnected") %>%
+                            rename(ID_first_ecosystem = ID_unconnected_S_high,
+                                   ID_second_ecosystem = ID_unconnected_L_high) %>%
+                            select(disturbance,
+                                   metaecosystem_type,
+                                   connection,
+                                   ID_first_ecosystem,
+                                   ID_second_ecosystem)
+
+combinations_M_and_M_low = combinat::combn(ID_unconnected_M_low,
+                                           m = 2) %>%
+                            t() %>%
+                            as.data.frame() %>%
+                            rename(ID_first_ecosystem = V1,
+                                   ID_second_ecosystem = V2) %>%
+                            mutate(disturbance = "low",
+                                   metaecosystem_type = "Medium-Medium",
+                                   connection = "unconnected") %>%
+                            select(disturbance,
+                                   metaecosystem_type,
+                                   connection,
+                                   ID_first_ecosystem,
+                                   ID_second_ecosystem)
+
+combinations_M_and_M_high = combinat::combn(ID_unconnected_M_high,
+                                            m = 2) %>%
+                            t() %>%
+                            as.data.frame() %>%
+                            rename(ID_first_ecosystem = V1,
+                                   ID_second_ecosystem = V2) %>%
+                            mutate(disturbance = "high",
+                                   metaecosystem_type = "Medium-Medium",
+                                   connection = "unconnected") %>%
+                            select(disturbance,
+                                   metaecosystem_type,
+                                   connection,
+                                   ID_first_ecosystem,
+                                   ID_second_ecosystem)
+```
+
+```{r echo = FALSE}
+
+# --- TEST CODE --- #
+
+expect_equal(nrow(combinations_S_and_L_low),
+             length(ID_unconnected_S_low) * length(ID_unconnected_L_low))
+expect_equal(nrow(combinations_S_and_L_high),
+             length(ID_unconnected_S_high) * length(ID_unconnected_L_high))
+expect_equal(nrow(combinations_M_and_M_low),
+             sum(seq(length(ID_unconnected_M_low) - 1)))
+expect_equal(nrow(combinations_M_and_M_high),
+             sum(seq(length(ID_unconnected_M_high) - 1)))
+```
+
+```{r}
+
+# --- BIND ECOSYSTEM COMBINATIONS --- #
+
+combinations_unconnected_metaeco = rbind(combinations_S_and_L_low,
+                                         combinations_S_and_L_high,
+                                         combinations_M_and_M_low,
+                                         combinations_M_and_M_high) %>% 
+  mutate(system_nr = 1001:(1000 + nrow(.))) %>%
+  select(system_nr,
+         disturbance,
+         metaecosystem_type,
+         connection,
+         ID_first_ecosystem,
+         ID_second_ecosystem)
+```
+
+```{r meta-ecosystems-create}
+
+# --- FIND COMBINATIONS OF ECOSYSTEMS TO CREATE CONNECTED META-ECOSYSTEMS --- #
+
+combinations_connected_metaeco = ds_ecosystems %>%
+  filter(time_point == 0,
+         metaecosystem == "yes") %>%
+  select(system_nr,
+         disturbance,
+         metaecosystem_type,
+         ecosystem_ID) %>%
+  group_by(system_nr,
+           disturbance,
+           metaecosystem_type) %>%
+  summarise(ID_first_ecosystem = (mean(ecosystem_ID) - 0.5),
+            ID_second_ecosystem = (mean(ecosystem_ID) + 0.5)) %>%
+  mutate(connection = "connected") %>%
+  as.data.frame()
+```
+
+```{r unconnected-and-metaeco-system-join}
+
+# --- BIND COMBINATIONS OF ECOSYSTEMS TO CREATE UNCONNECTED & CONNECTED META-ECOSYSTEMS --- #
+
+ecos_combin = rbind(combinations_unconnected_metaeco,
+                               combinations_connected_metaeco) %>%
+  mutate(ecosystems_combined = paste0(ID_first_ecosystem, "|", ID_second_ecosystem))
+
+n_ecosystems_combinations = nrow(ecos_combin)
+```
+
+```{r echo = FALSE}
+
+# --- TEST CODE --- #
+
+expect_equal(nrow(ecos_combin), 
+             nrow(combinations_unconnected_metaeco) + nrow(combinations_connected_metaeco))
+```

@@ -1,5 +1,5 @@
 ---
-title: "PatchSize"
+title: "Ecosystem Size Mediates the Effects of Resource Flows on Species Diversity and Ecosystem Function at Different Scales"
 author: "Emanuele Giacomuzzo"
 date: "`r format(Sys.time(), '%Y-%m-%d %H:%M')`"
 html_document:
@@ -37,58 +37,61 @@ editor_options:
 
 ## Data {.tabset .tabset-dropdown}
 
-```{r child = here("r_markdown_files", "05_create_ecos_info.Rmd")}
+```{r child = here("r_markdown_files", "05_generate_data_video_analysis.Rmd"), class.source = "fold-show"}
 ```
 
-```{r child = here("r_markdown_files", "06_create_ds_individuals.Rmd")}
+```{r child = here("r_markdown_files", "06_generate_data_species_id.Rmd"), class.source = "fold-show"}
 ```
 
-```{r child = here("r_markdown_files", "07_create_ds_ecos.Rmd")}
+```{r child = here("r_markdown_files", "07_create_ecos_info.Rmd")}
 ```
 
-```{r child = here("r_markdown_files", "08_create_ds_ecos_effect_size.Rmd"), eval = FALSE}
+```{r child = here("r_markdown_files", "08_create_ds_individuals.Rmd")}
 ```
 
-```{r child = here("r_markdown_files", "09_create_ecos_combinations.Rmd")}
+```{r child = here("r_markdown_files", "09_create_ds_ecos.Rmd")}
 ```
 
-```{r child = here("r_markdown_files", "10_create_ecos_combinations_sets.Rmd")}
+```{r child = here("r_markdown_files", "10_create_ecos_combinations.Rmd")}
 ```
 
-```{r child = here("r_markdown_files", "11_create_ds_metaecos.Rmd")}
+```{r child = here("r_markdown_files", "11_create_ecos_combinations_sets.Rmd")}
 ```
 
-## Meta-ecosystems {.tabset .tabset-pills}
+```{r child = here("r_markdown_files", "12_create_ds_metaecos.Rmd")}
+```
+
+## Meta-ecosystems analysis {.tabset .tabset-pills}
 
 ```{r}
 metaecosystem_type_selected = c("Medium-Medium", "Small-Large")
 ```
 
-### α-diversity {.tabset .tabset-pills}
+### α-Diversity {.tabset .tabset-pills}
 
 ```{r}
 response_variable_selected = "mean_shannon"
 ```
 
-```{r child = here("r_markdown_files", "12_analyse_metaecos_variable.Rmd")}
+```{r child = here("r_markdown_files", "13_analyse_metaecos_variable.Rmd")}
 ```
 
-### β-diversity {.tabset .tabset-pills}
+### β-Diversity {.tabset .tabset-pills}
 
 ```{r}
 response_variable_selected = "bray_curtis"
 ```
 
-```{r child = here("r_markdown_files", "12_analyse_metaecos_variable.Rmd")}
+```{r child = here("r_markdown_files", "13_analyse_metaecos_variable.Rmd")}
 ```
 
-### γ-diversity {.tabset .tabset-pills}
+### γ-Diversity {.tabset .tabset-pills}
 
 ```{r}
 response_variable_selected = "metaecosystem_richness"
 ```
 
-```{r child = here("r_markdown_files", "12_analyse_metaecos_variable.Rmd")}
+```{r child = here("r_markdown_files", "13_analyse_metaecos_variable.Rmd")}
 ```
 
 ### Total Biomass {.tabset .tabset-pills}
@@ -97,10 +100,10 @@ response_variable_selected = "metaecosystem_richness"
 response_variable_selected = "total_metaecosystem_bioarea_mm2"
 ```
 
-```{r child = here("r_markdown_files", "12_analyse_metaecos_variable.Rmd")}
+```{r child = here("r_markdown_files", "13_analyse_metaecos_variable.Rmd")}
 ```
 
-## Ecosystems {.tabset .tabset-pills}
+## Ecosystems analysis {.tabset .tabset-pills}
 
 ### Shannon {.tabset .tabset-pills}
 
@@ -108,7 +111,7 @@ response_variable_selected = "total_metaecosystem_bioarea_mm2"
 response_variable_selected = "shannon"
 ```
 
-```{r child = here("r_markdown_files", "13_analyse_ecos_variable.Rmd")}
+```{r child = here("r_markdown_files", "14_analyse_ecos_variable.Rmd")}
 ```
 
 ### Biomass {.tabset .tabset-pills}
@@ -117,7 +120,7 @@ response_variable_selected = "shannon"
 response_variable_selected = "bioarea_mm2_per_ml"
 ```
 
-```{r child = here("r_markdown_files", "13_analyse_ecos_variable.Rmd")}
+```{r child = here("r_markdown_files", "14_analyse_ecos_variable.Rmd")}
 ```
 
 ### Richness {.tabset .tabset-pills}
@@ -126,7 +129,7 @@ response_variable_selected = "bioarea_mm2_per_ml"
 response_variable_selected = "species_richness"
 ```
 
-```{r child = here("r_markdown_files", "13_analyse_ecos_variable.Rmd")}
+```{r child = here("r_markdown_files", "14_analyse_ecos_variable.Rmd")}
 ```
 
 ### Evenness {.tabset .tabset-pills}
@@ -135,7 +138,7 @@ response_variable_selected = "species_richness"
 response_variable_selected = "evenness_pielou"
 ```
 
-```{r child = here("r_markdown_files", "13_analyse_ecos_variable.Rmd")}
+```{r child = here("r_markdown_files", "14_analyse_ecos_variable.Rmd")}
 ```
 
 ### Median Size {.tabset .tabset-pills}
@@ -144,26 +147,21 @@ response_variable_selected = "evenness_pielou"
 response_variable_selected = "median_body_area_µm2"
 ```
 
-```{r child = here("r_markdown_files", "13_analyse_ecos_variable.Rmd")}
+```{r child = here("r_markdown_files", "14_analyse_ecos_variable.Rmd")}
 ```
 
-### Auto/Hetero {.tabset .tabset-pills}
+### Photosynthetisers-heterotrophs ratio {.tabset .tabset-pills}
 
 ```{r}
-response_variable_selected = "auto_hetero_ratio"
+response_variable_selected = "photo_hetero_ratio"
 ```
 
-```{r child = here("r_markdown_files", "13_analyse_ecos_variable.Rmd")}
+```{r child = here("r_markdown_files", "14_analyse_ecos_variable.Rmd")}
 ```
 
-### BEF {.tabset .tabset-pills}
+### BEF relationship {.tabset .tabset-pills}
 
-```{r child = here("r_markdown_files", "14_analyse_ecos_BEF.Rmd")}
-```
-
-### Populations
-
-```{r child = here("r_markdown_files", "15_analyse_ecos_populations.Rmd"), eval = FALSE}
+```{r child = here("r_markdown_files", "15_analyse_ecos_BEF.Rmd")}
 ```
 
 ## Figures {.tabset .tabset-pills}
@@ -222,19 +220,7 @@ disturbance_selected = "low"
 ```
 </details>
 
-## Analysis scripts {.tabset .tabset-pills}
-
-### Video analysis
-
-```{r child = here("r_markdown_files", "22_script_BEMOVI_video_analysis.Rmd"), class.source = "fold-show"}
-```
-
-### Species identification
-
-```{r child = here("r_markdown_files", "23_script_BEMOVI_species_id.Rmd"), class.source = "fold-show"}
-```
-
 ## Other
 
-```{r child = here("r_markdown_files", "24_show_other.Rmd")}
+```{r child = here("r_markdown_files", "22_show_other.Rmd")}
 ```

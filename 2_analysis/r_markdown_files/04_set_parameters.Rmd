@@ -16,7 +16,7 @@ start_time = Sys.time()
 knitr::opts_chunk$set(message = FALSE,
                       cache = FALSE,
                       autodep = FALSE)
-recompute_lengthy_analyses = FALSE
+recompute_lengthy_analyses = TRUE
 plot_model_residuals_metaecos = FALSE
 ```
 
@@ -240,8 +240,8 @@ axis_names = data.frame(variable = NA,
   add_row(variable = "Spi_indiv_per_ml", axis_name = "Spi Density (ind/ml)") %>%
   add_row(variable = "Spi_te_indiv_per_ml", axis_name = "Spi te Density (ind/ml)") %>%
   add_row(variable = "Tet_indiv_per_ml", axis_name = "Tet Density (ind/ml)") %>%
-  add_row(variable = "auto_hetero_ratio", axis_name = "Photosynthetisers-Heterotrops Ratio") %>%
-  add_row(variable = "sqrt_auto_hetero_ratio", axis_name = "Sqrt Photosynthetisers-Heterotrops Ratio") %>%
+  add_row(variable = "photo_hetero_ratio", axis_name = "Photosynthetisers-Heterotrops Ratio") %>%
+  add_row(variable = "sqrt_photo_hetero_ratio", axis_name = "Sqrt Photosynthetisers-Heterotrops Ratio") %>%
   add_row(variable = "Ble_indiv_per_ml_d", axis_name = "Ble Density ES") %>%
   add_row(variable = "Cep_indiv_per_ml_d", axis_name = "Cep Density ES") %>%
   add_row(variable = "Col_indiv_per_ml_d", axis_name = "Col Density ES") %>%

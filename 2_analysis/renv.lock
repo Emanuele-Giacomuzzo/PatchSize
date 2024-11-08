@@ -1851,6 +1851,18 @@
       ],
       "Hash": "d413e0fef796c9401a4419485f709ca1"
     },
+    "optimx": {
+      "Package": "optimx",
+      "Version": "2023-10.21",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "nloptr",
+        "numDeriv",
+        "pracma"
+      ],
+      "Hash": "6e83fa2fbad1f00fd3b4ca36598aa23d"
+    },
     "parallelly": {
       "Package": "parallelly",
       "Version": "1.38.0",
@@ -2041,6 +2053,20 @@
         "stats"
       ],
       "Hash": "ceb5c2a59ba33d42d051285a3e8a5118"
+    },
+    "pracma": {
+      "Package": "pracma",
+      "Version": "2.4.4",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "grDevices",
+        "graphics",
+        "stats",
+        "utils"
+      ],
+      "Hash": "44bc172d47d1ea0a638d9f299e321203"
     },
     "praise": {
       "Package": "praise",

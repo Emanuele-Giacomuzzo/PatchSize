@@ -1,0 +1,201 @@
+---
+title: "Species ID script"
+output: html_document
+date: "2023-03-03"
+---
+
+### Identify species
+
+Below is the code I used to identify species to create the data in this repository. 
+
+```{r eval = FALSE}
+
+# Clear the workspace
+rm(list = ls())
+
+# Uncomment and install required packages if not already installed
+#install.packages("e1071",dependencies = T)
+#install.packages("devtools",dependencies = T)
+#install_github("pennekampster/bemovi", ref="master")
+#library(devtools)
+
+# Load required libraries
+library(bemovi)
+library(e1071)
+library("here")
+library("tidyverse")
+
+# Define time points in the experiment
+time_points_in_experiment = c("t0", "t1", "t2", "t3", "t4", "t5", "t6", "t7")
+
+# Loop through each time point in the experiment
+for (time_point in time_points_in_experiment) {
+  
+  # Define folder names and paths
+  video.description.folder = "0_video_description/"
+  video.description.file = "video_description.txt"
+  merged.data.folder = "5_merged_data/"
+  monocultures_folder_path = here("biomass_analysis", "training", "")
+  mixed_cultures_folder_path = here("biomass_analysis", time_point, "")
+  
+  #Parameters used in the video analysis script
+  fps = 25
+  nsv = 5
+  measured_volume = 34.4
+  pixel_to_scale = 4.05
+  filter_min_net_disp = 25
+  filter_min_duration = 1
+  filter_detection_freq = 0.1
+  filter_median_step_length = 3
+  
+  # Load master dataset of mono-cultures
+  load(paste0(monocultures_folder_path, merged.data.folder, "Master.RData"))
+  trajectory.data_monocultures = trajectory.data
+  rm(trajectory.data)
+  
+  # Filter the master data of mono-cultures using the same parameters as in the video analysis script
+  trajectory.data_monocultures.filtered = filter_data(trajectory.data_monocultures,
+                                                      filter_min_net_disp,
+                                                      filter_min_duration,
+                                                      filter_detection_freq,
+                                                      filter_median_step_length)
+  
+  # Summarize trajectory data to individual-based data
+  morph_mvt = summarize_trajectories(data = trajectory.data_monocultures.filtered,
+                                     calculate.median = FALSE,
+                                     write = TRUE,
+                                     to.data = monocultures_folder_path,
+                                     merged.data.folder = merged.data.folder) %>%
+    mutate(comment = NULL)
+  
+  # Prepare training data by removing incomplete cases
+  training_data = morph_mvt[complete.cases(morph_mvt), ]
+  
+  # Train SVM model on the training data
+  svm1 = svm(
+    factor(species) ~
+      mean_grey +
+      sd_grey +
+      mean_area +
+      sd_area +
+      mean_perimeter +
+      mean_turning +
+      sd_turning +
+      sd_perimeter +
+      mean_major +
+      sd_major +
+      mean_minor +
+      sd_minor +
+      mean_ar +
+      sd_ar +
+      duration +
+      max_net  +
+      net_disp +
+      net_speed +
+      gross_disp +
+      max_step +
+      min_step +
+      sd_step +
+      sd_gross_speed +
+      max_gross_speed +
+      min_gross_speed ,
+    data = training_data,
+    probability = T,
+    na.action = na.pass)
+  
+  # Generate and print confusion matrix
+  confusion.matrix = table(svm1$fitted, training_data$species)
+  confusion.matrix.nd = confusion.matrix
+  diag(confusion.matrix.nd) = 0
+  svm1$confusion = cbind(confusion.matrix,
+                         class.error = rowSums(confusion.matrix.nd) / rowSums(confusion.matrix))
+  
+  print(paste("Confusion matrix of time point", time_point))
+  print(svm1$confusion)
+  
+  # Extract unique species names
+  species.names = unique(trajectory.data_monocultures$species)
+  
+  # Load mixed cultures dataset
+  load(paste0(mixed_cultures_folder_path, merged.data.folder, "Master.RData"))
+  trajectory.data_mixed = trajectory.data
+  rm(trajectory.data)
+  
+  # Filter mixed cultures data using the same parameters
+  trajectory.data_mixed.filtered = filter_data(trajectory.data_mixed,
+                                               filter_min_net_disp,
+                                               filter_min_duration,
+                                               filter_detection_freq,
+                                               filter_median_step_length)
+  
+  # Summarize trajectory data to individual-based data
+  morph_mvt = summarize_trajectories(data = trajectory.data_mixed.filtered,
+                                     calculate.median = FALSE,
+                                     write = TRUE,
+                                     to.data = mixed_cultures_folder_path,
+                                     merged.data.folder = merged.data.folder)[, which(colnames(morph_mvt) != "Col_manual")] %>%
+    mutate(comment = NULL)
+  
+  # Prepare data for prediction by removing incomplete cases
+  data.to.predict = morph_mvt[complete.cases(morph_mvt),]
+  
+  # Predict species using the trained SVM model
+  p.id = predict(object = svm1, data.to.predict, type = "response")
+  data.to.predict$predicted_species = as.character(p.id)
+  
+  # Summarize population data
+  pop.data = summarize_populations(traj.data = trajectory.data_monocultures.filtered,
+                                   sum.data = morph_mvt,
+                                   write = TRUE,
+                                   to.data = mixed_cultures_folder_path,
+                                   merged.data.folder = merged.data.folder,
+                                   video.description.folder = video.description.folder,
+                                   video.description.file = video.description.file,
+                                   total_frame = fps * nsv)
+  
+  # Function to calculate species density
+  species.density = function(sample_output,
+                             indiv_predicted,
+                             species_names,
+                             total_frames,
+                             mv = measured_volume) {
+    samples = unique(indiv_predicted$file)
+    
+    sp.dens = matrix(0,
+                     nrow(sample_output),
+                     length(species_names))
+    
+    colnames(sp.dens) = species_names
+    
+    for (i in 1:length(samples)) {
+      indiv = subset(indiv_predicted, file == samples[i])
+      
+      spec = unique(indiv$predicted_species)
+      
+      for (j in 1:length(spec)) {
+        all.indiv.sp = subset(indiv,
+                              predicted_species == spec[j])
+        
+        dens = sum(all.indiv.sp$N_frames) / total_frames / mv
+        sp.dens[which(sample_output$file == as.character(samples[i])), which(species_names == spec[j])] = dens
+      }
+    }
+    
+    return(cbind(sample_output, sp.dens))
+    
+  }
+  
+  # Calculate species density for the current time point
+  output = species.density(pop.data,
+                           data.to.predict,
+                           species.names,
+                           total_frames = fps * nsv,
+                           mv = measured_volume)
+  
+  # Save the species density results to a CSV file
+  file_name = paste0("species_ID_", time_point, ".csv")
+  write.csv(output, here("biomass_analysis", "species_ID_results", file_name))
+  rm(output)
+  
+}
+```

@@ -10,7 +10,7 @@ editor_options:
 
 # --- DEFINE RESPONSE VARIABLE YOU WANT TO PLOT --- #
 
-response_variable = "auto_hetero_ratio"
+response_variable = "photo_hetero_ratio"
 ```
 
 ```{r}
@@ -124,7 +124,7 @@ png(file = here("..",
                 "figures", 
                 disturbance_selected, 
                 "paper", 
-                "ecosystem_auto_heterotrophic_ratio.png"),
+                "ecosystem_photo_heterotrophic_ratio.png"),
     width = paper_width,
     height = paper_height,
     units = paper_units,
