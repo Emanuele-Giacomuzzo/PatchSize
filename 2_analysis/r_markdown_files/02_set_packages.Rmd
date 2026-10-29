@@ -14,15 +14,15 @@ editor_options:
 # Renv allows you to reinstall the specific package versions that were used 
 # when writing code for this project.
 
-if (!requireNamespace("renv", quietly = TRUE)) {
-  install.packages("renv")
-}
+# if (!requireNamespace("renv", quietly = TRUE)) {
+#   install.packages("renv")
+# }
 
 # Reinstall the specific package versions that were used when writing code for 
 # this project.
 
-setwd("..")
-renv::restore()
+# setwd("..")
+# renv::restore()
 ```
 
 ```{r echo = FALSE, results = FALSE, message = FALSE, cache = FALSE, warnings = FALSE}
